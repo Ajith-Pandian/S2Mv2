@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">S2MConnect</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_notification">Notification</string>
+
+    <string name="cd_btn_home">Home Button</string>
+    <string name="cd_btn_section">Section Button</string>
+    <string name="cd_btn_messages">Messages Button</string>
+    <string name="cd_btn_video">Video Button</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="school_msg_one">
+        There are many variations of Passages of Lorem Ipsum available,
+        but the majority have suffered alteration in some form by injected humor.
+        There are many variations of Passages of Lorem Ipsum available,
+        but the majority have suffered alteration in some form by injected humor.</string>
+    <string name="school_msg_two">
+        Clipping views enables you to easily change the shape of a view.
+        You can clip views for consistency with other design elements or to change the shape of a view in response to user input.
+        You can clip a view to its outline area using the View.setClipToOutline() method or the android:clipToOutline attribute.
+        Only rectangle, circle, and round rectangle outlines support clipping, as determined by the Outline.canClip() method.
+        There are many variations of Passages of Lorem Ipsum available,
+        but the majority have suffered alteration in some form by injected humor.</string>
+</resources>

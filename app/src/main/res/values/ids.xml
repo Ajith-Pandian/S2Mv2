@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="top_card_id" type="id">111</item>
+    <item name="middle_card_id" type="id">112</item>
+    <item name="last_card_id" type="id">113</item>
+    <item name="backgrounds" type="id">114</item>
+</resources>
