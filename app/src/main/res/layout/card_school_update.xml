@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/card_school_update_root"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <View
@@ -13,17 +13,17 @@
 
     <TextView
         android:id="@+id/text_date"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="Date"
         android:textColor="@color/greenFade"
         android:textSize="10sp" />
@@ -45,29 +45,30 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:layout_toRightOf="@+id/horizontal_line_bottom"
         android:layout_toEndOf="@+id/horizontal_line_bottom"
+        android:layout_toRightOf="@+id/horizontal_line_bottom"
         android:text="Time"
         android:textColor="@color/greenFade"
         android:textSize="10sp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
         android:id="@+id/msg_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/horizontal_line_bottom"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/horizontal_line_bottom"
+        android:orientation="vertical"
       >
     <TextView
         android:id="@+id/text_school_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="School Name"
+        android:textColor="#151414"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -76,20 +77,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="3"
-        android:text="Message" />
+        android:text="Message"
+
+        android:textColor="#252525" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_time"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/text_time"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout"
-        android:layout_alignTop="@+id/text_time"
-        android:layout_alignBottom="@+id/text_time"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
@@ -102,7 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textSize="10sp"
-            android:text="123" />
+            android:text="123"
+            android:textColor="@color/greenFade"
+            android:textSize="10sp" />
     </LinearLayout>
 </RelativeLayout>

@@ -3,14 +3,22 @@ package com.example.thoughtchimp.s2mconnect.SwipeCards;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.RelativeLayout;
+
+import com.example.thoughtchimp.s2mconnect.CardBuilder;
 
 /**
  * Created by thoughtchimp on 11/12/2016.
  */
 
 public class SwipeLayout extends RelativeLayout {
+    int currentCardPosition;
+    RelativeLayout.LayoutParams cardsLayoutParams;
+    CardBuilder cardBuilder;
+    ViewGroup cards;
+    private CardsView swipeCardsView;
     private Adapter adapter;
     private final DataSetObserver observer = new DataSetObserver() {
 
@@ -24,17 +32,17 @@ public class SwipeLayout extends RelativeLayout {
             removeAllViews();
         }
     };
-
     public SwipeLayout(Context context) {
-        super(context);
+        this(context,null);
     }
-
     public SwipeLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public SwipeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        cardBuilder=new CardBuilder(context);
+        cards=cardBuilder.makeAndGetCards();
     }
 
     public Adapter getAdapter() {
@@ -53,11 +61,26 @@ public class SwipeLayout extends RelativeLayout {
     }
 
     protected void initViewsFromAdapter() {
-        removeAllViews();
+        // removeAllViews();
         if (adapter != null) {
-            for (int i = 0; i < adapter.getCount(); i++) {
-                addView(adapter.getView(i, null, this), i);
-            }
+            // for (int i = 0; i < adapter.getCount(); i++) {
+           // addView(adapter.getView(0, null, this), 0);
+            // }
+            addView(cards);
+            addCard();
+        }
+    }
+
+    void addCard()
+    {
+        cardBuilder.addContentToFirstCard(adapter.getView(0, null, this));
+
+    }
+    void addNextCard() {
+        int nextPosition = currentCardPosition + 1;
+        if (nextPosition < adapter.getCount()) {
+            cardBuilder.addContentToFirstCard(adapter.getView(nextPosition, null, this));
+            currentCardPosition = nextPosition;
         }
     }
 
@@ -77,5 +100,10 @@ public class SwipeLayout extends RelativeLayout {
         } else if (childCount > adapterSize) {
             removeViews(adapterSize, childCount);
         }
+    }
+
+    void setSwipeCardsView(CardsView swipeCardsView) {
+        this.swipeCardsView = swipeCardsView;
+        this.cardsLayoutParams = (RelativeLayout.LayoutParams) swipeCardsView.getLayoutParams();
     }
 }

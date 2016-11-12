@@ -11,11 +11,22 @@
     tools:context="com.example.thoughtchimp.s2mconnect.SwipeCards.SwipeCardsActivity">
 
     <com.example.thoughtchimp.s2mconnect.SwipeCards.SwipeLayout
+        android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.example.thoughtchimp.s2mconnect.SwipeCards.CardsView
+            android:id="@+id/swipe_cards"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true"
+           />
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="NEXT" />
     </com.example.thoughtchimp.s2mconnect.SwipeCards.SwipeLayout>
 </RelativeLayout>

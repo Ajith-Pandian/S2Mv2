@@ -3,7 +3,6 @@ package com.example.thoughtchimp.s2mconnect.tindercard;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.AdapterView;
 
 import com.example.thoughtchimp.s2mconnect.CardBuilder;
@@ -63,7 +62,7 @@ abstract class BaseFlingAdapterView extends AdapterView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //View child = builder.getSwipeCards();
+        //View child = builder.makeAndGetCards();
        // addViewInLayout(child, 0, child.getLayoutParams());
     }
 }

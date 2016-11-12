@@ -1,6 +1,8 @@
-package com.example.thoughtchimp.s2mconnect.tindercard;
+package com.example.thoughtchimp.s2mconnect.SwipeCards;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,20 +11,21 @@ import android.widget.TextView;
 
 import com.example.thoughtchimp.s2mconnect.CardBuilder;
 import com.example.thoughtchimp.s2mconnect.R;
+import com.example.thoughtchimp.s2mconnect.tindercard.SchoolDetails;
 
 import java.util.List;
 
 /**
- * Created by thoughtchimp on 11/10/2016.
+ * Created by thoughtchimp on 11/12/2016.
  */
 
-public class SwipeCardsAdapter extends BaseAdapter {
+public class SwipeLayoutAdapter extends BaseAdapter {
     private List<SchoolDetails> cardsList;
     private Context context;
     private CardBuilder cardBuilder;
 
-    public SwipeCardsAdapter(List<SchoolDetails> apps, Context context) {
-        this.cardsList = apps;
+    public SwipeLayoutAdapter(Context context,List<SchoolDetails> detailsList ) {
+        this.cardsList = detailsList;
         this.context = context;
     }
 
@@ -43,19 +46,23 @@ public class SwipeCardsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View cardView = convertView;
+        //View cardView = convertView;
+        //get the inflater and inflate the XML layout for each item
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View cardView =null;
         cardBuilder = new CardBuilder(context);
         ViewHolder viewHolder = new ViewHolder();
-        if (cardView == null) {
-
-            cardView = cardBuilder.makeAndGetCards();
-            viewHolder.background = (RelativeLayout) cardView.findViewById(R.id.background);
-            viewHolder.schoolName = (TextView) cardView.findViewById(R.id.text_school_name);
-            viewHolder.message = (TextView) cardView.findViewById(R.id.text_message);
-            viewHolder.date = (TextView) cardView.findViewById(R.id.text_date);
-            viewHolder.time = (TextView) cardView.findViewById(R.id.text_time);
-            viewHolder.likes = (TextView) cardView.findViewById(R.id.text_likes);
-            cardView.setTag(viewHolder);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.card_school_update, null);
+            //cardView = cardBuilder.makeAndGetCards();
+            // configure view holder
+            viewHolder.background = (RelativeLayout) convertView.findViewById(R.id.background);
+            viewHolder.schoolName = (TextView) convertView.findViewById(R.id.text_school_name);
+            viewHolder.message = (TextView) convertView.findViewById(R.id.text_message);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.text_date);
+            viewHolder.time = (TextView) convertView.findViewById(R.id.text_time);
+            viewHolder.likes = (TextView) convertView.findViewById(R.id.text_likes);
+            convertView.setTag(viewHolder);
 
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -66,7 +73,7 @@ public class SwipeCardsAdapter extends BaseAdapter {
         viewHolder.date.setText(details.getDate());
         viewHolder.time.setText(details.getTime());
         viewHolder.likes.setText(details.getLikes());
-        return cardView;
+        return convertView;
     }
 
     private static class ViewHolder {

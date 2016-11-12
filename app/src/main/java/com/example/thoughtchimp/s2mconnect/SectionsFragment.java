@@ -1,7 +1,6 @@
 package com.example.thoughtchimp.s2mconnect;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,7 +25,7 @@ public class SectionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         cardBuilder = new CardBuilder(getActivity());
-        return cardBuilder.getSwipeCards();
+        return cardBuilder.makeAndGetCards();
     }
 
 
