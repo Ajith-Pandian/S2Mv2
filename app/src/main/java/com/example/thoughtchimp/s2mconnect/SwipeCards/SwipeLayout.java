@@ -32,17 +32,19 @@ public class SwipeLayout extends RelativeLayout {
             removeAllViews();
         }
     };
+
     public SwipeLayout(Context context) {
-        this(context,null);
+        this(context, null);
     }
+
     public SwipeLayout(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public SwipeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        cardBuilder=new CardBuilder(context);
-        cards=cardBuilder.makeAndGetCards();
+        cardBuilder = new CardBuilder(context);
+        cards = cardBuilder.makeAndGetCards();
     }
 
     public Adapter getAdapter() {
@@ -64,23 +66,24 @@ public class SwipeLayout extends RelativeLayout {
         // removeAllViews();
         if (adapter != null) {
             // for (int i = 0; i < adapter.getCount(); i++) {
-           // addView(adapter.getView(0, null, this), 0);
+            // addView(adapter.getView(0, null, this), 0);
             // }
             addView(cards);
             addCard();
         }
     }
 
-    void addCard()
-    {
+    void addCard() {
         cardBuilder.addContentToFirstCard(adapter.getView(0, null, this));
-
     }
+
     void addNextCard() {
         int nextPosition = currentCardPosition + 1;
         if (nextPosition < adapter.getCount()) {
             cardBuilder.addContentToFirstCard(adapter.getView(nextPosition, null, this));
             currentCardPosition = nextPosition;
+        } else {
+            cardBuilder.addContentToSecondCard(adapter.getView(0, null, this));
         }
     }
 
