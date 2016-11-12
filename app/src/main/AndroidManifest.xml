@@ -18,9 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".tindercard.TouchViewActivity">
-
-        </activity>
+        <activity android:name=".tindercard.TouchViewActivity"></activity>
+        <activity android:name=".SwipeCards.SwipeCardsActivity"></activity>
     </application>
 
 </manifest>
