@@ -25,4 +25,5 @@
         Only rectangle, circle, and round rectangle outlines support clipping, as determined by the Outline.canClip() method.
         There are many variations of Passages of Lorem Ipsum available,
         but the majority have suffered alteration in some form by injected humor.</string>
+    <string name="dsgasdf">dsgasdf</string>
 </resources>

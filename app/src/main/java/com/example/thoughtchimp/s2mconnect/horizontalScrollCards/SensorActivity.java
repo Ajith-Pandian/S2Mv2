@@ -22,7 +22,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
-
         //declaring Sensor Manager and sensor type
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -77,5 +76,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         //unregister Sensor listener
         sensorManager.unregisterListener(this);
     }
+
 }
 

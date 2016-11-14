@@ -148,6 +148,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
                 LAST_OBJECT_IN_STACK = startingIndex;
             }
             startingIndex++;
+
         }
     }
 
@@ -155,7 +156,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void makeAndAddView(View child, int isTop) {
 
-       /* if (isTop == 1)
+        /* if (isTop == 1)
             child = childs.findViewById(R.id.middle_card_id);
         else
             child = childs.findViewById(R.id.top_card_id);*/
