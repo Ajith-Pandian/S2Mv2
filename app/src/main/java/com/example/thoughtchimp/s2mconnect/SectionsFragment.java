@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.thoughtchimp.s2mconnect.SwipeCards.CardBuilder;
+
 /**
  * Created by thoughtchimp on 11/7/2016.
  */

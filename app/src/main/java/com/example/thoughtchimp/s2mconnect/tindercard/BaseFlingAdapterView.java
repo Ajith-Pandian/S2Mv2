@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.AdapterView;
 
-import com.example.thoughtchimp.s2mconnect.CardBuilder;
+import com.example.thoughtchimp.s2mconnect.SwipeCards.CardBuilder;
 
 /**
  * Created by dionysis_lorentzos on 6/8/14

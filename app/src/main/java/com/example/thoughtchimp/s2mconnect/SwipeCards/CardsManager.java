@@ -3,8 +3,6 @@ package com.example.thoughtchimp.s2mconnect.SwipeCards;
 import android.content.Context;
 import android.view.View;
 
-import com.example.thoughtchimp.s2mconnect.CardBuilder;
-
 /**
  * Created by thoughtchimp on 11/12/2016.
  */

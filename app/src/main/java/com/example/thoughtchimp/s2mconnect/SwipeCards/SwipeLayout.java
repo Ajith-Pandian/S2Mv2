@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.RelativeLayout;
 
-import com.example.thoughtchimp.s2mconnect.CardBuilder;
-
 /**
  * Created by thoughtchimp on 11/12/2016.
  */

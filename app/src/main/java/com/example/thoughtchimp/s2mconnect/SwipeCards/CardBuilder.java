@@ -1,4 +1,4 @@
-package com.example.thoughtchimp.s2mconnect;
+package com.example.thoughtchimp.s2mconnect.SwipeCards;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
+
+import com.example.thoughtchimp.s2mconnect.R;
 
 /**
  * Created by thoughtchimp on 11/10/2016.

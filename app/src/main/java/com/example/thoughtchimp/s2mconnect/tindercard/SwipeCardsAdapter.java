@@ -7,8 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.thoughtchimp.s2mconnect.CardBuilder;
 import com.example.thoughtchimp.s2mconnect.R;
+import com.example.thoughtchimp.s2mconnect.SwipeCards.CardBuilder;
 
 import java.util.List;
 
