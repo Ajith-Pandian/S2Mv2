@@ -1,6 +1,8 @@
 package com.example.thoughtchimp.s2mconnect.tindercard;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -43,19 +45,21 @@ public class SwipeCardsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View cardView = convertView;
-        cardBuilder = new CardBuilder(context);
+        //View cardView = convertView;
+        // cardBuilder = new CardBuilder(context);
         ViewHolder viewHolder = new ViewHolder();
-        if (cardView == null) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-            cardView = cardBuilder.makeAndGetCards();
-            viewHolder.background = (RelativeLayout) cardView.findViewById(R.id.background);
-            viewHolder.schoolName = (TextView) cardView.findViewById(R.id.text_school_name);
-            viewHolder.message = (TextView) cardView.findViewById(R.id.text_message);
-            viewHolder.date = (TextView) cardView.findViewById(R.id.text_date);
-            viewHolder.time = (TextView) cardView.findViewById(R.id.text_time);
-            viewHolder.likes = (TextView) cardView.findViewById(R.id.text_likes);
-            cardView.setTag(viewHolder);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.card_school_update, null);
+           // convertView = cardBuilder.makeAndGetCards();
+            viewHolder.background = (RelativeLayout) convertView.findViewById(R.id.background);
+            viewHolder.schoolName = (TextView) convertView.findViewById(R.id.text_school_name);
+            viewHolder.message = (TextView) convertView.findViewById(R.id.text_message);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.text_date);
+            viewHolder.time = (TextView) convertView.findViewById(R.id.text_time);
+            viewHolder.likes = (TextView) convertView.findViewById(R.id.text_likes);
+            convertView.setTag(viewHolder);
 
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -66,7 +70,7 @@ public class SwipeCardsAdapter extends BaseAdapter {
         viewHolder.date.setText(details.getDate());
         viewHolder.time.setText(details.getTime());
         viewHolder.likes.setText(details.getLikes());
-        return cardView;
+        return convertView;
     }
 
     private static class ViewHolder {

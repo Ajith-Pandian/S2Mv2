@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.thoughtchimp.s2mconnect">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,8 +16,9 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name=".tindercard.TouchViewActivity"></activity>
-        <activity android:name=".SwipeCards.SwipeCardsActivity">
+        <activity android:name=".tindercard.TouchViewActivity" />
+        <activity android:name=".SwipeCards.SwipeCardsActivity"></activity>
+        <activity android:name=".horizontalScrollCards.SensorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

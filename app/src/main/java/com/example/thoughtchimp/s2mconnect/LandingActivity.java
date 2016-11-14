@@ -1,7 +1,6 @@
 package com.example.thoughtchimp.s2mconnect;
 
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,12 +12,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -60,7 +56,7 @@ public class LandingActivity extends AppCompatActivity
     @BindView(R.id.layout_frame)
     FrameLayout frameLayout;
     @BindView(R.id.dummy_view)
-            View dummyView;
+    View dummyView;
     View.OnClickListener buttonsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -74,11 +70,21 @@ public class LandingActivity extends AppCompatActivity
                     case R.id.button_section:
                         replaceFragment(new SectionsFragment());
                         break;
-                    case R.id.button_messages:
-                        replaceFragment(new MessagesFragment());
-                        break;
+                    case R.id.button_messages: {
+                        MessagesFragment messagesFragment = new MessagesFragment();
+                        Bundle args = new Bundle();
+                        args.putInt(MessagesFragment.KEY_TYPE, MessagesFragment.MULTIPLE);
+                        messagesFragment.setArguments(args);
+                        replaceFragment(messagesFragment);
+                    }
+                    break;
                     case R.id.button_video:
-                        replaceFragment(new VideoFragment());
+                        MessagesFragment messagesFragment = new MessagesFragment();
+                        Bundle args = new Bundle();
+                        args.putInt(MessagesFragment.KEY_TYPE, MessagesFragment.SINGLE);
+                        messagesFragment.setArguments(args);
+                        replaceFragment(messagesFragment);
+                        // replaceFragment(new VideoFragment());
                         break;
                 }
             }
@@ -106,6 +112,9 @@ public class LandingActivity extends AppCompatActivity
 
         }
     };
+    float fab1_left = 0.8f, fab1_bottom = .8f, fab2_bottom = 1.0f, fab3_right = .8f, fab3_bottom = .8f;
+    boolean isOutSideClicked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +129,6 @@ public class LandingActivity extends AppCompatActivity
         messagesButton.setOnClickListener(buttonsClickListener);
         videoButton.setOnClickListener(buttonsClickListener);
     }
-
 
     void replaceFragment(Fragment fragment) {
         FragmentManager fm;
@@ -165,7 +173,6 @@ public class LandingActivity extends AppCompatActivity
             }
         });
     }
-    float fab1_left = 0.8f, fab1_bottom = .8f, fab2_bottom = 1.0f, fab3_right = .8f, fab3_bottom = .8f;
 
     void showFabs() {
         initAnimations();
@@ -220,9 +227,6 @@ public class LandingActivity extends AppCompatActivity
         dummyView.setVisibility(View.GONE);
 
     }
-
-    boolean isOutSideClicked=false;
-
 
     void initAnimations() {
         //show_fab_1 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab1_show);

@@ -13,9 +13,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.FrameLayout;
 
@@ -182,7 +180,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         int height = metrics.heightPixels;
         Log.d(TAG, "makeAndAddView!: X= " + width + "  Y= " + height);
 
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
+      /*  FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
         View child1 = child.findViewById(R.id.top_card_id);
         FrameLayout.LayoutParams lp1 = (FrameLayout.LayoutParams) child1.getLayoutParams();
         View child2 = child.findViewById(R.id.middle_card_id);
@@ -250,7 +248,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
                 break;
         }
 
-        child.layout(childLeft, childTop, childLeft + w, childTop + h);
+        child.layout(childLeft, childTop, childLeft + w, childTop + h);*/
     }
 
 
