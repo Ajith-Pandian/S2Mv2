@@ -32,8 +32,20 @@ public class SwipeCardsActivity extends AppCompatActivity {
         swipeLayout= (SwipeLayout) findViewById(R.id.swipe_layout);
         CardsView swipeCardsView = (CardsView) findViewById(R.id.swipe_cards);
         SwipeLayoutAdapter adapter = new SwipeLayoutAdapter(getApplicationContext(), strings);
-        swipeLayout.setAdapter(adapter);
         swipeLayout.setSwipeCardsView(swipeCardsView);
+       /* swipeLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d("child", "onTouch: " + "child called");
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    //objectX = motionEvent.getX();
+                    //objectY = motionEvent.getY();
+                 //   onTouchEvent(motionEvent);
+                }
+                return false;
+            }
+        });*/
+        swipeLayout.setAdapter(adapter);
         button=(Button)findViewById(R.id.next_button);
     button.setOnClickListener(new View.OnClickListener() {
             @Override

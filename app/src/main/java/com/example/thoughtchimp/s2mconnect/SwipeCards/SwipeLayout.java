@@ -1,9 +1,15 @@
 package com.example.thoughtchimp.s2mconnect.SwipeCards;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Adapter;
 import android.widget.RelativeLayout;
 
@@ -16,6 +22,12 @@ public class SwipeLayout extends RelativeLayout {
     RelativeLayout.LayoutParams cardsLayoutParams;
     CardBuilder cardBuilder;
     ViewGroup cards;
+    View view;
+    int top, left;
+    float objectX, objectY;
+    int first = 1;
+    float startedX, startedY;
+    boolean isRemoved = false;
     private CardsView swipeCardsView;
     private Adapter adapter;
     private final DataSetObserver observer = new DataSetObserver() {
@@ -30,6 +42,7 @@ public class SwipeLayout extends RelativeLayout {
             removeAllViews();
         }
     };
+    private View currentCard;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -42,7 +55,7 @@ public class SwipeLayout extends RelativeLayout {
     public SwipeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         cardBuilder = new CardBuilder(context);
-        cards = cardBuilder.makeAndGetCards();
+
     }
 
     public Adapter getAdapter() {
@@ -66,6 +79,9 @@ public class SwipeLayout extends RelativeLayout {
             // for (int i = 0; i < adapter.getCount(); i++) {
             // addView(adapter.getView(0, null, this), 0);
             // }
+
+            cardBuilder.setLayoutParams(cardsLayoutParams);
+            cards = cardBuilder.makeAndGetCards();
             addView(cards);
             addCard();
         }
@@ -107,4 +123,80 @@ public class SwipeLayout extends RelativeLayout {
         this.swipeCardsView = swipeCardsView;
         this.cardsLayoutParams = (RelativeLayout.LayoutParams) swipeCardsView.getLayoutParams();
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                view = cardBuilder.removeAndGetFirstCard();
+                view.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            //Getting touch point on card to set card position in Layout
+                            objectX = motionEvent.getX();
+                            objectY = motionEvent.getY();
+
+                        }
+                        //TODO -- true --implement touch handler here
+                        //false will call onTouchEvent on Parent
+                        return false;
+                    }
+                });
+                startedX = event.getX();
+                startedY = event.getY();
+                ViewCompat.setElevation(view, 24);
+                view.setX(startedX - objectX);
+                view.setY(startedY - objectY);
+                addView(view);
+
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                Log.d("TouchView", "On Touch cancelled.");
+
+                break;
+            case MotionEvent.ACTION_UP:
+                view.animate().x(startedX - objectX)
+                        .y(startedY - objectY)
+                        .setInterpolator(new OvershootInterpolator()).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        removeView(view);
+                        cardBuilder.addViewInThis(view);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                view.setX(event.getX() - objectX);
+                view.setY(event.getY() - objectY);
+                break;
+        }
+
+        invalidate();
+
+        return true;
+    }
+
 }

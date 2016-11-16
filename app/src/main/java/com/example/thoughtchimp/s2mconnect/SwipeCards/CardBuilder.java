@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.example.thoughtchimp.s2mconnect.R;
 
@@ -23,6 +24,11 @@ public class CardBuilder {
     float topCardx, topCardy;
     FrameLayout.LayoutParams topCardLayoutParams;
     int topCardHeight, topCardWidth;
+    View removedCard;
+    RelativeLayout.LayoutParams layoutParams;
+
+    ;
+    float originX, originY;
     private int horizontalDifference = 15, verticalDifference = 20;
     int[] topCardMargin = {MAX_MARGIN_LEFT - horizontalDifference * 2,
             MAX_MARGIN_TOP - verticalDifference * 2,
@@ -33,8 +39,6 @@ public class CardBuilder {
                     MAX_MARGIN_RIGHT - horizontalDifference,
                     MAX_MARGIN_BOTTOM + verticalDifference},
             lastCardMargin = {MAX_MARGIN_LEFT, MAX_MARGIN_TOP, MAX_MARGIN_RIGHT, MAX_MARGIN_BOTTOM};
-
-    ;
     private Context context;
 
     public CardBuilder(Context context) {
@@ -57,8 +61,11 @@ public class CardBuilder {
                 //(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, context.getResources().getDisplayMetrics())
         );
         layoutParams.setMargins(0, 0, 0, 0);
-        threeCardsLayout.setLayoutParams(layoutParams);
 
+        if (this.layoutParams == null)
+            threeCardsLayout.setLayoutParams(layoutParams);
+        else
+            threeCardsLayout.setLayoutParams(this.layoutParams);
         //Last card
         thirdCard = createCard(false, lastCardMargin, null);
         thirdCard.setId(R.id.last_card_id);
@@ -75,6 +82,8 @@ public class CardBuilder {
         firstCard = createCard(false, topCardMargin, null);
         firstCard.setId(R.id.top_card_id);
         topCardLayoutParams = (FrameLayout.LayoutParams) firstCard.getLayoutParams();
+        originX = firstCard.getX();
+        originY = firstCard.getY();
         threeCardsLayout.addView(firstCard);
 
 
@@ -82,15 +91,29 @@ public class CardBuilder {
     }
 
     public FrameLayout getFirstCard() {
-        return firstCard;
+        return (firstCard);
     }
 
     public void addContentToFirstCard(View cardLayout) {
         threeCardsLayout.removeView(firstCard);
         firstCard = createCard(true, topCardMargin, cardLayout);
         firstCard.setId(R.id.top_card_id);
-
         threeCardsLayout.addView(firstCard);
+    }
+
+    void addFirstCard() {
+
+        threeCardsLayout.addView(removedCard);
+    }
+
+    void addViewInThis(View view) {
+        view.setX(originX);
+        view.setY(originY);
+        threeCardsLayout.addView(view);
+    }
+
+    void setLayoutParams(RelativeLayout.LayoutParams layoutParams) {
+        this.layoutParams = layoutParams;
     }
 
     public void addContentToSecondCard(View cardLayout) {
@@ -105,15 +128,20 @@ public class CardBuilder {
 
     public void removeFirstCard() {
         threeCardsLayout.removeView(firstCard);
+    }
 
+    public View removeAndGetFirstCard() {
+        removedCard = firstCard;
+        threeCardsLayout.removeView(firstCard);
+        return removedCard;
     }
 
     public void moveSecondCardToTop() {
         //secondCard.animate().translationX(1.2f).scaleY(1.2f);
 
-        secondCard.animate().scaleX(1.05f)
+        secondCard.animate().x(secondCard.getChildAt(0).getX() - horizontalDifference)
                 //.scaleYBy(1.5f)
-                .y(secondCard.getChildAt(0).getY()-verticalDifference)
+                .y(secondCard.getChildAt(0).getY() - verticalDifference)
                 //.alpha(2)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
@@ -123,8 +151,8 @@ public class CardBuilder {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                      //  secondCard.clearAnimation();
-                       scaleView(secondCard.getChildAt(0));
+                        //  secondCard.clearAnimation();
+                      //  scaleView(secondCard.getChildAt(0));
                     }
 
                     @Override
@@ -137,45 +165,18 @@ public class CardBuilder {
 
                     }
                 });
+        thirdCard.animate().x(thirdCard.getChildAt(0).getX() - horizontalDifference)
+                //.scaleYBy(1.5f)
+                .y(thirdCard.getChildAt(0).getY() - verticalDifference);
         // TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE,);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+      /*  FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, context.getResources().getDisplayMetrics()));
         lp.setMargins(10, 1, 10, 50);
-        //secondCard.getChildAt(0).setLayoutParams(lp);
-        ScaleAnimation animation = new ScaleAnimation(1, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-
-        animation.setDuration(200);
-        animation.setFillAfter(true);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                secondCard.clearAnimation();
-
-
-                int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalDifference, context.getResources().getDisplayMetrics());
-
-                int Height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, verticalDifference, context.getResources().getDisplayMetrics());
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        //   secondCard.startAnimation(animation);
-
+*/
     }
 
 
-    void scaleView(View view)
-    {
+    void scaleView(View view) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, context.getResources().getDisplayMetrics()));
         lp.setMargins(10, 1, 10, 50);
@@ -198,7 +199,7 @@ public class CardBuilder {
     }
 
     private FrameLayout createCard(boolean isTopCard, int[] margins, View cardLayout) {
-        FrameLayout linearLayout = new FrameLayout(context);
+        FrameLayout threeCardsLayout = new FrameLayout(context);
 
         CardView cardView = new CardView(context);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -215,18 +216,15 @@ public class CardBuilder {
             cardView.addView(cardLayout);
         }
 
-        linearLayout.addView(cardView);
+        threeCardsLayout.addView(cardView);
         //Card Layout Params
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-        );
+                FrameLayout.LayoutParams.WRAP_CONTENT);
         // layoutParams.gravity = Gravity.CENTER;
-        //layoutParams.addRule(FrameLayout.CENTER_IN_PARENT, FrameLayout.TRUE);
         //cardView.startAnimation(getAnimation(1f, 1f));
-        linearLayout.setLayoutParams(layoutParams);
+        threeCardsLayout.setLayoutParams(layoutParams);
 
-        //linearLayout.setBackgroundColor(Color.BLUE);
-        return linearLayout;
+        return threeCardsLayout;
     }
 }
