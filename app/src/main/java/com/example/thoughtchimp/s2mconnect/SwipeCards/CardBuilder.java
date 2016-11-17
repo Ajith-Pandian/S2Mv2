@@ -1,9 +1,9 @@
 package com.example.thoughtchimp.s2mconnect.SwipeCards;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.example.thoughtchimp.s2mconnect.R;
-
-import static android.view.View.GONE;
 
 /**
  * Created by thoughtchimp on 11/10/2016.
@@ -31,6 +29,20 @@ public class CardBuilder {
 
     ;
     float originX, originY;
+    View.OnTouchListener topCardTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                //Getting touch point on card to set card position in Layout
+                CardsManager.getInstance().setChildTouchPoints(motionEvent.getX(), motionEvent.getY());
+                CardsManager.getInstance().setFromSwipeCards(true);
+
+            }
+            //TODO -- true --implement touch handler here
+            //false will call onTouchEvent on Parent
+            return false;
+        }
+    };
     private int horizontalDifference = 15, verticalDifference = 20;
     int[] topCardMargin = {MAX_MARGIN_LEFT - horizontalDifference * 2,
             MAX_MARGIN_TOP - verticalDifference * 2,
@@ -86,8 +98,9 @@ public class CardBuilder {
         topCardLayoutParams = (FrameLayout.LayoutParams) firstCard.getLayoutParams();
         originX = firstCard.getX();
         originY = firstCard.getY();
+        firstCard.setOnTouchListener(topCardTouchListener);
         threeCardsLayout.addView(firstCard);
-        threeCardsLayout.setVisibility(GONE);
+        //threeCardsLayout.setVisibility(GONE);
 
         return threeCardsLayout;
     }
@@ -97,10 +110,13 @@ public class CardBuilder {
     }
 
     public void addContentToFirstCard(View cardLayout) {
-        threeCardsLayout.removeView(firstCard);
+       /* threeCardsLayout.removeView(firstCard);
         firstCard = createCard(true, topCardMargin, cardLayout);
+        firstCard.setOnTouchListener(topCardTouchListener);
         firstCard.setId(R.id.top_card_id);
-        threeCardsLayout.addView(firstCard);
+
+        threeCardsLayout.addView(firstCard);*/
+        addLayoutToCard(firstCard, cardLayout);
     }
 
     void addFirstCard() {
@@ -118,13 +134,15 @@ public class CardBuilder {
         this.layoutParams = layoutParams;
     }
 
+
+    void addLayoutToCard(FrameLayout card, View childLayout) {
+        ((CardView) (card.getChildAt(0))).removeAllViews();
+        ((CardView) (card.getChildAt(0))).addView(childLayout);
+    }
+
     public void addContentToSecondCard(View cardLayout) {
         removeFirstCard();
-        threeCardsLayout.removeView(secondCard);
-        secondCard = createCard(true, middleCardMargin, cardLayout);
-
-        secondCard.setId(R.id.middle_card_id);
-        threeCardsLayout.addView(secondCard);
+        addLayoutToCard(secondCard, cardLayout);
         moveSecondCardToTop();
     }
 
@@ -139,12 +157,9 @@ public class CardBuilder {
     }
 
     public void moveSecondCardToTop() {
-        //secondCard.animate().translationX(1.2f).scaleY(1.2f);
 
-        secondCard.animate().x(secondCard.getChildAt(0).getX() - horizontalDifference)
-                //.scaleYBy(1.5f)
+      /*  secondCard.animate().x(secondCard.getChildAt(0).getX() - horizontalDifference)
                 .y(secondCard.getChildAt(0).getY() - verticalDifference)
-                //.alpha(2)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -153,8 +168,6 @@ public class CardBuilder {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        //  secondCard.clearAnimation();
-                      //  scaleView(secondCard.getChildAt(0));
                     }
 
                     @Override
@@ -171,10 +184,19 @@ public class CardBuilder {
                 //.scaleYBy(1.5f)
                 .y(thirdCard.getChildAt(0).getY() - verticalDifference);
         // TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE,);
-      /*  FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+      *//*  FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, context.getResources().getDisplayMetrics()));
         lp.setMargins(10, 1, 10, 50);
 */
+        int height = secondCard.getHeight();
+        int width = secondCard.getWidth();
+        CardResizeAnimation animation = new CardResizeAnimation(secondCard, height, height, width, width + 1);
+        animation.setDuration(500);
+        animation.setFillAfter(true);
+        secondCard.animate().x(secondCard.getChildAt(0).getX() - 10)
+                .y(secondCard.getChildAt(0).getY() - 10);
+        secondCard.startAnimation(animation);
+
     }
 
 

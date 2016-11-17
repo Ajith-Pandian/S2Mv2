@@ -1,22 +1,40 @@
 package com.example.thoughtchimp.s2mconnect.SwipeCards;
 
-import android.content.Context;
-import android.view.View;
-
 /**
  * Created by thoughtchimp on 11/12/2016.
  */
 
 public class CardsManager {
+    static CardsManager instance;
     CardBuilder cardBuilder;
+    float childTouchPointX, childTouchPointY;
+    boolean fromSwipeCards;
 
-    public CardsManager(Context context)
-    {
-        cardBuilder=new CardBuilder(context);
+    public static CardsManager getInstance() {
+        if (instance == null)
+            instance = new CardsManager();
+
+        return instance;
     }
 
-    View getCard() {
-        View cardsView = (View) cardBuilder.makeAndGetCards();
-        return cardsView;
+    void setChildTouchPoints(float x, float y) {
+        childTouchPointX = x;
+        childTouchPointY = y;
+    }
+
+    public float getChildTouchPointX() {
+        return childTouchPointX;
+    }
+
+    public float getChildTouchPointY() {
+        return childTouchPointY;
+    }
+
+    public boolean isFromSwipeCards() {
+        return fromSwipeCards;
+    }
+
+    public void setFromSwipeCards(boolean fromSwipeCards) {
+        this.fromSwipeCards = fromSwipeCards;
     }
 }

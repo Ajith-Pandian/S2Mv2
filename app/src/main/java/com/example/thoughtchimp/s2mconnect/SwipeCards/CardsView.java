@@ -131,7 +131,9 @@ public class CardsView extends RelativeLayout {
         if (isTopCard) {
             cardView.addView(cardLayout);
         }
-
+        float scale = getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (2*scale + 0.5f);
+        threeCardsLayout.setPadding(10,0,10,0);
         threeCardsLayout.addView(cardView);
 
         return threeCardsLayout;

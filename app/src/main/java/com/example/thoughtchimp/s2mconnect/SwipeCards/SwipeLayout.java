@@ -28,6 +28,7 @@ public class SwipeLayout extends RelativeLayout {
     int first = 1;
     float startedX, startedY;
     boolean isRemoved = false;
+    boolean fromSwipeCards;
     private CardsView swipeCardsView;
     private Adapter adapter;
     private final DataSetObserver observer = new DataSetObserver() {
@@ -129,74 +130,65 @@ public class SwipeLayout extends RelativeLayout {
         return false;
     }
 
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                view = cardBuilder.removeAndGetFirstCard();
-                view.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                            //Getting touch point on card to set card position in Layout
-                            objectX = motionEvent.getX();
-                            objectY = motionEvent.getY();
+        if (fromSwipeCards=CardsManager.getInstance().isFromSwipeCards()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    view = cardBuilder.removeAndGetFirstCard();
+                    startedX = event.getX();
+                    startedY = event.getY();
+                    ViewCompat.setElevation(view, 24);
+                    objectX=CardsManager.getInstance().getChildTouchPointX();
+                    objectY=CardsManager.getInstance().getChildTouchPointY();
+                    view.setX(startedX - objectX);
+                    view.setY(startedY - objectY);
+                    addView(view);
+
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    Log.d("TouchView", "On Touch cancelled.");
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    view.animate().x(startedX - objectX)
+                            .y(startedY - objectY)
+                            .setInterpolator(new OvershootInterpolator()).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+                            fromSwipeCards = false;
+                            CardsManager.getInstance().setFromSwipeCards(fromSwipeCards);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            removeView(view);
+                            cardBuilder.addViewInThis(view);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
 
                         }
-                        //TODO -- true --implement touch handler here
-                        //false will call onTouchEvent on Parent
-                        return false;
-                    }
-                });
-                startedX = event.getX();
-                startedY = event.getY();
-                ViewCompat.setElevation(view, 24);
-                view.setX(startedX - objectX);
-                view.setY(startedY - objectY);
-                addView(view);
 
-                break;
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
 
-            case MotionEvent.ACTION_CANCEL:
-                Log.d("TouchView", "On Touch cancelled.");
+                        }
+                    });
 
-                break;
-            case MotionEvent.ACTION_UP:
-                view.animate().x(startedX - objectX)
-                        .y(startedY - objectY)
-                        .setInterpolator(new OvershootInterpolator()).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        removeView(view);
-                        cardBuilder.addViewInThis(view);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                });
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-                view.setX(event.getX() - objectX);
-                view.setY(event.getY() - objectY);
-                break;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    view.setX(event.getX() - objectX);
+                    view.setY(event.getY() - objectY);
+                    break;
+            }
         }
-
         invalidate();
 
         return true;
     }
-
 }
