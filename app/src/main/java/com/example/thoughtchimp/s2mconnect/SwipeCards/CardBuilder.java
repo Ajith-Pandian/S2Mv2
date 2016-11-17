@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 
 import com.example.thoughtchimp.s2mconnect.R;
 
+import static android.view.View.GONE;
+
 /**
  * Created by thoughtchimp on 11/10/2016.
  */
@@ -85,7 +87,7 @@ public class CardBuilder {
         originX = firstCard.getX();
         originY = firstCard.getY();
         threeCardsLayout.addView(firstCard);
-
+        threeCardsLayout.setVisibility(GONE);
 
         return threeCardsLayout;
     }

@@ -9,4 +9,10 @@
         <attr name="root_layout" format="integer"/>
     </declare-styleable>
 
+
+    <declare-styleable name="SwipeCardsView">
+    <attr name="horizontalDifference" format="float"/>
+    <attr name="verticalDifference" format="float"/>
+    <attr name="numCards" format="integer"/>
+</declare-styleable>
 </resources>
