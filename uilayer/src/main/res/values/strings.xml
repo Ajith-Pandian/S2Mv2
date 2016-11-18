@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">UILayer</string>
+    //login
+
+    //message
+    <string name="msg_login">"This is photoshop\'s version od lorem Ipsum. Proin gravida auctor aliquet"</string>
+    //hint
+    <string name="hint_login">Email/Phone</string>
+    //buttons
+    <string name="signup">Sign Up</string>
+    <string name="faq">FAQ</string>
+    <string name="terms">Terms of Use</string>
+
+</resources>

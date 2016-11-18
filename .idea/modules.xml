@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/S2MConnect.iml" filepath="$PROJECT_DIR$/S2MConnect.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uilayer/uilayer.iml" filepath="$PROJECT_DIR$/uilayer/uilayer.iml" />
     </modules>
   </component>
 </project>
