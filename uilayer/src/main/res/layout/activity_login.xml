@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backgroud_login"
@@ -12,125 +11,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.uilayer.LoginActivity">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/text_msg"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="48dp"
-            android:src="@drawable/s2m_logo" />
-
-        <TextView
-            android:id="@+id/text_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/layout_input"
-            android:layout_alignEnd="@+id/layout_input"
-            android:layout_alignLeft="@+id/layout_input"
-            android:layout_alignRight="@+id/layout_input"
-            android:layout_alignStart="@+id/layout_input"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="@string/msg_login"
-            android:textColor="@android:color/white"
-            android:textSize="12sp" />
-
-        <ImageButton
-            android:id="@+id/button_login"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_below="@+id/layout_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/backround_circle_white"
-            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/layout_input"
-            android:layout_alignLeft="@+id/layout_input"
-            android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/layout_input"
-
-            android:layout_alignStart="@+id/layout_input"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_signup"
-                style="@style/ButonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/signup"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/button_faq"
-                style="@style/ButonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/faq" />
-
-            <Button
-                android:id="@+id/button_terms_of_use"
-                style="@style/ButonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/terms" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_input"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:animateLayoutChanges="true"
-            android:background="@drawable/backgroud_login_edit_text"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/prefix_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/prefix_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="center"
-                    android:padding="2dp"
-                    android:text="+91"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#f8747474" />
-            </LinearLayout>
-
-
-            <EditText
-                android:id="@+id/edit_text_login"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_toRightOf="@+id/prefix_layout"
-                android:background="@null"
-                android:cursorVisible="false"
-                android:gravity="center"
-                android:hint="@string/hint_login"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:textSize="16sp" />
-        </RelativeLayout>
-    </RelativeLayout>
+        android:layout_height="match_parent" />
 </RelativeLayout>
