@@ -11,4 +11,8 @@
     <color name="fade_red">#EA5355</color>
     <color name="fade_orange">#F09105</color>
     <color name="fade_blue">#01AACC</color>
+    <color name="card_color_four">#9c0075</color>
+    <color name="card_color_five">#4c990c</color>
+    <color name="card_color_six">#c2cc01</color>
+
 </resources>

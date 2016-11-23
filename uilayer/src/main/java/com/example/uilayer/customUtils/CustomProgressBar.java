@@ -14,30 +14,25 @@ import com.example.uilayer.R;
  * Created by thoughtchimp on 11/23/2016.
  */
 
-public class CustomProgressBar extends View
-{
+public class CustomProgressBar extends View {
     // % value of the progressbar.
     int progressBarValue = 0;
 
-    public CustomProgressBar(Context context)
-    {
+    public CustomProgressBar(Context context) {
         super(context);
     }
 
-    public CustomProgressBar(Context context, AttributeSet attrs)
-    {
+    public CustomProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         progressBarValue = attrs.getAttributeIntValue(null, "progressBarValue", 0);
     }
 
-    public void setProgress(int value)
-    {
+    public void setProgress(int value) {
         progressBarValue = value;
         invalidate();
     }
 
-    protected void onDraw(Canvas canvas)
-    {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         float cornerRadius = 30.0f;
@@ -49,7 +44,7 @@ public class CustomProgressBar extends View
         backgroundPaint.setAntiAlias(true);
 
         RectF backgroundRect = new RectF(0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.drawRoundRect(backgroundRect, cornerRadius, cornerRadius, backgroundPaint);
+        canvas.drawRect(backgroundRect, backgroundPaint);
 
         // Draw the progress bar.
         Paint barPaint = new Paint();
@@ -60,7 +55,7 @@ public class CustomProgressBar extends View
         float progress = (backgroundRect.width() / 100) * progressBarValue;
         RectF barRect = new RectF(0, 0, progress, canvas.getClipBounds().bottom);
 
-        canvas.drawRoundRect(barRect, cornerRadius, cornerRadius, barPaint);
+        canvas.drawRect(barRect, barPaint);
 
        /* // Draw progress text in the middle.
         Paint textPaint = new Paint();

@@ -1,12 +1,17 @@
 package com.example.uilayer.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.models.SchoolDetails;
 
 import java.util.List;
@@ -21,9 +26,11 @@ import butterknife.ButterKnife;
 public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActivitiesAdapter.ViewHolder> {
 
     private List<SchoolDetails> schoolDetailsList;
+    private Context context;
 
-    public SchoolActivitiesAdapter(List<SchoolDetails> moviesList) {
-        this.schoolDetailsList = moviesList;
+    public SchoolActivitiesAdapter(Context context, List<SchoolDetails> schoolDetailsList) {
+        this.schoolDetailsList = schoolDetailsList;
+        this.context = context;
     }
 
     @Override
@@ -42,6 +49,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         holder.textTime.setText(schoolDetail.getTime());
         holder.textDate.setText(schoolDetail.getDate());
         holder.textLikes.setText(schoolDetail.getLikes());
+        Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
+        holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
     }
 
     @Override
@@ -50,6 +59,7 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         @BindView(R.id.text_school_name)
         TextView schoolName;
         @BindView(R.id.text_message)
@@ -60,6 +70,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         TextView textDate;
         @BindView(R.id.text_likes)
         TextView textLikes;
+        @BindView(R.id.image_school_activity)
+        ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);

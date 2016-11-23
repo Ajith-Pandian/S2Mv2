@@ -3,7 +3,6 @@ package com.example.uilayer.customUtils;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.View;
 
 /**
@@ -24,8 +23,8 @@ public class HorizontalSpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
 
-       // if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
-            outRect.right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalSpace, context.getResources().getDisplayMetrics());
+        // if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
+        // outRect.right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalSpace, context.getResources().getDisplayMetrics());
 
     }
 }

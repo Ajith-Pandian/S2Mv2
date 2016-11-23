@@ -10,7 +10,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".login.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
@@ -18,19 +21,24 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".SchoolDetailActivity"
-            android:label="@string/title_activity_school_detail"
             android:theme="@style/AppTheme.NoActionBar">
+<!--
+            android:label="@string/title_activity_school_detail"
+-->
+
 
         </activity>
         <activity
             android:name=".landing.LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".MilestonesActivity">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MilestonesActivity">
+
         </activity>
     </application>
 

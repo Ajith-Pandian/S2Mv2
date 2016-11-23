@@ -141,10 +141,8 @@
 
     //School Activity Card Msgs Sample
       <string name="school_msg_one">
-        There are many variations of Passages of Lorem Ipsum available,
-        but the majority have suffered alteration in some form by injected humor.
-        There are many variations of Passages of Lorem Ipsum available,
-        but the majority have suffered alteration in some form by injected humor.</string>
+        There are many variations of Passages of Lorem Ipsum available.
+    </string>
     <string name="school_msg_two">
         Clipping views enables you to easily change the shape of a view.
         You can clip views for consistency with other design elements or to change the shape of a view in response to user input.
@@ -167,5 +165,7 @@
     <string name="action_notification">Notification</string>
 
     //Sections Fragment
-    <string name="text_intro_training"><b>Introductory</b> trainings</string>
+    <string name="text_intro_training"><b>Introductory</b> Trainings </string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
 </resources>

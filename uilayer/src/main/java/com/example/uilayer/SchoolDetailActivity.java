@@ -2,6 +2,7 @@ package com.example.uilayer;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,8 +29,12 @@ public class SchoolDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                mLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setNestedScrollingEnabled(false);
         strings = new ArrayList<>();
         strings.add(new SchoolDetails("St.Jhons Hr Sec School", getResources().getString(R.string.school_msg_one),
@@ -42,7 +47,7 @@ public class SchoolDetailActivity extends AppCompatActivity {
                 "09.11.2019", "5.32 PM", "102"));
         strings.add(new SchoolDetails("St.Jhons Hr Sec School", getResources().getString(R.string.school_msg_one),
                 "09.11.2020", "9.05 PM", "098"));
-        recyclerView.setAdapter(new SchoolActivitiesAdapter(strings));
+        recyclerView.setAdapter(new SchoolActivitiesAdapter(getApplicationContext(), strings));
     }
 
 
