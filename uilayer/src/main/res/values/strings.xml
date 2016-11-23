@@ -139,7 +139,6 @@
     <string name="title_activity_school_detail">SchoolDetailActivity</string>
 
 
-
     //School Activity Card Msgs Sample
       <string name="school_msg_one">
         There are many variations of Passages of Lorem Ipsum available,
@@ -153,4 +152,20 @@
         Only rectangle, circle, and round rectangle outlines support clipping, as determined by the Outline.canClip() method.
         There are many variations of Passages of Lorem Ipsum available,
         but the majority have suffered alteration in some form by injected humor.</string>
+
+    //Landing activity
+    <string name="cd_btn_home">Home Button</string>
+    <string name="cd_btn_section">Section Button</string>
+    <string name="cd_btn_messages">Messages Button</string>
+    <string name="cd_btn_video">Video Button</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="dsgasdf">dsgasdf</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_notification">Notification</string>
+
+    //Sections Fragment
+    <string name="text_intro_training"><b>Introductory</b> trainings</string>
 </resources>

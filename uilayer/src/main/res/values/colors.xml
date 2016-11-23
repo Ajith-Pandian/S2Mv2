@@ -6,4 +6,9 @@
     <color name="greenFade">#70BD94</color>
 
     <color name="text_secondary">#636161</color>
+
+
+    <color name="fade_red">#EA5355</color>
+    <color name="fade_orange">#F09105</color>
+    <color name="fade_blue">#01AACC</color>
 </resources>

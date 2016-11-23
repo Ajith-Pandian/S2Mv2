@@ -6,6 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.example.uilayer.adapters.SchoolActivitiesAdapter;
+import com.example.uilayer.models.SchoolDetails;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;

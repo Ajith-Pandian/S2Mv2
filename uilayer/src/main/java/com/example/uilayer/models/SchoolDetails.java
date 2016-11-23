@@ -1,4 +1,4 @@
-package com.example.uilayer;
+package com.example.uilayer.models;
 
 /**
  * Created by thoughtchimp on 11/9/2016.

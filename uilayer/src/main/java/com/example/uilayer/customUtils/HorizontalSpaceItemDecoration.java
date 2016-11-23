@@ -1,4 +1,4 @@
-package com.example.thoughtchimp.s2mconnect.horizontalScrollCards;
+package com.example.uilayer.customUtils;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -24,8 +24,8 @@ public class HorizontalSpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
 
-        if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
+       // if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
             outRect.right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalSpace, context.getResources().getDisplayMetrics());
-        }
+
     }
 }

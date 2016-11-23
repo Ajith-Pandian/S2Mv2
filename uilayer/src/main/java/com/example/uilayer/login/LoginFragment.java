@@ -1,11 +1,10 @@
-package com.example.uilayer;
+package com.example.uilayer.login;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.uilayer.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -129,6 +129,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Observable<TextViewTextChangeEvent> editTextBind = RxTextView.textChangeEvents(loginText);
+        changeToMail();
         subscriptions.add(editTextBind.subscribe(new Action1<TextViewTextChangeEvent>() {
             @Override
             public void call(TextViewTextChangeEvent textViewTextChangeEvent) {
@@ -193,16 +194,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     void changeToPhoneNumber() {
-        loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
         if (inputLayout.getVisibility() != View.VISIBLE)
             //animateView(inputLayout, View.VISIBLE);
             inputLayout.setVisibility(View.VISIBLE);
+       // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     void changeToMail() {
-        loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
-        loginText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+        loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(256)});
+      //  loginText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
         if (inputLayout.getVisibility() == View.VISIBLE)
             // animateView(inputLayout, View.GONE);
             inputLayout.setVisibility(View.GONE);

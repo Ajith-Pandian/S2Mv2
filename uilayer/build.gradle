@@ -45,4 +45,7 @@ dependencies {
 
     //Rx-Binding Library-to bind Android Views with Rx java
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
+
+    //Circular ImageView
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }
