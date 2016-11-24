@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -53,9 +54,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_section_details, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.width = (int) (parent.getMeasuredWidth() / (3));
-        layoutParams.height = (int) (parent.getMeasuredHeight() / (3));
-        itemView.setLayoutParams(layoutParams);
+        layoutParams.width = (int) ((parent).getMeasuredWidth()-(2*(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.height = (int) (parent.getMeasuredHeight()-(2*(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+       // layoutParams.width=300;
+        //layoutParams.height=300;
+       itemView.setLayoutParams(layoutParams);
         return new ViewHolder(itemView);
     }
 
@@ -66,7 +69,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         holder.sectionName.setText(sectionDetails.getSectionName());
         holder.completedMiles.setText("" + sectionDetails.getCompletedMiles() + " miles completed");
         holder.progressBar.setProgress(sectionDetails.getCompletedMiles());
-        holder.classname.setOnClickListener(new View.OnClickListener() {
+        holder.threeDots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopupMenu(view, position);
@@ -94,6 +97,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         CustomProgressBar progressBar;
         @BindView(R.id.sections_layout)
         RelativeLayout backgroundLayout;
+        @BindView(R.id.dots)
+        TextView threeDots;
 
         public ViewHolder(View view) {
             super(view);

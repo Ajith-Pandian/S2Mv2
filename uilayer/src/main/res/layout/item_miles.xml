@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/text_big_number"
+        android:text="8"
+        android:layout_marginRight="16dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:background="@drawable/backround_circle_green"
+        android:textColor="@android:color/white"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_toRightOf="@+id/text_big_number"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_title_type"
+            android:layout_marginBottom="4dp"
+            android:text="MILES"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/text_title"
+            android:textColor="@android:color/black"
+            android:text="New Material Requirement"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="2dp"
+            android:textSize="11sp"
+            android:layout_height="wrap_content"
+            android:text="@string/school_msg_one"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -52,7 +52,7 @@ public class SectionsFragment extends Fragment {
         ButterKnife.bind(this, view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         sectionsGrid.setLayoutManager(layoutManager);
-        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 5));
+        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3,3,3));
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
         imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
         return view;

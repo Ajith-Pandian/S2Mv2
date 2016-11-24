@@ -44,10 +44,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/button_faq"
+        android:layout_alignParentLeft="true"
         android:text="@string/signup"
-        android:textAlignment="center"
-        android:textColor="@android:color/white" />
+        android:layout_marginLeft="40dp"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/white"
+        android:layout_toLeftOf="@+id/button_faq"
+        android:layout_toStartOf="@+id/button_faq" />
 
     <Button
         android:id="@+id/button_faq"
@@ -57,17 +60,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="@string/faq"
-        android:textAlignment="center" />
-
-    <Button
-        android:id="@+id/button_terms_of_use"
-        style="@style/ButonStyle"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/button_faq"
-        android:text="@string/terms"
         android:textAlignment="center" />
 
     <RelativeLayout
@@ -120,5 +112,18 @@
             android:paddingRight="8dp"
             android:textSize="16sp" />
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/button_terms_of_use"
+        style="@style/ButonStyle"
+android:layout_toRightOf="@+id/button_faq"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/terms"
+        android:textAlignment="viewEnd"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -16,29 +16,26 @@
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:label="@string/title_activity_sign_up"
+
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".SchoolDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
-<!--
+            <!--
             android:label="@string/title_activity_school_detail"
--->
-
-
+            -->
         </activity>
         <activity
             android:name=".landing.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".milestones.MilestonesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".MilestonesActivity">
-
         </activity>
     </application>
 
