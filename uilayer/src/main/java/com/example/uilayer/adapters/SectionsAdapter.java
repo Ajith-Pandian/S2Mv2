@@ -1,6 +1,7 @@
 package com.example.uilayer.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -9,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.CustomProgressBar;
+import com.example.uilayer.milestones.MilestonesActivity;
 import com.example.uilayer.models.SectionDetails;
 
 import java.util.List;
@@ -54,16 +57,17 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_section_details, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.width = (int) ((parent).getMeasuredWidth()-(2*(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = (int) (parent.getMeasuredHeight()-(2*(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-       // layoutParams.width=300;
+        layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.height = (int) (parent.getMeasuredHeight() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        // layoutParams.width=300;
         //layoutParams.height=300;
-       itemView.setLayoutParams(layoutParams);
+        itemView.setLayoutParams(layoutParams);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+
         SectionDetails sectionDetails = sectionDetailsList.get(position);
         holder.classname.setText(sectionDetails.getClassName());
         holder.sectionName.setText(sectionDetails.getSectionName());
@@ -77,6 +81,17 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         });
         //TODO:color coressponding milestone
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
+
+        holder.rootLayout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Intent intent = new Intent(context, MilestonesActivity.class);
+                        intent.putExtra("class_name", sectionDetailsList.get(position).getClassName());
+                        intent.putExtra("section_name", sectionDetailsList.get(position).getSectionName());
+                        context.startActivity(intent);
+                    }
+                });
     }
 
 
@@ -92,11 +107,15 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         TextView sectionName;
         @BindView(R.id.text_completed_milestones)
         TextView completedMiles;
-
         @BindView(R.id.progress_miles)
         CustomProgressBar progressBar;
         @BindView(R.id.sections_layout)
         RelativeLayout backgroundLayout;
+        @BindView(R.id.bottom_layout)
+        RelativeLayout bottomLayout;
+        @BindView(R.id.card_school_update_root)
+        LinearLayout rootLayout;
+
         @BindView(R.id.dots)
         TextView threeDots;
 

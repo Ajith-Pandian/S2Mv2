@@ -15,4 +15,7 @@
     <color name="card_color_five">#4c990c</color>
     <color name="card_color_six">#c2cc01</color>
 
+    <color name="pink_thumbs_down_light">#f15d5d</color>
+    <color name="pink_fade">#e78b8b</color>
+    <color name="pink_thumbs_down_dark">#f20606</color>
 </resources>

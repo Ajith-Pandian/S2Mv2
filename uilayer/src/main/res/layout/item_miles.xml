@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/layout_root_miles"
     android:padding="16dp"
+    android:clickable="true"
     android:layout_height="wrap_content">
 
     <TextView
@@ -13,7 +15,7 @@
         android:layout_centerVertical="true"
         android:gravity="center"
         android:textSize="25sp"
-        android:background="@drawable/backround_circle_green"
+        android:background="@drawable/backround_circle_green_fade"
         android:textColor="@android:color/white"
         />
 

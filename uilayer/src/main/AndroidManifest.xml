@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.uilayer">
-
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,33 +10,30 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".login.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name=".SignUpActivity"
-
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".SchoolDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--
-            android:label="@string/title_activity_school_detail"
-            -->
+
+            <!--             android:label="@string/title_activity_school_detail" -->
         </activity>
         <activity
             android:name=".landing.LandingActivity"
             android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".milestones.MilestonesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".milestones.MilestonesActivity"></activity>
+        <activity android:name=".milestones.TrainingActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

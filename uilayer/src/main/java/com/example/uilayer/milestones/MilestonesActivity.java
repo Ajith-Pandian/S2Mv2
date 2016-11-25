@@ -1,18 +1,17 @@
 package com.example.uilayer.milestones;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.example.uilayer.R;
-import com.example.uilayer.milestones.betterAdapter.MilestonesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
+import com.example.uilayer.milestones.betterAdapter.model.Milestones;
 import com.example.uilayer.milestones.betterAdapter.model.Training;
-import com.example.uilayer.milestones.betterAdapter.viewmodel.MilesVieModel;
-import com.example.uilayer.milestones.betterAdapter.viewmodel.TrainingViewModel;
-import com.example.uilayer.milestones.betterAdapter.viewmodel.ViewModel;
 
 import java.util.ArrayList;
 
@@ -22,13 +21,22 @@ import butterknife.ButterKnife;
 public class MilestonesActivity extends AppCompatActivity {
     @BindView(R.id.recycler_milestones)
     RecyclerView recyclerView;
-    MilestonesAdapter milestonesAdapter;
+    MilesAdapter milestonesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_milestones);
         ButterKnife.bind(this);
+        if (getIntent() != null) {
+            Intent intent = getIntent();
+            String className = intent.getStringExtra("class_name");
+            String sectionName = intent.getStringExtra("section_name");
+            getSupportActionBar().setTitle(className + " " + sectionName);
+        }
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         loadAdapterItems();
@@ -37,17 +45,37 @@ public class MilestonesActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(milestonesAdapter);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+
+                break;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 
     void loadAdapterItems() {
-        ArrayList<ViewModel> list = new ArrayList<>();
-        list.add(new MilesVieModel(new Mile(1, 2, "Mile", "Mile one")));
-        list.add(new MilesVieModel(new Mile(1, 2, "Mile", "Mile two")));
-        list.add(new TrainingViewModel(new Training(1, 2, "Mile", "Training one")));
-        list.add(new TrainingViewModel(new Training(1, 2, "Mile", "Training two")));
-        list.add(new MilesVieModel(new Mile(1, 2, "Mile", "Mile three")));
-        list.add(new TrainingViewModel(new Training(1, 2, "Mile", "Training three")));
-        list.add(new MilesVieModel(new Mile(1, 2, "Mile", "Mile four")));
-        list.add(new MilesVieModel(new Mile(1, 2, "Mile", "Mile five")));
-        milestonesAdapter = new MilestonesAdapter(list);
+        ArrayList<Milestones> list = new ArrayList<>();
+        list.add(new Mile(1, 1, "Mile", "Mile one"));
+        list.add(new Mile(1, 2, "Mile", "Mile two"));
+        list.add(new Training(1, 2, "Training", "Training one"));
+        list.add(new Training(1, 2, "Training", "Training two"));
+        list.add(new Mile(1, 3, "Mile", "Mile three"));
+        list.add(new Training(1, 2, "Training", "Training three"));
+        list.add(new Mile(1, 4, "Mile", "Mile four"));
+        list.add(new Mile(1, 5, "Mile", "Mile five"));
+        milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
     }
 }

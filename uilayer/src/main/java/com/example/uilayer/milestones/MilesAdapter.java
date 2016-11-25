@@ -1,29 +1,31 @@
 package com.example.uilayer.milestones;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.milestones.betterAdapter.model.Mile;
 import com.example.uilayer.milestones.betterAdapter.model.Milestones;
+import com.example.uilayer.milestones.betterAdapter.model.Training;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 /**
  * Created by thoughtchimp on 11/24/2016.
  */
 
-public class MilesAdapter extends RecyclerView.Adapter<MilesAdapter.ViewHolder> {
+public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Milestones> milestonesList;
     private Context context;
@@ -34,27 +36,51 @@ public class MilesAdapter extends RecyclerView.Adapter<MilesAdapter.ViewHolder> 
     }
 
     @Override
-    public MilesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        if (viewType == 1)
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_miles, parent, false);
-        else
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_trainings, parent, false);
-        return new MilesAdapter.ViewHolder(itemView);
+        switch (viewType) {
+            case 1:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_miles, parent, false);
+                return new MilesViewHolder(itemView);
+            case 2:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_trainings, parent, false);
+                return new TrainingsViewHolder(itemView);
+            default:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_miles, parent, false);
+                return new MilesViewHolder(itemView);
+        }
+
     }
 
     @Override
-    public void onBindViewHolder(MilesAdapter.ViewHolder holder, int position) {
-        Milestones milestones = milestonesList.get(position);
-     /*   holder.schoolName.setText(milestones.getName());
-        holder.schoolActivityMessage.setText(milestones.getMessage());
-        holder.textTime.setText(schoolDetail.getTime());
-        holder.textDate.setText(schoolDetail.getDate());
-        holder.textLikes.setText(schoolDetail.getLikes());*/
-        Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
-        holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case 1:
+                MilesViewHolder viewHolder = (MilesViewHolder) holder;
+                Mile mile = (Mile) milestonesList.get(position);
+                viewHolder.title.setText(mile.getTitle());
+                viewHolder.textContent.setText(mile.getContent());
+                viewHolder.textPosition.setText("" + mile.getPosition());
+                viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent=new Intent(context,TrainingActivity.class);
+                        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
+                });
+                break;
+            case 2:
+                TrainingsViewHolder tViewHolder = (TrainingsViewHolder) holder;
+                Training training = (Training) milestonesList.get(position);
+                tViewHolder.title.setText(training.getTitle());
+                tViewHolder.textContent.setText(training.getContent());
+                break;
+        }
+
     }
 
     @Override
@@ -67,24 +93,39 @@ public class MilesAdapter extends RecyclerView.Adapter<MilesAdapter.ViewHolder> 
         return milestonesList.get(position).getType();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class MilesViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.text_school_name)
-        TextView schoolName;
-        @BindView(R.id.text_message)
-        TextView schoolActivityMessage;
-        @BindView(R.id.text_time)
-        TextView textTime;
-        @BindView(R.id.text_date)
-        TextView textDate;
-        @BindView(R.id.text_likes)
-        TextView textLikes;
-        @BindView(R.id.image_school_activity)
-        ImageView imageView;
+        @BindView(R.id.text_title_type)
+        TextView type;
+        @BindView(R.id.text_title)
+        TextView title;
+        @BindView(R.id.text_content)
+        TextView textContent;
+        @BindView(R.id.text_big_number)
+        TextView textPosition;
+        @BindView(R.id.layout_root_miles)
+        RelativeLayout rootLayout;
 
-        public ViewHolder(View view) {
+        MilesViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
     }
+
+    public class TrainingsViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.text_title_type)
+        TextView type;
+        @BindView(R.id.text_title)
+        TextView title;
+        @BindView(R.id.text_content)
+        TextView textContent;
+
+
+        public TrainingsViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+
 }

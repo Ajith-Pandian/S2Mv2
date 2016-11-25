@@ -37,6 +37,7 @@ public class SectionsFragment extends Fragment {
     RecyclerView sectionsGrid;
     @BindView(R.id.imageIntroductory)
     ImageView imageViewIntroductory;
+    List<SectionDetails> sectionDetails;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,17 +53,16 @@ public class SectionsFragment extends Fragment {
         ButterKnife.bind(this, view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         sectionsGrid.setLayoutManager(layoutManager);
-        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3,3,3));
+        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
         imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
         return view;
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        List<SectionDetails> sectionDetails = new ArrayList<>();
+        sectionDetails = new ArrayList<>();
         sectionDetails.add(new SectionDetails("Class 1", "Section A", 25));
         sectionDetails.add(new SectionDetails("Class 2", "Section B", 30));
         sectionDetails.add(new SectionDetails("Class 3", "Section C", 40));
@@ -77,5 +77,12 @@ public class SectionsFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails));
 
+    /*    sectionsGrid.addOnItemTouchListener(new RecyclerClickListener(getActivity(), new RecyclerClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        }));
+*/
     }
 }

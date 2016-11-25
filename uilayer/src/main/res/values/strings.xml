@@ -168,4 +168,18 @@
     <string name="text_intro_training"><b>Introductory</b> Trainings </string>
 
     <string name="vertical_ellipsis">&#8942;</string>
+
+
+    //Feed back options
+
+    //Thumbs up
+    <string name="options_feedback_1">It has survived not only five centuries, but also the leap</string>
+    <string name="options_feedback_2">It has survived not only five centuries</string>
+    <string name="options_feedback_3">What a crazy day, today is!</string>
+    <string name="options_feedback_4">It has survived not only six centuries, but also the leap</string>
+    //Thumbs Down
+    <string name="options_feedback_down_1">It\'s boring</string>
+    <string name="options_feedback_down_2">Toooo big</string>
+    <string name="options_feedback_down_3">Not clear</string>
+    <string name="options_feedback_down_4">Not satisfied</string>
 </resources>
