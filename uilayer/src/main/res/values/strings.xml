@@ -182,4 +182,6 @@
     <string name="options_feedback_down_2">Toooo big</string>
     <string name="options_feedback_down_3">Not clear</string>
     <string name="options_feedback_down_4">Not satisfied</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_archive">Archive</string>
 </resources>

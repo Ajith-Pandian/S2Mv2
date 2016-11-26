@@ -16,10 +16,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -88,7 +90,11 @@ public class TrainingActivity extends AppCompatActivity {
                     .setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     };
+    @BindView(R.id.layout_collapse_in)
+    RelativeLayout layoutCollapse;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
+
+        boolean isUp = false;
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -101,25 +107,42 @@ public class TrainingActivity extends AppCompatActivity {
                     rootFrameLayout.getForeground().setAlpha(200);
                     loadOptions(true);
                     listOptions.setAlpha(0f);
+                    // changeLayoutParams(16);
+                    isUp = true;
+                    break;
+                case BottomSheetBehavior.STATE_EXPANDED:
+                    // changeLayoutParams(48);
+                    isUp = false;
                     break;
             }
 
         }
 
+        void changeLayoutParams(int pixel) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutCollapse.getLayoutParams();
+            layoutParams.topMargin = Utils.getInstance().getPixelAsDp(getApplicationContext(), pixel);
+            layoutCollapse.setLayoutParams(layoutParams);
+        }
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            Log.d("Bottom Sheet", "onSlide: " + slideOffset);
             if (slideOffset < 0) {
                 float alpha = (1 + slideOffset) * 200;
-                Log.d("Float", "onSlide: " + alpha);
                 rootFrameLayout.getForeground().setAlpha((int) (alpha));
-
-            } else {
+            } else if (slideOffset > 0) {
                 float alpha = (55 * slideOffset) + 200;
                 rootFrameLayout.getForeground().setAlpha((int) (alpha));
                 listOptions.setAlpha(slideOffset);
-             //   mileTitle.setY(mileTitle.getY()+50*slideOffset);
+
+                if (isUp) {
+                    Log.d("Slide", "onSlide: UP");
+                    changeLayoutParams((int) (48 * slideOffset));
+                } else {
+                    Log.d("Slide", "onSlide: DOWN");
+
+                    changeLayoutParams((int) (48 - 48 * (1 - slideOffset)));
+
+                }
             }
 
         }
