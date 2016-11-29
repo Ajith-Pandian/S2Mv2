@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +16,38 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.domainlayer.VolleySingleton;
+import com.example.uilayer.Constants;
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.example.uilayer.Constants.KEY_EMAIL;
+import static com.example.uilayer.Constants.KEY_OTP;
+import static com.example.uilayer.Constants.KEY_PHONE;
 
 
 /**
@@ -72,12 +92,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
-    public final static boolean isValidEmail(CharSequence target) {
+    public static boolean isValidEmail(CharSequence target) {
+
         if (target == null) {
             return false;
-        } else {
+        } else
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
     }
 
     @Override
@@ -97,14 +117,55 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
+
         return view;
     }
 
-    public void sendOTP() {
-        if (mListener != null) {
-            mListener.onEnteredNumber();
+    public void sendOTP(final boolean isMail, final String text) {
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.LOGIN_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                       // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        checkResponse(response);
+                        if (mListener != null) {
+                            mListener.onEnteredNumber(response);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showInputError("Something went wrong please try again");
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                if (isMail)
+                    params.put(KEY_EMAIL, text);
+                else params.put(KEY_PHONE, text);
+                return params;
+            }
+
+        };
+
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+
+    }
+
+
+    void checkResponse(String response) {
+        try {
+            JSONObject responseJson = new JSONObject(response);
+            DataHolder.getInstance(getActivity()).setOtp(responseJson.getString(KEY_OTP));
+            Log.d("OTP", "checkResponse: "+responseJson.getString(KEY_OTP));
+        } catch (JSONException ex) {
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -115,8 +176,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-
-
     }
 
     @Override
@@ -151,6 +210,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }));
 
         buttonLogin.setOnClickListener(this);
+        //   loginText.setMaxLines(1);
+
+        loginText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Log.d("key enter", "onEditorAction: entered");
+                    buttonLogin.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -167,12 +240,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             if (isMail)
                 if (isValidEmail(text))
                     //makeToast(" " + text + " is a valid mail id. You can enter ");
-                    sendOTP();
+                    sendOTP(true, text);
                 else
                     showInputError("Please enter valid mail id");
             else if (isValidNumber(text))
                 //makeToast(" " + text + " is a valid phone number. You can enter ");
-                sendOTP();
+                sendOTP(false, text);
             else
                 showInputError("Please enter valid phone number");
         else
@@ -198,13 +271,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if (inputLayout.getVisibility() != View.VISIBLE)
             //animateView(inputLayout, View.VISIBLE);
             inputLayout.setVisibility(View.VISIBLE);
-       // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     void changeToMail() {
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(256)});
-      //  loginText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+        //  loginText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
         if (inputLayout.getVisibility() == View.VISIBLE)
             // animateView(inputLayout, View.GONE);
             inputLayout.setVisibility(View.GONE);
@@ -264,7 +337,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onEnteredNumber();
+        void onEnteredNumber(String emailOrPhone);
 
     }
 }

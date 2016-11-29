@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
@@ -83,9 +84,13 @@ public class OtpFragment extends Fragment {
     }
 
     public void onButtonPressed() {
-        if (mListener != null) {
+        if(DataHolder.getInstance(getActivity()).getOtp().equals(enteredOtp))
+            if (mListener != null) {
             mListener.onOtpEntered();
         }
+        else
+            throw new RuntimeException(
+                    " must implement OnFragmentInteractionListener");
     }
 
     @Override
@@ -112,12 +117,15 @@ public class OtpFragment extends Fragment {
         subscriptions.add(editTextBind.subscribe(new Action1<TextViewTextChangeEvent>() {
             @Override
             public void call(TextViewTextChangeEvent textViewTextChangeEvent) {
-                if (textViewTextChangeEvent.text().length() > 0) {
+                enteredOtp = textViewTextChangeEvent.text().toString();
+
+                int length=textViewTextChangeEvent.text().length();
+                if (length == 4)
+                    onButtonPressed();
+                else if (length > 0) {
                     edtTextOtp.setCursorVisible(true);
                     edtTextOtp.setSelection(textViewTextChangeEvent.text().length());
-
                 } else edtTextOtp.setCursorVisible(true);
-                enteredOtp = textViewTextChangeEvent.text().toString();
             }
         }));
         buttonOtpOk.setOnClickListener(new View.OnClickListener() {

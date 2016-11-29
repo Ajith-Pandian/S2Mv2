@@ -12,7 +12,7 @@ import com.example.uilayer.SignUpActivity;
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, OtpFragment.OtpListener {
 
 
-    boolean isOTP=false;
+    boolean isOTP = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     @Override
-    public void onEnteredNumber() {
+    public void onEnteredNumber(final String stringResponse) {
+        gotoOtp();
+    }
+
+    void gotoOtp() {
         replaceFragment(OtpFragment.newInstance());
         isOTP = true;
     }
@@ -59,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         super.onRestoreInstanceState(savedInstanceState);
         isOTP = savedInstanceState.getBoolean("isOTP");
     }
+
 
     @Override
     public void onOtpEntered() {

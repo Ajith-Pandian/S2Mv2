@@ -8,15 +8,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.uilayer.R;
+import com.example.uilayer.milestones.betterAdapter.model.Mile;
+import com.example.uilayer.milestones.betterAdapter.model.Milestones;
+import com.example.uilayer.milestones.betterAdapter.model.Training;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ArchiveActivity extends AppCompatActivity {
 
@@ -28,13 +38,12 @@ public class ArchiveActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
-
+    ViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +58,6 @@ public class ArchiveActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +102,9 @@ public class ArchiveActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String IS_MILE = "is_mile";
+        @BindView(R.id.recycler_fragment_archive)
+        RecyclerView archiveRecycler;
 
         public PlaceholderFragment() {
         }
@@ -102,10 +113,10 @@ public class ArchiveActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(boolean isMile) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putBoolean(IS_MILE, isMile);
             fragment.setArguments(args);
             return fragment;
         }
@@ -114,11 +125,40 @@ public class ArchiveActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_archive, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            ButterKnife.bind(this, rootView);
+
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            archiveRecycler.setLayoutManager(mLayoutManager);
+            loadAdapterItems();
+            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(archiveRecycler.getContext(),
+                    mLayoutManager.getOrientation());
+
+            archiveRecycler.addItemDecoration(mDividerItemDecoration);
+            archiveRecycler.setAdapter(milestonesAdapter);
+
+ /*           if (getArguments().getBoolean(IS_MILE))
+                archiveRecycler.setAdapter(null);
+            else
+                archiveRecycler.setAdapter(null);*/
+
             return rootView;
         }
+        MilesAdapter milestonesAdapter;
+        void loadAdapterItems() {
+            ArrayList<Milestones> list = new ArrayList<>();
+            list.add(new Mile(1, 1, "Mile", "Mile one"));
+            list.add(new Mile(1, 2, "Mile", "Mile two"));
+            list.add(new Training(1, 2, "Training", "Training one"));
+            list.add(new Training(1, 2, "Training", "Training two"));
+            list.add(new Mile(1, 3, "Mile", "Mile three"));
+            list.add(new Training(1, 2, "Training", "Training three"));
+            list.add(new Mile(1, 4, "Mile", "Mile four"));
+            list.add(new Mile(1, 5, "Mile", "Mile five"));
+            milestonesAdapter = new MilesAdapter(getActivity(), list);
+        }
     }
+
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -132,26 +172,26 @@ public class ArchiveActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return PlaceholderFragment.newInstance(true);
+            }
+            return PlaceholderFragment.newInstance(false);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "MILES";
                 case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
+                    return "TRAININGS";
             }
             return null;
         }
