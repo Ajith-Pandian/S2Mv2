@@ -66,8 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         initViews();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +74,17 @@ public class SignUpActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        loadData();
 
+    }
+
+    void loadData() {
+        DataHolder holder=DataHolder.getInstance(getApplicationContext());
+        textFirstName.setText(holder.getFirstName());
+        textLastName.setText(holder.getLastName());
+        textEmail.setText(holder.getEmail());
+        textPhone.setText(holder.getPhoneNum());
+        textComment.setText("");
     }
 
     void initViews() {

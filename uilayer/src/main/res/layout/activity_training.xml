@@ -157,6 +157,7 @@
             android:id="@+id/layout_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:foreground="@drawable/dim_foreground"
       />
 
         <FrameLayout

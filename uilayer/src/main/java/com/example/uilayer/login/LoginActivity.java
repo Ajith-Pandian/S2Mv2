@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.SignUpActivity;
+import com.example.uilayer.landing.LandingActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, OtpFragment.OtpListener {
 
@@ -51,6 +52,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     void lauchSignUp() {
         startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
     }
+    void launchLanding() {
+        startActivity(new Intent(LoginActivity.this, LandingActivity.class));
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
@@ -67,7 +71,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
+        if(DataHolder.getInstance(getApplicationContext()).getLastLogin().equals("null"))
         lauchSignUp();
-        Toast.makeText(getApplicationContext(), "Otp entered", Toast.LENGTH_SHORT).show();
+        else
+        launchLanding();
     }
 }

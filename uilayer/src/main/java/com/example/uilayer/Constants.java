@@ -11,12 +11,16 @@ public class Constants {
 
     public static final String EMAIL_TEMP = "manit@gmail.com";
 
-    public static final String KEY_TAG_ID = "id";
+
+
+
+    // Request/Response TAGs
+    public static final String KEY__ID = "id";
 
     public static final String KEY_FIRST_NAME = "firstName";
     public static final String KEY_LAST_NAME = "lastName";
     public static final String KEY_EMAIL = "email";
-    public static final String KEY_PHONE = "phone";
+    public static final String KEY_PHONE_NUM = "phone";
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_DEVICE_TYPE = "deviceType";
@@ -27,6 +31,7 @@ public class Constants {
     public static final String KEY_OTP= "otp";
     public static final String KEY_AVATAR= "avatar";
     public static final String KEY_LAST_LOGIN= "lastLogin";
+    public static final String VALUE= "null";
 
 
 }

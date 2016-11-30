@@ -67,9 +67,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent=new Intent(context,TrainingActivity.class);
-                        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
+                        openActivity(MilesActivity.class);
                     }
                 });
                 break;
@@ -78,9 +76,22 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Training training = (Training) milestonesList.get(position);
                 tViewHolder.title.setText(training.getTitle());
                 tViewHolder.textContent.setText(training.getContent());
+                tViewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openActivity(TrainingActivity.class);
+                    }
+                });
                 break;
         }
 
+    }
+
+    private void openActivity(Class<?> activityClass)
+    {
+        Intent intent=new Intent(context,activityClass);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     @Override
@@ -120,7 +131,8 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView title;
         @BindView(R.id.text_content)
         TextView textContent;
-
+        @BindView(R.id.layout_root_trainings)
+        RelativeLayout rootLayout;
 
         public TrainingsViewHolder(View view) {
             super(view);

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.milestones.adapters.OptionsAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -170,7 +171,7 @@ public class TrainingActivity extends AppCompatActivity {
         imageThumsDown.setActivated(false);
         imageThumsUp.setActivated(false);
     }
-
+@SuppressWarnings("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

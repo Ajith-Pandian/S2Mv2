@@ -1,4 +1,4 @@
-package com.example.uilayer.adapters;
+package com.example.uilayer.milestones.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,22 +8,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.uilayer.R;
-import com.example.uilayer.models.VideoMiles;
+import com.example.uilayer.models.ImageMiles;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by thoughtchimp on 11/14/2016.
  */
 
-public class VideoMilesAdapter extends RecyclerView.Adapter<VideoMilesAdapter.ViewHolder> {
+public class ImageMilesAdapter extends RecyclerView.Adapter<ImageMilesAdapter.ViewHolder> {
 
     final float last_item_view_percentage = 0.5f;
-    private List<VideoMiles> milesList;
+    private List<ImageMiles> milesList;
     private Context context;
 
-    public VideoMilesAdapter(Context context, List<VideoMiles> milesList) {
+    public ImageMilesAdapter(Context context, List<ImageMiles> milesList) {
         this.milesList = milesList;
         this.context = context;
     }
@@ -31,7 +34,7 @@ public class VideoMilesAdapter extends RecyclerView.Adapter<VideoMilesAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_video_miles, parent, false);
+                .inflate(R.layout.item_image_miles, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = (int) (parent.getMeasuredWidth() / (2.6));
         itemView.setLayoutParams(layoutParams);
@@ -40,7 +43,7 @@ public class VideoMilesAdapter extends RecyclerView.Adapter<VideoMilesAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        VideoMiles mile = milesList.get(position);
+        ImageMiles mile = milesList.get(position);
         Picasso.with(context).load(mile.getUrl()).into(holder.mileImage);
     }
 
@@ -55,12 +58,18 @@ public class VideoMilesAdapter extends RecyclerView.Adapter<VideoMilesAdapter.Vi
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.mile_image_image_miles)
         ImageView mileImage;
-
         ViewHolder(View view) {
             super(view);
-            mileImage = (ImageView) view.findViewById(R.id.mile_image);
+            ButterKnife.bind(this,view);
 
         }
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
     }
 }

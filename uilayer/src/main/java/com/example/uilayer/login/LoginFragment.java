@@ -47,7 +47,7 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.example.uilayer.Constants.KEY_EMAIL;
 import static com.example.uilayer.Constants.KEY_OTP;
-import static com.example.uilayer.Constants.KEY_PHONE;
+import static com.example.uilayer.Constants.KEY_PHONE_NUM;
 
 
 /**
@@ -146,7 +146,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Map<String, String> params = new ArrayMap<>();
                 if (isMail)
                     params.put(KEY_EMAIL, text);
-                else params.put(KEY_PHONE, text);
+                else params.put(KEY_PHONE_NUM, text);
                 return params;
             }
 
@@ -160,7 +160,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     void checkResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
-            DataHolder.getInstance(getActivity()).setOtp(responseJson.getString(KEY_OTP));
+            DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
             Log.d("OTP", "checkResponse: "+responseJson.getString(KEY_OTP));
         } catch (JSONException ex) {
         }

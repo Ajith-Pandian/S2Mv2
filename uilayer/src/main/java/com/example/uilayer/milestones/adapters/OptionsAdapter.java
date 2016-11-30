@@ -1,4 +1,4 @@
-package com.example.uilayer.milestones;
+package com.example.uilayer.milestones.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,7 +20,7 @@ public class OptionsAdapter extends BaseAdapter {
     private List<String> optionsList;
     private Context context;
 
-    OptionsAdapter(Context context, ArrayList<String> optionsList) {
+    public OptionsAdapter(Context context, ArrayList<String> optionsList) {
         this.optionsList = optionsList;
         this.context = context;
     }
