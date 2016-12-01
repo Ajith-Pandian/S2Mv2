@@ -9,10 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.PinchZoomImageView;
 import com.example.uilayer.models.ImageMiles;
 import com.squareup.picasso.Picasso;
 
@@ -30,26 +30,30 @@ public class ImageSliderDialogFragment extends DialogFragment {
     private TextView lblCount, lblTitle, lblDate;
     private int selectedPosition = 0;
 
-    static ImageSliderDialogFragment newInstance() {
+    static ImageSliderDialogFragment newInstance(ArrayList<ImageMiles> imagesList,int selectedPosition) {
         ImageSliderDialogFragment f = new ImageSliderDialogFragment();
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("images_list",imagesList);
+        bundle.putInt("position",selectedPosition);
+        f.setArguments(bundle);
         return f;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v=null; /*
-        View v= inflater.inflate(R.layout.fragment_image_slider, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        lblCount = (TextView) v.findViewById(R.id.lbl_count);
-        lblTitle = (TextView) v.findViewById(R.id.title);
-        lblDate = (TextView) v.findViewById(R.id.date);*/
+      //  View v=null; /*
+        View v= inflater.inflate(R.layout.fragment_image_slider_dialog, container, false);
+        viewPager = (ViewPager) v.findViewById(R.id.viewpager_images);
+      //  lblCount = (TextView) v.findViewById(R.id.lbl_count);
+        lblTitle = (TextView) v.findViewById(R.id.text_title_full_screen_slider);
+       // lblDate = (TextView) v.findViewById(R.id.date);*/
 
-        images = (ArrayList<ImageMiles>) getArguments().getSerializable("images");
+        images = (ArrayList<ImageMiles>) getArguments().getSerializable("images_list");
         selectedPosition = getArguments().getInt("position");
 
         Log.e(TAG, "position: " + selectedPosition);
-        Log.e(TAG, "images size: " + images.size());
+      //  Log.e(TAG, "images size: " + images.size());
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -85,10 +89,10 @@ public class ImageSliderDialogFragment extends DialogFragment {
     };
 
     private void displayMetaInfo(int position) {
-        lblCount.setText((position + 1) + " of " + images.size());
+//        lblCount.setText((position + 1) + " of " + images.size());
 
         ImageMiles image = images.get(position);
-      //  lblTitle.setText(image());
+        lblTitle.setText(image.getTitle());
        // lblDate.setText(image.getTimestamp());
     }
 
@@ -112,11 +116,11 @@ public class ImageSliderDialogFragment extends DialogFragment {
             layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.item_image_slider, container, false);
 
-            ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
+            PinchZoomImageView imageViewPreview = (PinchZoomImageView) view.findViewById(R.id.image_preview);
 
             ImageMiles image = images.get(position);
 
-            Picasso.with(getActivity()).load("").into(imageViewPreview);
+            Picasso.with(getActivity()).load(image.getUrl()).into(imageViewPreview);
 
             container.addView(view);
 

@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.example.uilayer.landing.LandingActivity;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -63,7 +65,6 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
-
         initViews();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -75,7 +76,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
         loadData();
-
     }
 
     void loadData() {
@@ -99,7 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignUpActivity.this, SchoolDetailActivity.class));
+                startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
             }
         });
     }

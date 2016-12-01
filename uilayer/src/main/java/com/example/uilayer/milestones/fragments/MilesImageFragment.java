@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -66,7 +67,7 @@ public class MilesImageFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_miles_images,
                 container, false);
-        RecyclerView recyclerView;
+        final RecyclerView recyclerView;
         ImageMilesAdapter adapter;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_mile_images);
@@ -84,14 +85,15 @@ public class MilesImageFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new ImageREcyclerTouchListener(getActivity(), recyclerView, new ImageMilesAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-           //     bundle.putSerializable("images", images);
-                bundle.putInt("position", position);
+             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ImageSliderDialogFragment newFragment = ImageSliderDialogFragment.newInstance(imageList, position);
+                newFragment.show(ft, "slideshow");
 
-             /*   FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
-                newFragment.setArguments(bundle);
-                newFragment.show(ft, "slideshow");*/
+             /*   int centerPoint[] = Utils.getInstance().getCenterPoint(getActivity());
+                View thisChild = recyclerView.getChildAt(position);
+                thisChild.animate()
+                        .translationX(centerPoint[0] - thisChild.getWidth() / 2)
+                        .translationY(centerPoint[1] - thisChild.getHeight() / 2);*/
             }
 
             @Override
@@ -102,6 +104,7 @@ public class MilesImageFragment extends Fragment {
 
         return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

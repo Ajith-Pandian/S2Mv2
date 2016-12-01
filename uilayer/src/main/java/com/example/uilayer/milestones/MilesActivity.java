@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class MilesActivity extends AppCompatActivity implements MilesTextFragment.OnFragmentInteractionListener
         , MilesVideoFragment.OnFragmentInteractionListener,
-        MilesAudioFragment.OnFragmentInteractionListener,MilesImageFragment.OnFragmentInteractionListener {
+        MilesAudioFragment.OnFragmentInteractionListener, MilesImageFragment.OnFragmentInteractionListener {
     @BindView(R.id.miles_fragment_container)
     LinearLayout milesFragmentContainer;
 
@@ -67,26 +67,26 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     void addFragment(int type) {
         Fragment fragment = null;
-        String name="";
+        String name = "";
         switch (type) {
             case 1:
-                name="TEXT";
+                name = "TEXT";
                 fragment = MilesTextFragment.newInstance("LEARNING OUTCOMES", getResources().getString(R.string.school_msg_two));
                 break;
             case 2:
-                name="VIDEOS";
+                name = "VIDEOS";
                 fragment = MilesVideoFragment.newInstance("VIDEOS", getVideoMiles());
                 break;
             case 3:
-                name="VIDEO";
+                name = "VIDEO";
                 fragment = MilesVideoFragment.newInstance("VIDEO", getOneMile());
                 break;
             case 4:
-                name="AUDIO";
+                name = "AUDIO";
                 fragment = MilesAudioFragment.newInstance("AUDIO", getAudioMiles());
                 break;
             case 5:
-                name="IMAGES";
+                name = "IMAGES";
                 fragment = MilesImageFragment.newInstance("IMAGES", getImageMiles());
                 break;
         }
@@ -118,14 +118,15 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     ArrayList<ImageMiles> getImageMiles() {
         ArrayList<ImageMiles> milesList = new ArrayList<>();
-        milesList.add(new ImageMiles(0, 0, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-/*        milesList.add(new ImageMiles(1, 1, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(2, 2, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(3, 3, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(4, 4, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(5, 5, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));*/
+        milesList.add(new ImageMiles(0, 0, "Image one", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
+        milesList.add(new ImageMiles(1, 1, "Image two", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
+        milesList.add(new ImageMiles(2, 2, "Image three", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
+        milesList.add(new ImageMiles(3, 3, "Image four", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
+        milesList.add(new ImageMiles(4, 4, "Image five", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
+        milesList.add(new ImageMiles(5, 5, "Image six", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
         return milesList;
     }
+
     ArrayList<VideoMiles> getOneMile() {
         ArrayList<VideoMiles> milesList = new ArrayList<>();
         milesList.add(new VideoMiles(0, 0, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));

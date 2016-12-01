@@ -5,13 +5,23 @@ package com.example.uilayer.models;
  */
 
 public class ImageMiles {
-    int id, position;
-    String url;
+    private int id, position;
+    private String url;
+    private String title;
 
-    public ImageMiles(int position, int id, String url) {
+    public ImageMiles(int position, int id, String title, String url) {
         this.position = position;
         this.id = id;
         this.url = url;
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getId() {

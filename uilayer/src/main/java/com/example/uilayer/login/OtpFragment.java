@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +14,30 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.domainlayer.VolleySingleton;
+import com.example.uilayer.Constants;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.example.uilayer.Constants.KEY_MOBILE;
+import static com.example.uilayer.Constants.KEY_OTP;
 
 
 /**
@@ -84,15 +100,46 @@ public class OtpFragment extends Fragment {
     }
 
     public void onButtonPressed() {
-        if(DataHolder.getInstance(getActivity()).getOtp().equals(enteredOtp))
-            if (mListener != null) {
-            mListener.onOtpEntered();
-        }
-        else
-            throw new RuntimeException(
-                    " must implement OnFragmentInteractionListener");
+
+        StringRequest otpRequest = new StringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        Log.d("otp", "onResponse: " + response);
+                        storeResponse(response);
+                        if (mListener != null) {
+                            mListener.onOtpEntered();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("otp-error", "onResponse: " + error);
+                        //showInputError("Something went wrong please try again");
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                    params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getPhoneNum());
+                    params.put(KEY_OTP, enteredOtp);
+                return params;
+            }
+
+        };
+
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(otpRequest);
     }
 
+    void storeResponse(String response) {
+        try {
+            JSONObject responseJson = new JSONObject(response);
+            DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+        } catch (JSONException ex) {
+        }
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -46,8 +46,8 @@ import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.example.uilayer.Constants.KEY_EMAIL;
+import static com.example.uilayer.Constants.KEY_MOBILE;
 import static com.example.uilayer.Constants.KEY_OTP;
-import static com.example.uilayer.Constants.KEY_PHONE_NUM;
 
 
 /**
@@ -124,12 +124,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void sendOTP(final boolean isMail, final String text) {
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.LOGIN_URL,
+        StringRequest loginRequest = new StringRequest(Request.Method.POST, Constants.LOGIN_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                       // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        checkResponse(response);
+                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        Log.d("log", "onResponse: " + response);
+                        storeResponse(response);
                         if (mListener != null) {
                             mListener.onEnteredNumber(response);
                         }
@@ -138,6 +139,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "onResponse: " + error);
                         showInputError("Something went wrong please try again");
                     }
                 }) {
@@ -146,22 +148,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Map<String, String> params = new ArrayMap<>();
                 if (isMail)
                     params.put(KEY_EMAIL, text);
-                else params.put(KEY_PHONE_NUM, text);
+                else
+                    params.put(KEY_MOBILE, text);
                 return params;
             }
 
         };
 
-        VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(loginRequest);
 
     }
 
 
-    void checkResponse(String response) {
+    void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
             DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
-            Log.d("OTP", "checkResponse: "+responseJson.getString(KEY_OTP));
+            Log.d("OTP", "storeResponse: " + responseJson.getString(KEY_OTP));
         } catch (JSONException ex) {
         }
     }
@@ -281,6 +284,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if (inputLayout.getVisibility() == View.VISIBLE)
             // animateView(inputLayout, View.GONE);
             inputLayout.setVisibility(View.GONE);
+
     }
 
     void animateView(final View view, final int visibility) {
