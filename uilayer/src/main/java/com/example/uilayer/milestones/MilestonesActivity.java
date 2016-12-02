@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
 import com.example.uilayer.R;
+import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
 import com.example.uilayer.milestones.betterAdapter.model.Milestones;
 import com.example.uilayer.milestones.betterAdapter.model.Training;
@@ -22,6 +23,7 @@ public class MilestonesActivity extends AppCompatActivity {
     @BindView(R.id.recycler_milestones)
     RecyclerView recyclerView;
     MilesAdapter milestonesAdapter;
+    boolean isBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,7 @@ public class MilestonesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         loadAdapterItems();
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),

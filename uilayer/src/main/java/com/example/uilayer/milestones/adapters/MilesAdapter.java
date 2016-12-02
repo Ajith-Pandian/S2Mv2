@@ -1,4 +1,4 @@
-package com.example.uilayer.milestones;
+package com.example.uilayer.milestones.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
+import com.example.uilayer.milestones.MilesActivity;
+import com.example.uilayer.milestones.TrainingActivity;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
 import com.example.uilayer.milestones.betterAdapter.model.Milestones;
 import com.example.uilayer.milestones.betterAdapter.model.Training;

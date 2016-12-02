@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.uilayer.R;
+import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
 import com.example.uilayer.milestones.betterAdapter.model.Milestones;
 import com.example.uilayer.milestones.betterAdapter.model.Training;
