@@ -176,13 +176,14 @@ public class TrainingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
-        ButterKnife.bind(this);
+
 
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+        ButterKnife.bind(this);
         getSupportActionBar().setTitle("Training");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Picasso.with(getApplicationContext()).load("http://img.youtube.com/vi/9Wbmhg7NhFI/0.jpg").into(imageView);
