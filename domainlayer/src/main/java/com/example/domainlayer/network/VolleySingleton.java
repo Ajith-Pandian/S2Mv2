@@ -1,4 +1,4 @@
-package com.example.domainlayer;
+package com.example.domainlayer.network;
 
 import android.content.Context;
 import android.graphics.Bitmap;

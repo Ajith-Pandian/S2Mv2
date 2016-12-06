@@ -17,11 +17,12 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.example.domainlayer.VolleySingleton;
+import com.example.domainlayer.database.DataBaseUtil;
+import com.example.domainlayer.network.VolleySingleton;
+import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.Constants;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.exceptionHandler.VolleyStringRequest;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -36,8 +37,13 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.example.domainlayer.Constants.KEY_DEVICE_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.uilayer.Constants.KEY_MOBILE;
 import static com.example.uilayer.Constants.KEY_OTP;
+import static com.example.uilayer.Constants.TEMP_DEVICE_TOKEN;
+import static com.example.uilayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.uilayer.Constants.TEMP_OTP;
 
 
 /**
@@ -49,10 +55,12 @@ import static com.example.uilayer.Constants.KEY_OTP;
  * create an instance of this fragment.
  */
 public class OtpFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    final String TAG = "OtpFragment";
     @BindView(R.id.button_login_otp)
     ImageButton buttonOtpOk;
     @BindView(R.id.edit_text_otp)
@@ -100,31 +108,61 @@ public class OtpFragment extends Fragment {
     }
 
     public void onButtonPressed() {
-
-        StringRequest otpRequest = new StringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
+        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("otp", "onResponse: " + response);
+                        Log.d("otp", "onResponse:otp " + response);
                         storeResponse(response);
                         if (mListener != null) {
                             mListener.onOtpEntered();
                         }
                     }
                 },
-                new Response.ErrorListener() {
+                new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
                         Log.d("otp-error", "onResponse: " + error);
-                        //showInputError("Something went wrong please try again");
                     }
-                }) {
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
-                    params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getPhoneNum());
-                    params.put(KEY_OTP, enteredOtp);
+               // params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getUser());
+                params.put(KEY_MOBILE, "1234567890");
+                //params.put(KEY_OTP, enteredOtp);
+                params.put(KEY_OTP, TEMP_OTP);
+                params.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                params.put(KEY_DEVICE_TOKEN, TEMP_DEVICE_TOKEN);
                 return params;
             }
 
@@ -136,10 +174,13 @@ public class OtpFragment extends Fragment {
     void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
-            DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+            DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
+            new DataBaseUtil(getActivity()).setUser(responseJson);
         } catch (JSONException ex) {
+            Log.e(TAG, "storeResponse: ", ex);
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -166,7 +207,7 @@ public class OtpFragment extends Fragment {
             public void call(TextViewTextChangeEvent textViewTextChangeEvent) {
                 enteredOtp = textViewTextChangeEvent.text().toString();
 
-                int length=textViewTextChangeEvent.text().length();
+                int length = textViewTextChangeEvent.text().length();
                 if (length == 4)
                     onButtonPressed();
                 else if (length > 0) {

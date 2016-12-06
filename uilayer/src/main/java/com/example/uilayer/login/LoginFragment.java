@@ -23,14 +23,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.example.domainlayer.VolleySingleton;
+import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.Constants;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.exceptionHandler.VolleyStringRequest;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -124,7 +126,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void sendOTP(final boolean isMail, final String text) {
 
 
-        StringRequest loginRequest = new StringRequest(Request.Method.POST, Constants.LOGIN_URL,
+        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -136,13 +138,41 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 },
-                new Response.ErrorListener() {
+               new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("error", "onResponse: " + error);
-                        showInputError("Something went wrong please try again");
+                        super.onErrorResponse(error);
+                        Log.d("log", "onErrorResponsssse: " + error);
                     }
-                }) {
+                } , new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
@@ -152,9 +182,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     params.put(KEY_MOBILE, text);
                 return params;
             }
-
         };
-
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        loginRequest.setRetryPolicy(policy);
         VolleySingleton.getInstance(getActivity()).addToRequestQueue(loginRequest);
 
     }

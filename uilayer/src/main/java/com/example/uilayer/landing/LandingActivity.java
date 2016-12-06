@@ -127,6 +127,7 @@ public class LandingActivity extends AppCompatActivity
         messagesButton.setOnClickListener(buttonsClickListener);
         videoButton.setOnClickListener(buttonsClickListener);
 
+        //loading home fragment for first time
         homeButton.performClick();
     }
 

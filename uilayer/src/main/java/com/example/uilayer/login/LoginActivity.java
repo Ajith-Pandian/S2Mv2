@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     void lauchSignUp() {
         startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
     }
+
     void launchLanding() {
         startActivity(new Intent(LoginActivity.this, LandingActivity.class));
     }
@@ -71,9 +72,10 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if(DataHolder.getInstance(getApplicationContext()).getLastLogin().equals("null"))
-        lauchSignUp();
+        if (DataHolder.getInstance(getApplicationContext()).getLastLogin().equals("null"))
+            lauchSignUp();
         else
-        launchLanding();
+            launchLanding();
+        finish();
     }
 }
