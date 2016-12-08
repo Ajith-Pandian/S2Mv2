@@ -15,11 +15,7 @@
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignUpActivity"
@@ -33,21 +29,23 @@
         </activity>
         <activity
             android:name=".landing.LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".milestones.MilestonesActivity" />
         <activity
             android:name=".milestones.TrainingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".milestones.MilesActivity">
-
-        </activity>
+        <activity android:name=".milestones.MilesActivity"></activity>
         <activity
             android:name=".milestones.ArchiveActivity"
             android:label="@string/title_activity_archive"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".milestones.MCQActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

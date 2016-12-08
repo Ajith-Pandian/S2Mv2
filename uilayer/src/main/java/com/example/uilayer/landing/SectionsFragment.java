@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+
+import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
@@ -38,6 +41,7 @@ public class SectionsFragment extends Fragment {
     @BindView(R.id.imageIntroductory)
     ImageView imageViewIntroductory;
     List<SectionDetails> sectionDetails;
+    List<Sections> sectionDetails1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,8 +78,10 @@ public class SectionsFragment extends Fragment {
         sectionDetails.add(new SectionDetails("Class 9", "Section I", 30));
         sectionDetails.add(new SectionDetails("Class 9", "Section I", 97));
         sectionDetails.add(new SectionDetails("Class 9", "Section I", 37));
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails));
+        sectionDetails1= DataHolder.getInstance(getActivity()).getUser().getSectionsList();
+        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1));
 
     /*    sectionsGrid.addOnItemTouchListener(new RecyclerClickListener(getActivity(), new RecyclerClickListener.OnItemClickListener() {
             @Override

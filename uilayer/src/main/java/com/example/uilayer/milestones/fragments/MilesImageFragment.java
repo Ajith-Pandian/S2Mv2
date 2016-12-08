@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.uilayer.R;
-import com.example.uilayer.adapters.ImageREcyclerTouchListener;
+import com.example.uilayer.adapters.ImageRecyclerTouchListener;
 import com.example.uilayer.customUtils.VideoMilesDecoration;
 import com.example.uilayer.milestones.adapters.ImageMilesAdapter;
 import com.example.uilayer.models.ImageMiles;
@@ -82,7 +82,7 @@ public class MilesImageFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         //Need to correct code here
-        recyclerView.addOnItemTouchListener(new ImageREcyclerTouchListener(getActivity(), recyclerView, new ImageMilesAdapter.ClickListener() {
+        recyclerView.addOnItemTouchListener(new ImageRecyclerTouchListener(getActivity(), recyclerView, new ImageMilesAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
              FragmentTransaction ft = getChildFragmentManager().beginTransaction();

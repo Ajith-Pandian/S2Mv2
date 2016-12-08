@@ -9,12 +9,12 @@ public class Constants {
     private static final String BASE_URL = "http://192.168.0.103:8000/api";
     public static final String LOGIN_URL = BASE_URL + "/login";
     public static final String OTP_VERIFY_URL = BASE_URL + "/verify";
+    public static final String MILES_URL = BASE_URL + "/milestones/";
+    public static final String MILES_URL_SUFFIX = "/miles";
+    public static final String TRAININGS_URL = BASE_URL + "/milestones/";
+    public static final String TRAININGS_URL_SUFFIX = "/trainings";
 
     public static final String EMAIL_TEMP = "manit@gmail.com";
-
-
-
-
     // Request/Response TAGs
     public static final String KEY_ID = "id";
     public static final String KEY_USER_ID = "userId";
@@ -39,6 +39,8 @@ public class Constants {
 
     public static final String KEY_MILES= "miles";
     public static final String KEY_WOW= "wows";
+    public static final String KEY_MILESTONE_NAME= "milestoneName";
+    public static final String KEY_MILESTONE_ID= "milestoneId";
 
 
     public static final String KEY_SCHOOL_ID= "schoolId";
@@ -60,7 +62,7 @@ public class Constants {
     public static final String KEY_LOGO_SMALL= "logo";
     public static final String KEY_LOCATION= "location";
     public static final String KEY_ADDRESS= "address";
-    public static final String KEY_TIMESTAMP= "timestamp";
+    public static final String KEY_TIMESTAMP= "created_at";
     public static final String KEY_PENDING_MILESTONES="pending_milestones";
     public static final String KEY_COMPLETED_MILESTONES="completed";
     public static final String KEY_TOTAL_MILESTONES="total";

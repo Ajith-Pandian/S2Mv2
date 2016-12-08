@@ -1,21 +1,82 @@
 package com.example.domainlayer.models;
 
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.CustomDao;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.ArrayList;
 
+import static com.example.domainlayer.Constants.TABLE_NAME_SECTIONS;
+import static com.example.domainlayer.Constants.TABLE_NAME_USERS;
+
 /**
- * Created by thoughtchimp on 12/6/2016.
+ * Created by thoughtchimp on 12/8/2016.
  */
-public class User {
+@DatabaseTable(tableName = TABLE_NAME_USERS, daoClass = CustomDao.class)
+
+public class DbUser {
+    User user;
+    @DatabaseField(id = true, columnName = Constants.KEY_ID, canBeNull = false, unique = true)
     private int id;
+    @DatabaseField(columnName = Constants.KEY_FIRST_NAME)
     private String firstName;
+    @DatabaseField(columnName = Constants.KEY_LAST_NAME)
     private String lastName;
+    @DatabaseField(columnName = Constants.KEY_EMAIL)
     private String email;
+    @DatabaseField(columnName = Constants.KEY_PHONE_NUM)
     private String phoneNum;
+    @DatabaseField(columnName = Constants.KEY_ACCESS_TOKEN)
     private String accessToken;
+    @DatabaseField(columnName = Constants.KEY_LAST_LOGIN)
     private String lastLogin;
+    @DatabaseField(columnName = Constants.KEY_SCHOOL_ID)
     private int schoolId;
+    @DatabaseField(columnName = Constants.KEY_MILES)
     private String miles;
+    @DatabaseField(columnName = Constants.KEY_WOW)
     private String wow;
+    @DatabaseField(columnName = Constants.KEY_AVATAR)
+    private String avatar;
+    @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
+    private Sections sections;
+    private ArrayList<Sections> sectionsList;
+    private ArrayList<SclActs> sclActs;
+    private Bulletin bulletin;
+
+    public DbUser() {
+        if(null==user)
+        user=new User();
+    }
+
+    public ArrayList<Sections> getSectionsList() {
+        return sectionsList;
+    }
+
+    public void setSectionsList(ArrayList<Sections> sectionsList) {
+        this.sectionsList = sectionsList;
+    }
+
+    public ArrayList<SclActs> getSclActs() {
+        return sclActs;
+    }
+
+    public void setSclActs(ArrayList<SclActs> sclActs) {
+        this.sclActs = sclActs;
+    }
+
+    public Bulletin getBulletin() {
+        if (this.bulletin != null)
+            return bulletin;
+        else
+            return user.getBulletin();
+    }
+
+    public void setBulletin(Bulletin bulletin) {
+        this.bulletin = bulletin;
+        user.setBulletin(bulletin);
+    }
 
     public int getId() {
         return id;
@@ -111,40 +172,5 @@ public class User {
 
     public void setSections(Sections sections) {
         this.sections = sections;
-    }
-
-    private String avatar;
-    private Sections sections;
-    private ArrayList<Sections> sectionsList;
-    private ArrayList<SclActs> sclActs;
-    private Bulletin bulletin;
-
-    public User() {
-        // Don't forget the empty constructor, needed by ORMLite.
-    }
-
-
-    public ArrayList<Sections> getSectionsList() {
-        return sectionsList;
-    }
-
-    public void setSectionsList(ArrayList<Sections> sectionsList) {
-        this.sectionsList = sectionsList;
-    }
-
-    public ArrayList<SclActs> getSclActs() {
-        return sclActs;
-    }
-
-    public void setSclActs(ArrayList<SclActs> sclActs) {
-        this.sclActs = sclActs;
-    }
-
-    public Bulletin getBulletin() {
-        return bulletin;
-    }
-
-    public void setBulletin(Bulletin bulletin) {
-        this.bulletin = bulletin;
     }
 }

@@ -12,12 +12,12 @@ import com.example.uilayer.milestones.adapters.ImageMilesAdapter;
  * Created by thoughtchimp on 11/30/2016.
  */
 
-public class  ImageREcyclerTouchListener implements RecyclerView.OnItemTouchListener {
+public class ImageRecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
         private ImageMilesAdapter.ClickListener clickListener;
 
-        public ImageREcyclerTouchListener(Context context, final RecyclerView recyclerView, final ImageMilesAdapter.ClickListener clickListener) {
+        public ImageRecyclerTouchListener(Context context, final RecyclerView recyclerView, final ImageMilesAdapter.ClickListener clickListener) {
             this.clickListener = clickListener;
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override

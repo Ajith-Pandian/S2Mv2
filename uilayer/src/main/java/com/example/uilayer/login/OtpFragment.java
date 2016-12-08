@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -104,6 +106,13 @@ public class OtpFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
         ButterKnife.bind(this, view);
+        edtTextOtp.requestFocus();
+        //open keyboard
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(edtTextOtp, InputMethodManager.SHOW_IMPLICIT);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+
         return view;
     }
 
@@ -175,7 +184,6 @@ public class OtpFragment extends Fragment {
         try {
             JSONObject responseJson = new JSONObject(response);
             DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
-            new DataBaseUtil(getActivity()).setUser(responseJson);
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);
         }

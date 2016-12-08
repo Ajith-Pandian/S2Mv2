@@ -13,7 +13,7 @@ import static com.example.domainlayer.Constants.TABLE_NAME_SECTIONS;
 @DatabaseTable(tableName = TABLE_NAME_SECTIONS, daoClass = CustomDao.class)
 
 public class Sections {
-    @DatabaseField(columnName = Constants.KEY_ID)
+    @DatabaseField(columnName = Constants.KEY_ID, id = true)
     private int id;
 
     @DatabaseField(columnName = Constants.KEY_CLASS)
@@ -23,7 +23,7 @@ public class Sections {
     private String section;
 
     @DatabaseField(columnName = Constants.KEY_SCHOOL_ID)
-    private String schoolId;
+    private int schoolId;
 
     @DatabaseField(columnName = Constants.KEY_TIMESTAMP)
     private String timestamp;
@@ -34,9 +34,51 @@ public class Sections {
     @DatabaseField(columnName = Constants.KEY_COMPLETED_MILESTONES)
     private int completedMiles;
 
+    @DatabaseField(columnName = Constants.KEY_MILESTONE_NAME)
+    private String milestoneName;
+
+    public int getMilestoneId() {
+        return milestoneId;
+    }
+
+    public void setMilestoneId(int milestoneId) {
+        this.milestoneId = milestoneId;
+    }
+
+    public String getMilestoneName() {
+        return milestoneName;
+    }
+
+    public void setMilestoneName(String milestoneName) {
+        this.milestoneName = milestoneName;
+    }
+
+    @DatabaseField(columnName = Constants.KEY_MILESTONE_ID)
+    private int milestoneId;
+
     public Sections() {
     }
 
+    public Sections(int id, String _class, String section, int comp_ms, int tot_ms) {
+        this.id = id;
+        this.completedMiles = comp_ms;
+        this.totalMiles = tot_ms;
+        this._class = _class;
+        this.section = section;
+    }
+    public Sections(int id, String _class,String section,
+                    int completedMiles,
+                     int totalMiles,
+                    int schoolId,String milestoneName, int milestoneId) {
+        this.section = section;
+        this.id = id;
+        this._class = _class;
+        this.schoolId = schoolId;
+        this.totalMiles = totalMiles;
+        this.completedMiles = completedMiles;
+        this.milestoneName = milestoneName;
+        this.milestoneId = milestoneId;
+    }
     public int getTotalMiles() {
         return totalMiles;
     }
@@ -77,11 +119,11 @@ public class Sections {
         this.section = section;
     }
 
-    public String getSchoolId() {
+    public int getSchoolId() {
         return schoolId;
     }
 
-    public void setSchoolId(String schoolId) {
+    public void setSchoolId(int schoolId) {
         this.schoolId = schoolId;
     }
 

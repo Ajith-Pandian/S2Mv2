@@ -4,22 +4,19 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
+import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.models.User;
 import com.j256.ormlite.dao.Dao;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COMPLETED_MILESTONES;
-import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION;
-import static com.example.domainlayer.Constants.KEY_TOTAL_MILESTONES;
-import static com.example.domainlayer.Constants.TYPE_BULLETIN;
+
 
 /**
  * Created by thoughtchimp on 12/6/2016.
@@ -34,7 +31,7 @@ public class DataBaseUtil {
         this.context = context;
     }
 
-    private Dao<User, Integer> getLocalUserDao() {
+    private Dao<DbUser, Integer> getLocalUserDao() {
         try {
             if (helper == null)
                 helper = new DataBaseHelper(context);
@@ -45,10 +42,10 @@ public class DataBaseUtil {
         }
     }
 
-    public User getUser() {
+    public DbUser getUser() {
         try {
-            Dao<User, Integer> userDao = getLocalUserDao();
-            final List<User> userList = userDao.queryForAll();
+            Dao<DbUser, Integer> userDao = getLocalUserDao();
+            final List<DbUser> userList = userDao.queryForAll();
             if (userList.size() > 0)
                 return userList.get(0);
             else
@@ -61,10 +58,11 @@ public class DataBaseUtil {
 
     }
 
-    public void setUser(JSONObject userJsonObject) {
+    public void setUser(DbUser  user) {
         try {
-            Dao<User, Integer> userDao = getLocalUserDao();
-            userDao.createOrUpdate(getUserFromJson(userJsonObject));
+            Dao<DbUser, Integer> userDao = getLocalUserDao();
+          //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
+            userDao.createOrUpdate(user);
             Log.d(context.getClass().getSimpleName(), "setUser:");
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "getUser: ", ex);
@@ -72,11 +70,11 @@ public class DataBaseUtil {
         }
     }
 
-    private User getUserFromJson(JSONObject userJson) {
-        User user;
+/*    private User getUserFromJson(JSONObject userJson) {
+      *//*  User user;
         try {
             user = new User();
-            //Profile data
+           *//**//* //Profile data
             user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
             user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
             user.setEmail(userJson.getString(Constants.KEY_EMAIL));
@@ -92,14 +90,56 @@ public class DataBaseUtil {
             section.setCompletedMiles(bulletinJson.getInt(KEY_COMPLETED_MILESTONES));
             section.setTotalMiles(bulletinJson.getInt(KEY_TOTAL_MILESTONES));
             user.setSections(section);
-            //SclActivities Data
+            //SclActivities Data*//**//*
 
+        *//**//*    user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+            user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
+            user.setEmail(userJson.getString(Constants.KEY_EMAIL));
+            user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
+            user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
+            user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
+
+
+            JSONObject bulletinJson = userJson.getJSONObject(TYPE_BULLETIN);
+            SclActs bulletin = new SclActs();
+            bulletin.setId(bulletinJson.getInt(KEY_ID));
+            bulletin.setUserId(bulletinJson.getInt(KEY_USER_ID));
+            bulletin.setMsg(bulletinJson.getString(KEY_MESSAGE));
+            bulletin.setType(bulletinJson.getString(KEY_TYPE));
+            bulletin.setTimeStamp(bulletinJson.getString(KEY_TIMESTAMP));
+            user.setBulletin(bulletin);
+
+            JSONArray sectionsArray = userJson.getJSONArray(KEY_SECTIONS);
+            for (int i = 0; i < sectionsArray.length(); i++) {
+                JSONObject sectionObject = sectionsArray.getJSONObject(i);
+                Sections section
+                        = new Sections(sectionObject.getInt(KEY_ID),
+                        sectionObject.getString(KEY_CLASS),
+                        sectionObject.getString(KEY_SECTION),
+                        sectionObject.getInt(KEY_COMPLETED_MILESTONES),
+                        sectionObject.getInt(KEY_TOTAL_MILESTONES));
+                userJson.add(section);
+            }
+            user.setSectionsList(sectionsList);
+
+            JSONArray schoolActivities = userJson.getJSONArray(KEY_ACTIVITIES);
+            for (int i = 0; i < sectionsArray.length(); i++) {
+                JSONObject schoolActivity = schoolActivities.getJSONObject(i);
+                SclActs sclActivities
+                        = new SclActs(schoolActivity.getInt(KEY_ID),
+                        schoolActivity.getInt(KEY_USER_ID),
+                        schoolActivity.getString(KEY_MESSAGE),
+                        schoolActivity.getString(KEY_TYPE),
+                        schoolActivity.getString(KEY_TIMESTAMP));
+                sclActList.add(sclActivities);
+            }
+            user.setSclActs(sclActList);*//**//*
 
             return user;
         } catch (JSONException ex) {
             Log.e(TAG, "getUserFromJson: ", ex);
             throw new RuntimeException("Json exception");
         }
-
-    }
+*//*
+    }*/
 }
