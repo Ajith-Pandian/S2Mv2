@@ -2,6 +2,7 @@ package com.example.uilayer.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -15,26 +16,45 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.CustomProgressBar;
-import com.example.uilayer.exceptionHandler.VolleyStringRequest;
 import com.example.uilayer.milestones.MilestonesActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.domainlayer.Constants.KEY_ID;
+import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
+import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
+import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
+import static com.example.domainlayer.Constants.KEY_NOTE;
+import static com.example.domainlayer.Constants.KEY_TITLE;
+import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.MILES_URL;
 import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TRAININGS_URL_SUFFIX;
+
 
 /**
  * Created by thoughtchimp on 11/23/2016.
@@ -98,12 +118,77 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        getMilestoneDetails(position);
-
-
+                        //  getMilestoneDetails(position);
+                        getOrderedMilestoneDetails(position);
                     }
                 });
+    }
+
+    void getOrderedMilestoneDetails(final int position) {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Miles", "onResponse: " + response);
+                        saveMiles(position, response);
+
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("Miles", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                // params.put(KEY_SECTION_ID, sectionDetailsList.get(position).getId());
+                params.put("sectionId", "4");
+                // params.put(KEY_SCHOOL_ID,  sectionDetailsList.get(position).getSchoolId());
+                params.put("schoolId", "2");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put("accessToken", TEMP_ACCESS_TOKEN);
+                return header;
+            }
+
+        };
+
+        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
     }
 
     void getMilestoneDetails(final int position) {
@@ -113,6 +198,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     @Override
                     public void onResponse(String response) {
                         Log.d("Miles", "onResponse: " + response);
+
+
                         openMilestonesActivity(position);
                     }
                 },
@@ -202,13 +289,43 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     }
 
     void openMilestonesActivity(int position) {
-        if (i == 1) {
-            final Intent intent = new Intent(context, MilestonesActivity.class);
-            intent.putExtra("class_name", sectionDetailsList.get(position).get_Class());
-            intent.putExtra("section_name", sectionDetailsList.get(position).getSection());
-            context.startActivity(intent);
-        } else
-            i++;
+        String _class = sectionDetailsList.get(position).get_Class();
+        String section = sectionDetailsList.get(position).getSection();
+        final Intent intent = new Intent(context, MilestonesActivity.class);
+        DataHolder.getInstance(context).setCurrentClass(_class);
+        DataHolder.getInstance(context).setCurrentSection(section);
+        intent.putExtra("class_name", _class);
+        intent.putExtra("section_name", section);
+        context.startActivity(intent);
+
+    }
+
+    private void saveMiles(int position, String milesResponse) {
+
+        TMiles miles = null;
+        ArrayList<TMiles> milesList = new ArrayList<>();
+        try {
+
+            JSONArray milesArray = new JSONArray(milesResponse);
+            for (int j = 0; j < milesArray.length(); j++) {
+                JSONObject milesJson = milesArray.getJSONObject(j);
+                miles = new TMiles(milesJson.getInt(KEY_ID),
+                        milesJson.getInt(KEY_MILESTONE_ID),
+                        milesJson.getInt(KEY_MILE_INDEX),
+                        milesJson.getInt(KEY_IS_TRAINING),
+                        milesJson.getString(KEY_TITLE),
+                        milesJson.getString(KEY_NOTE),
+                        milesJson.getString(KEY_TYPE)
+                );
+                milesList.add(j, miles);
+            }
+
+            DataHolder.getInstance(context).setMilesList(milesList);
+            openMilestonesActivity(position);
+
+        } catch (JSONException ex) {
+            Log.e("Save miles", "saveMiles: ", ex);
+        }
     }
 
     @Override

@@ -4,11 +4,11 @@ package com.example.domainlayer.models;
  * Created by thoughtchimp on 12/8/2016.
  */
 
-public  class Message
+public  class BulletinMessage
 {
     String title,image,body;
 
-    public Message(String title, String image, String body) {
+    public BulletinMessage(String title, String image, String body) {
         this.title = title;
         this.image = image;
         this.body = body;

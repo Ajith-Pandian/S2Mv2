@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
@@ -24,7 +25,7 @@ public class MilestonesActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MilesAdapter milestonesAdapter;
     boolean isBottom;
-
+String sectionName,className;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +33,8 @@ public class MilestonesActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         if (getIntent() != null) {
             Intent intent = getIntent();
-            String className = intent.getStringExtra("class_name");
-            String sectionName = intent.getStringExtra("section_name");
+             className = intent.getStringExtra("class_name");
+             sectionName = intent.getStringExtra("section_name");
             getSupportActionBar().setTitle(className + " " + sectionName);
         }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -41,10 +42,14 @@ public class MilestonesActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        loadAdapterItems();
+       // loadAdapterItems();
+
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
+
+        milestonesAdapter = new MilesAdapter(getApplicationContext(), DataHolder.getInstance(getApplicationContext()).getMilesList());
+
         recyclerView.setAdapter(milestonesAdapter);
     }
     @Override
@@ -65,7 +70,6 @@ public class MilestonesActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
     }
 
     void loadAdapterItems() {
@@ -78,6 +82,6 @@ public class MilestonesActivity extends AppCompatActivity {
         list.add(new Training(1, 2, "Training", "Training three"));
         list.add(new Mile(1, 4, "Mile", "Mile four"));
         list.add(new Mile(1, 5, "Mile", "Mile five"));
-        milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
+       // milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
     }
 }

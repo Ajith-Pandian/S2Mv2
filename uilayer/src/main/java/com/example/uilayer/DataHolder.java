@@ -3,16 +3,16 @@ package com.example.uilayer;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.milestones.TMileData;
+import com.example.domainlayer.models.milestones.TMiles;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.example.uilayer.Constants.KEY_CLASS;
-import static com.example.uilayer.Constants.KEY_SECTION;
-import static com.example.uilayer.Constants.KEY_SECTIONS;
-import static com.example.uilayer.Constants.KEY__ID;
 
 /**
  * Created by thoughtchimp on 11/29/2016.
@@ -28,9 +28,33 @@ public class DataHolder {
     private String phoneNum;
     private String accessToken;
     private String lastLogin;
+    private String currentClass;
+
+
+
+    private String currentSection;
     private String email;
     private JSONObject loginResultJson;
     private JSONObject otpSuccessResultJson;
+
+    private ArrayList<TMiles> milesList;
+    private ArrayList<TMileData> currentMileData;
+
+    public ArrayList<TMileData> getCurrentMileData() {
+        return currentMileData;
+    }
+
+    public void setCurrentMileData(ArrayList<TMileData> currentMileData) {
+        this.currentMileData = currentMileData;
+    }
+
+    public ArrayList<TMiles> getMilesList() {
+        return milesList;
+    }
+
+    public void setMilesList(ArrayList<TMiles> milesList) {
+        this.milesList = milesList;
+    }
 
     public static synchronized DataHolder getInstance(Context context) {
         if (mInstance == null) {
@@ -132,13 +156,13 @@ public class DataHolder {
             this.lastLogin = loginResultJson.getString(Constants.KEY_LAST_LOGIN);
 
 
-            JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
+            JSONArray sectionsArray = loginResultJson.getJSONArray(Constants.KEY_SECTIONS);
             for (int i = 0; i < sectionsArray.length(); i++) {
                 JSONObject sectionObject = sectionsArray.getJSONObject(i);
                 Section section
-                        = new Section(sectionObject.getInt(KEY__ID),
-                        sectionObject.getString(KEY_CLASS),
-                        sectionObject.getString(KEY_SECTION));
+                        = new Section(sectionObject.getInt(Constants.KEY_ID),
+                        sectionObject.getString(Constants.KEY_CLASS),
+                        sectionObject.getString(Constants.KEY_SECTION));
                 sectionsList.add(section);
             }
 
@@ -161,6 +185,22 @@ public class DataHolder {
 
     public void setSchoolId(int schoolId) {
         this.schoolId = schoolId;
+    }
+
+    public String getCurrentSection() {
+        return currentSection;
+    }
+
+    public void setCurrentSection(String currentSection) {
+        this.currentSection = currentSection;
+    }
+
+    public String getCurrentClass() {
+        return currentClass;
+    }
+
+    public void setCurrentClass(String currentClass) {
+        this.currentClass = currentClass;
     }
 
     private class Section {

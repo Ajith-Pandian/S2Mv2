@@ -1,11 +1,14 @@
 package com.example.uilayer.milestones;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 
+import com.example.domainlayer.models.milestones.TMileData;
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.fragments.MilesAudioFragment;
 import com.example.uilayer.milestones.fragments.MilesImageFragment;
@@ -19,6 +22,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.domainlayer.Constants.TYPE_AUDIO;
+import static com.example.domainlayer.Constants.TYPE_IMAGE;
+import static com.example.domainlayer.Constants.TYPE_TEXT;
+import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 public class MilesActivity extends AppCompatActivity implements MilesTextFragment.OnFragmentInteractionListener
         , MilesVideoFragment.OnFragmentInteractionListener,
@@ -46,23 +54,82 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     }
 
+    ArrayList<TMileData> mileDataArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_miles);
         ButterKnife.bind(this);
+        DataHolder holder = DataHolder.getInstance(getApplicationContext());
+        String title = holder.getCurrentClass() + holder.getCurrentSection();
+        getSupportActionBar().setTitle("Miles " + title);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+   /*     addFragment(1);
         addFragment(1);
         addFragment(2);
         addFragment(3);
         addFragment(4);
-        addFragment(5);
+        addFragment(5);*/
+        addFragments();
+    }
+
+    void addFragments() {
+        mileDataArrayList = DataHolder.getInstance(getApplicationContext()).getCurrentMileData();
+        Fragment fragment = null;
+        for (int i = 0; i < mileDataArrayList.size(); i++) {
+            TMileData mileData = mileDataArrayList.get(i);
+            String type = mileData.getType();
+            switch (type) {
+                case TYPE_TEXT:
+                    fragment = MilesTextFragment.newInstance(mileData.getTitle(),
+                            mileData.getBody());
+                    break;
+                case TYPE_VIDEO:
+
+                    ArrayList<VideoMiles> milesList = new ArrayList<>();
+                    for (int j = 0; j < mileData.getUrlsList().size(); j++) {
+                        milesList.add(new VideoMiles(j, j, mileData.getUrlsList().get(j)));
+                    }
+                    fragment = MilesVideoFragment.newInstance("VIDEOS", milesList);
+                    break;
+                case TYPE_AUDIO:
+                    fragment = MilesAudioFragment.newInstance("AUDIO", getAudioMiles());
+                    break;
+                case TYPE_IMAGE:
+                    ArrayList<ImageMiles> imageMilesList = new ArrayList<>();
+                    for (int j = 0; j < mileData.getUrlsList().size(); j++) {
+                        imageMilesList.add(new ImageMiles(j, j, mileData.getTitle(), mileData.getUrlsList().get(j)));
+                    }
+                    fragment = MilesImageFragment.newInstance("IMAGES", imageMilesList);
+                    break;
+
+            }
+            if (fragment != null)
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(milesFragmentContainer.getId(), fragment)
+                        .commit();
+
+        }
+
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 //        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     void addFragment(int type) {

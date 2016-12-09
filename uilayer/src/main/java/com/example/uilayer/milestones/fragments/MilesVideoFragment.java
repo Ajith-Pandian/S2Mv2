@@ -69,7 +69,9 @@ public class MilesVideoFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_miles_video_single,
                     container, false);
             final ImageView imageView = (ImageView) view.findViewById(R.id.singleMileImageView);
-            Picasso.with(getActivity()).load(videoList.get(0).getUrl()).into(imageView);
+
+            String url="https://img.youtube.com/vi/"+videoList.get(0).getUrl().split("=")[1]+"/0.jpg";
+            Picasso.with(getActivity()).load(url).into(imageView);
         } else {
 
             view = inflater.inflate(R.layout.fragment_miles_video_multi,

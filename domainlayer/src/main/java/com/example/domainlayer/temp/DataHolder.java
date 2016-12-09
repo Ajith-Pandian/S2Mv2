@@ -6,12 +6,10 @@ import android.util.Log;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.Bulletin;
+import com.example.domainlayer.models.BulletinMessage;
 import com.example.domainlayer.models.DbUser;
-import com.example.domainlayer.models.Message;
 import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.models.User;
-import com.j256.ormlite.dao.ForeignCollection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,19 +19,14 @@ import java.util.ArrayList;
 
 import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
 import static com.example.domainlayer.Constants.KEY_BODY;
-import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COMPLETED_MILESTONES;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IMAGE;
+import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_SCHOOL_NAME;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.KEY_TOTAL_MILESTONES;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.TYPE_BULLETIN;
@@ -59,13 +52,14 @@ public class DataHolder {
         return mInstance;
     }
 
-
+DataParser dataParser;
     private DataHolder(Context context)
     {
         this.context=context;
     }
     public void saveUserDetails(JSONObject loginResultJson) {
         user = new DbUser();
+        dataParser=new DataParser();
         sectionsList = new ArrayList<>();
         sclActList = new ArrayList<>();
         try {
@@ -89,30 +83,21 @@ public class DataHolder {
             user.setBulletin(bulletin);
 
             JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
-            for (int i = 0; i < sectionsArray.length(); i++) {
-                JSONObject sectionObject = sectionsArray.getJSONObject(i);
-                Sections section
-                        = new Sections(sectionObject.getInt(KEY_ID),
-                        sectionObject.getString(KEY_CLASS),
-                        sectionObject.getString(KEY_SECTION),
-                        sectionObject.getInt(KEY_COMPLETED_MILESTONES),
-                        sectionObject.getInt(KEY_TOTAL_MILESTONES),
-                        sectionObject.getInt(KEY_SCHOOL_ID),
-                        sectionObject.getString(KEY_MILESTONE_NAME),
-                        sectionObject.getInt(KEY_MILESTONE_ID));
-                sectionsList.add(section);
-            }
-            user.setSectionsList(sectionsList);
+            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray));
 
             JSONArray schoolActivities = loginResultJson.getJSONArray(KEY_ACTIVITIES);
-            for (int i = 0; i < sectionsArray.length(); i++) {
+
+            for (int i = 0; i < schoolActivities.length(); i++) {
                 JSONObject schoolActivity = schoolActivities.getJSONObject(i);
                 SclActs sclActivities
                         = new SclActs(schoolActivity.getInt(KEY_ID),
-                        schoolActivity.getInt(KEY_USER_ID),schoolActivity.getString(KEY_MESSAGE),
+                        schoolActivity.getInt(KEY_USER_ID),
+                        schoolActivity.getString(KEY_SCHOOL_NAME),
+                        schoolActivity.getString(KEY_MESSAGE),
                         //getMessage(schoolActivity.getString(KEY_MESSAGE)),
                         schoolActivity.getString(KEY_TYPE),
-                        schoolActivity.getString(KEY_TIMESTAMP));
+                        schoolActivity.getString(KEY_TIMESTAMP),
+                        schoolActivity.getInt(KEY_LIKES_COUNT));
                 sclActList.add(sclActivities);
             }
             user.setSclActs(sclActList);
@@ -126,12 +111,12 @@ public class DataHolder {
     }
 
 
-    Message getMessage(String message)
-    { Message msg=null;
+    BulletinMessage getMessage(String message)
+    { BulletinMessage msg=null;
 
         try{
             JSONObject msgObject=new JSONObject(message);
-            msg=new Message(msgObject.getString(KEY_TITLE),
+            msg=new BulletinMessage(msgObject.getString(KEY_TITLE),
                     msgObject.getString(KEY_IMAGE),
                     msgObject.getString(KEY_BODY));
         }

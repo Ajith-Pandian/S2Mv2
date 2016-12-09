@@ -28,11 +28,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.uilayer.Constants;
+import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.exceptionHandler.VolleyStringRequest;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -47,9 +47,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.example.uilayer.Constants.KEY_EMAIL;
-import static com.example.uilayer.Constants.KEY_MOBILE;
-import static com.example.uilayer.Constants.KEY_OTP;
+
 
 
 /**
@@ -177,9 +175,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                 if (isMail)
-                    params.put(KEY_EMAIL, text);
+                    params.put(Constants.KEY_EMAIL, text);
                 else
-                    params.put(KEY_MOBILE, text);
+                    params.put(Constants.KEY_MOBILE, text);
                 return params;
             }
         };
@@ -195,7 +193,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         try {
             JSONObject responseJson = new JSONObject(response);
             DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
-            Log.d("OTP", "storeResponse: " + responseJson.getString(KEY_OTP));
+            Log.d("OTP", "storeResponse: " + responseJson.getString(Constants.KEY_OTP));
         } catch (JSONException ex) {
         }
     }

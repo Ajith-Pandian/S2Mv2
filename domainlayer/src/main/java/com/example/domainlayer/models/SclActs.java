@@ -4,20 +4,22 @@ package com.example.domainlayer.models;
  * Created by thoughtchimp on 12/8/2016.
  */
 
-public  class SclActs {
-    int id, userId;
-    String  type, timeStamp;
+public class SclActs {
+    int id, userId, likesCount;
+    String type, timeStamp, schoolName;
     String msg;
 
-    public SclActs(int id, int userId, String msg, String type, String timeStamp) {
+    public SclActs(int id, int userId, String schoolName,String msg, String type, String timeStamp, int likesCount) {
         this.id = id;
         this.userId = userId;
         this.msg = msg;
         this.type = type;
         this.timeStamp = timeStamp;
+        this.schoolName=schoolName;
+        this.likesCount=likesCount;
     }
 
-    public  SclActs() {
+    public SclActs() {
 
     }
 
@@ -60,8 +62,6 @@ public  class SclActs {
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
-
-
 
 
 }

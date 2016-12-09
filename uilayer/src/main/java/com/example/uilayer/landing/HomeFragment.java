@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.temp.DataHolder;
@@ -26,8 +27,6 @@ import java.sql.SQLException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.uilayer.Constants.SUFFIX_MILES;
-import static com.example.uilayer.Constants.SUFFIX_WOWS;
 
 /**
  * Created by thoughtchimp on 11/7/2016.
@@ -86,18 +85,18 @@ public class HomeFragment extends Fragment {
         DbUser user = new DataBaseUtil(getActivity()).getUser();
         String nameString = user.getFirstName() + " " + user.getLastName();
         name.setText(nameString);
-        textWow.setText(user.getWow() + SUFFIX_WOWS);
-        textMiles.setText(user.getMiles() + SUFFIX_MILES);
+        textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
+        textMiles.setText(user.getMiles() +Constants.SUFFIX_MILES);
         String avatar=user.getAvatar();
         Picasso.with(getActivity())
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
                 .into(target);
 
-        Picasso.with(getActivity())
+       /* Picasso.with(getActivity())
                 .load(DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage())
                 .into(bulletinImage);
-
+*/
     }
 
     @Override

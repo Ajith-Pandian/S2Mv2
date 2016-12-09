@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
@@ -145,7 +146,7 @@ public class ArchiveActivity extends AppCompatActivity {
             list.add(new Training(1, 2, "Training", "Training three"));
             list.add(new Mile(1, 4, "Mile", "Mile four"));
             list.add(new Mile(1, 5, "Mile", "Mile five"));
-            milestonesAdapter = new MilesAdapter(getActivity(), list);
+            milestonesAdapter = new MilesAdapter(getActivity(), DataHolder.getInstance(getActivity()).getMilesList());
         }
     }
 

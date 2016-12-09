@@ -103,7 +103,7 @@ public class LandingActivity extends AppCompatActivity
                     s = "School photos";
                     break;
                 case R.id.fab_3:
-                    s = "Message";
+                    s = "BulletinMessage";
                     break;
             }
             Toast.makeText(getApplicationContext(), s + " clicked", Toast.LENGTH_SHORT).show();

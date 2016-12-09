@@ -19,12 +19,11 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.domainlayer.database.DataBaseUtil;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.uilayer.Constants;
+import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
-import com.example.uilayer.exceptionHandler.VolleyStringRequest;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -38,14 +37,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.example.domainlayer.Constants.KEY_DEVICE_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.uilayer.Constants.KEY_MOBILE;
-import static com.example.uilayer.Constants.KEY_OTP;
-import static com.example.uilayer.Constants.TEMP_DEVICE_TOKEN;
-import static com.example.uilayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.uilayer.Constants.TEMP_OTP;
 
 
 /**
@@ -167,11 +158,11 @@ public class OtpFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                // params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getUser());
-                params.put(KEY_MOBILE, "1234567890");
+                params.put(Constants.KEY_MOBILE, "1234567890");
                 //params.put(KEY_OTP, enteredOtp);
-                params.put(KEY_OTP, TEMP_OTP);
-                params.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                params.put(KEY_DEVICE_TOKEN, TEMP_DEVICE_TOKEN);
+                params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
+                params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
+                params.put(Constants.KEY_DEVICE_TOKEN, Constants.TEMP_DEVICE_TOKEN);
                 return params;
             }
 

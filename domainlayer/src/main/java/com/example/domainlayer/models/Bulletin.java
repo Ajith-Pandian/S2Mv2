@@ -7,9 +7,9 @@ package com.example.domainlayer.models;
 public  class Bulletin {
     int id, userId;
     String  type, timeStamp;
-    Message msg;
+    BulletinMessage msg;
 
-    public Bulletin(int id, int userId, Message msg, String type, String timeStamp) {
+    public Bulletin(int id, int userId, BulletinMessage msg, String type, String timeStamp) {
         this.id = id;
         this.userId = userId;
         this.msg = msg;
@@ -37,11 +37,11 @@ public  class Bulletin {
         this.userId = userId;
     }
 
-    public Message getMsg() {
+    public BulletinMessage getMsg() {
         return msg;
     }
 
-    public void setMsg(Message msg) {
+    public void setMsg(BulletinMessage msg) {
         this.msg = msg;
     }
 

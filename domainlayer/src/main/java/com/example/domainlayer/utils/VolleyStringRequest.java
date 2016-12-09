@@ -1,4 +1,4 @@
-package com.example.uilayer.exceptionHandler;
+package com.example.domainlayer.utils;
 
 import android.util.Log;
 

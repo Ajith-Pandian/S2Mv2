@@ -4,6 +4,7 @@ package com.example.uilayer.landing;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -83,12 +84,5 @@ public class SectionsFragment extends Fragment {
         sectionDetails1= DataHolder.getInstance(getActivity()).getUser().getSectionsList();
         sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1));
 
-    /*    sectionsGrid.addOnItemTouchListener(new RecyclerClickListener(getActivity(), new RecyclerClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-            }
-        }));
-*/
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 public class MCQAnswersAdapter extends BaseAdapter {
-    ViewHolder holder;
+   private  ViewHolder holder;
     private List<String> optionsList;
     private Context context;
 
@@ -64,7 +64,7 @@ public class MCQAnswersAdapter extends BaseAdapter {
         return convertView;
     }
 
-    void setStates(int position) {
+    private void setStates(int position) {
         switch (position) {
             case 0:
                 holder.mcqCheckBox.setSelected(true);
@@ -85,7 +85,7 @@ public class MCQAnswersAdapter extends BaseAdapter {
         }
     }
 
-    void resetStates() {
+    private void resetStates() {
         holder.mcqCheckBox.setNotSelected(false);
         holder.mcqCheckBox.setSelected(false);
         holder.mcqCheckBox.setRight(false);

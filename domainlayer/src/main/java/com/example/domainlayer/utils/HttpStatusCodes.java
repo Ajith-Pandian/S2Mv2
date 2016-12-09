@@ -1,4 +1,4 @@
-package com.example.uilayer.exceptionHandler;
+package com.example.domainlayer.utils;
 
 /**
  * Created by thoughtchimp on 12/1/2016.

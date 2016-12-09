@@ -44,7 +44,8 @@ public class ImageMilesAdapter extends RecyclerView.Adapter<ImageMilesAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageMiles mile = milesList.get(position);
-        Picasso.with(context).load(mile.getUrl()).into(holder.mileImage);
+        String url=mile.getUrl();
+        Picasso.with(context).load(url).into(holder.mileImage);
     }
 
     @Override
