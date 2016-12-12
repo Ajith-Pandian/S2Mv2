@@ -184,4 +184,7 @@
     <string name="options_feedback_down_4">Not satisfied</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_archive">Archive</string>
+    <string name="prompt_select_school">Select School</string>
+
+
 </resources>

@@ -18,6 +18,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/miles_item_v_space"
+            android:layout_marginBottom="@dimen/miles_item_v_space"
             android:layout_height="match_parent">
 
             <LinearLayout
@@ -25,22 +27,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:layout_marginRight="@dimen/miles_item_h_space"
+                android:layout_marginLeft="@dimen/miles_item_h_space"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/image_icon_sun_training"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/audio_light_green" />
 
                 <TextView
                     android:id="@+id/text_title_fragment_mile_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginLeft="8dp"
                     android:padding="3dp"
-                    android:text="AUDIO"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="TITLE"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -49,9 +55,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_below="@+id/layout_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
+                android:layout_height="wrap_content" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -74,7 +74,7 @@ public class MilesAudioFragment extends Fragment {
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.addItemDecoration(new VideoMilesDecoration(getActivity(), 5));
+        recyclerView.addItemDecoration(new VideoMilesDecoration(getActivity(), 8));
 
         adapter = new AudioMilesAdapter(getActivity(), audiList);
 

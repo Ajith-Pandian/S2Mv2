@@ -14,7 +14,7 @@
     <dimen name="appbar_padding_top">8dp</dimen>
 
 
-    <dimen name="miles_item_height">100dp</dimen>
+    <dimen name="miles_item_height">150dp</dimen>
     <dimen name="miles_single_item_height">200dp</dimen>
     <dimen name="miles_item_h_space">8dp</dimen>
     <dimen name="miles_item_v_space">8dp</dimen>

@@ -13,8 +13,13 @@ import android.widget.ImageView;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VideoMilesDecoration;
+import com.example.uilayer.login.LoginFragment;
 import com.example.uilayer.milestones.adapters.VideoMilesAdapter;
 import com.example.uilayer.models.VideoMiles;
+import com.google.android.youtube.player.YouTubeIntents;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
+
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -62,14 +67,21 @@ public class MilesVideoFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
         if (videoList.size() == 1) {
             view = inflater.inflate(R.layout.fragment_miles_video_single,
                     container, false);
             final ImageView imageView = (ImageView) view.findViewById(R.id.singleMileImageView);
-
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String DEVELOPER_KEY = "AIzaSyD9lGPATA3aXGnl0GWMICk1Y883TArl30Y";
+                    startActivity(YouTubeIntents.createPlayVideoIntentWithOptions(getActivity(),
+                             videoList.get(0).getUrl().split("=")[1],true,true));
+                }
+            });
             String url="https://img.youtube.com/vi/"+videoList.get(0).getUrl().split("=")[1]+"/0.jpg";
             Picasso.with(getActivity()).load(url).into(imageView);
         } else {
@@ -85,7 +97,7 @@ public class MilesVideoFragment extends Fragment {
                     = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
 
-            recyclerView.addItemDecoration(new VideoMilesDecoration(getActivity(), 5));
+            recyclerView.addItemDecoration(new VideoMilesDecoration(getActivity(), 8));
 
             adapter = new VideoMilesAdapter(getActivity(), videoList);
 

@@ -212,6 +212,7 @@
                     android:id="@+id/spinner_school_select"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:prompt="@string/prompt_select_school"
                     />
 
                 <TextView
@@ -257,7 +258,7 @@
                     style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rosewood Academy"
+                    android:hint="Enter schoolname"
                     android:textSize="14sp" />
 
                 <View
@@ -287,6 +288,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -296,6 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="3"
+                    android:hint="Comment"
                     android:text="@string/msg_login"
                     android:textSize="14sp" />
 

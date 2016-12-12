@@ -1,11 +1,13 @@
 package com.example.uilayer.milestones;
 
-import android.content.Intent;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.uilayer.DataHolder;
@@ -33,6 +35,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         MilesAudioFragment.OnFragmentInteractionListener, MilesImageFragment.OnFragmentInteractionListener {
     @BindView(R.id.miles_fragment_container)
     LinearLayout milesFragmentContainer;
+    @BindView(R.id.text_title_mile)
+    TextView textTiltle;
 
     @Override
     public void onImageFragmentInteraction(Uri uri) {
@@ -63,14 +67,16 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         setContentView(R.layout.activity_miles);
         ButterKnife.bind(this);
         DataHolder holder = DataHolder.getInstance(getApplicationContext());
-        String title = holder.getCurrentClass() + holder.getCurrentSection();
-        getSupportActionBar().setTitle("Miles " + title);
-
+        String title = holder.getCurrentClass()+" " + holder.getCurrentSection();
+        getSupportActionBar().setTitle("Miles");
+        getSupportActionBar().setSubtitle(title);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-   /*     addFragment(1);
+        textTiltle.setText(holder.getCurrentMileTitle());
+
+   /*   addFragment(1);
         addFragment(1);
         addFragment(2);
         addFragment(3);

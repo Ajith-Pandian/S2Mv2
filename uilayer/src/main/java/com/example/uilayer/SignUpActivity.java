@@ -2,6 +2,8 @@ package com.example.uilayer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.uilayer.landing.LandingActivity;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,14 @@ public class SignUpActivity extends AppCompatActivity {
     LinearLayout customSchoolLayout;
     @BindView(R.id.button_register)
     Button buttonRegister;
+    @BindView(R.id.user_image)
+    ImageView imageUser;
+
+    @BindView(R.id.collapse_toolbar_layout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.app_bar)
+    AppBarLayout appBarLayout;
+
     AdapterView.OnItemSelectedListener countrySelectedListener = new AdapterView.OnItemSelectedListener() {
 
         @Override
@@ -68,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
         initViews();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        configureTiltle();
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +92,29 @@ public class SignUpActivity extends AppCompatActivity {
         loadData();
     }
 
+    void configureTiltle()
+    {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle("Register");
+                    isShow = true;
+                } else if(isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    isShow = false;
+                }
+                collapsingToolbarLayout.setTitleEnabled(isShow);
+            }
+        });
+    }
+
     void loadData() {
         DataHolder holder=DataHolder.getInstance(getApplicationContext());
         textFirstName.setText(holder.getFirstName());
@@ -85,6 +122,7 @@ public class SignUpActivity extends AppCompatActivity {
         textEmail.setText(holder.getEmail());
         textPhone.setText(holder.getPhoneNum());
         textComment.setText("");
+        Picasso.with(getApplicationContext()).load(holder.getAvatar()).into(imageUser);
     }
 
     void initViews() {

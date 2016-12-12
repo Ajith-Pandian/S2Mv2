@@ -30,8 +30,6 @@ public class DataHolder {
     private String lastLogin;
     private String currentClass;
 
-
-
     private String currentSection;
     private String email;
     private JSONObject loginResultJson;
@@ -123,6 +121,15 @@ public class DataHolder {
         return loginResultJson;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    String avatar;
     public void setLoginResultJson(JSONObject loginResultJson) {
         this.loginResultJson = loginResultJson;
         try {
@@ -132,6 +139,7 @@ public class DataHolder {
             this.email = loginResultJson.getString(Constants.KEY_EMAIL);
             this.phoneNum = loginResultJson.getString(Constants.KEY_PHONE_NUM);
             this.lastLogin = loginResultJson.getString(Constants.KEY_LAST_LOGIN);
+            this.avatar = loginResultJson.getString(Constants.KEY_AVATAR);
         } catch (JSONException exception) {
             Log.e("DataHolder", "setLoginResultJson: ", exception);
         }
@@ -197,6 +205,15 @@ public class DataHolder {
 
     public String getCurrentClass() {
         return currentClass;
+    }
+String currentMileTitle;
+
+    public String getCurrentMileTitle() {
+        return currentMileTitle;
+    }
+
+    public void setCurrentMileTitle(String currentMileTitle) {
+        this.currentMileTitle = currentMileTitle;
     }
 
     public void setCurrentClass(String currentClass) {

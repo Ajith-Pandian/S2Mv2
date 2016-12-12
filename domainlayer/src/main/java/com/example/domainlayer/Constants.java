@@ -101,4 +101,10 @@ public class Constants {
     public static final String TYPE_ACTIVITY = "activity";
 
 
+    public static final String SHARED_PREFERENCE = "s2mSharedPreference";
+
+
+
+
+
 }

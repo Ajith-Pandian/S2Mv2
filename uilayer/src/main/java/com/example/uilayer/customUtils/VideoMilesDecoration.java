@@ -16,16 +16,17 @@ public class VideoMilesDecoration extends RecyclerView.ItemDecoration {
     private Context context;
 
     public VideoMilesDecoration(Context context, int horizontalSpace) {
-        this.horizontalSpace = horizontalSpace;
         this.context = context;
+        this.horizontalSpace  = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                horizontalSpace, context.getResources().getDisplayMetrics());
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
-
-        if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount() - 1) {
-            outRect.right = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalSpace, context.getResources().getDisplayMetrics());
+        outRect.left = horizontalSpace;
+        if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+            outRect.right = horizontalSpace;
         }
     }
 }

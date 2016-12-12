@@ -99,8 +99,8 @@ public class OtpFragment extends Fragment {
         ButterKnife.bind(this, view);
         edtTextOtp.requestFocus();
         //open keyboard
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(edtTextOtp, InputMethodManager.SHOW_IMPLICIT);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
 
@@ -157,7 +157,7 @@ public class OtpFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
-               // params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getUser());
+                // params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getUser());
                 params.put(Constants.KEY_MOBILE, "1234567890");
                 //params.put(KEY_OTP, enteredOtp);
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
@@ -207,9 +207,14 @@ public class OtpFragment extends Fragment {
                 enteredOtp = textViewTextChangeEvent.text().toString();
 
                 int length = textViewTextChangeEvent.text().length();
-                if (length == 4)
+                if (length == 4) {
+                    View view = getActivity().getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
                     onButtonPressed();
-                else if (length > 0) {
+                } else if (length > 0) {
                     edtTextOtp.setCursorVisible(true);
                     edtTextOtp.setSelection(textViewTextChangeEvent.text().length());
                 } else edtTextOtp.setCursorVisible(true);

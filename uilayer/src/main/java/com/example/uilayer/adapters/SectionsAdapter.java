@@ -99,6 +99,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         Sections sectionDetails = sectionDetailsList.get(position);
         holder.classname.setText(sectionDetails.get_Class());
         holder.sectionName.setText(sectionDetails.getSection());
+        holder.mileStoneName.setText(sectionDetails.getMilestoneName());
         float completed = (float) sectionDetails.getCompletedMiles();
         float total = (float) sectionDetails.getTotalMiles();
         float progress = ((completed / total) * 100);
@@ -291,9 +292,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     void openMilestonesActivity(int position) {
         String _class = sectionDetailsList.get(position).get_Class();
         String section = sectionDetailsList.get(position).getSection();
+        String title = sectionDetailsList.get(position).getMilestoneName();
         final Intent intent = new Intent(context, MilestonesActivity.class);
         DataHolder.getInstance(context).setCurrentClass(_class);
         DataHolder.getInstance(context).setCurrentSection(section);
+        DataHolder.getInstance(context).setCurrentMileTitle(title);
         intent.putExtra("class_name", _class);
         intent.putExtra("section_name", section);
         context.startActivity(intent);
@@ -338,6 +341,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         TextView classname;
         @BindView(R.id.text_section_name)
         TextView sectionName;
+        @BindView(R.id.text_milestones)
+        TextView mileStoneName;
         @BindView(R.id.text_completed_milestones)
         TextView completedMiles;
         @BindView(R.id.progress_miles)

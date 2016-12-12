@@ -1,10 +1,12 @@
 package com.example.uilayer.models;
 
+import java.io.Serializable;
+
 /**
  * Created by thoughtchimp on 11/29/2016.
  */
 
-public class VideoMiles {
+public class VideoMiles implements Serializable {
     int id, position;
     String url;
 
