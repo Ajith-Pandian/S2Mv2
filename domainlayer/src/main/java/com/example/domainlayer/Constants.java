@@ -6,13 +6,14 @@ package com.example.domainlayer;
 
 public class Constants {
 
-    private static final String BASE_URL = "http://192.168.0.103:8000/api/";
+    private static final String BASE_URL = "http://192.168.0.4:8000/api/";
     public static final String LOGIN_URL = BASE_URL + "login";
     public static final String OTP_VERIFY_URL = BASE_URL + "verify";
     public static final String MILES_URL = BASE_URL + "milestones/";
     public static final String MILES_URL_SUFFIX = "miles";
     public static final String TRAININGS_URL = BASE_URL + "milestones/";
     public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/milesTrainings";
+    public static final String MCQ_URL = TRAININGS_URL + "1/trainings/5/mcqs";
     public static final String SECTIONS_URL = BASE_URL + "schools/2/sections";
     public static final String TRAININGS_URL_SUFFIX = "/trainings";
 
@@ -20,7 +21,7 @@ public class Constants {
     public static final String TEMP_EMAIL = "manit@gmail.com";
     public static final String TEMP_ACCESS_TOKEN = "1234567890/qwertyuiop";
     public static final String TEMP_OTP = "1111";
-    public static final String TEMP_DEVICE_TYPE = "Android";//Androi or Ios
+    public static final String TEMP_DEVICE_TYPE = "Android";//Android or Ios
     public static final String TEMP_DEVICE_TOKEN = "abcdefghijklmnopqrstuvwxyz";
 
     // Request/Response TAGs
@@ -53,6 +54,10 @@ public class Constants {
     public static final String KEY_MILE_INDEX = "mileIndex";
     public static final String KEY_NOTE = "note";
     public static final String KEY_LIKES_COUNT = "likes_count";
+
+    public static final String KEY_ANSWER = "answer";
+    public static final String KEY_QUESTION = "question";
+    public static final String KEY_OPTIONS= "options";
 
 
     public static final String KEY_SCHOOL_ID = "schoolId";

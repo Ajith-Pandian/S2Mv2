@@ -25,7 +25,8 @@ public class MilestonesActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MilesAdapter milestonesAdapter;
     boolean isBottom;
-String sectionName,className;
+    String sectionName, className;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +34,8 @@ String sectionName,className;
         ButterKnife.bind(this);
         if (getIntent() != null) {
             Intent intent = getIntent();
-             className = intent.getStringExtra("class_name");
-             sectionName = intent.getStringExtra("section_name");
+            className = intent.getStringExtra("class_name");
+            sectionName = intent.getStringExtra("section_name");
             getSupportActionBar().setTitle(className + " " + sectionName);
         }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -42,7 +43,7 @@ String sectionName,className;
         getSupportActionBar().setHomeButtonEnabled(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-       // loadAdapterItems();
+        // loadAdapterItems();
 
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
@@ -52,6 +53,7 @@ String sectionName,className;
 
         recyclerView.setAdapter(milestonesAdapter);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -82,6 +84,6 @@ String sectionName,className;
         list.add(new Training(1, 2, "Training", "Training three"));
         list.add(new Mile(1, 4, "Mile", "Mile four"));
         list.add(new Mile(1, 5, "Mile", "Mile five"));
-       // milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
+        // milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
     }
 }

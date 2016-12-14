@@ -1,6 +1,7 @@
 package com.example.uilayer.milestones;
 
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -247,7 +248,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
         textTiltle.setText(holder.getCurrentMileTitle());
         addFragments();
-        buttonComplete.setOnClickListener(sheetShowListener);
+
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -288,11 +289,18 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             buttonBackgroundColor = white;
             buttonTextColor = greenPrimary;
             titleTextColor = white;
+            buttonComplete.setOnClickListener(sheetShowListener);
         } else {
             background = resources.getDrawable(R.drawable.bg_training);
             buttonBackgroundColor = greenPrimary;
             buttonTextColor = white;
             titleTextColor = greenPrimary;
+            buttonComplete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(MilesActivity.this, MCQActivity.class));
+                }
+            });
         }
         scrollView.setBackgroundDrawable(background);
         buttonComplete.setBackgroundColor(buttonBackgroundColor);

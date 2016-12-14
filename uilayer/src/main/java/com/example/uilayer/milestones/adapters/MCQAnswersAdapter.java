@@ -13,24 +13,29 @@ import com.example.uilayer.customUtils.MCQCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by thoughtchimp on 11/25/2016.
  */
 
 public class MCQAnswersAdapter extends BaseAdapter {
-   private  ViewHolder holder;
-    private List<String> optionsList;
+    private final ArrayList mData;
+    private ViewHolder holder;
+    private Map<String, String> optionsList;
     private Context context;
 
-    public MCQAnswersAdapter(Context context, ArrayList<String> optionsList) {
+    public MCQAnswersAdapter(Context context, Map<String, String> optionsList) {
         this.optionsList = optionsList;
         this.context = context;
+        mData = new ArrayList();
+        mData.addAll(optionsList.entrySet());
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public Map.Entry<String, String> getItem(int position) {
+        return (Map.Entry) mData.get(position);
     }
 
     @Override
@@ -57,14 +62,13 @@ public class MCQAnswersAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        resetStates();
+        holder.textAnswer.setText(getItem(i).getValue());
         setStates(i);
-
         return convertView;
     }
 
-    private void setStates(int position) {
+    public void setStates(int position) {
+        resetStates();
         switch (position) {
             case 0:
                 holder.mcqCheckBox.setSelected(true);
