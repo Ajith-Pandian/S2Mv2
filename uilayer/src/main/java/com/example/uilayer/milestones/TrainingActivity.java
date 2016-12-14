@@ -195,13 +195,7 @@ public class TrainingActivity extends AppCompatActivity {
         ViewCompat.setElevation(bottomSheet, 16);
         ViewCompat.setElevation(rootFrameLayout, 14);
 
-        imageThumsUp.setOnClickListener(thumbsClickListener);
-        imageThumsDown.setOnClickListener(thumbsClickListener);
-
-        imageIconClose.setOnClickListener(sheetShowListener);
         buttonComplete.setOnClickListener(sheetShowListener);
-
-
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -237,6 +231,11 @@ public class TrainingActivity extends AppCompatActivity {
     void initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
+
+        imageThumsUp.setOnClickListener(thumbsClickListener);
+        imageThumsDown.setOnClickListener(thumbsClickListener);
+
+        imageIconClose.setOnClickListener(sheetShowListener);
     }
 
     @Override

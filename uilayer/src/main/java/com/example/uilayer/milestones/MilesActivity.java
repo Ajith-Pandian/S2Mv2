@@ -1,17 +1,35 @@
 package com.example.uilayer.milestones;
 
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.milestones.adapters.OptionsAdapter;
 import com.example.uilayer.milestones.fragments.MilesAudioFragment;
 import com.example.uilayer.milestones.fragments.MilesImageFragment;
 import com.example.uilayer.milestones.fragments.MilesTextFragment;
@@ -35,8 +53,125 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         MilesAudioFragment.OnFragmentInteractionListener, MilesImageFragment.OnFragmentInteractionListener {
     @BindView(R.id.miles_fragment_container)
     LinearLayout milesFragmentContainer;
+
+    @BindView(R.id.fragment_panel)
+    ScrollView scrollView;
     @BindView(R.id.text_title_mile)
     TextView textTiltle;
+    ArrayList<TMileData> mileDataArrayList;
+    @BindView(R.id.toolbar_activity_miles)
+    Toolbar toolbar;
+    @BindView(R.id.layout_frame_miles)
+    FrameLayout forgroundLayout;
+    BottomSheetBehavior bottomSheetBehavior;
+    OptionsAdapter optionsAdapter;
+    int selected_option = -1;
+    @BindView(R.id.button_thumbs_up)
+    ImageView imageThumsUp;
+    @BindView(R.id.button_thumbs_down)
+    ImageView imageThumsDown;
+    @BindView(R.id.bottom_sheet_mile)
+    FrameLayout bottomSheet;
+    View.OnClickListener sheetShowListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int state = 0;
+            switch (view.getId()) {
+                case R.id.close_icon:
+                    state = BottomSheetBehavior.STATE_HIDDEN;
+                    break;
+                case R.id.button_complete:
+                    state = BottomSheetBehavior.STATE_COLLAPSED;
+                    invalidateActivation();
+                    imageThumsUp.setActivated(true);
+                    break;
+            }
+            BottomSheetBehavior.from(bottomSheet)
+                    .setState(state);
+        }
+    };
+    @BindView(R.id.list_view_options_bottom_sheet)
+    ListView listOptions;
+    View.OnClickListener thumbsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            invalidateActivation();
+            switch (view.getId()) {
+                case R.id.button_thumbs_up:
+                    loadOptions(true);
+                    break;
+                case R.id.button_thumbs_down:
+                    loadOptions(false);
+                    break;
+            }
+            view.setActivated(true);
+            BottomSheetBehavior.from(bottomSheet)
+                    .setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+    };
+    @BindView(R.id.button_complete)
+    Button buttonComplete;
+    @BindView(R.id.button_submit_bottom_sheet)
+    Button buttonSubmit;
+    @BindView(R.id.close_icon)
+    ImageView imageIconClose;
+    private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
+
+        boolean isUp = false;
+        @BindView(R.id.layout_collapse_in_mile)
+        RelativeLayout layoutCollapse;
+
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            switch (newState) {
+                case BottomSheetBehavior.STATE_HIDDEN:
+                    forgroundLayout.getForeground().setAlpha(0);
+                    selected_option = -1;
+                    break;
+                case BottomSheetBehavior.STATE_COLLAPSED:
+                    forgroundLayout.getForeground().setAlpha(200);
+                    loadOptions(true);
+                    listOptions.setAlpha(0f);
+                    // changeLayoutParams(16);
+                    isUp = true;
+                    break;
+                case BottomSheetBehavior.STATE_EXPANDED:
+                    // changeLayoutParams(48);
+                    isUp = false;
+                    break;
+            }
+
+        }
+
+        void changeLayoutParams(int pixel) {
+          /* RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutCollapse.getLayoutParams();
+            layoutParams.topMargin = Utils.getInstance().getPixelAsDp(getApplicationContext(), pixel);
+            layoutCollapse.setLayoutParams(layoutParams);*/
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            if (slideOffset < 0) {
+                float alpha = (1 + slideOffset) * 200;
+                forgroundLayout.getForeground().setAlpha((int) (alpha));
+            } else if (slideOffset > 0) {
+                float alpha = (55 * slideOffset) + 200;
+                forgroundLayout.getForeground().setAlpha((int) (alpha));
+                listOptions.setAlpha(slideOffset);
+
+                if (isUp) {
+                    Log.d("Slide", "onSlide: UP");
+                    changeLayoutParams((int) (48 * slideOffset));
+                } else {
+                    Log.d("Slide", "onSlide: DOWN");
+
+                    changeLayoutParams((int) (48 - 48 * (1 - slideOffset)));
+
+                }
+            }
+
+        }
+    };
 
     @Override
     public void onImageFragmentInteraction(Uri uri) {
@@ -58,7 +193,28 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     }
 
-    ArrayList<TMileData> mileDataArrayList;
+    void invalidateActivation() {
+        imageThumsDown.setActivated(false);
+        imageThumsUp.setActivated(false);
+    }
+
+    void loadOptions(boolean isUp) {
+        ArrayList<String> options = new ArrayList<>();
+        if (isUp) {
+            options.add(getResources().getString(R.string.options_feedback_1));
+            options.add(getResources().getString(R.string.options_feedback_2));
+            options.add(getResources().getString(R.string.options_feedback_3));
+            options.add(getResources().getString(R.string.options_feedback_4));
+        } else {
+            options.add(getResources().getString(R.string.options_feedback_down_1));
+            options.add(getResources().getString(R.string.options_feedback_down_2));
+            options.add(getResources().getString(R.string.options_feedback_down_3));
+            options.add(getResources().getString(R.string.options_feedback_down_4));
+        }
+        optionsAdapter = new OptionsAdapter(getApplicationContext(), options);
+        listOptions.setAdapter(optionsAdapter);
+        selected_option = -1;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,23 +222,96 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_miles);
         ButterKnife.bind(this);
+
         DataHolder holder = DataHolder.getInstance(getApplicationContext());
-        String title = holder.getCurrentClass()+" " + holder.getCurrentSection();
-        getSupportActionBar().setTitle("Miles");
-        getSupportActionBar().setSubtitle(title);
+        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
+        toolbar.setTitle("Miles");
+        toolbar.setSubtitle(title);
+
+        setSupportActionBar(toolbar);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        forgroundLayout.getForeground().setAlpha(0);
+        initTypeView();
+        initBottomSheet();
+        BottomSheetBehavior.from(bottomSheet)
+                .setState(BottomSheetBehavior.STATE_HIDDEN);
+
 
         textTiltle.setText(holder.getCurrentMileTitle());
-
-   /*   addFragment(1);
-        addFragment(1);
-        addFragment(2);
-        addFragment(3);
-        addFragment(4);
-        addFragment(5);*/
         addFragments();
+        buttonComplete.setOnClickListener(sheetShowListener);
+        listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i != selected_option) {//  optionsAdapter.notifyDataSetChanged();
+                    for (int j = 0; j < adapterView.getChildCount(); j++) {
+                        adapterView.getChildAt(j).setActivated(false);
+                    }
+                    view.setActivated(true);
+                    selected_option = i;
+                }
+
+            }
+        });
+
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selected_option != -1) {
+                    showToast("Submitted successfully ");
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_HIDDEN);
+                } else
+                    showToast("Please select one option to submit");
+
+            }
+        });
+
+    }
+
+    void initTypeView() {
+        Resources resources = getResources();
+        Drawable background;
+        int titleTextColor, buttonTextColor, buttonBackgroundColor;
+        int greenPrimary = resources.getColor(R.color.colorPrimary);
+        int white = resources.getColor(android.R.color.white);
+        if (getIntent().getBooleanExtra("isMile", false)) {
+            background = resources.getDrawable(R.drawable.background_landing);
+            buttonBackgroundColor = white;
+            buttonTextColor = greenPrimary;
+            titleTextColor = white;
+        } else {
+            background = resources.getDrawable(R.drawable.bg_training);
+            buttonBackgroundColor = greenPrimary;
+            buttonTextColor = white;
+            titleTextColor = greenPrimary;
+        }
+        scrollView.setBackgroundDrawable(background);
+        buttonComplete.setBackgroundColor(buttonBackgroundColor);
+        buttonComplete.setTextColor(buttonTextColor);
+        textTiltle.setTextColor(titleTextColor);
+    }
+
+    void initBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
+
+        imageThumsUp.setOnClickListener(thumbsClickListener);
+        imageThumsDown.setOnClickListener(thumbsClickListener);
+
+        imageIconClose.setOnClickListener(sheetShowListener);
+    }
+
+    void showToast(String msg) {
+        Toast.makeText(getApplicationContext(), "" + msg, Toast.LENGTH_SHORT).show();
     }
 
     void addFragments() {
@@ -105,7 +334,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     fragment = MilesVideoFragment.newInstance("VIDEOS", milesList);
                     break;
                 case TYPE_AUDIO:
-                    fragment = MilesAudioFragment.newInstance("AUDIO", getAudioMiles());
+                    ArrayList<AudioMiles> audioMilesList = new ArrayList<>();
+                    for (int j = 0; j < mileData.getUrlsList().size(); j++) {
+                        audioMilesList.add(new AudioMiles(j, j, mileData.getUrlsList().get(j)));
+                    }
+                    fragment = MilesAudioFragment.newInstance("AUDIO", audioMilesList);
                     break;
                 case TYPE_IMAGE:
                     ArrayList<ImageMiles> imageMilesList = new ArrayList<>();
@@ -138,71 +371,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         super.onBackPressed();
     }
 
-    void addFragment(int type) {
-        Fragment fragment = null;
-        String name = "";
-        switch (type) {
-            case 1:
-                name = "TEXT";
-                fragment = MilesTextFragment.newInstance("LEARNING OUTCOMES", getResources().getString(R.string.school_msg_two));
-                break;
-            case 2:
-                name = "VIDEOS";
-                fragment = MilesVideoFragment.newInstance("VIDEOS", getVideoMiles());
-                break;
-            case 3:
-                name = "VIDEO";
-                fragment = MilesVideoFragment.newInstance("VIDEO", getOneMile());
-                break;
-            case 4:
-                name = "AUDIO";
-                fragment = MilesAudioFragment.newInstance("AUDIO", getAudioMiles());
-                break;
-            case 5:
-                name = "IMAGES";
-                fragment = MilesImageFragment.newInstance("IMAGES", getImageMiles());
-                break;
-        }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(milesFragmentContainer.getId(), fragment, name)
-                .commit();
-    }
-
-    ArrayList<VideoMiles> getVideoMiles() {
-        ArrayList<VideoMiles> milesList = new ArrayList<>();
-        milesList.add(new VideoMiles(0, 0, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new VideoMiles(1, 1, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new VideoMiles(2, 2, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new VideoMiles(3, 3, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new VideoMiles(4, 4, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new VideoMiles(5, 5, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        return milesList;
-    }
-
     ArrayList<AudioMiles> getAudioMiles() {
         ArrayList<AudioMiles> milesList = new ArrayList<>();
         milesList.add(new AudioMiles(0, 0, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
         milesList.add(new AudioMiles(1, 1, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
 
-        return milesList;
-    }
-
-
-    ArrayList<ImageMiles> getImageMiles() {
-        ArrayList<ImageMiles> milesList = new ArrayList<>();
-        milesList.add(new ImageMiles(0, 0, "Image one", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(1, 1, "Image two", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(2, 2, "Image three", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(3, 3, "Image four", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(4, 4, "Image five", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        milesList.add(new ImageMiles(5, 5, "Image six", "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
-        return milesList;
-    }
-
-    ArrayList<VideoMiles> getOneMile() {
-        ArrayList<VideoMiles> milesList = new ArrayList<>();
-        milesList.add(new VideoMiles(0, 0, "http://weknowyourdreams.com/images/nature/nature-02.jpg"));
         return milesList;
     }
 }

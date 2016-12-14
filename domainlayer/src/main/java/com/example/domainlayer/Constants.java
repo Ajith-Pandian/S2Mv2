@@ -12,7 +12,7 @@ public class Constants {
     public static final String MILES_URL = BASE_URL + "milestones/";
     public static final String MILES_URL_SUFFIX = "miles";
     public static final String TRAININGS_URL = BASE_URL + "milestones/";
-    public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/miles_trainings";
+    public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/milesTrainings";
     public static final String SECTIONS_URL = BASE_URL + "schools/2/sections";
     public static final String TRAININGS_URL_SUFFIX = "/trainings";
 

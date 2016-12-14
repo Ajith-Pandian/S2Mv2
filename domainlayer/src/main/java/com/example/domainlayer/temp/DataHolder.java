@@ -144,7 +144,8 @@ public class DataHolder {
                 SclActs sclActivities
                         = new SclActs(schoolActivity.getInt(KEY_ID),
                         schoolActivity.getInt(KEY_USER_ID),
-                        schoolActivity.getString(KEY_SCHOOL_NAME),
+                        "",
+                       // schoolActivity.getString(KEY_SCHOOL_NAME),
                         schoolActivity.getString(KEY_MESSAGE),
                         //getMessage(schoolActivity.getString(KEY_MESSAGE)),
                         schoolActivity.getString(KEY_TYPE),

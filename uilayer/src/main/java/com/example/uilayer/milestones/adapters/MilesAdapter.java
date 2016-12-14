@@ -85,7 +85,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    getDetails(position);
+                        getDetails(position, true);
                     }
                 });
                 break;
@@ -97,7 +97,9 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tViewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openActivity(TrainingActivity.class);
+                        //     openActivity(TrainingActivity.class);
+                        getDetails(position, false);
+
                     }
                 });
                 break;
@@ -106,15 +108,14 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    void getDetails(final int position)
-    {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL+"/1",
+    void getDetails(final int position, final boolean isMile) {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL + "/1",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("MilesDetails", "onResponse: " + response);
                         DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(response));
-                        openActivity(MilesActivity.class);
+                        openActivity(MilesActivity.class, isMile);
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -170,9 +171,10 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
     }
-    private void openActivity(Class<?> activityClass)
-    {
-        Intent intent=new Intent(context,activityClass);
+
+    private void openActivity(Class<?> activityClass, boolean isMile) {
+        Intent intent = new Intent(context, activityClass);
+        intent.putExtra("isMile", isMile);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

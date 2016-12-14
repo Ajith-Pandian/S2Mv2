@@ -38,7 +38,8 @@
         <activity
             android:name=".milestones.TrainingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".milestones.MilesActivity">
+        <activity android:name=".milestones.MilesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".milestones.ArchiveActivity"
