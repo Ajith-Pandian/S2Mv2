@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.example.uilayer.milestones.TrainingActivity;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,10 +48,12 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<TMiles> milestonesList;
     private Context context;
+    private int undoId;
 
-    public MilesAdapter(Context context, List<TMiles> milestonesList) {
+    public MilesAdapter(Context context, List<TMiles> milestonesList, int undoId) {
         this.milestonesList = milestonesList;
         this.context = context;
+        this.undoId = undoId;
     }
 
     @Override
@@ -88,6 +92,12 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         getDetails(position, true);
                     }
                 });
+                if (undoId != -1 && undoId == mile.getId())
+                    viewHolder.undoButton.setVisibility(View.VISIBLE);
+                else
+                    viewHolder.undoButton.setVisibility(View.GONE);
+
+
                 break;
             case 1:
                 TrainingsViewHolder tViewHolder = (TrainingsViewHolder) holder;
@@ -201,6 +211,8 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView textPosition;
         @BindView(R.id.layout_root_miles)
         RelativeLayout rootLayout;
+        @BindView(R.id.button_undo)
+        Button undoButton;
 
         MilesViewHolder(View view) {
             super(view);

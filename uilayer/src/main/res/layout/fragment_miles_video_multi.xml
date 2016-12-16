@@ -44,7 +44,7 @@
                     android:padding="3dp"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="TITLE"
+                    android:text="VIDEOS"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
             </LinearLayout>

@@ -12,4 +12,12 @@
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
         android:src="@drawable/bulletin_back" />
+    <ImageButton
+        android:layout_width="30dp"
+        android:id="@+id/button_play"
+        android:layout_centerInParent="true"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_video_play"
+        android:layout_height="30dp" />
 </RelativeLayout>

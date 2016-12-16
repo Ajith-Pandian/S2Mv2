@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="answer_check">
-        <attr name="state_selected" format="boolean" />
+        <attr name="state_is_selected" format="boolean" />
         <attr name="state_right" format="boolean" />
         <attr name="state_wrong" format="boolean" />
         <attr name="state_not_selected" format="boolean" />

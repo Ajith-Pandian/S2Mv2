@@ -22,6 +22,8 @@ public class DataHolder {
     private static DataHolder mInstance;
     ArrayList<Section> sectionsList;
     int schoolId;
+    String avatar;
+    String currentMileTitle;
     private String otp;
     private String firstName;
     private String lastName;
@@ -29,14 +31,21 @@ public class DataHolder {
     private String accessToken;
     private String lastLogin;
     private String currentClass;
-
     private String currentSection;
     private String email;
     private JSONObject loginResultJson;
     private JSONObject otpSuccessResultJson;
-
     private ArrayList<TMiles> milesList;
     private ArrayList<TMileData> currentMileData;
+    private ArrayList<TMiles> archiveData;
+    private int undoableId;
+
+    public static synchronized DataHolder getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new DataHolder();
+        }
+        return mInstance;
+    }
 
     public ArrayList<TMileData> getCurrentMileData() {
         return currentMileData;
@@ -46,19 +55,20 @@ public class DataHolder {
         this.currentMileData = currentMileData;
     }
 
+    public ArrayList<TMiles> getArchiveData() {
+        return archiveData;
+    }
+
+    public void setArchiveData(ArrayList<TMiles> archiveData) {
+        this.archiveData = archiveData;
+    }
+
     public ArrayList<TMiles> getMilesList() {
         return milesList;
     }
 
     public void setMilesList(ArrayList<TMiles> milesList) {
         this.milesList = milesList;
-    }
-
-    public static synchronized DataHolder getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new DataHolder();
-        }
-        return mInstance;
     }
 
     public String getEmail() {
@@ -105,6 +115,14 @@ public class DataHolder {
         return firstName;
     }
 
+    public int getUndoableId() {
+        return undoableId;
+    }
+
+    public void setUndoableId(int undoableId) {
+        this.undoableId = undoableId;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -121,15 +139,6 @@ public class DataHolder {
         return loginResultJson;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    String avatar;
     public void setLoginResultJson(JSONObject loginResultJson) {
         this.loginResultJson = loginResultJson;
         try {
@@ -143,6 +152,14 @@ public class DataHolder {
         } catch (JSONException exception) {
             Log.e("DataHolder", "setLoginResultJson: ", exception);
         }
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public JSONObject getOtpSuccessResultJson() {
@@ -206,7 +223,10 @@ public class DataHolder {
     public String getCurrentClass() {
         return currentClass;
     }
-String currentMileTitle;
+
+    public void setCurrentClass(String currentClass) {
+        this.currentClass = currentClass;
+    }
 
     public String getCurrentMileTitle() {
         return currentMileTitle;
@@ -214,10 +234,6 @@ String currentMileTitle;
 
     public void setCurrentMileTitle(String currentMileTitle) {
         this.currentMileTitle = currentMileTitle;
-    }
-
-    public void setCurrentClass(String currentClass) {
-        this.currentClass = currentClass;
     }
 
     private class Section {

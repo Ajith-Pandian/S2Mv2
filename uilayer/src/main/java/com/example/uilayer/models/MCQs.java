@@ -1,5 +1,6 @@
 package com.example.uilayer.models;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -7,9 +8,9 @@ import java.util.Map;
  */
 
 public class MCQs {
-    int id ;
-    String question,answer;
-    Map<String, String> options;
+    private ArrayList<McqOptions> options;
+    private int id;
+    private String question, answer;
 
     public int getId() {
         return id;
@@ -35,11 +36,13 @@ public class MCQs {
         this.question = question;
     }
 
-    public Map<String, String> getOptions() {
+    public ArrayList<McqOptions> getOptions() {
         return options;
     }
 
-    public void setOptions(Map<String, String> options) {
+    public void setOptions(ArrayList<McqOptions> options) {
         this.options = options;
     }
+
+
 }

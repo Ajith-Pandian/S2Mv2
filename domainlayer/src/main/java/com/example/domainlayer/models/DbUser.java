@@ -31,6 +31,8 @@ public class DbUser {
     private String accessToken;
     @DatabaseField(columnName = Constants.KEY_LAST_LOGIN)
     private String lastLogin;
+    @DatabaseField(columnName = Constants.KEY_TYPE)
+    private String type;
     @DatabaseField(columnName = Constants.KEY_SCHOOL_ID)
     private int schoolId;
     @DatabaseField(columnName = Constants.KEY_MILES)
@@ -140,6 +142,15 @@ public class DbUser {
 
     public void setSchoolId(int schoolId) {
         this.schoolId = schoolId;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMiles() {

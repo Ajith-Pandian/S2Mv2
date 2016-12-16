@@ -19,5 +19,8 @@
     <dimen name="miles_item_h_space">8dp</dimen>
     <dimen name="miles_item_v_space">8dp</dimen>
 
+    <dimen name="mcq_right_padding">32dp</dimen>
+    <dimen name="mcq_left_padding">32dp</dimen>
+
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.uilayer.milestones;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -13,11 +14,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,9 +55,9 @@ import static com.example.domainlayer.Constants.TYPE_VIDEO;
 public class MilesActivity extends AppCompatActivity implements MilesTextFragment.OnFragmentInteractionListener
         , MilesVideoFragment.OnFragmentInteractionListener,
         MilesAudioFragment.OnFragmentInteractionListener, MilesImageFragment.OnFragmentInteractionListener {
+    final int REQUEST_CODE = 111;
     @BindView(R.id.miles_fragment_container)
     LinearLayout milesFragmentContainer;
-
     @BindView(R.id.fragment_panel)
     ScrollView scrollView;
     @BindView(R.id.text_title_mile)
@@ -89,6 +92,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             }
             BottomSheetBehavior.from(bottomSheet)
                     .setState(state);
+
         }
     };
     @BindView(R.id.list_view_options_bottom_sheet)
@@ -116,6 +120,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     Button buttonSubmit;
     @BindView(R.id.close_icon)
     ImageView imageIconClose;
+    TextView toolbarTitle, toolbarSubTitle;
+    ImageButton backButton;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         boolean isUp = false;
@@ -224,21 +230,30 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         setContentView(R.layout.activity_miles);
         ButterKnife.bind(this);
 
-        DataHolder holder = DataHolder.getInstance(getApplicationContext());
-        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
-        toolbar.setTitle("Miles");
-        toolbar.setSubtitle(title);
 
+        toolbarTitle = (TextView) toolbar.findViewById(R.id.text_title_toolbar);
+        toolbarSubTitle = (TextView) toolbar.findViewById(R.id.text_subtitle_toolbar);
+        backButton = (ImageButton) toolbar.findViewById(R.id.button_back_toolbar);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        // toolbar.setTitle("Quiz");
         setSupportActionBar(toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+
+        DataHolder holder = DataHolder.getInstance(getApplicationContext());
+        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
+        if (getIntent().getBooleanExtra("isMile", false)) {
+            toolbarTitle.setText("Miles");
+        } else
+            toolbarTitle.setText("Training");
+
+        toolbarSubTitle.setText(title);
+
         forgroundLayout.getForeground().setAlpha(0);
         initTypeView();
         initBottomSheet();
@@ -247,6 +262,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
 
         textTiltle.setText(holder.getCurrentMileTitle());
+
         addFragments();
 
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -278,6 +294,18 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     void initTypeView() {
         Resources resources = getResources();
         Drawable background;
@@ -298,7 +326,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             buttonComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(MilesActivity.this, MCQActivity.class));
+                    startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class), REQUEST_CODE);
                 }
             });
         }
@@ -306,6 +334,25 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         buttonComplete.setBackgroundColor(buttonBackgroundColor);
         buttonComplete.setTextColor(buttonTextColor);
         textTiltle.setTextColor(titleTextColor);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                boolean result = data.getBooleanExtra("isSuccess", false);
+                if (result) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    invalidateActivation();
+                    imageThumsUp.setActivated(true);
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 
     void initBottomSheet() {

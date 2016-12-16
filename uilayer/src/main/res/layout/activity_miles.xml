@@ -21,13 +21,15 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/AppTheme.AppBarOverlay">
 
-                <android.support.v7.widget.Toolbar
+              <!--  <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_activity_miles"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+                <include
                     android:id="@+id/toolbar_activity_miles"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+                    layout="@layout/toolbar_subtitle" />
             </android.support.design.widget.AppBarLayout>
 
 
@@ -36,8 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/app_bar_layout_miles"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:scrollbars="none">
 
                 <RelativeLayout
@@ -54,6 +54,8 @@
                         android:textSize="24sp" />
 
                     <LinearLayout
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:id="@+id/miles_fragment_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

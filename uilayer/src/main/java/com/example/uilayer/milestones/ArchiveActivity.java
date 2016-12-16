@@ -1,6 +1,7 @@
 package com.example.uilayer.milestones;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,7 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
@@ -24,6 +28,7 @@ import com.example.uilayer.milestones.betterAdapter.model.Milestones;
 import com.example.uilayer.milestones.betterAdapter.model.Training;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,13 +49,31 @@ public class ArchiveActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    TabLayout tabLayout;
+    TextView toolbarTitle, toolbarSubTitle;
+    ImageButton backButton;
+    DataHolder dataHolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_archive);
+        toolbarTitle = (TextView) toolbar.findViewById(R.id.text_title_toolbar);
+        toolbarSubTitle = (TextView) toolbar.findViewById(R.id.text_subtitle_toolbar);
+        backButton = (ImageButton) toolbar.findViewById(R.id.button_back_toolbar);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         setSupportActionBar(toolbar);
+        dataHolder = DataHolder.getInstance(getApplicationContext());
+        toolbarTitle.setText("Archive");
+        toolbarSubTitle.setText(dataHolder.getCurrentClass() + " " + dataHolder.getCurrentSection());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -58,31 +81,11 @@ public class ArchiveActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        // Set up the Tablayout with the view pager
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager);
 
 
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_archive, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -97,6 +100,7 @@ public class ArchiveActivity extends AppCompatActivity {
         private static final String IS_MILE = "is_mile";
         @BindView(R.id.recycler_fragment_archive)
         RecyclerView archiveRecycler;
+        MilesAdapter milestonesAdapter;
 
         public PlaceholderFragment() {
         }
@@ -121,35 +125,32 @@ public class ArchiveActivity extends AppCompatActivity {
 
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             archiveRecycler.setLayoutManager(mLayoutManager);
-            loadAdapterItems();
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(archiveRecycler.getContext(),
                     mLayoutManager.getOrientation());
-
-            archiveRecycler.addItemDecoration(mDividerItemDecoration);
-            archiveRecycler.setAdapter(milestonesAdapter);
-
- /*           if (getArguments().getBoolean(IS_MILE))
-                archiveRecycler.setAdapter(null);
+            int isTraining;
+            if (getArguments().getBoolean(IS_MILE))
+                isTraining = 0;
             else
-                archiveRecycler.setAdapter(null);*/
-
+                isTraining = 1;
+            archiveRecycler.addItemDecoration(mDividerItemDecoration);
+            milestonesAdapter = new MilesAdapter(getContext(), getMilesOrTrainingsList(isTraining),
+                    DataHolder.getInstance(getActivity()).getUndoableId());
+            archiveRecycler.setAdapter(milestonesAdapter);
             return rootView;
         }
-        MilesAdapter milestonesAdapter;
-        void loadAdapterItems() {
-            ArrayList<Milestones> list = new ArrayList<>();
-            list.add(new Mile(1, 1, "Mile", "Mile one"));
-            list.add(new Mile(1, 2, "Mile", "Mile two"));
-            list.add(new Training(1, 2, "Training", "Training one"));
-            list.add(new Training(1, 2, "Training", "Training two"));
-            list.add(new Mile(1, 3, "Mile", "Mile three"));
-            list.add(new Training(1, 2, "Training", "Training three"));
-            list.add(new Mile(1, 4, "Mile", "Mile four"));
-            list.add(new Mile(1, 5, "Mile", "Mile five"));
-            milestonesAdapter = new MilesAdapter(getActivity(), DataHolder.getInstance(getActivity()).getMilesList());
-        }
-    }
 
+        ArrayList<TMiles> getMilesOrTrainingsList(int type) {
+            ArrayList<TMiles> actualList = DataHolder.getInstance(getActivity()).getArchiveData();
+            ArrayList<TMiles> filteredList = new ArrayList<>();
+            for (int i = 0; i < actualList.size(); i++) {
+                if (actualList.get(i).getIsTraining() == type)
+                    filteredList.add(actualList.get(i));
+            }
+            Collections.reverse(filteredList);
+            return filteredList;
+        }
+
+    }
 
 
     /**
@@ -164,11 +165,20 @@ public class ArchiveActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            boolean type;
             switch (position) {
                 case 0:
-                    return PlaceholderFragment.newInstance(true);
+                    type = true;
+                    break;
+                case 1:
+                    type = false;
+                    break;
+                default:
+                    type = true;
+                    break;
+
             }
-            return PlaceholderFragment.newInstance(false);
+            return PlaceholderFragment.newInstance(type);
         }
 
         @Override

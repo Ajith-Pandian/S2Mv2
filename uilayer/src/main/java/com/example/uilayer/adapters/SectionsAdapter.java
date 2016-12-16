@@ -54,6 +54,7 @@ import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TRAININGS_URL_SUFFIX;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 
 /**
@@ -123,6 +124,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                         getOrderedMilestoneDetails(position);
                     }
                 });
+
+        if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
+            holder.threeDots.setVisibility(View.VISIBLE);
+        } else holder.threeDots.setVisibility(View.GONE);
     }
 
     void getOrderedMilestoneDetails(final int position) {

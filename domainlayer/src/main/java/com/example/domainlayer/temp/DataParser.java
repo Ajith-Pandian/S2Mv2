@@ -25,6 +25,8 @@ import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TOTAL_MILESTONES;
 import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.PREFIX_CLASS;
+import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.TYPE_TEXT;
 
 /**
@@ -41,8 +43,8 @@ public class DataParser {
                 JSONObject milesDatObject = sectionsArray.getJSONObject(i);
                 Sections section
                         = new Sections(milesDatObject.getInt(KEY_ID),
-                        milesDatObject.getString(KEY_CLASS),
-                        milesDatObject.getString(KEY_SECTION),
+                        (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
+                        (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
                         milesDatObject.getInt(KEY_COMPLETED_MILESTONES),
                         milesDatObject.getInt(KEY_TOTAL_MILESTONES),
                         milesDatObject.getInt(KEY_SCHOOL_ID),

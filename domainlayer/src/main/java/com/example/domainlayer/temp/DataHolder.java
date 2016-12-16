@@ -119,6 +119,7 @@ public class DataHolder {
             user.setWow(loginResultJson.getString(Constants.KEY_WOW));
             user.setAvatar(loginResultJson.getString(Constants.KEY_AVATAR));
             user.setMiles(loginResultJson.getString(Constants.KEY_MILES));
+            user.setType(loginResultJson.getString(Constants.KEY_TYPE));
 
             //Shared preferences
             setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));

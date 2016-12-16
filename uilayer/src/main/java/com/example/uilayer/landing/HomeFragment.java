@@ -93,10 +93,10 @@ public class HomeFragment extends Fragment {
                 .resize(100, 100)
                 .into(target);
 
-       /* Picasso.with(getActivity())
+        Picasso.with(getActivity())
                 .load(DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage())
                 .into(bulletinImage);
-*/
+
     }
 
     @Override
