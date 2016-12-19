@@ -21,4 +21,32 @@
     <color name="pink_fade">#e78b8b</color>
     <color name="pink_thumbs_down_dark">#f20606</color>
     <color name="red">@color/pink_thumbs_down_dark</color>
+
+    <color name="profile_image_border">@color/text_secondary</color>
+
+    <color name="green1">#034922</color>
+    <color name="green2">#00662e</color>
+    <color name="green3">#008056</color>
+    <color name="green4">#1aaa6e</color>
+    <color name="green5">#6ebc92</color>
+    <color name="green6">#a2ca6d</color>
+    <color name="green7">#b4d6ad</color>
+    <color name="green8">#d6edcc</color>
+
+    <color name="mile_oolor1">#e94491</color>
+    <color name="mile_oolor2">#ea5355</color>
+    <color name="mile_oolor3">#f09106</color>
+    <color name="mile_oolor4">#1aaa6e</color>
+    <color name="mile_oolor5">#99569d</color>
+    <color name="mile_oolor6">#a2ca6d</color>
+    <color name="mile_oolor7">#858585</color>
+    <color name="mile_oolor8">#3c3c3b</color>
+
+
+    <color name="text_color1">#000000</color>
+    <color name="text_color2">#4d4d4d</color>
+    <color name="text_color3">#666666</color>
+
+
+
 </resources>

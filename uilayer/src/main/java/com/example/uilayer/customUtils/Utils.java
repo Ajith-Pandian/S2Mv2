@@ -7,8 +7,13 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.TypedValue;
@@ -190,5 +195,33 @@ public class Utils {
                 mCurrentAnimator = set;
             }
         });
+    }
+
+    public  Bitmap getRoundedCornerBitmap(Context context,Bitmap bitmap, int cornerDips, int borderDips) {
+        Bitmap output;
+        output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) borderDips,
+                context.getResources().getDisplayMetrics());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawCircle(bitmap.getWidth() / 2,  bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        // draw border
+        paint.setColor(context.getResources().getColor(android.R.color.black));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth((float) borderSizePx);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,  bitmap.getWidth() / 2, paint);
+
+        return output;
     }
 }

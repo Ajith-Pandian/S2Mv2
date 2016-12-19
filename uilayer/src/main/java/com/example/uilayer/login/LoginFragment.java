@@ -8,6 +8,7 @@ import android.support.v4.util.ArrayMap;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -235,7 +236,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         changeToMail();
                     }
                 } else {
-                    loginText.setCursorVisible(false);
+                   // loginText.setCursorVisible(false);
                     changeToMail();
                 }
             }
@@ -305,6 +306,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             inputLayout.setVisibility(View.VISIBLE);
         // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        loginText.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
     }
 
     void changeToMail() {
@@ -313,7 +315,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if (inputLayout.getVisibility() == View.VISIBLE)
             // animateView(inputLayout, View.GONE);
             inputLayout.setVisibility(View.GONE);
-
+        loginText.setGravity(Gravity.CENTER);
     }
 
     void animateView(final View view, final int visibility) {

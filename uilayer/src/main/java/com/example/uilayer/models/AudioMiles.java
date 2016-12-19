@@ -8,12 +8,13 @@ import java.io.Serializable;
 
 public class AudioMiles implements Serializable {
     int id, position;
-    String url;
+    String image_url,content_url;
 
-    public AudioMiles(int position, int id, String url) {
+    public AudioMiles(int position, int id, String image_url,String content_url) {
         this.position = position;
         this.id = id;
-        this.url = url;
+        this.image_url = image_url;
+        this.content_url=content_url;
     }
 
     public int getId() {
@@ -32,12 +33,12 @@ public class AudioMiles implements Serializable {
         this.position = position;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImage_url() {
+        return image_url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
 }

@@ -21,8 +21,9 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
        <ImageButton
+           android:contentDescription="BackButton"
+           android:background="?attr/selectableItemBackgroundBorderless"
            android:layout_width="wrap_content"
-           android:background="@null"
            android:layout_height="match_parent"
            android:layout_marginStart="16dp"
            android:layout_marginLeft="16dp"

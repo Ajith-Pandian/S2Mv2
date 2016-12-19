@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-    android:layout_height="@dimen/miles_item_height">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/miles_item_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/mile_image"
@@ -15,9 +16,11 @@
     <ImageButton
         android:layout_width="30dp"
         android:id="@+id/button_play"
-        android:layout_centerInParent="true"
-        android:background="@null"
+        android:background="@drawable/ic_video_play_dr"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_video_play"
-        android:layout_height="30dp" />
+        android:padding="5dp"
+        app:srcCompat="@drawable/ic_play_white_16dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -37,6 +37,8 @@ public class DbUser {
     private int schoolId;
     @DatabaseField(columnName = Constants.KEY_MILES)
     private String miles;
+    @DatabaseField(columnName = Constants.KEY_SCHOOL_NAME)
+    private String schoolName;
     @DatabaseField(columnName = Constants.KEY_WOW)
     private String wow;
     @DatabaseField(columnName = Constants.KEY_AVATAR)
@@ -144,6 +146,13 @@ public class DbUser {
         this.schoolId = schoolId;
     }
 
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
 
     public String getType() {
         return type;

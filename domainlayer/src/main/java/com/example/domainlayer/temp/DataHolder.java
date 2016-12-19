@@ -115,11 +115,13 @@ public class DataHolder {
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
             user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
+            user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
             user.setWow(loginResultJson.getString(Constants.KEY_WOW));
             user.setAvatar(loginResultJson.getString(Constants.KEY_AVATAR));
             user.setMiles(loginResultJson.getString(Constants.KEY_MILES));
             user.setType(loginResultJson.getString(Constants.KEY_TYPE));
+
 
             //Shared preferences
             setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));

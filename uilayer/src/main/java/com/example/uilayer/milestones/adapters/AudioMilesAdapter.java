@@ -45,7 +45,7 @@ public class AudioMilesAdapter extends RecyclerView.Adapter<AudioMilesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         AudioMiles mile = milesList.get(position);
         Picasso.with(context)
-                .load(mile.getUrl())
+                .load(mile.getImage_url())
                 .placeholder(R.drawable.place_holder_audio)
                 .into(holder.mileImage);
     }

@@ -67,11 +67,11 @@ public class MCQAnswersAdapter extends BaseAdapter {
             holder.imageButton.setImageDrawable(null);
         } else if (options.isRight()) {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_green_primary));
-            holder.imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_white_20dp));
+            holder.imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_white_16dp));
             holder.textAnswer.setTextColor(context.getResources().getColor(R.color.colorPrimary));
         } else if (options.isWrong()) {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_red));
-            holder.imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close_white_24dp));
+            holder.imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close_white_16dp));
             holder.textAnswer.setTextColor(context.getResources().getColor(R.color.red));
         } else {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_stroke_colr_sec));

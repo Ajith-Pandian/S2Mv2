@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 
 import butterknife.BindView;
@@ -121,6 +122,8 @@ public class LandingActivity extends AppCompatActivity
 
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
+
+        getSupportActionBar().setTitle(DataHolder.getInstance(getApplicationContext()).getUser().getSchoolName());
 
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
@@ -301,7 +304,7 @@ public class LandingActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.landing, menu);
+        getMenuInflater().inflate(R.menu.menu_landing, menu);
         return true;
     }
 

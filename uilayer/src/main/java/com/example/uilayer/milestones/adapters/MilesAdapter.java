@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,8 +36,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_FEEDBACK_ID;
+import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
+import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 
@@ -82,14 +88,22 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             case 0:
                 MilesViewHolder viewHolder = (MilesViewHolder) holder;
-                TMiles mile = milestonesList.get(position);
+                final TMiles mile = milestonesList.get(position);
                 viewHolder.title.setText(mile.getTitle());
                 viewHolder.textContent.setText(mile.getNote());
                 viewHolder.textPosition.setText("" + mile.getMileIndex());
                 viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        DataHolder.getInstance(context).setCurrentMileTitle(mile.getTitle());
                         getDetails(position, true);
+
+                    }
+                });
+                viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        undoThisMile(mile.getId());
                     }
                 });
                 if (undoId != -1 && undoId == mile.getId())
@@ -101,13 +115,15 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 break;
             case 1:
                 TrainingsViewHolder tViewHolder = (TrainingsViewHolder) holder;
-                TMiles training = milestonesList.get(position);
+                final TMiles training = milestonesList.get(position);
                 tViewHolder.title.setText(training.getTitle());
                 tViewHolder.textContent.setText(training.getNote());
                 tViewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //     openActivity(TrainingActivity.class);
+                        DataHolder.getInstance(context).setCurrentMileTitle(training.getTitle());
+
                         getDetails(position, false);
 
                     }
@@ -166,6 +182,73 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_SCHOOL_ID, "2");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                return header;
+            }
+
+        };
+
+        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
+    }
+
+    void undoThisMile(final int undoId) {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.POST, FEEDBACK_UNDO_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("UndoFeedBack", "onResponse: " + response);
+                        Toast.makeText(context, "undo done", Toast.LENGTH_SHORT).show();
+
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("UndoFeedBack", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_MILE_ID, String.valueOf(undoId));
+                params.put(KEY_MILESTONE_ID, "1");
+                params.put(KEY_SECTION_ID, "4");
                 params.put(KEY_SCHOOL_ID, "2");
                 return params;
             }

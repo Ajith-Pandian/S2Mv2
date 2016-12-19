@@ -18,6 +18,8 @@ public class Constants {
     public static final String SECTIONS_URL = BASE_URL + "schools/2/sections";
     public static final String INTRO_TRAINING_URL = BASE_URL+"introTraining";
     public static final String ARCHIVE_URL = BASE_URL+"section/4/archiveMilesTrainings";
+    public static final String FEEDBACK_CREATE_URL = BASE_URL+"feedback/create";
+    public static final String FEEDBACK_UNDO_URL = BASE_URL+"feedback/undo";
 
     public static final String TRAININGS_URL_SUFFIX = "/trainings";
 
@@ -55,6 +57,7 @@ public class Constants {
     public static final String KEY_WOW = "wows";
     public static final String KEY_MILESTONE_NAME = "milestoneName";
     public static final String KEY_MILESTONE_ID = "milestoneId";
+    public static final String KEY_MILE_ID = "mileId";
     public static final String KEY_MILE_INDEX = "mileIndex";
     public static final String KEY_NOTE = "note";
     public static final String KEY_LIKES_COUNT = "likes_count";
@@ -62,6 +65,7 @@ public class Constants {
     public static final String KEY_ANSWER = "answer";
     public static final String KEY_QUESTION = "question";
     public static final String KEY_OPTIONS= "options";
+    public static final String KEY_FEEDBACK_ID= "feedbackId";
 
 
     public static final String KEY_SCHOOL_ID = "schoolId";
@@ -73,6 +77,11 @@ public class Constants {
     public static final String KEY_INTRO_CONTENT = "contentMetaSequence";
     public static final String KEY_ARCHIVE = "archive";
     public static final String KEY_UNDOABLE_ID= "undoableId";
+    public static final String KEY_THUMBS= "thumbs";
+    public static final String KEY_REASON= "reason";
+
+    public static final String THUMBS_UP= "up";
+    public static final String THUMBS_DOWN= "down";
 
 
     public static final String PREFIX_CLASS = "Class ";
@@ -124,9 +133,5 @@ public class Constants {
 
 
     public static final String PLACE_HOLDER_AUDIO = "http://www.iconsdb.com/icons/preview/green/dj-xxl.png";
-
-
-
-
 
 }

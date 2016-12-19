@@ -1,6 +1,7 @@
 package com.example.uilayer.landing;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +40,10 @@ public class HomeFragment extends Fragment {
     ImageView profileImage;
     @BindView(R.id.image_bulletin)
     ImageView bulletinImage;
+    @BindView(R.id.image_btn_share)
+    ImageButton buttonShare;
+    @BindView(R.id.image_btn_like)
+    ImageButton buttonlike;
     @BindView(R.id.name)
     TextView name;
     @BindView(R.id.designation)
@@ -49,7 +55,8 @@ public class HomeFragment extends Fragment {
     Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), bitmap));
+           // profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), bitmap));
+            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(),bitmap,20,3));
         }
 
         @Override
@@ -77,7 +84,16 @@ public class HomeFragment extends Fragment {
        // Bitmap imageBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.profile);
 
         //Utils.getInstance().getCirclularImage(getActivity(), imageBitmap);
-
+        buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
         return view;
     }
 

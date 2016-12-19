@@ -65,8 +65,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
     int i = 0;
     private Context context;
-    private int[] colorsArray = {R.color.fade_red, R.color.fade_orange, R.color.fade_blue,
-            R.color.card_color_four, R.color.card_color_five, R.color.card_color_six};
+    private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
+            R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
     private List<Sections> sectionDetailsList;
 
     public SectionsAdapter(Context context, List<Sections> sectionDetailsList) {
@@ -99,6 +99,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
         Sections sectionDetails = sectionDetailsList.get(position);
         holder.classname.setText(sectionDetails.get_Class());
+        holder.classname.setAlpha(0.8f);
         holder.sectionName.setText(sectionDetails.getSection());
         holder.mileStoneName.setText(sectionDetails.getMilestoneName());
         float completed = (float) sectionDetails.getCompletedMiles();
