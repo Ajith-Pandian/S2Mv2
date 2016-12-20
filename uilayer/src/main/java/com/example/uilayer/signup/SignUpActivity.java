@@ -1,4 +1,4 @@
-package com.example.uilayer;
+package com.example.uilayer.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.example.uilayer.DataHolder;
+import com.example.uilayer.R;
 import com.example.uilayer.landing.LandingActivity;
 import com.squareup.picasso.Picasso;
 

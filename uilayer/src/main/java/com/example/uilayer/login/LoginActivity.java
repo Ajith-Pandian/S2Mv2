@@ -1,15 +1,13 @@
 package com.example.uilayer.login;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.WindowManager;
 
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.SignUpActivity;
+import com.example.uilayer.signup.SignUpActivity;
 import com.example.uilayer.landing.LandingActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, OtpFragment.OtpListener {

@@ -444,7 +444,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             });
         }
         // scrollView.setBackgroundDrawable(background);
-        imageBackgroundActivity.setImageDrawable(background);
+        scrollView.setBackgroundDrawable(background);
         buttonComplete.setBackgroundColor(buttonBackgroundColor);
         buttonComplete.setTextColor(buttonTextColor);
         textTiltle.setTextColor(titleTextColor);

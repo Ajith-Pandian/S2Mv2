@@ -11,53 +11,58 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:screenOrientation="portrait"
             android:name=".login.LoginActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:screenOrientation="portrait"
-            android:name=".SignUpActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+        <activity
+            android:name=".signup.SignUpActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".landing.SchoolDetailActivity"
             android:screenOrientation="portrait"
-            android:name=".SchoolDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- android:label="@string/title_activity_school_detail" -->
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".landing.LandingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".milestones.MilestonesActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".milestones.MilestonesActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".milestones.TrainingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".milestones.MilesActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
         <activity
+            android:name=".milestones.MilesActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".milestones.ArchiveActivity"
             android:label="@string/title_activity_archive"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".milestones.MCQActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".milestones.MCQActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".splash.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity android:name=".landing.NetworkActivity"
+            android:label="Network"/>
     </application>
 
 </manifest>

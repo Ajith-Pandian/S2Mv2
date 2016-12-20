@@ -12,6 +12,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,7 +126,7 @@ public class LandingActivity extends AppCompatActivity
         frameLayout.getForeground().setAlpha(0);
 
         getSupportActionBar().setTitle(DataHolder.getInstance(getApplicationContext()).getUser().getSchoolName());
-
+        setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
         messagesButton.setOnClickListener(buttonsClickListener);
@@ -141,6 +143,17 @@ public class LandingActivity extends AppCompatActivity
         ft = fm.beginTransaction();
         ft.replace(R.id.layout_fragment, fragment)
                 .commit();
+    }
+
+    @SuppressWarnings("NewApi")
+    private void setupWindowAnimations() {
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        getWindow().setEnterTransition(fade);
+
+        Slide slide = new Slide();
+        slide.setDuration(1000);
+        getWindow().setReturnTransition(slide);
     }
 
     void setState(View button) {

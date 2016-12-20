@@ -9,19 +9,23 @@ public class Constants {
     private static final String BASE_URL = "http://192.168.0.104:8000/api/";
     public static final String LOGIN_URL = BASE_URL + "login";
     public static final String OTP_VERIFY_URL = BASE_URL + "verify";
+    public static final String USER_DETAILS_URL = BASE_URL + "users/";
     public static final String MILES_URL = BASE_URL + "milestones/";
     public static final String MILES_URL_SUFFIX = "miles";
     public static final String TRAININGS_URL = BASE_URL + "milestones/";
     public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/milesTrainings";
     public static final String MCQ_URL = TRAININGS_URL + "1/trainings/5/mcqs";
     public static final String MCQ_RESULT_URL = TRAININGS_URL + "1/trainings/15/submitMcqResults";
-    public static final String SECTIONS_URL = BASE_URL + "schools/2/sections";
+    public static final String SCHOOLS_URL = BASE_URL + "schools/";
+    public static final String SECTIONS_URL = SCHOOLS_URL + "2/sections";
     public static final String INTRO_TRAINING_URL = BASE_URL+"introTraining";
     public static final String ARCHIVE_URL = BASE_URL+"section/4/archiveMilesTrainings";
     public static final String FEEDBACK_CREATE_URL = BASE_URL+"feedback/create";
     public static final String FEEDBACK_UNDO_URL = BASE_URL+"feedback/undo";
+    public static final String ACTIVITY_LIKE_URL = SCHOOLS_URL+"2";
 
     public static final String TRAININGS_URL_SUFFIX = "/trainings";
+    public static final String ACTIVITIES_URL_SUFFIX = "/activities/";
 
 
     public static final String TEMP_EMAIL = "manit@gmail.com";

@@ -1,4 +1,4 @@
-package com.example.uilayer;
+package com.example.uilayer.landing;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.example.uilayer.R;
 import com.example.uilayer.adapters.SchoolActivitiesAdapter;
 import com.example.uilayer.models.SchoolDetails;
 

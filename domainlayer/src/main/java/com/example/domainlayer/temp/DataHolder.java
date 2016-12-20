@@ -2,6 +2,7 @@ package com.example.domainlayer.temp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.domainlayer.Constants;
@@ -53,19 +54,10 @@ public class DataHolder {
     String accessToken;
     int schoolId, userId;
 
-    public int getUserId() {
-        return sharedPreferences.getInt(KEY_USER_ID, -1);
-    }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-        getEditor().putInt(KEY_USER_ID, userId);
-
-    }
 
     public int getSchoolId() {
         return sharedPreferences.getInt(KEY_SCHOOL_ID, -1);
-
     }
 
     public void setSchoolId(int schoolId) {
@@ -95,12 +87,22 @@ public class DataHolder {
 
     private DataHolder(Context context) {
         this.context = context;
-
+        sharedpreferences= PreferenceManager
+                .getDefaultSharedPreferences(context);
+        //sharedpreferences = this.context.getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     SharedPreferences.Editor getEditor() {
-        sharedpreferences = this.context.getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         return editor = sharedpreferences.edit();
+    }
+
+    public int getUserId() {
+        return sharedPreferences.getInt(KEY_USER_ID, -1);
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+        getEditor().putInt(KEY_USER_ID, userId).commit();
     }
 
     public void saveUserDetails(JSONObject loginResultJson) {
@@ -110,6 +112,7 @@ public class DataHolder {
         sclActList = new ArrayList<>();
         try {
             user.setFirstName(loginResultJson.getString(Constants.KEY_FIRST_NAME));
+            user.setId(loginResultJson.getInt(Constants.KEY_ID));
             user.setLastName(loginResultJson.getString(Constants.KEY_LAST_NAME));
             user.setEmail(loginResultJson.getString(Constants.KEY_EMAIL));
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));

@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-
 /**
  * Created by thoughtchimp on 12/6/2016.
  */
@@ -48,8 +47,10 @@ public class DataBaseUtil {
             final List<DbUser> userList = userDao.queryForAll();
             if (userList.size() > 0)
                 return userList.get(0);
-            else
-                throw new RuntimeException("No users in table");
+            else {
+                return null;
+               // throw new RuntimeException("No users in table");
+            }
 
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "getUser: ", ex);
@@ -58,10 +59,10 @@ public class DataBaseUtil {
 
     }
 
-    public void setUser(DbUser  user) {
+    public void setUser(DbUser user) {
         try {
             Dao<DbUser, Integer> userDao = getLocalUserDao();
-          //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
+            //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
             userDao.createOrUpdate(user);
             Log.d(context.getClass().getSimpleName(), "setUser:");
         } catch (SQLException ex) {
