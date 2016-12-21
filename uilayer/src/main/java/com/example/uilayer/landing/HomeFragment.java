@@ -3,7 +3,6 @@ package com.example.uilayer.landing;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +29,7 @@ import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.network.NetworkActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

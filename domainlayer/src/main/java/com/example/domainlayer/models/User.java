@@ -1,21 +1,38 @@
 package com.example.domainlayer.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by thoughtchimp on 12/6/2016.
  */
-public class User {
+public class User implements Serializable {
     private int id;
     private String firstName;
     private String lastName;
+    private String name;
     private String email;
     private String phoneNum;
+    private String schoolName;
     private String accessToken;
     private String lastLogin;
     private int schoolId;
     private String miles;
     private String wow;
+    private String trainings;
+    private String avatar;
+    private Sections sections;
+    private ArrayList<Sections> sectionsList;
+    private ArrayList<SclActs> sclActs;
+    private Bulletin bulletin;
+
+    public User() {
+        // Don't forget the empty constructor, needed by ORMLite.
+    }
+
 
     public int getId() {
         return id;
@@ -41,6 +58,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getName() {
+        return firstName + " " + lastName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -55,6 +80,14 @@ public class User {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
     }
 
     public String getAccessToken() {
@@ -101,6 +134,14 @@ public class User {
         return avatar;
     }
 
+    public String getTrainings() {
+        return trainings;
+    }
+
+    public void setTrainings(String trainings) {
+        this.trainings = trainings;
+    }
+
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
@@ -112,17 +153,6 @@ public class User {
     public void setSections(Sections sections) {
         this.sections = sections;
     }
-
-    private String avatar;
-    private Sections sections;
-    private ArrayList<Sections> sectionsList;
-    private ArrayList<SclActs> sclActs;
-    private Bulletin bulletin;
-
-    public User() {
-        // Don't forget the empty constructor, needed by ORMLite.
-    }
-
 
     public ArrayList<Sections> getSectionsList() {
         return sectionsList;

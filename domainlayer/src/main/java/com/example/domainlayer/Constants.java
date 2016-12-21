@@ -6,7 +6,7 @@ package com.example.domainlayer;
 
 public class Constants {
 
-    private static final String BASE_URL = "http://192.168.0.104:8000/api/";
+    private static final String BASE_URL = "http://192.168.0.100:8000/api/";
     public static final String LOGIN_URL = BASE_URL + "login";
     public static final String OTP_VERIFY_URL = BASE_URL + "verify";
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
@@ -23,9 +23,10 @@ public class Constants {
     public static final String FEEDBACK_CREATE_URL = BASE_URL+"feedback/create";
     public static final String FEEDBACK_UNDO_URL = BASE_URL+"feedback/undo";
     public static final String ACTIVITY_LIKE_URL = SCHOOLS_URL+"2";
-
+    public static final String NETWORK_URL = SCHOOLS_URL+"2"+"/network";
     public static final String TRAININGS_URL_SUFFIX = "/trainings";
     public static final String ACTIVITIES_URL_SUFFIX = "/activities/";
+    public static final String NETWORK_URL_SUFFIX = "/network";
 
 
     public static final String TEMP_EMAIL = "manit@gmail.com";
@@ -59,6 +60,7 @@ public class Constants {
 
     public static final String KEY_MILES = "miles";
     public static final String KEY_WOW = "wows";
+    public static final String KEY_TRAINING = "trainings";
     public static final String KEY_MILESTONE_NAME = "milestoneName";
     public static final String KEY_MILESTONE_ID = "milestoneId";
     public static final String KEY_MILE_ID = "mileId";
@@ -131,6 +133,10 @@ public class Constants {
     public static final String TYPE_TEACHER = "1";
     public static final String TYPE_SCL_ADMIN = "2";
     public static final String TYPE_S2M_ADMIN = "3";
+
+    public static final String TEACHER = "Teacher";
+    public static final String SCHOOL_ADMIN = "SchoolAdmin";
+    public static final String S2M_ADMIN = "S2MAdmin";
 
 
     public static final String SHARED_PREFERENCE = "s2mSharedPreference";

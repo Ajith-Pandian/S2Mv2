@@ -15,7 +15,7 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".signup.SignUpActivity"
             android:screenOrientation="portrait"
@@ -61,8 +61,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".landing.NetworkActivity"
-            android:label="Network"/>
+        <activity
+            android:name=".network.NetworkActivity"
+            android:label="Network" />
+        <activity android:name=".network.ProfileActivity"
+            android:label="Profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

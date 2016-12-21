@@ -5,6 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/splash_bg"
-    tools:context="com.example.uilayer.landing.NetworkActivity">
-
+    android:padding="16dp"
+    tools:context="com.example.uilayer.network.NetworkActivity">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_network"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>
