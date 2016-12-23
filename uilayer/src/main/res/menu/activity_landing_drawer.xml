@@ -16,14 +16,14 @@
             android:title="Tools" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Manage">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:title="Share" />
+                android:id="@+id/nav_manage_teachers"
+                android:title="Manage Teachers" />
             <item
-                android:id="@+id/nav_send"
-                android:title="Send" />
+                android:id="@+id/nav_manage_sections"
+                android:title="Manage Sections" />
         </menu>
     </item>
 

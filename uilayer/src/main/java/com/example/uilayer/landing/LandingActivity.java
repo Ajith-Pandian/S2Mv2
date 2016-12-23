@@ -1,6 +1,7 @@
 package com.example.uilayer.landing;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,6 +33,8 @@ import android.widget.Toast;
 
 import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
+import com.example.uilayer.manage.ManageTeachersActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -125,7 +128,7 @@ public class LandingActivity extends AppCompatActivity
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
 
-        getSupportActionBar().setTitle(DataHolder.getInstance(getApplicationContext()).getUser().getSchoolName());
+        getSupportActionBar().setTitle(DataHolder.getInstance(S2MApplication.getAppContext()).getUser().getSchoolName());
         setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
@@ -342,18 +345,24 @@ public class LandingActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        switch (id) {
+            case R.id.nav_camera:
+                break;
+            case R.id.nav_gallery:
 
-        } else if (id == R.id.nav_slideshow) {
+                break;
+            case R.id.nav_slideshow:
 
-        } else if (id == R.id.nav_manage) {
+                break;
+            case R.id.nav_manage:
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+                break;
+            case R.id.nav_manage_teachers:
+                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers",true));
+                break;
+            case R.id.nav_manage_sections:
+                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers",false));
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

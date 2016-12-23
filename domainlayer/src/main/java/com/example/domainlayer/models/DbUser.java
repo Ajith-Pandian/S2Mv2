@@ -46,6 +46,7 @@ public class DbUser {
     @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
     private Sections sections;
     private ArrayList<Sections> sectionsList;
+    private ArrayList<Schools> schoolsList;
     private ArrayList<SclActs> sclActs;
     private Bulletin bulletin;
 
@@ -60,6 +61,14 @@ public class DbUser {
 
     public void setSectionsList(ArrayList<Sections> sectionsList) {
         this.sectionsList = sectionsList;
+    }
+
+    public ArrayList<Schools> getSchoolsList() {
+        return schoolsList;
+    }
+
+    public void setSchoolsList(ArrayList<Schools> schoolsList) {
+        this.schoolsList = schoolsList;
     }
 
     public ArrayList<SclActs> getSclActs() {

@@ -11,7 +11,7 @@ import com.android.volley.toolbox.StringRequest;
  * Created by thoughtchimp on 12/5/2016.
  */
 public class VolleyStringRequest extends StringRequest {
-    private static StatusCodeListener statusCodeListener;
+    private static StatusCodeListener mStatusCodeListener;
     Response.ErrorListener volleyErrorListener;
     private int mStatusCode;
 
@@ -23,7 +23,7 @@ public class VolleyStringRequest extends StringRequest {
     public VolleyStringRequest(int method, String url, Response.Listener<String> listener,
                                VolleyErrListener errorListener, StatusCodeListener statusCodeListener) {
         this(method, url, listener, errorListener);
-        this.statusCodeListener = statusCodeListener;
+        mStatusCodeListener = statusCodeListener;
         // this = errorListener;
     }
 
@@ -32,8 +32,12 @@ public class VolleyStringRequest extends StringRequest {
         checkStatusCode(response.statusCode);
     }*/
 
-    public static StatusCodeListener getStatusCodeListener() {
-        return statusCodeListener;
+    public static StatusCodeListener getmStatusCodeListener() {
+        return mStatusCodeListener;
+    }
+
+    public  void removeStatusListener() {
+        mStatusCodeListener = null;
     }
 
     public int getStatusCode() {
@@ -49,23 +53,22 @@ public class VolleyStringRequest extends StringRequest {
     private void checkStatusCode(int statusCode) {
         switch (statusCode) {
             case HttpStatusCodes.BAD_REQUEST:
-                statusCodeListener.onBadRequest();
+                mStatusCodeListener.onBadRequest();
                 break;
             case HttpStatusCodes.UNAUTHORIZED:
-                statusCodeListener.onUnauthorized();
+                mStatusCodeListener.onUnauthorized();
                 break;
             case HttpStatusCodes.NOT_FOUND:
-                statusCodeListener.onNotFound();
+                mStatusCodeListener.onNotFound();
                 break;
             case HttpStatusCodes.CONFLICT:
-                statusCodeListener.onConflict();
+                mStatusCodeListener.onConflict();
                 break;
             case HttpStatusCodes.TIMEOUT:
-                statusCodeListener.onTimeout();
+                mStatusCodeListener.onTimeout();
                 break;
         }
     }
-
 
     public interface StatusCodeListener {
         public void onBadRequest();
@@ -86,10 +89,10 @@ public class VolleyStringRequest extends StringRequest {
         public void onErrorResponse(VolleyError error) {
             Log.d("VolleyErrListener", "onErrorResponse: calledx");
             NetworkResponse response = error.networkResponse;
-            statusCodeListener = VolleyStringRequest.getStatusCodeListener();
-            if(response!=null)
-            checkStatusCode(response.statusCode);
-           // checkStatusCode(response.statusCode);
+            statusCodeListener = VolleyStringRequest.getmStatusCodeListener();
+            if (response != null)
+                checkStatusCode(response.statusCode);
+            // checkStatusCode(response.statusCode);
         }
 
         private void checkStatusCode(int statusCode) {

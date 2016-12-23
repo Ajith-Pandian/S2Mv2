@@ -14,7 +14,7 @@ import com.android.volley.toolbox.Volley;
  * Created by thoughtchimp on 10/4/2016.
  */
 public class VolleySingleton {
-    private static VolleySingleton mInstance;
+    private  static  VolleySingleton mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;

@@ -28,6 +28,7 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.network.NetworkActivity;
 import com.squareup.picasso.Picasso;
@@ -117,7 +118,7 @@ public class HomeFragment extends Fragment {
     }
 
     void loadUserData() throws SQLException {
-        user = new DataBaseUtil(getActivity()).getUser();
+        user = new DataBaseUtil(S2MApplication.getAppContext()).getUser();
         String nameString = user.getFirstName() + " " + user.getLastName();
         name.setText(nameString);
         // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
@@ -145,7 +146,6 @@ public class HomeFragment extends Fragment {
     }
 
     void likeBulletin() {
-        user = new DataBaseUtil(getActivity()).getUser();
         VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL + "2" + ACTIVITIES_URL_SUFFIX + "4" + "/like",
                 new Response.Listener<String>() {
                     @Override

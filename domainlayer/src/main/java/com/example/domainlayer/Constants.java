@@ -31,6 +31,7 @@ public class Constants {
 
     public static final String TEMP_EMAIL = "manit@gmail.com";
     public static final String TEMP_ACCESS_TOKEN = "1234567890/qwertyuiop";
+    public static final String TEMP_ACCESS_TOKEN1 = "1234567899/qwertyuiop";
     public static final String TEMP_OTP = "1111";
     public static final String TEMP_DEVICE_TYPE = "Android";//Android or Ios
     public static final String TEMP_DEVICE_TOKEN = "abcdefghijklmnopqrstuvwxyz";
@@ -76,6 +77,7 @@ public class Constants {
 
     public static final String KEY_SCHOOL_ID = "schoolId";
     public static final String KEY_SCHOOL_NAME = "schoolName";
+    public static final String KEY_SCHOOLS = "schools";
     public static final String KEY_SECTIONS = "sections";
     public static final String KEY_SECTION = "section";
     public static final String KEY_SECTION_ID = "sectionId";

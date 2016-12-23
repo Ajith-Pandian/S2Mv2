@@ -21,17 +21,22 @@ import java.util.Map;
 
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 
 /**
  * Created by thoughtchimp on 12/20/2016.
  */
 
 public class NetworkHelper {
-    Context context;
-    NetworkListener networkListener;
+    private final Context context;
+    private NetworkListener networkListener;
 
     public NetworkHelper(Context context) {
         this.context = context;
+    }
+
+    public void removeListener() {
+        this.networkListener = null;
     }
 
     public void getUserDetails(NetworkListener networkListener) {
@@ -83,7 +88,7 @@ public class NetworkHelper {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
                 return header;
             }
 
@@ -92,7 +97,7 @@ public class NetworkHelper {
         VolleySingleton.getInstance(context).addToRequestQueue(otpRequest);
     }
 
-    void storeResponse(String response) {
+    private void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
             com.example.domainlayer.temp.DataHolder.getInstance(context).saveUserDetails(responseJson);

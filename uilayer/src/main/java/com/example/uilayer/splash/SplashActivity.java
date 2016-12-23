@@ -8,20 +8,22 @@ import android.transition.Fade;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
-
+NetworkHelper networkHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spash);
         setupWindowAnimations();
-        if (new DataBaseUtil(getApplicationContext()).getUser() == null)
+        if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null)
             startNextActivity(LoginActivity.class);
         else {
-            new NetworkHelper(getApplicationContext()).getUserDetails(new NetworkHelper.NetworkListener() {
+            networkHelper= new NetworkHelper(S2MApplication.getAppContext());
+            networkHelper.getUserDetails(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
                     startNextActivity(LandingActivity.class);
@@ -41,5 +43,11 @@ public class SplashActivity extends AppCompatActivity {
         Fade fade = new Fade();
         fade.setDuration(1000);
         getWindow().setEnterTransition(fade);
+    }
+
+    @Override
+    protected void onDestroy() {
+        networkHelper.removeListener();
+        super.onDestroy();
     }
 }

@@ -273,7 +273,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         setSupportActionBar(toolbar);
 
 
-        DataHolder holder = DataHolder.getInstance(getApplicationContext());
+        DataHolder holder = DataHolder.getInstance(this);
         String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
         if (getIntent().getBooleanExtra("isMile", false)) {
             toolbarTitle.setText("Miles");

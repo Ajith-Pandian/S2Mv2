@@ -89,7 +89,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 .inflate(R.layout.item_section_details, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = (int) (parent.getMeasuredHeight() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.height = (int) (parent.getMeasuredHeight() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 4;
         itemView.setLayoutParams(layoutParams);
         return new ViewHolder(itemView);
     }

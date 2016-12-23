@@ -26,6 +26,7 @@ import com.example.domainlayer.temp.DataParser;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.example.uilayer.milestones.adapters.MCQAnswersAdapter;
 import com.example.uilayer.models.MCQs;
 import com.example.uilayer.models.McqOptions;
@@ -245,7 +246,7 @@ public class MCQActivity extends AppCompatActivity {
 
         };
 
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(choiceResultRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(choiceResultRequest);
     }
 
     void setListViewState(boolean state) {

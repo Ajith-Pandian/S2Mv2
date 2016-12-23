@@ -82,7 +82,7 @@ public class MilestonesActivity extends AppCompatActivity {
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        milestonesAdapter = new MilesAdapter(getApplicationContext(), DataHolder.getInstance(getApplicationContext()).getMilesList(),-1);
+        milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(),-1);
 
         recyclerView.setAdapter(milestonesAdapter);
     }

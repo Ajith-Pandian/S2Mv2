@@ -38,6 +38,7 @@ import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 public class NetworkActivity extends AppCompatActivity {
     @BindView(R.id.recycler_network)
     RecyclerView networkRecycler;
+    private VolleyStringRequest networkRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
     void getNetworkProfileInfo() {
-        VolleyStringRequest networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + NETWORK_URL_SUFFIX,
+        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + NETWORK_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -116,7 +117,6 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
 
-
     public void setNetworkProfiles(String profilesString) {
         User user = new User();
         ArrayList<User> usersList = new ArrayList<>();
@@ -129,9 +129,9 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
                 user.setEmail(userJson.getString(Constants.KEY_EMAIL));
                 user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-              //  user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
-               // user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
-                 user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
+                //  user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
+                // user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
+                user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
 
                 user.setWow(userJson.getString(Constants.KEY_WOW));
                 user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
@@ -171,4 +171,10 @@ public class NetworkActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        networkRequest.removeStatusListener();
+        networkRequest = null;
+        super.onDestroy();
+    }
 }

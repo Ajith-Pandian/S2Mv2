@@ -10,6 +10,7 @@ import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.Bulletin;
 import com.example.domainlayer.models.BulletinMessage;
 import com.example.domainlayer.models.DbUser;
+import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.models.Sections;
 
@@ -25,7 +26,10 @@ import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IMAGE;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
+import static com.example.domainlayer.Constants.KEY_LOGO;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
+import static com.example.domainlayer.Constants.KEY_NAME;
+import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_NAME;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
@@ -33,6 +37,7 @@ import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
+import static com.example.domainlayer.Constants.SCHOOL_ADMIN;
 import static com.example.domainlayer.Constants.SHARED_PREFERENCE;
 import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
@@ -42,19 +47,32 @@ import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 public class DataHolder {
     private static DataHolder mInstance;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    Context context;
+    String accessToken;
+    int schoolId, userId;
+    DataParser dataParser;
+    SharedPreferences sharedpreferences;
     private ArrayList<Sections> sectionsList;
     private ArrayList<SclActs> sclActList;
     private DbUser user;
     private JSONObject otpSuccessResultJson;
     private JSONObject loginResultJson;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    Context context;
 
-    String accessToken;
-    int schoolId, userId;
+    private DataHolder(Context context) {
+        this.context = context;
+        sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        //sharedpreferences = this.context.getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+    }
 
-
+    public static synchronized DataHolder getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new DataHolder(context);
+        }
+        return mInstance;
+    }
 
     public int getSchoolId() {
         return sharedPreferences.getInt(KEY_SCHOOL_ID, -1);
@@ -72,24 +90,6 @@ public class DataHolder {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         getEditor().putString(KEY_ACCESS_TOKEN, accessToken);
-    }
-
-    public static synchronized DataHolder getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new DataHolder(context);
-        }
-        return mInstance;
-    }
-
-
-    DataParser dataParser;
-    SharedPreferences sharedpreferences;
-
-    private DataHolder(Context context) {
-        this.context = context;
-        sharedpreferences= PreferenceManager
-                .getDefaultSharedPreferences(context);
-        //sharedpreferences = this.context.getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     SharedPreferences.Editor getEditor() {
@@ -118,6 +118,19 @@ public class DataHolder {
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
             user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
+
+           //TODO for s2m and school admin
+           /* JSONArray schoolsArray=new JSONArray(loginResultJson.getString(KEY_SCHOOLS));
+            ArrayList<Schools> schoolsList=new ArrayList<>();
+            for (int i = 0; i < schoolsArray.length(); i++) {
+                JSONObject schoolObject=schoolsArray.getJSONObject(i);
+                Schools school=new Schools();
+                school.setId(schoolObject.getInt(KEY_ID));
+                school.setName(schoolObject.getString(KEY_NAME));
+                school.setName(schoolObject.getString(KEY_LOGO));
+                schoolsList.add(i,school);
+            }
+            user.setSchoolsList(schoolsList);*/
             user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
             user.setWow(loginResultJson.getString(Constants.KEY_WOW));
@@ -151,7 +164,7 @@ public class DataHolder {
                         = new SclActs(schoolActivity.getInt(KEY_ID),
                         schoolActivity.getInt(KEY_USER_ID),
                         "",
-                       // schoolActivity.getString(KEY_SCHOOL_NAME),
+                        // schoolActivity.getString(KEY_SCHOOL_NAME),
                         schoolActivity.getString(KEY_MESSAGE),
                         //getMessage(schoolActivity.getString(KEY_MESSAGE)),
                         schoolActivity.getString(KEY_TYPE),

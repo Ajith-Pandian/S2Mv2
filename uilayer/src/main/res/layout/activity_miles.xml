@@ -68,7 +68,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:text="Title"
+                                android:textAlignment="center"
+                                tools:text="This is the title od training and mile this test is to check"
+                                tools:textColor="@color/colorPrimary"
                                 android:textSize="24sp" />
 
                             <LinearLayout

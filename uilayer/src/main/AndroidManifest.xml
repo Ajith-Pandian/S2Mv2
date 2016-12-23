@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".S2MApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -64,9 +65,16 @@
         <activity
             android:name=".network.NetworkActivity"
             android:label="Network" />
-        <activity android:name=".network.ProfileActivity"
+        <activity
+            android:name=".network.ProfileActivity"
             android:label="Profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".manage.ManageTeachersActivity"
+            android:label="Manage Teachers"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
