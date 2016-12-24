@@ -64,14 +64,16 @@ import static com.example.domainlayer.Constants.TYPE_TEACHER;
 public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHolder> {
 
     int i = 0;
+    int rowsCount;
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
     private List<Sections> sectionDetailsList;
 
-    public SectionsAdapter(Context context, List<Sections> sectionDetailsList) {
+    public SectionsAdapter(Context context, List<Sections> sectionDetailsList, int rowsCount) {
         this.sectionDetailsList = sectionDetailsList;
         this.context = context;
+        this.rowsCount = rowsCount;
     }
 
     private void showPopupMenu(View view, int position) {
@@ -89,7 +91,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 .inflate(R.layout.item_section_details, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = (int) (parent.getMeasuredHeight() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 4;
+        layoutParams.height = (parent.getMeasuredHeight() -
+                ((rowsCount - 1) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
         itemView.setLayoutParams(layoutParams);
         return new ViewHolder(itemView);
     }

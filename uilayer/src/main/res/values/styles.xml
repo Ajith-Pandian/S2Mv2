@@ -85,4 +85,9 @@
     <style name="MyActionButtonStyle" parent="AppTheme">
         <item name="android:padding">5dip</item>
     </style>
+
+    <style name="buttonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>
