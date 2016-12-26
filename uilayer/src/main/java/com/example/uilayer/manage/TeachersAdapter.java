@@ -56,14 +56,16 @@ import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 
 public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    int rowsCount;
     private List<User> teachersList;
     private List<Sections> sectionsList;
     private Context context;
     private int undoId;
 
-    public TeachersAdapter(Context context, List<User> teachersList) {
+    public TeachersAdapter(Context context, List<User> teachersList, int rowsCount) {
         this.teachersList = teachersList;
         this.context = context;
+        this.rowsCount = rowsCount;
     }
 
     @Override
@@ -71,10 +73,10 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_manage_teachers, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.width = ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = ( (parent.getMeasuredHeight() -
-                (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()))) / 4);
-               // -(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, context.getResources().getDisplayMetrics());
+        layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.height = (parent.getMeasuredHeight() -
+                ((rowsCount - 1) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
+        itemView.setLayoutParams(layoutParams);
         itemView.setLayoutParams(layoutParams);
         return new TeachersViewHolder(itemView);
     }
@@ -84,7 +86,7 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         final TeachersViewHolder viewHolder = (TeachersViewHolder) holder;
         final User user = teachersList.get(position);
-        viewHolder.name.setText(user.getName());
+        viewHolder.name.setText(user.getFirstName() + " " + user.getLastName());
         viewHolder.phoneNum.setText(user.getPhoneNum());
 
         Target target = new Target() {

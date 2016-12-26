@@ -1,50 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_create_teacher"
+        android:id="@+id/text_create_sections"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Create Teacher"
+        android:text="Create Sections"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_teacher_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_create_teacher">
-
-        <EditText
-            android:id="@+id/text_teacher_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Teacher Name"
-            android:inputType="text"
-            android:textSize="14sp" />
-
-    </android.support.design.widget.TextInputLayout>
-
     <LinearLayout
-        android:id="@+id/layout_mob_and_mail"
+        android:id="@+id/layout_cls_and_sec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/til_teacher_name"
+        android:layout_below="@+id/text_create_sections"
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/til_mobile_number"
+            android:id="@+id/til_class"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <EditText
-                android:id="@+id/text_mobile_number"
+                android:id="@+id/text_class_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Mobile Number"
@@ -54,14 +37,14 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/til_teacher_email"
+            android:id="@+id/til_section"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_mobile_number"
             android:layout_weight="1">
 
             <EditText
-                android:id="@+id/text_teacher_email"
+                android:id="@+id/text_section_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email(optional)"
@@ -72,10 +55,47 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_mob_and_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_cls_and_sec"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_num_of_stud"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/til_mobile_number"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/text__num_of_stud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="No. of Students"
+                android:inputType="textEmailAddress"
+                android:textSize="14sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spinner_select_teacher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_mob_and_mail" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_mob_and_mail"
+        android:layout_below="@+id/spinner_select_teacher"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
