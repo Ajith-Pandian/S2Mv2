@@ -28,10 +28,10 @@ public class Sections {
     @DatabaseField(columnName = Constants.KEY_TIMESTAMP)
     private String timestamp;
 
-    @DatabaseField(columnName = Constants.KEY_TOTAL_MILESTONES)
+    @DatabaseField(columnName = Constants.KEY_TOTAL)
     private int totalMiles;
 
-    @DatabaseField(columnName = Constants.KEY_COMPLETED_MILESTONES)
+    @DatabaseField(columnName = Constants.KEY_COMPLETED)
     private int completedMiles;
 
     @DatabaseField(columnName = Constants.KEY_MILESTONE_NAME)
@@ -58,7 +58,11 @@ public class Sections {
 
     public Sections() {
     }
-
+    public Sections(int id, String _class, String section)
+    {this.id = id;
+        this._class = _class;
+        this.section = section;
+    }
     public Sections(int id, String _class, String section, int comp_ms, int tot_ms) {
         this.id = id;
         this.completedMiles = comp_ms;

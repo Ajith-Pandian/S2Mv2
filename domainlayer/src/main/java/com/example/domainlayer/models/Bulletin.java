@@ -8,13 +8,15 @@ public  class Bulletin {
     int id, userId;
     String  type, timeStamp;
     BulletinMessage msg;
+    int isLiked;
 
-    public Bulletin(int id, int userId, BulletinMessage msg, String type, String timeStamp) {
+    public Bulletin(int id, int userId, BulletinMessage msg, String type, String timeStampm,int isLiked) {
         this.id = id;
         this.userId = userId;
         this.msg = msg;
         this.type = type;
         this.timeStamp = timeStamp;
+        this.isLiked=isLiked;
     }
 
     public Bulletin() {
@@ -61,7 +63,11 @@ public  class Bulletin {
         this.timeStamp = timeStamp;
     }
 
+    public int getLiked() {
+        return isLiked;
+    }
 
-
-
+    public void setLiked(int liked) {
+        isLiked = liked;
+    }
 }

@@ -3,24 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_school_update_root"
-    android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_width="@dimen/teacher_item_width"
+    android:layout_height="@dimen/teacher_item_height"
     android:orientation="vertical"
     android:padding="2dp">
 
     <android.support.v7.widget.CardView
+        app:cardCornerRadius="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="2dp">
+            android:padding="6dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/dots"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="28dp"
+                android:layout_height="18dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingBottom="8dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
@@ -29,10 +34,10 @@
             <ImageView
                 android:id="@+id/image_profile_teacher"
                 tools:src="@drawable/profile"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="40dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="40dp"
                 android:layout_above="@+id/text_teacher_name"
-                android:layout_below="@+id/dots"
                 android:layout_centerHorizontal="true" />
 
             <TextView
@@ -42,18 +47,21 @@
                 android:layout_above="@+id/text_teacher_phone_num"
                 android:layout_centerHorizontal="true"
                 android:maxLines="1"
+                android:maxLength="10"
+                android:textSize="12sp"
                 android:text="Teacher Name"
                 android:textColor="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/text_teacher_phone_num"
+                android:textSize="9sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:maxLines="1"
                 android:text="123456789"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/text_color2" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

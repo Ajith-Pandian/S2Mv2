@@ -1,42 +1,94 @@
 package com.example.uilayer.manage;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.Milestones;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
+import com.example.domainlayer.network.VolleySingleton;
+import com.example.domainlayer.temp.DataHolder;
+import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
+import com.example.uilayer.adapters.MilestonesSpinnerAdapter;
 import com.example.uilayer.adapters.SectionsAdapter;
+import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
+import com.example.uilayer.customUtils.PromptSpinner;
+import com.example.uilayer.customUtils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.domainlayer.Constants.ADD_SECTIONS_URL;
+import static com.example.domainlayer.Constants.ADD_TEACHERS_URL_SUFFIX;
+import static com.example.domainlayer.Constants.ALL_MILESTONES_URL;
+import static com.example.domainlayer.Constants.DETAILES_SECTIONS_URL;
+import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
+import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_CLASS;
+import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
+import static com.example.domainlayer.Constants.KEY_EMAIL;
+import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
+import static com.example.domainlayer.Constants.KEY_ID;
+import static com.example.domainlayer.Constants.KEY_LAST_NAME;
+import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
+import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
+import static com.example.domainlayer.Constants.KEY_NAME;
+import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
+import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
+import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
+import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
+import static com.example.domainlayer.Constants.KEY_USER_ID;
+import static com.example.domainlayer.Constants.PREFIX_CLASS;
+import static com.example.domainlayer.Constants.PREFIX_SECTION;
+import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
     boolean isTeachers;
@@ -63,6 +115,44 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     BottomSheetBehavior<FrameLayout> behavior;
     @BindView(R.id.activity_manage_teachers)
     CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.layout_dummy_frame_manage)
+    FrameLayout dummyLayout;
+    VolleyStringRequest teacherAddRequest;
+    UpdateListener updateListener;
+    VolleyStringRequest sectionAddRequest;
+    VolleyStringRequest milestonesRequest;
+    TextInputEditText bs_classNameInput, bs_sectionNameInput, bs_numOfStudentsInput;
+    Button bs_addTeacherBtn;
+    PromptSpinner bs_milestonesSpinner, bs_teacherSpinner;
+    int selectedMilestoneId = -1, selectedTeacherId = -1;
+    AdapterView.OnItemSelectedListener milestoneSelectedListener = new AdapterView.OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Log.d("view.getId", "onItemSelected: " + view.getId());
+
+            selectedMilestoneId = ((Milestones) parent.getItemAtPosition(position)).getId();
+            Log.d("selectedMilestoneId", "onItemSelected: " + selectedMilestoneId);
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+    };
+    AdapterView.OnItemSelectedListener teacherSelectedListener = new AdapterView.OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            selectedTeacherId = ((User) parent.getItemAtPosition(position)).getId();
+            Log.d("selectedTeacherId", "onItemSelected: " + selectedTeacherId);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+    };
+    ArrayList<Milestones> milestonesList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +173,20 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             pagePosition = 1;
         }
         // getSupportActionBar().setTitle("Manage " + title);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeachersSectionsFragment.OptionListener() {
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeachersSectionsFragment.TeacherListener() {
             @Override
-            public void onOptionSelected(boolean isTeacher) {
-                openBottomSheet(isTeacher);
+            public void onAddOptionSelected(boolean isTeacher) {
+                openBottomSheet(isTeacher, true, -1);
+            }
+
+            @Override
+            public void onDeleteOptionSelected(boolean isTeacher) {
+
+            }
+
+            @Override
+            public void onEditOptionSelected(boolean isTeacher, int position) {
+                openBottomSheet(isTeacher, false, position);
             }
         });
         viewPager.setAdapter(pagerAdapter);
@@ -115,13 +215,28 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        dummyLayout.setVisibility(View.GONE);
+                        break;
+
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if (slideOffset < 0) {
+                    float alpha = (1 + slideOffset) * 200;
+                    dummyLayout.getForeground().setAlpha((int) (alpha));
+                    dummyLayout.setVisibility(View.VISIBLE);
+                }
+                if (slideOffset == -1)
+                    closeBottomSheet();
+
+
             }
         });
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -129,44 +244,317 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public void onClick(View view) {
                 behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-
-
             }
         });
+        dummyLayout.getForeground().setAlpha(0);
+        dummyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (behavior.getState() != BottomSheetBehavior.STATE_HIDDEN)
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        });
+        if (viewPager.getCurrentItem() == 0) {
+            backButton.setEnabled(false);
+            updateButtonText(backButton);
+        }
+    }
+
+    void closeBottomSheet() {
+        InputMethodManager keyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+        //behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @Override
     public void onBackPressed() {
         if (behavior.getState() != BottomSheetBehavior.STATE_HIDDEN)
-           behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        else finish();
 
-        super.onBackPressed();
     }
 
-    void openBottomSheet(boolean isTeacher) {
-        int innerLayoutId;
+    @Override
+    protected void onDestroy() {
+        pagerAdapter.removeListeners();
+        super.onDestroy();
+    }
 
-        String msg;
+    void openBottomSheet(boolean isTeacher, boolean isAdd, int position) {
+        View sheetInnerLayout;
+        String addOrUpdate = "";
+        String teacherOrSection = "";
+        if (isAdd)
+            addOrUpdate = "Create";
+        else
+            addOrUpdate = "Update";
         if (isTeacher) {
-            msg = "open teacher";
-            innerLayoutId = R.layout.bottom_sheet_create_teacher;
+            teacherOrSection = "Teacher";
+            //ADD TEACHER
+            sheetInnerLayout = getLayoutInflater().inflate(R.layout.bottom_sheet_create_teacher, null);
+            final TextView title = (TextView) sheetInnerLayout.findViewById(R.id.text_create_teacher);
+            final TextInputEditText firstName = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_first_name);
+            final TextInputEditText lastName = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_last_name);
+            final TextInputEditText phoneNum = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_mobile_number);
+            final TextInputEditText email = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_email);
+
+            title.setText(addOrUpdate + Constants.SPACE + teacherOrSection);
+            Button adddButton = (Button) sheetInnerLayout.findViewById(R.id.button_add_teacher);
+            adddButton.setText(addOrUpdate);
+            adddButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addTeacher(firstName.getText().toString(), lastName.getText().toString()
+                            , phoneNum.getText().toString(), email.getText().toString());
+                }
+            });
+
+            if (!isAdd) //fill the fields
+            {
+                User teacher = DataHolder.getInstance(this).getTeachersList().get(position);
+                firstName.setText(teacher.getFirstName());
+                lastName.setText(teacher.getLastName());
+                phoneNum.setText(teacher.getPhoneNum());
+                email.setText(teacher.getEmail());
+            }
         } else {
-            msg = "open section";
-            innerLayoutId = R.layout.bottom_sheet_create_sections;
+            //ADD SECTION
+            teacherOrSection = "Section";
+            sheetInnerLayout = getLayoutInflater().inflate(R.layout.bottom_sheet_create_sections, null);
+            final TextView title = (TextView) sheetInnerLayout.findViewById(R.id.text_create_sections);
+            bs_classNameInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_class_name);
+            bs_sectionNameInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_section_name);
+            bs_numOfStudentsInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_num_of_stud);
+            bs_milestonesSpinner = (PromptSpinner) sheetInnerLayout.findViewById(R.id.spinner_milestones);
+            bs_milestonesSpinner.setPrompt("Milestones");
+            bs_milestonesSpinner.setOnItemSelectedListener(milestoneSelectedListener);
+            bs_teacherSpinner = (PromptSpinner) sheetInnerLayout.findViewById(R.id.spinner_select_teacher);
+
+            title.setText(addOrUpdate + Constants.SPACE + teacherOrSection);
+            {//Reduce spinner drop down view height
+                android.util.TypedValue value = new android.util.TypedValue();
+                getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, value, true);
+                android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                float ret = value.getDimension(metrics);
+                bs_teacherSpinner.setMinimumHeight((int) (ret - 1 * metrics.density));
+            }
+            bs_teacherSpinner.setPrompt("Teachers");
+            bs_teacherSpinner.setOnItemSelectedListener(teacherSelectedListener);
+            bs_addTeacherBtn = (Button) sheetInnerLayout.findViewById(R.id.button_add_section);
+            bs_addTeacherBtn.setText(addOrUpdate);
+            bs_addTeacherBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addSection(bs_classNameInput.getText().toString(),
+                            bs_sectionNameInput.getText().toString(),
+                            String.valueOf(selectedMilestoneId),
+                            String.valueOf(selectedTeacherId),
+                            bs_numOfStudentsInput.getText().toString());
+
+                }
+            });
+            if (milestonesList.size() == 0)
+                getMilestones();
+            else {
+                updateMilesSpinner(milestonesList);
+            }
+
+            try {
+                Field popup = Spinner.class.getDeclaredField("mPopup");
+                popup.setAccessible(true);
+
+                // Get private mPopup member variable and try cast to ListPopupWindow
+                android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(bs_milestonesSpinner);
+                android.widget.ListPopupWindow popupWindow1 = (android.widget.ListPopupWindow) popup.get(bs_teacherSpinner);
+
+                // Set popupWindow height to 500px
+                popupWindow.setHeight(Utils.getInstance().getPixelAsDp(this, 300));
+                popupWindow1.setHeight(Utils.getInstance().getPixelAsDp(this, 300));
+            } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+
+            }
+
+            TeachersSpinnerAdapter teacherAdapter = new TeachersSpinnerAdapter(this,
+                    R.layout.item_spinner,
+                    R.id.text_spinner,
+                    (DataHolder.getInstance(this).getTeachersList()));
+            //teacherAdapter.setDropDownViewResource(R.layout.item_spinner);
+            bs_teacherSpinner.setAdapter(teacherAdapter);
+
+            if (!isAdd) //fill the fields
+            {
+                Sections sec = DataHolder.getInstance(this).getSectionsList().get(position);
+                bs_classNameInput.setText(sec.get_Class());
+                bs_sectionNameInput.setText(sec.getSection());
+             //   bs_numOfStudentsInput.setText(sec.getNumbetOfStudents());
+            }
+
         }
-        View sheetInnerLayout = getLayoutInflater().inflate(innerLayoutId, null);
         bottomSheetLayout.removeAllViewsInLayout();
         bottomSheetLayout.addView(sheetInnerLayout);
-        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
-        bottomSheet.getLayoutParams().height = bottomSheetLayout.getHeight();
-        bottomSheet.requestLayout();
-
-        behavior.onLayoutChild(coordinatorLayout, bottomSheet, ViewCompat.LAYOUT_DIRECTION_LTR);
-     //   behavior.setPeekHeight(bottomSheetInnerLayout.getHeight());
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
 
+    void updateMilesSpinner(ArrayList<Milestones> milestonesList) {
+        MilestonesSpinnerAdapter dataAdapter = new MilestonesSpinnerAdapter(this, R.layout.item_spinner, R.id.text_spinner, milestonesList);
+        //dataAdapter.setDropDownViewResource(R.layout.item_spinner);
+        bs_milestonesSpinner.setAdapter(dataAdapter);
+    }
+
+    void addSection(final String className, final String sectionName, final String milestoneId, final String userId, final String studCOunt) {
+        sectionAddRequest = new VolleyStringRequest(Request.Method.POST, ADD_SECTIONS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(ManageTeachersActivity.this, "Section added successfully", Toast.LENGTH_SHORT).show();
+                        Log.d("sectionAddRequest", "response: " + response);
+                        bottomSheetCloseButton.performClick();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("sectionAddRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                return header;
+            }
+
+
+            @Override
+            public Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_CLASS, className);
+                params.put(KEY_SECTION, sectionName);
+                params.put(KEY_MILESTONE_ID, milestoneId);
+                params.put(KEY_USER_ID, userId);
+                params.put(KEY_STUDENT_COUNT, studCOunt);
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(sectionAddRequest);
+    }
+
+    void getMilestones() {
+
+        milestonesRequest = new VolleyStringRequest(Request.Method.GET, ALL_MILESTONES_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("milestonesRequest", "onResponse: " + response);
+                        updateMilestones(response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.e("milestonesRequest", "onErrorResponse: ", error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                return header;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(milestonesRequest);
+
+    }
+
+    void updateMilestones(String response) {
+        ArrayList<Milestones> milestonesArrayList = new ArrayList<>();
+        try {
+            JSONArray milestonesArray = new JSONArray(response);
+            for (int i = 0; i < milestonesArray.length(); i++) {
+                JSONObject milestone = milestonesArray.getJSONObject(i);
+                milestonesArrayList.add(i,
+                        new Milestones(milestone.getInt(KEY_ID),
+                                milestone.getString(KEY_NAME)));
+            }
+            milestonesList = new ArrayList<>(milestonesArrayList);
+        } catch (JSONException ex) {
+            Log.e("updateMilestones", "updateMilestones: ", ex);
+        }
+        updateMilesSpinner(milestonesList);
     }
 
     void setupPagerIndicatorWithPosition(int position) {
@@ -182,7 +570,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-
+            params.gravity = Gravity.CENTER;
             params.setMargins(8, 0, 8, 0);
 
             indicatorLayout.addView(indicators[i], params);
@@ -213,42 +601,142 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         if (position == 0) {
             stateBack = false;
             stateNext = true;
+            nextButton.setText("Next");
         } else if (position == indicatorsCount - 1) {
             stateBack = true;
             stateNext = false;
+            nextButton.setText("Done");
         } else {
             stateBack = true;
             stateNext = true;
+            nextButton.setText("Next");
         }
         backButton.setEnabled(stateBack);
         nextButton.setEnabled(stateNext);
+        updateButtonText(backButton);
+        updateButtonText(nextButton);
         behavior = BottomSheetBehavior.from(bottomSheet);
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
     }
 
-    public static class TeachersSectionsFragment extends Fragment {
+    void updateButtonText(Button button) {
+        if (button.isEnabled())
+            button.setTextColor(getResources().getColor(R.color.colorPrimary));
+        else
+            button.setTextColor(getResources().getColor(R.color.green5));
+    }
+
+    void addTeacher(final String firstName, final String lastName, final String phoneNum, final String email) {
+        // void addTeacher() {
+        teacherAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + "2" + ADD_TEACHERS_URL_SUFFIX,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(ManageTeachersActivity.this, "Teacher added successfully", Toast.LENGTH_SHORT).show();
+                        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).loadTeachers();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                return header;
+            }
+
+
+            @Override
+            public Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_FIRST_NAME, firstName);
+                params.put(KEY_LAST_NAME, lastName);
+                //  if()
+                params.put(KEY_EMAIL, email);
+                params.put(KEY_PHONE_NUM, phoneNum);
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(teacherAddRequest);
+    }
+
+    interface UpdateListener {
+        void onTeacherUpdate();
+    }
+
+    public static class TeachersSectionsFragment extends Fragment implements UpdateListener {
 
         private static final String IS_TEACHER = "is_teacher";
-        static OptionListener optionListener;
+        static TeacherListener teacherListener;
         @BindView(R.id.recycler_fragment_teachers_sections)
         RecyclerView recyclerView;
         @BindView(R.id.toolbar_manage)
         Toolbar toolbar;
         RecyclerView.Adapter adapter;
+        Boolean isTeacher;
+        VolleyStringRequest teacherRequest;
+        VolleyStringRequest sectionsRequest;
+        ArrayList<User> teachersList = new ArrayList<>();
 
         public TeachersSectionsFragment() {
 
 
         }
 
-        public static TeachersSectionsFragment newInstance(boolean isTeacher, OptionListener optionListener1) {
+        public static TeachersSectionsFragment newInstance(boolean isTeacher, TeacherListener teacherListener1) {
             TeachersSectionsFragment fragment = new TeachersSectionsFragment();
             Bundle args = new Bundle();
             args.putBoolean(IS_TEACHER, isTeacher);
             fragment.setArguments(args);
-            optionListener = optionListener1;
+            teacherListener = teacherListener1;
             return fragment;
+        }
+
+        @Override
+        public void onTeacherUpdate() {
+            loadTeachers();
         }
 
         @Override
@@ -268,17 +756,17 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             });
             GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(layoutManager);
-            // recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
-            recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 5, 5, 3));
+            recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 5, 3, 3));
             String titleString;
-            final Boolean isTeacher = getArguments().getBoolean(IS_TEACHER);
+            isTeacher = getArguments().getBoolean(IS_TEACHER);
             if (isTeacher) {
-                adapter = new TeachersAdapter(getContext(), getTeachers(), 4);
-
+                //adapter = new TeachersAdapter(getContext(), getTeachers(), 5);
+                loadTeachers();
                 titleString = "Teacher";
             } else {
-                adapter = new SectionsAdapter(getContext(), getSections(), 4);
-                //  recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
+                /*adapter = new SectionsAdapter(getContext(), getSections(), 4);
+                recyclerView.setAdapter(adapter);*/
+                loadSections();
                 titleString = "Sections";
             }
 
@@ -286,11 +774,11 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    optionListener.onOptionSelected(isTeacher);
+                    teacherListener.onAddOptionSelected(isTeacher);
                 }
             });
             title.setText("Manage " + titleString);
-            recyclerView.setAdapter(adapter);
+
             return rootView;
         }
 
@@ -302,6 +790,18 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             sectionsArrayList.add(new Sections(3, "Class 3", "Section C", 40, 100, 2, "Milestone 3", 3));
             sectionsArrayList.add(new Sections(4, "Class 4", "Section D", 63, 100, 2, "Milestone 4", 4));
             sectionsArrayList.add(new Sections(5, "Class 5", "Section E", 30, 100, 2, "Milestone 5", 5));
+            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
+            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
+            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
+            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
+            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
+            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
+            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
+            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
+            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
+            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
+            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
+            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
             sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
             sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
             sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
@@ -352,15 +852,219 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             return userArrayList;
         }
 
-        interface OptionListener {
-            void onOptionSelected(boolean isTeacher);
+        public void loadTeachers() {
+            teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + GET_TEACHERS_URL_SUFFIX,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("teacherRequest", "onResponse: " + response);
+                            updateTeachers(response);
+                        }
+                    },
+                    new VolleyStringRequest.VolleyErrListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            super.onErrorResponse(error);
+                            Log.d("teacherRequest", "onErrorResponse: " + error);
+
+                        }
+                    }, new VolleyStringRequest.StatusCodeListener() {
+                String TAG = "VolleyStringReq";
+
+                @Override
+                public void onBadRequest() {
+                    Log.d(TAG, "onBadRequest: ");
+                }
+
+                @Override
+                public void onUnauthorized() {
+                    Log.d(TAG, "onUnauthorized: ");
+                }
+
+                @Override
+                public void onNotFound() {
+                    Log.d(TAG, "onNotFound: ");
+                }
+
+                @Override
+                public void onConflict() {
+                    Log.d(TAG, "onConflict: ");
+                }
+
+                @Override
+                public void onTimeout() {
+                    Log.d(TAG, "onTimeout: ");
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> header = new ArrayMap<>();
+                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    return header;
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/x-www-form-urlencoded";
+                }
+
+            };
+            VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherRequest);
+
         }
+
+        void loadSections() {
+            sectionsRequest = new VolleyStringRequest(Request.Method.GET, DETAILES_SECTIONS_URL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Sections", "onErrorResponse: " + response);
+
+                            updateSections(response);
+                        }
+                    },
+                    new VolleyStringRequest.VolleyErrListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            super.onErrorResponse(error);
+                            Log.d("Sections", "onErrorResponse: " + error);
+
+                        }
+                    }, new VolleyStringRequest.StatusCodeListener() {
+                String TAG = "VolleyStringReq";
+
+                @Override
+                public void onBadRequest() {
+                    Log.d(TAG, "onBadRequest: ");
+                }
+
+                @Override
+                public void onUnauthorized() {
+                    Log.d(TAG, "onUnauthorized: ");
+                }
+
+                @Override
+                public void onNotFound() {
+                    Log.d(TAG, "onNotFound: ");
+                }
+
+                @Override
+                public void onConflict() {
+                    Log.d(TAG, "onConflict: ");
+                }
+
+                @Override
+                public void onTimeout() {
+                    Log.d(TAG, "onTimeout: ");
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> header = new ArrayMap<>();
+                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    return header;
+                }
+            };
+
+            VolleySingleton.getInstance(getContext()).addToRequestQueue(sectionsRequest);
+        }
+
+        @SuppressWarnings("NewApi")
+        void updateSections(String teachersResponse) {
+            ArrayList<Sections> sectionsArrayList = new ArrayList<>();
+            try {
+                JSONObject obj = new JSONObject(teachersResponse);
+                Log.d("ARRAY", "updateSections: " + obj.toString());
+                JSONArray sectionsArray = new JSONArray(obj.getString(KEY_SECTIONS));
+                for (int i = 0; i < sectionsArray.length(); i++) {
+                    JSONObject milesDatObject = sectionsArray.getJSONObject(i);
+                    Sections section
+                            = new Sections(milesDatObject.getInt(KEY_ID),
+                            (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
+                            (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
+                            milesDatObject.getInt(KEY_COMPLETED_MILES),
+                            milesDatObject.getInt(KEY_TOTAL_MILES),
+                            milesDatObject.getInt(KEY_SCHOOL_ID),
+                            Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + milesDatObject.getString(KEY_MILESTONE_NAME),
+                            milesDatObject.getInt(KEY_MILESTONE_ID));
+                    sectionsArrayList.add(section);
+                }
+            } catch (JSONException ex) {
+                Log.d("Error", "updateSections: " + ex);
+            }
+            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2,teacherListener);
+            recyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+        }
+
+        @Override
+        public void onDestroyView() {
+            if (teacherRequest != null)
+                teacherRequest.removeStatusListener();
+            if (sectionsRequest != null)
+                sectionsRequest.removeStatusListener();
+            super.onDestroyView();
+        }
+
+        void updateTeachers(String teachersResponse) {
+            ArrayList<User> teachersList = new ArrayList<>();
+            try {
+                JSONArray profilesArray = new JSONArray(teachersResponse);
+                for (int i = 0; i < profilesArray.length(); i++) {
+                    JSONObject userJson = profilesArray.getJSONObject(i);
+                    User user = new User();
+                    user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+                    user.setId(userJson.getInt(Constants.KEY_ID));
+                    user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
+                    //user.setEmail(userJson.getString(Constants.KEY_EMAIL));
+                    user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
+                    //user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
+                    //user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
+                    //user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
+
+                    // user.setWow(userJson.getString(Constants.KEY_WOW));
+                    user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
+                    // user.setMiles(userJson.getString(Constants.KEY_MILES));
+                    // user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
+                    // user.setType(userJson.getString(Constants.KEY_TYPE));
+                    teachersList.add(i, user);
+                }
+
+                DataHolder.getInstance(getContext()).setTeachersList(teachersList);
+                adapter = new TeachersAdapter(getContext(), teachersList, 5, teacherListener);
+                recyclerView.setAdapter(adapter);
+            } catch (JSONException exception) {
+                Log.e("DataHolder", "saveUserDetails: ", exception);
+            }
+        }
+
+        public ArrayList<User> getTeachersList() {
+            return teachersList;
+        }
+
+        void removeListener() {
+            teacherListener = null;
+        }
+
+        public interface TeacherListener {
+            void onAddOptionSelected(boolean isTeacher);
+
+            void onEditOptionSelected(boolean isTeacher, int position);
+
+            void onDeleteOptionSelected(boolean isTeacher);
+        }
+
     }
 
     public class PagerAdapter extends FragmentPagerAdapter {
-        TeachersSectionsFragment.OptionListener optionsListener;
+        TeachersSectionsFragment.TeacherListener optionsListener;
 
-        public PagerAdapter(FragmentManager fm, TeachersSectionsFragment.OptionListener optionsListener) {
+        public PagerAdapter(FragmentManager fm, TeachersSectionsFragment.TeacherListener optionsListener) {
             super(fm);
             this.optionsListener = optionsListener;
         }
@@ -368,21 +1072,31 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         @Override
         public Fragment getItem(int position) {
             boolean isTeachers = false;
+            Fragment fragment = null;
             switch (position) {
                 case 0:
                     isTeachers = true;
+                    // teachersFragment = TeachersSectionsFragment.newInstance(true, optionsListener);
+                    fragment = TeachersSectionsFragment.newInstance(true, optionsListener);
                     break;
                 case 1:
                     isTeachers = false;
+                    //sectionsFragment = TeachersSectionsFragment.newInstance(false, optionsListener);
+                    fragment = TeachersSectionsFragment.newInstance(false, optionsListener);
                     break;
             }
+            return fragment;
+        }
 
-            return TeachersSectionsFragment.newInstance(isTeachers, optionsListener);
+        void removeListeners() {
+            for (int i = 0; i < getCount(); i++) {
+                ((TeachersSectionsFragment) getItem(i)).removeListener();
+            }
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 

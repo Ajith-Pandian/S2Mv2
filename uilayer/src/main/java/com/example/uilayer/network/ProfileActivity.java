@@ -68,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         wowsText.setText(user.getWow() + SPACE + KEY_WOW);
         milesText.setText(user.getMiles() + SPACE + KEY_MILES);
         trainingsText.setText(user.getTrainings() + SPACE + KEY_TRAINING);
-
+        if (!user.getAvatar().equals(""))
         Picasso.with(getApplicationContext()).load(user.getAvatar()).into(profileImage);
     }
 

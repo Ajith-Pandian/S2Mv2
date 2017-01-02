@@ -5,9 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/splash_bg"
-    android:padding="16dp"
     tools:context="com.example.uilayer.network.NetworkActivity">
     <android.support.v7.widget.RecyclerView
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/recycler_network"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

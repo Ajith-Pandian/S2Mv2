@@ -10,6 +10,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.CustomProgressBar;
+import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.milestones.MilestonesActivity;
 
 import org.json.JSONArray;
@@ -62,7 +64,7 @@ import static com.example.domainlayer.Constants.TYPE_TEACHER;
  */
 
 public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHolder> {
-
+    ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
     int i = 0;
     int rowsCount;
     private Context context;
@@ -70,10 +72,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
     private List<Sections> sectionDetailsList;
 
-    public SectionsAdapter(Context context, List<Sections> sectionDetailsList, int rowsCount) {
+    public SectionsAdapter(Context context, List<Sections> sectionDetailsList, int rowsCount, ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener) {
         this.sectionDetailsList = sectionDetailsList;
         this.context = context;
         this.rowsCount = rowsCount;
+        this.listener = listener;
     }
 
     private void showPopupMenu(View view, int position) {
@@ -81,19 +84,19 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         final PopupMenu popup = new PopupMenu(wrapper, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_popup_card, popup.getMenu());
-        popup.setOnMenuItemClickListener(new CardMenuClickListener(position));
+        popup.setOnMenuItemClickListener(new SectionMenuClickListener(position));
         popup.show();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_section_details, parent, false);
-        ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
+                .inflate(R.layout.item_section, parent, false);
+        /*ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
         layoutParams.height = (parent.getMeasuredHeight() -
-                ((rowsCount - 1) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
-        itemView.setLayoutParams(layoutParams);
+                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()))) / rowsCount;
+        itemView.setLayoutParams(layoutParams);*/
         return new ViewHolder(itemView);
     }
 
@@ -114,7 +117,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         holder.threeDots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view, position);
+                if (listener != null)
+                    showPopupMenu(view, position);
             }
         });
         //TODO:color coressponding milestone
@@ -129,9 +133,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     }
                 });
 
-        if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
+ /*       if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
             holder.threeDots.setVisibility(View.VISIBLE);
-        } else holder.threeDots.setVisibility(View.GONE);
+        } else holder.threeDots.setVisibility(View.GONE);*/
     }
 
     void getOrderedMilestoneDetails(final int position) {
@@ -343,6 +347,29 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     @Override
     public int getItemCount() {
         return sectionDetailsList.size();
+    }
+
+    public class SectionMenuClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        private int position;
+
+        public SectionMenuClickListener(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.menu_edit:
+                    listener.onEditOptionSelected(true, position);
+                    return true;
+                case R.id.menu_delete:
+                    listener.onDeleteOptionSelected(true);
+                    return true;
+                default:
+            }
+            return false;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

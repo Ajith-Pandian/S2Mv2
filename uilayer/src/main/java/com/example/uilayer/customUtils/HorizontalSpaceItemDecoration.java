@@ -27,6 +27,8 @@ public class HorizontalSpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view) + 1;
+        if (position <= columsNum)
+            outRect.top = Utils.getInstance().getPixelAsDp(context, 3 * verticalSpace);
         if (position % columsNum != 0)
             outRect.right = Utils.getInstance().getPixelAsDp(context, horizontalSpace);
         int itemCount = parent.getAdapter().getItemCount();

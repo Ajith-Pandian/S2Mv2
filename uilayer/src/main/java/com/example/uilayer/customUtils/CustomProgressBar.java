@@ -48,7 +48,7 @@ public class CustomProgressBar extends View {
 
         // Draw the progress bar.
         Paint barPaint = new Paint();
-        barPaint.setColor(getContext().getResources().getColor(R.color.colorPrimary));
+        barPaint.setColor(getContext().getResources().getColor(R.color.green4));
         barPaint.setStyle(Paint.Style.FILL);
         barPaint.setAntiAlias(true);
 

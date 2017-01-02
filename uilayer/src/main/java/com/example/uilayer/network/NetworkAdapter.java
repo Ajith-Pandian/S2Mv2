@@ -3,6 +3,7 @@ package com.example.uilayer.network;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,15 +37,16 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
 
     private List<User> networkProfilesList;
     private Context context;
+
     public NetworkAdapter(Context context, List<User> networkProfilesList) {
         this.networkProfilesList = networkProfilesList;
         this.context = context;
     }
 
-    User getItem(int position)
-    {
+    User getItem(int position) {
         return networkProfilesList.get(position);
     }
+
     @Override
     public NetworkAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -54,7 +56,7 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final NetworkAdapter.ViewHolder holder,final int position) {
+    public void onBindViewHolder(final NetworkAdapter.ViewHolder holder, final int position) {
         User user = networkProfilesList.get(position);
         holder.name.setText(user.getName());
         holder.wowText.setText(user.getWow() + SUFFIX_WOWS);
@@ -63,12 +65,14 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         holder.netwrokLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(context,ProfileActivity.class);
+                Intent intent = new Intent(context, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("com.example.domainlayer.models.User",getItem(position));
+                intent.putExtra("com.example.domainlayer.models.User", getItem(position));
                 context.startActivity(intent);
             }
         });
+        Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+        holder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -85,7 +89,8 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
 
             }
         };
-        Picasso.with(context).load(user.getAvatar()).into(target);
+        if (!user.getAvatar().equals(""))
+            Picasso.with(context).load(user.getAvatar()).placeholder(R.drawable.profile).into(target);
     }
 
 
@@ -108,6 +113,7 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         ImageView profileImage;
         @BindView(R.id.layout_network)
         RelativeLayout netwrokLayout;
+
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);

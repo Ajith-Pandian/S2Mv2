@@ -90,7 +90,6 @@ public class DataHelper {
                 header.put("accessToken", TEMP_ACCESS_TOKEN);
                 return header;
             }
-
         };
 
         VolleySingleton.getInstance(context).addToRequestQueue(sectionsRequest);

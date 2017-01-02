@@ -189,7 +189,7 @@ public class SectionsFragment extends Fragment {
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         sectionDetails1 = DataHolder.getInstance(getActivity()).getUser().getSectionsList();
-        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1,3));
+        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1,3,null));
 
     }
 }

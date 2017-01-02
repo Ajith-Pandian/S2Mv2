@@ -89,4 +89,24 @@
     <style name="buttonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/button_text_color</item>
     </style>
+<!--Text Input Layout -->
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">@color/text_input_layer_color</item>
+        <item name="android:textSize">20sp</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/text_input_layer_color</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>    <style name="SpinnerTHeme" parent="Widget.AppCompat.Spinner.Underlined">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">@color/text_input_layer_color</item>
+        <item name="android:textSize">20sp</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/text_input_layer_color</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+
 </resources>

@@ -13,6 +13,7 @@ import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.example.domainlayer.Constants.IS_LIKED;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
 import static com.example.domainlayer.Constants.KEY_BODY;
@@ -151,6 +153,7 @@ public class DataHolder {
             bulletin.setMsg(getMessage(bulletinJson.getString(KEY_MESSAGE)));
             bulletin.setType(bulletinJson.getString(KEY_TYPE));
             bulletin.setTimeStamp(bulletinJson.getString(KEY_TIMESTAMP));
+            bulletin.setLiked(bulletinJson.getInt(IS_LIKED));
             user.setBulletin(bulletin);
 
             JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
@@ -169,7 +172,9 @@ public class DataHolder {
                         //getMessage(schoolActivity.getString(KEY_MESSAGE)),
                         schoolActivity.getString(KEY_TYPE),
                         schoolActivity.getString(KEY_TIMESTAMP),
-                        schoolActivity.getInt(KEY_LIKES_COUNT));
+                        schoolActivity.getInt(KEY_LIKES_COUNT),
+                        schoolActivity.getInt(IS_LIKED)
+                        );
                 sclActList.add(sclActivities);
             }
             user.setSclActs(sclActList);
@@ -199,6 +204,15 @@ public class DataHolder {
 
     public ArrayList<Sections> getSectionsList() {
         return sectionsList;
+    }
+ArrayList<User> teachersList;
+
+    public ArrayList<User> getTeachersList() {
+        return teachersList;
+    }
+
+    public void setTeachersList(ArrayList<User> teachersList) {
+        this.teachersList = teachersList;
     }
 
     public void setSectionsList(ArrayList<Sections> sectionsList) {

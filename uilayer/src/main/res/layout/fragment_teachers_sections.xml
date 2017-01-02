@@ -10,7 +10,8 @@
         android:layout_height="?attr/actionBarSize" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="16dp"
+        android:paddingLeft="2dp"
+        android:paddingStart="2dp"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:id="@+id/recycler_fragment_teachers_sections"

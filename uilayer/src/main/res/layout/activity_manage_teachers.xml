@@ -25,6 +25,12 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/white">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/text_input_layer_color1" />
+
             <Button
                 android:id="@+id/button_back"
                 style="@style/buttonStyle"
@@ -56,11 +62,21 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/layout_dummy_frame_manage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:foreground="@drawable/dim_foreground"
+        android:visibility="gone" />
+
+    <FrameLayout
         android:id="@+id/bottom_sheet_manage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:clickable="true"
         app:behavior_hideable="true"
+        app:behavior_peekHeight="350dp"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <RelativeLayout
@@ -72,19 +88,21 @@
                 android:id="@+id/close_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_close_black_24dp" />
 
             <RelativeLayout
                 android:id="@+id/layout_bottom_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/close_icon"
                 android:layout_alignLeft="@+id/close_icon"
-                android:layout_alignStart="@+id/close_icon" />
+                android:layout_alignStart="@+id/close_icon"
+                android:layout_below="@+id/close_icon"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
         </RelativeLayout>
 
     </FrameLayout>

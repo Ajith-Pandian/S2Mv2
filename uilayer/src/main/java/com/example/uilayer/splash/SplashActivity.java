@@ -47,7 +47,7 @@ NetworkHelper networkHelper;
 
     @Override
     protected void onDestroy() {
-        networkHelper.removeListener();
+        //networkHelper.removeListener();
         super.onDestroy();
     }
 }

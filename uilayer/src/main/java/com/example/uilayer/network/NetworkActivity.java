@@ -3,6 +3,7 @@ package com.example.uilayer.network;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
@@ -34,6 +35,7 @@ import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.NETWORK_URL_SUFFIX;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 
 public class NetworkActivity extends AppCompatActivity {
     @BindView(R.id.recycler_network)
@@ -51,6 +53,7 @@ public class NetworkActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
+
         getNetworkProfileInfo();
     }
 
@@ -102,7 +105,7 @@ public class NetworkActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
                 return header;
             }
 
@@ -118,12 +121,13 @@ public class NetworkActivity extends AppCompatActivity {
 
 
     public void setNetworkProfiles(String profilesString) {
-        User user = new User();
+
         ArrayList<User> usersList = new ArrayList<>();
         try {
             JSONArray profilesArray = new JSONArray(profilesString);
             for (int i = 0; i < profilesArray.length(); i++) {
                 JSONObject userJson = profilesArray.getJSONObject(i);
+                User user = new User();
                 user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
                 user.setId(userJson.getInt(Constants.KEY_ID));
                 user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));

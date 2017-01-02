@@ -14,9 +14,10 @@
             android:id="@+id/image_bg_round"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/backround_circle_green" />
+            tools:src="@drawable/backround_circle_green" />
 
         <TextView
+            android:id="@+id/text_milestone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -25,21 +26,22 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/bootom_miles_layout"
+        android:id="@+id/progress_layout"
         android:layout_width="match_parent"
+        android:paddingRight="16dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_milestones"
+            android:id="@+id/text_cls_sections"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Milestones"
-            android:textColor="@color/colorPrimary"
-            android:textSize="10sp" />
+            android:textColor="@color/text_color2"
+            android:textSize="14sp" />
 
         <com.example.uilayer.customUtils.CustomProgressBar
             android:id="@+id/progress_miles"
@@ -52,7 +54,7 @@
 
 
         <TextView
-            android:id="@+id/text_completed_milestones"
+            android:id="@+id/text_completed_miles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="20 miles completed"

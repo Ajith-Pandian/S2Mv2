@@ -7,9 +7,10 @@ package com.example.domainlayer.models;
 public class SclActs {
     int id, userId, likesCount;
     String type, timeStamp, schoolName;
-    String msg;
+     String msg;
+    int isLiked;
 
-    public SclActs(int id, int userId, String schoolName,String msg, String type, String timeStamp, int likesCount) {
+    public SclActs(int id, int userId, String schoolName,String msg, String type, String timeStamp, int likesCount,int isLiked) {
         this.id = id;
         this.userId = userId;
         this.msg = msg;
@@ -17,6 +18,7 @@ public class SclActs {
         this.timeStamp = timeStamp;
         this.schoolName=schoolName;
         this.likesCount=likesCount;
+        this.isLiked=isLiked;
     }
 
     public SclActs() {

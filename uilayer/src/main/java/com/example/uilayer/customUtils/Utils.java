@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
+import com.example.uilayer.R;
+
 /**
  * Created by thoughtchimp on 11/23/2016.
  */
@@ -217,7 +219,7 @@ public class Utils {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         // draw border
-        paint.setColor(context.getResources().getColor(android.R.color.black));
+        paint.setColor(context.getResources().getColor(R.color.text_color2));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth((float) borderSizePx);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,  bitmap.getWidth() / 2, paint);

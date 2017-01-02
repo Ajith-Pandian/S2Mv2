@@ -2,7 +2,7 @@ package com.example.domainlayer.temp;
 
 import android.util.Log;
 
-import com.example.domainlayer.models.SclActs;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMileData;
 
@@ -10,23 +10,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.concurrent.Exchanger;
 
 import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COMPLETED_MILESTONES;
+import static com.example.domainlayer.Constants.KEY_COMPLETED;
+import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.KEY_TOTAL_MILESTONES;
+import static com.example.domainlayer.Constants.KEY_TOTAL;
+import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
+import static com.example.domainlayer.Constants.SPACE;
 import static com.example.domainlayer.Constants.TYPE_TEXT;
 
 /**
@@ -45,14 +46,15 @@ public class DataParser {
                         = new Sections(milesDatObject.getInt(KEY_ID),
                         (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
                         (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
-                        milesDatObject.getInt(KEY_COMPLETED_MILESTONES),
-                        milesDatObject.getInt(KEY_TOTAL_MILESTONES),
+                        milesDatObject.getInt(KEY_COMPLETED),
+                        milesDatObject.getInt(KEY_TOTAL),
                         milesDatObject.getInt(KEY_SCHOOL_ID),
-                        milesDatObject.getString(KEY_MILESTONE_NAME),
+                        (Constants.KEY_MILESTONE_PREFIX + SPACE + milesDatObject.getString(KEY_MILESTONE_NAME)),
                         milesDatObject.getInt(KEY_MILESTONE_ID));
                 sectionsArrayList.add(section);
             }
         } catch (JSONException ex) {
+            Log.e("getSectionsListFromJson", "getSectionsListFromJson: ", ex);
         }
 
         return sectionsArrayList;

@@ -21,6 +21,11 @@
 
     <dimen name="mcq_right_padding">32dp</dimen>
     <dimen name="mcq_left_padding">32dp</dimen>
-
+    <!--Section Item-->
+    <dimen name="section_item_height">123dp</dimen><!--123-->
+    <dimen name="section_item_width">113dp</dimen><!--113-->
+    <!--Teacher Item-->
+    <dimen name="teacher_item_height">120dp</dimen>
+    <dimen name="teacher_item_width">162dp</dimen>
 
 </resources>

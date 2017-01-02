@@ -34,6 +34,9 @@ import com.example.uilayer.network.NetworkActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -41,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 
 
@@ -68,8 +72,7 @@ public class HomeFragment extends Fragment {
     Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), bitmap));
-            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(), bitmap, 20, 3));
+            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(), bitmap, 20, 1));
         }
 
         @Override
@@ -152,7 +155,18 @@ public class HomeFragment extends Fragment {
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
                         Log.d("LikeRequest", "onResponse: " + response);
-                        showToast("Liked");
+                        try {
+                            JSONObject responseJson = new JSONObject(response);
+                            String msg = responseJson.getString(KEY_MESSAGE);
+
+                            if (msg.equals(Constants.LIKED))
+                                buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
+                            else if (msg.equals(Constants.UNLIKED))
+                                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+                            showToast(msg);
+                        } catch (JSONException e) {
+                        }
+                        //  showToast("Liked");
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {

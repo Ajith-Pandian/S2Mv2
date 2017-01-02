@@ -1,71 +1,54 @@
 package com.example.uilayer.manage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.support.v4.util.ArrayMap;
+
+import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.example.domainlayer.models.Sections;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+
 import com.example.domainlayer.models.User;
-import com.example.domainlayer.models.milestones.TMiles;
-import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataParser;
-import com.example.domainlayer.utils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
+
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.milestones.MilesActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILE_ID;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION_ID;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 
 /**
  * Created by thoughtchimp on 12/23/2016.
  */
 
-public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    int rowsCount;
+    ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
+    private int rowsCount;
     private List<User> teachersList;
-    private List<Sections> sectionsList;
     private Context context;
-    private int undoId;
 
-    public TeachersAdapter(Context context, List<User> teachersList, int rowsCount) {
+    TeachersAdapter(Context context, List<User> teachersList, int rowsCount, ManageTeachersActivity.TeachersSectionsFragment.TeacherListener teacherListener) {
         this.teachersList = teachersList;
         this.context = context;
         this.rowsCount = rowsCount;
+        this.listener = teacherListener;
     }
 
     @Override
@@ -73,9 +56,9 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_manage_teachers, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.width = ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
         layoutParams.height = (parent.getMeasuredHeight() -
-                ((rowsCount - 1) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
+                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
         itemView.setLayoutParams(layoutParams);
         itemView.setLayoutParams(layoutParams);
         return new TeachersViewHolder(itemView);
@@ -88,11 +71,17 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final User user = teachersList.get(position);
         viewHolder.name.setText(user.getFirstName() + " " + user.getLastName());
         viewHolder.phoneNum.setText(user.getPhoneNum());
-
+        viewHolder.threeDots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(view, position);
+            }
+        });
+        Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+        viewHolder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
                 viewHolder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, bitmap));
             }
 
@@ -106,12 +95,25 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             }
         };
-        Picasso.with(context).load(user.getAvatar()).into(target);
+        if (!user.getAvatar().equals(""))
+            Picasso.with(context).load(user.getAvatar()).into(target);
 
     }
 
+    private void showPopupMenu(View view, int position) {
+        Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.PopupMenu);
+        final PopupMenu popup = new PopupMenu(wrapper, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_popup_card, popup.getMenu());
+        popup.setOnMenuItemClickListener(new TeacherMenuClickListener(position));
+        popup.show();
+    }
 
-    void getDetails(final int position, final boolean isMile) {
+    @Override
+    public int getItemCount() {
+        return teachersList.size();
+    }
+/*    void getDetails(final int position, final boolean isMile) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL + "/1",
                 new Response.Listener<String>() {
                     @Override
@@ -247,20 +249,39 @@ public class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         intent.putExtra("isMile", isMile);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }*/
+
+    public class TeacherMenuClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        private int position;
+
+        public TeacherMenuClickListener(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.menu_edit:
+                    listener.onEditOptionSelected(true,position);
+                    return true;
+                case R.id.menu_delete:
+                    listener.onDeleteOptionSelected(true);
+                    return true;
+                default:
+            }
+            return false;
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return teachersList.size();
-    }
-
-
-    class TeachersViewHolder extends RecyclerView.ViewHolder {
+    final class TeachersViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_teacher_name)
         TextView name;
         @BindView(R.id.image_profile_teacher)
         ImageView profileImage;
+        @BindView(R.id.dots)
+        ImageView threeDots;
         @BindView(R.id.text_teacher_phone_num)
         TextView phoneNum;
 
