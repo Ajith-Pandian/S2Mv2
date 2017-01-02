@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_message"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.uilayer.landing.message.MessageActivity">
+    <RelativeLayout
+        android:id="@+id/layout_text_ticket_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appbar"
+        android:background="@color/yellowishGreen"
+        android:padding="@dimen/mcq_right_padding">
+
+        <ImageView
+            android:id="@+id/image_quotes"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_quiz"
+            android:text="8"
+            android:textColor="@android:color/white"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/text_ticket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/image_quotes"
+            android:layout_toEndOf="@+id/image_quotes"
+            android:gravity="center"
+            tools:text="@string/school_msg_one"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/layout_text_ticket_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

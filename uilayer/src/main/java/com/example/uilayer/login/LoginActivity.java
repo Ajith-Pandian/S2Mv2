@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.example.uilayer.signup.SignUpActivity;
 import com.example.uilayer.landing.LandingActivity;
 
@@ -76,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if (DataHolder.getInstance(getApplicationContext()).getLastLogin().equals("null"))
+        if (DataHolder.getInstance(S2MApplication.getAppContext()).getLastLogin().equals("null"))
             lauchSignUp();
         else
             launchLanding();

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.example.uilayer.landing.message.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
 
 import butterknife.BindView;
@@ -79,15 +80,15 @@ public class LandingActivity extends AppCompatActivity
                         replaceFragment(new SectionsFragment());
                         break;
                     case R.id.button_messages: {
-                        MessagesFragment messagesFragment = new MessagesFragment();
+                        TicketsFragment ticketsFragment = new TicketsFragment();
 
-                        replaceFragment(messagesFragment);
+                        replaceFragment(ticketsFragment);
                     }
                     break;
                     case R.id.button_video:
-                        MessagesFragment messagesFragment = new MessagesFragment();
+                        TicketsFragment ticketsFragment = new TicketsFragment();
 
-                        replaceFragment(messagesFragment);
+                        replaceFragment(ticketsFragment);
                         // replaceFragment(new VideoFragment());
                         break;
                 }

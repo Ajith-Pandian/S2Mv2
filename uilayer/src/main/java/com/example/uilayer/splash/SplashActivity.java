@@ -13,7 +13,8 @@ import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
-NetworkHelper networkHelper;
+    NetworkHelper networkHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +23,7 @@ NetworkHelper networkHelper;
         if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null)
             startNextActivity(LoginActivity.class);
         else {
-            networkHelper= new NetworkHelper(S2MApplication.getAppContext());
+            networkHelper = new NetworkHelper(S2MApplication.getAppContext());
             networkHelper.getUserDetails(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
@@ -38,6 +39,7 @@ NetworkHelper networkHelper;
         finish();
         startActivity(intent);
     }
+
     @SuppressWarnings("NewApi")
     private void setupWindowAnimations() {
         Fade fade = new Fade();
@@ -47,7 +49,8 @@ NetworkHelper networkHelper;
 
     @Override
     protected void onDestroy() {
-        //networkHelper.removeListener();
+        if (networkHelper != null)
+            networkHelper.removeListener();
         super.onDestroy();
     }
 }

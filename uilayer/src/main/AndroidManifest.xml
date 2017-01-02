@@ -72,9 +72,8 @@
         <activity
             android:name=".manage.ManageTeachersActivity"
             android:label="Manage Teachers"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".landing.message.MessageActivity"></activity>
     </application>
 
 </manifest>
