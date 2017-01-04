@@ -36,6 +36,8 @@ public class Sections {
 
     @DatabaseField(columnName = Constants.KEY_MILESTONE_NAME)
     private String milestoneName;
+    @DatabaseField(columnName = Constants.KEY_NUM_OF_STUDS)
+    private int numOfStuds;
 
     public int getMilestoneId() {
         return milestoneId;
@@ -137,5 +139,13 @@ public class Sections {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getNumOfStuds() {
+        return numOfStuds;
+    }
+
+    public void setNumOfStuds(int numOfStuds) {
+        this.numOfStuds = numOfStuds;
     }
 }

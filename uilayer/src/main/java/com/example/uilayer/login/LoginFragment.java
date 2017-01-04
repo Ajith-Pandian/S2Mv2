@@ -1,6 +1,7 @@
 package com.example.uilayer.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,6 +36,8 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
+import com.example.uilayer.signup.SignUpActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -47,8 +51,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
-
-
 
 
 /**
@@ -67,6 +69,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     EditText loginText;
     @BindView(R.id.prefix_num)
     TextView prefixCountry;
+    @BindView(R.id.button_faq)
+    Button faqButton;
+    @BindView(R.id.button_sign_up)
+    Button signUpButton;
+    @BindView(R.id.button_terms_of_use)
+    Button touButton;
     @BindView(R.id.prefix_layout)
     LinearLayout inputLayout;
     @BindView(R.id.button_login)
@@ -118,8 +126,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
-
         return view;
+    }
+
+    void launchSignUp() {
+        startActivity(new Intent(getActivity(), SignUpActivity.class).putExtra("isSignUp", true));
     }
 
     public void sendOTP(final boolean isMail, final String text) {
@@ -137,13 +148,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 },
-               new VolleyStringRequest.VolleyErrListener() {
+                new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
                         Log.d("log", "onErrorResponsssse: " + error);
                     }
-                } , new VolleyStringRequest.StatusCodeListener() {
+                }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
 
             @Override
@@ -185,7 +196,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         int socketTimeout = 30000;//30 seconds - change to what you want
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         loginRequest.setRetryPolicy(policy);
-        VolleySingleton.getInstance(getActivity()).addToRequestQueue(loginRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(loginRequest);
 
     }
 
@@ -236,7 +247,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         changeToMail();
                     }
                 } else {
-                   // loginText.setCursorVisible(false);
+                    // loginText.setCursorVisible(false);
                     changeToMail();
                 }
             }
@@ -256,6 +267,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 return false;
             }
         });
+        signUpButton.setOnClickListener(this);
 
     }
 
@@ -264,6 +276,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.button_login:
                 validateInput();
+                break;
+            case R.id.button_sign_up:
+                launchSignUp();
+                break;
         }
     }
 
@@ -306,7 +322,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             inputLayout.setVisibility(View.VISIBLE);
         // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        loginText.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+        loginText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
     }
 
     void changeToMail() {

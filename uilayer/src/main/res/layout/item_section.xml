@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_school_update_root"
-    android:layout_width="@dimen/section_item_width"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/section_item_height"
     android:orientation="vertical"
     android:padding="2dp">
@@ -61,7 +61,7 @@
                 <LinearLayout
                     android:id="@+id/bootom_miles_layout"
                     android:layout_width="match_parent"
-                    android:layout_toLeftOf="@+id/dots"
+                    android:layout_toLeftOf="@+id/layout_dots"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -93,22 +93,31 @@
                         android:textSize="8sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/dots"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="20dp"
+                <LinearLayout
+                    android:id="@+id/layout_dots"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingRight="3dp"
-                    android:gravity="right"
-                    android:paddingBottom="5dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:clickable="true"
-                    android:text="@string/vertical_ellipsis"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless">
+
+                    <TextView
+                        android:id="@+id/dots"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="right"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="3dp"
+                        android:paddingRight="3dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/vertical_ellipsis"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </RelativeLayout>
 
         </LinearLayout>

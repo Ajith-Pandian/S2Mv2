@@ -57,6 +57,7 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.FEEDBACK_CREATE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_FEEDBACK_ID;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
@@ -66,6 +67,7 @@ import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_THUMBS;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.THUMBS_DOWN;
 import static com.example.domainlayer.Constants.THUMBS_UP;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
@@ -398,6 +400,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
 
                 return header;
             }

@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     void lauchSignUp() {
-        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        startActivity(new Intent(LoginActivity.this, SignUpActivity.class).putExtra("isSignUp",false));
     }
 
     void launchLanding() {
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if (DataHolder.getInstance(S2MApplication.getAppContext()).getLastLogin().equals("null"))
+        if (DataHolder.getInstance(this).getLastLogin().equals("null"))
             lauchSignUp();
         else
             launchLanding();

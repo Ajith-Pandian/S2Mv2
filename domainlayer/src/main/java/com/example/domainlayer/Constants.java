@@ -6,9 +6,10 @@ package com.example.domainlayer;
 
 public class Constants {
 
-    private static final String BASE_URL = "http://192.168.0.100:8000/api/";
-    public static final String LOGIN_URL = BASE_URL + "login";
-    public static final String OTP_VERIFY_URL = BASE_URL + "verify";
+    //private static final String BASE_URL = "http://wowconnect.app/api/";
+    private static final String BASE_URL = "http://192.168.0.106:8000/api/";
+    public static final String LOGIN_URL = BASE_URL + "verify";
+    public static final String OTP_VERIFY_URL = BASE_URL + "login";
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
     public static final String MILES_URL = BASE_URL + "milestones/";
     public static final String ALL_MILESTONES_URL = BASE_URL + "milestones";
@@ -19,7 +20,7 @@ public class Constants {
     public static final String MCQ_RESULT_URL = TRAININGS_URL + "1/trainings/15/submitMcqResults";
     public static final String SCHOOLS_URL = BASE_URL + "schools/";
     public static final String SECTIONS_URL = SCHOOLS_URL + "2/sections";
-    public static final String DETAILES_SECTIONS_URL = SCHOOLS_URL + "3/detailedSections";
+    public static final String DETAILED_SECTIONS_URL = SCHOOLS_URL + "3/detailedSections";
     public static final String INTRO_TRAINING_URL = BASE_URL+"introTraining";
     public static final String ARCHIVE_URL = BASE_URL+"section/4/archiveMilesTrainings";
     public static final String FEEDBACK_CREATE_URL = BASE_URL+"feedback/create";
@@ -31,6 +32,7 @@ public class Constants {
     public static final String NETWORK_URL_SUFFIX = "/network";
     public static final String GET_TEACHERS_URL_SUFFIX = "/getTeachers";
     public static final String ADD_TEACHERS_URL_SUFFIX = "/addTeacher";
+    public static final String DELETE_TEACHERS_URL_SUFFIX = "/deleteTeacher";
     public static final String ADD_SECTIONS_URL_SUFFIX = "/create";
     public static final String NETWORK_SECTIONS_URL_SUFFIX = "/networkSections";
     public static final String ADD_SECTIONS_URL= SECTIONS_URL + ADD_SECTIONS_URL_SUFFIX;
@@ -41,9 +43,10 @@ public class Constants {
     public static final String TEMP_ACCESS_TOKEN = "1234567890/qwertyuiop";
     public static final String TEMP_ACCESS_TOKEN1 = "1234567899/qwertyuiop";
     public static final String TEMP_OTP = "1111";
-    public static final String TEMP_DEVICE_TYPE = "Android";//Android or Ios
+    public static final String TEMP_DEVICE_TYPE = "android";//Android or Ios
     public static final String TEMP_DEVICE_TOKEN = "abcdefghijklmnopqrstuvwxyz";
     public static final String KEY_STUDENT_COUNT = "studentCount";
+    public static final String KEY_TEACHER_ID = "teacherId";
 
     // Request/Response TAGs
     public static final String KEY_ID = "id";
@@ -72,6 +75,7 @@ public class Constants {
     public static final String KEY_WOW = "wows";
     public static final String KEY_TRAINING = "trainings";
     public static final String KEY_MILESTONE_NAME = "milestoneName";
+    public static final String KEY_NUM_OF_STUDS = "studentCount";
     public static final String KEY_MILESTONE = "milestone";
     public static final String KEY_MILESTONE_PREFIX = "Milestone";
     public static final String KEY_MILESTONE_ID = "milestoneId";

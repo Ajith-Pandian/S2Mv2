@@ -10,7 +10,7 @@ import com.squareup.leakcanary.LeakCanary;
  */
 
 public class S2MApplication extends Application {
-    private static Context appContext;
+    private  static Context appContext;
     @Override public void onCreate() {
         super.onCreate();
     if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -19,7 +19,7 @@ public class S2MApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-        appContext=this;
+        appContext = this;
     }
 
     public static Context getAppContext() {

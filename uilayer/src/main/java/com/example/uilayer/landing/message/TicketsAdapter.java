@@ -48,6 +48,7 @@ import static com.example.domainlayer.Constants.KEY_TYPE;
 
 public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHolder> {
 
+    private static final String OPEN = "open", CLOSED = "closed", SOLVED = "SOLVED";
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
@@ -73,8 +74,13 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
         holder.content.setText(ticket.getContent());
         holder.category.setText(ticket.getCategory());
         holder.date.setText(ticket.getDate());
+        String staus = ticket.getStatus();
+        if (staus.equals(OPEN))
+            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red));
+        else if (staus.equals(CLOSED))
+            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.text_color2));
         holder.status.setText(ticket.getStatus());
-        holder.ticketId.setText(""+ticket.getNumber());
+        holder.ticketId.setText("" + ticket.getNumber());
 
         Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
         holder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));

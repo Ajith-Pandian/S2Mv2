@@ -55,6 +55,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".splash.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,16 +65,22 @@
         </activity>
         <activity
             android:name=".network.NetworkActivity"
-            android:label="Network" />
+            android:label="Network"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".network.ProfileActivity"
             android:label="Profile"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".manage.ManageTeachersActivity"
             android:label="Manage Teachers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".landing.message.MessageActivity"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".landing.message.MessageActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".manage.SelectSchoolActivity"></activity>
     </application>
 
 </manifest>

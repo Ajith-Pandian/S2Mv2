@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.PromptSpinner;
 import com.example.uilayer.landing.LandingActivity;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.edit_text_signup_comment)
     EditText textComment;
     @BindView(R.id.spinner_school_select)
-    Spinner spinnerSchoolSelect;
+    PromptSpinner spinnerSchoolSelect;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab_signup_camera)
@@ -73,12 +75,16 @@ public class SignUpActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
         }
     };
+    boolean isSignUp;//true if signup -- false for modification
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+        if (getIntent() != null)
+            isSignUp = getIntent().getBooleanExtra("isSignUp", false);
+
         initViews();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -91,11 +97,13 @@ public class SignUpActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        loadData();
+        if(isSignUp)
+        {
+            Log.d("SIGNUP", "onCreate: innn");
+            loadData();}
     }
 
-    void configureTiltle()
-    {
+    void configureTiltle() {
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -108,7 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle("Register");
                     isShow = true;
-                } else if(isShow) {
+                } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
                     isShow = false;
                 }
@@ -118,13 +126,16 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     void loadData() {
-        DataHolder holder=DataHolder.getInstance(getApplicationContext());
+        DataHolder holder = DataHolder.getInstance(getApplicationContext());
         textFirstName.setText(holder.getFirstName());
         textLastName.setText(holder.getLastName());
         textEmail.setText(holder.getEmail());
         textPhone.setText(holder.getPhoneNum());
         textComment.setText("");
-        Picasso.with(getApplicationContext()).load(holder.getAvatar()).into(imageUser);
+        Picasso.with(getApplicationContext())
+                .load(holder.getAvatar())
+                .placeholder(R.drawable.ph_user_big)
+                .into(imageUser);
     }
 
     void initViews() {

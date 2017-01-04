@@ -29,11 +29,12 @@ import butterknife.ButterKnife;
  */
 
 public class TicketsFragment extends Fragment {
+    final String OPEN = "open", CLOSED = "Closed", SOLVED = "SOLVED";
     @BindView(R.id.recycler_tickets)
     RecyclerView ticketsRecycler;
     @BindView(R.id.button_start)
     Button startButton;
-final String OPEN="open",CLOSED="Closed",SOLVED="SOLVED";
+
     public TicketsFragment() {
 
     }
@@ -48,7 +49,7 @@ final String OPEN="open",CLOSED="Closed",SOLVED="SOLVED";
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         ticketsRecycler.setLayoutManager(layoutManager);
-        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5));
+        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,3));
         ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), getTickets()));
         //ticketsRecycler.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
         //  Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
@@ -73,41 +74,34 @@ final String OPEN="open",CLOSED="Closed",SOLVED="SOLVED";
         ticket1.setCategory("CONTENT");
         ticket1.setDate("22.10.2001");
         ticket1.setContent(getActivity().getResources().getString(R.string.school_msg_one));
-        ticket1.setStatus("OPEN");
+        ticket1.setStatus("open");
         ticket1.setProfileUrl("http://a1.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNTEzMDA0MDQ2.jpg");
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        ticket2.setId(1);
+
+        ticket2.setId(2);
         ticket2.setNumber(123456);
         ticket2.setUserName("Michel Jackson");
         ticket2.setCategory("CONTENT");
         ticket2.setDate("22.10.2001");
-        ticket2.setStatus("CLOSED");
+        ticket2.setStatus("closed");
         ticket2.setProfileUrl("http://a1.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNTEzMDA0MDQ2.jpg");
-        ticket2.setContent(getActivity().getResources().getString(R.string.school_msg_two)+getActivity().getResources().getString(R.string.school_msg_two));
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        ticket1.setContent(getActivity().getResources().getString(R.string.school_msg_one));
+        ticket2.setContent(getActivity().getResources().getString(R.string.school_msg_two) + getActivity().getResources().getString(R.string.school_msg_two));
         tickets.add(ticket1);
         tickets.add(ticket1);
         tickets.add(ticket1);
         tickets.add(ticket1);
+        tickets.add(ticket2);
         tickets.add(ticket1);
         tickets.add(ticket1);
+        tickets.add(ticket2);
         tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
-        tickets.add(ticket1);
+        tickets.add(ticket2);
+
         return tickets;
     }
 
-    void openBottomSheet(boolean isTeacher) {
-
+    void openBottomSheet(boolean isS2m) {
+        CreateTicketFragment bottomSheetDialogFragment = CreateTicketFragment.getNewInstance(isS2m);
+        bottomSheetDialogFragment.show(getChildFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
     @Override

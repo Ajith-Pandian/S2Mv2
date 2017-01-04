@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_school_update_root"
-    android:layout_width="@dimen/teacher_item_width"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/teacher_item_height"
     android:orientation="vertical"
     android:padding="2dp">

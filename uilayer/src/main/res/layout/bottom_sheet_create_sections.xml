@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/text_create_sections"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Create Sections"
         android:layout_margin="6dp"
+        android:text="Create Sections"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -25,20 +25,20 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_class"
-            android:theme="@style/TextLabel"
-            android:padding="4dp"
             android:layout_width="0dp"
-            android:nextFocusForward="@+id/til_section"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:nextFocusForward="@+id/til_section"
+            android:padding="4dp"
+            android:theme="@style/TextLabel">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_class_name"
                 android:layout_width="match_parent"
-                android:nextFocusForward="@+id/til_section"
                 android:layout_height="wrap_content"
                 android:hint="Class Name"
                 android:inputType="text"
+                android:nextFocusForward="@+id/til_section"
                 android:textSize="14sp" />
 
         </android.support.design.widget.TextInputLayout>
@@ -46,11 +46,11 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_section"
             android:layout_width="0dp"
-            android:padding="4dp"
-            android:theme="@style/TextLabel"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_mobile_number"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:theme="@style/TextLabel">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_section_name"
@@ -71,21 +71,42 @@
         android:layout_below="@+id/layout_cls_and_sec"
         android:orientation="horizontal">
 
-        <com.example.uilayer.customUtils.PromptSpinner
-            android:id="@+id/spinner_milestones"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-/>
+            android:orientation="vertical">
+
+            <com.example.uilayer.customUtils.PromptSpinner
+                android:id="@+id/spinner_milestones"
+                style="@style/SpinnerStyle"
+                android:layout_width="match_parent"
+                android:layout_centerInParent="true"
+                android:drawSelectorOnTop="true"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_below="@+id/spinner_milestones"
+                android:layout_height="3dp"
+                android:layout_gravity="bottom"
+                android:background="@color/text_input_layer_color"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+        </RelativeLayout>
+        <!--            style="@style/Widget.AppCompat.Spinner.Underlined"
+            app:backgroundTint="@color/text_input_layer_color1"-->
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_num_of_stud"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:theme="@style/TextLabel"
             android:layout_below="@+id/til_mobile_number"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:theme="@style/TextLabel">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/text_num_of_stud"
@@ -101,9 +122,21 @@
 
     <com.example.uilayer.customUtils.PromptSpinner
         android:id="@+id/spinner_select_teacher"
+        style="@style/SpinnerStyle"
         android:layout_width="match_parent"
+        android:drawSelectorOnTop="true"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_mob_and_mail" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/spinner_select_teacher"
+        android:background="@color/text_input_layer_color"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
+    <!--0        style="@style/Widget.AppCompat.Spinner.Underlined"
+        app:backgroundTint="@color/text_input_layer_color1" -->
 
     <Button
         android:id="@+id/button_add_section"

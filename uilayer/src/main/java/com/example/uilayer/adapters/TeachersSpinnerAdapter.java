@@ -22,21 +22,22 @@ import com.example.uilayer.R;
 
 public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
     private ArrayList<User> usersList;
-    private int textViewResourceId;
 
     public TeachersSpinnerAdapter(Context context, int resource,
                                   int textViewResourceId, ArrayList<User> objects) {
         super(context, resource, textViewResourceId, objects);
         this.usersList = objects;
-        this.textViewResourceId = textViewResourceId;
     }
 
     @Override
     public View getView(int position, View convertView,
                         ViewGroup parent) {
-
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_spinner, parent, false);
+        View itemView = convertView;
+        if (itemView == null) {
+            itemView
+                    = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_spinner, parent, false);
+        }
 
         TextView textView = (TextView) itemView.findViewById(R.id.text_spinner);
         textView.setText(usersList.get(position).getName());
@@ -58,10 +59,15 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
     public View getDropDownView(int position, View convertView,
                                 ViewGroup parent) {
 
-        View dropDownView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_spinner, parent, false);
+        View dropDownView = convertView;
+        if (dropDownView == null) {
+            dropDownView
+                    = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_spinner, parent, false);
+        }
         TextView textView = (TextView) dropDownView.findViewById(R.id.text_spinner);
         textView.setText(usersList.get(position).getName());
         return dropDownView;
+
     }
 }

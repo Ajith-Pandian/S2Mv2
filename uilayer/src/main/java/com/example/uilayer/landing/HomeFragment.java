@@ -44,8 +44,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 
 /**
@@ -206,10 +209,10 @@ public class HomeFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put("accessToken", TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
-
         };
 
         VolleySingleton.getInstance(getActivity()).addToRequestQueue(likeRequest);

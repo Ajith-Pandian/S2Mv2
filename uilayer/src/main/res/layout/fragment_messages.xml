@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginEnd="16dp"
+
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -19,10 +16,17 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="55dp">
 
                 <android.support.v7.widget.CardView
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -72,6 +76,10 @@
 
             <android.support.v7.widget.RecyclerView
                 android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:paddingRight="16dp"
+                android:paddingEnd="16dp"
                 android:id="@+id/recycler_tickets"
                 android:nestedScrollingEnabled="false"
                 android:layout_width="match_parent"

@@ -28,68 +28,40 @@
                 android:layout_margin="@dimen/image_icon_margin"
                 android:src="@drawable/user" />
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
+                android:layout_marginLeft="16dp"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_first_name"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:text="Jakub"
+                    android:hint="FirstName"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="First Name"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp">
 
-                    <requestFocus />
-                </TextView>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
-            </LinearLayout>
-
-            <LinearLayout
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_last_name"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Antalik"
+                    android:hint="LastName"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
 
-                    android:text="Last Name"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+            </android.support.design.widget.TextInputLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="#414040" />
-            </LinearLayout>
 
         </LinearLayout>
 
@@ -107,34 +79,24 @@
                 android:layout_margin="@dimen/image_icon_margin"
                 android:src="@drawable/email" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <android.support.design.widget.TextInputLayout
                 android:layout_marginLeft="16dp"
-                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_email"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="jackupantalik@gmail.com"
+                    android:hint="Email"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
+
 
 
         </LinearLayout>
@@ -151,36 +113,26 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/image_icon_margin"
                 android:src="@drawable/phone" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <android.support.design.widget.TextInputLayout
                 android:layout_marginLeft="16dp"
-                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_phone"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLength="10"
-                    android:text="9889652354"
+                    android:hint="Phone"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Phone"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
+
+
 
 
         </LinearLayout>
@@ -199,7 +151,7 @@
                 android:src="@drawable/scholl" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="16dp"
@@ -207,7 +159,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <Spinner
+                <com.example.uilayer.customUtils.PromptSpinner
                     style="@style/DarkText"
                     android:id="@+id/spinner_school_select"
                     android:layout_width="match_parent"
@@ -219,14 +171,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="School Name"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/text_input_layer_color"
                     android:textSize="12sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
+                    android:background="@color/text_input_layer_color" />
             </LinearLayout>
 
 
@@ -237,7 +190,6 @@
             android:id="@+id/layout_custom_school"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:orientation="horizontal">
 
             <View
@@ -245,28 +197,25 @@
                 android:layout_height="@dimen/image_icon_height"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/image_icon_margin" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <android.support.design.widget.TextInputLayout
                 android:layout_marginLeft="16dp"
-                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_school"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter schoolname"
+                    android:maxLength="10"
+                    android:hint="School name"
                     android:textSize="14sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
-            </LinearLayout>
+
+            </android.support.design.widget.TextInputLayout>
+
 
 
         </LinearLayout>
@@ -284,30 +233,25 @@
                 android:layout_margin="@dimen/image_icon_margin"
                 android:src="@drawable/comment" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <android.support.design.widget.TextInputLayout
                 android:layout_marginLeft="16dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:theme="@style/TextLabel"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/edit_text_signup_comment"
-                    style="@style/SignUpEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="3"
                     android:hint="Comment"
-                    android:text="@string/msg_login"
+                    tools:text="@string/msg_login"
                     android:textSize="14sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/text_secondary" />
-            </LinearLayout>
+
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 

@@ -47,7 +47,7 @@ public class VolleySingleton {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
@@ -56,7 +56,7 @@ public class VolleySingleton {
         return mRequestQueue;
     }
 
-    String TAG = "VolleySingleton";
+    private final String TAG = "VolleySingleton";
 
     public <T> void addToRequestQueue(Request<T> req) {
         Log.d(TAG, "addToRequestQueue: added");

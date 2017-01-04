@@ -40,7 +40,7 @@
         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
 
     <Button
-        android:id="@+id/button_signup"
+        android:id="@+id/button_sign_up"
         style="@style/ButonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

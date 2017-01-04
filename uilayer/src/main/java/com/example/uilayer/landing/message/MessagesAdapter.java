@@ -113,7 +113,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    private class SendViewHolder extends RecyclerView.ViewHolder {
+     class SendViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_message)
         TextView message;
         @BindView(R.id.text_date)
@@ -128,7 +128,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private class ReceiveViewHolder extends RecyclerView.ViewHolder {
+     class ReceiveViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_user_name)
         TextView senderName;
         @BindView(R.id.image_user_ticket)

@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CLASS;
 import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE;
@@ -48,6 +49,7 @@ import static com.example.domainlayer.Constants.NETWORK_SECTIONS_URL;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
  * Created by thoughtchimp on 12/21/2016.
@@ -156,6 +158,7 @@ public class ProfileFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 
@@ -189,6 +192,7 @@ public class ProfileFragment extends Fragment {
                 section.setId(secOnj.getInt(KEY_ID));
                 section.set_Class((PREFIX_CLASS + secOnj.getString(KEY_CLASS)));
                 section.setSection((PREFIX_SECTION + secOnj.getString(KEY_SECTION)));
+               // section.setNumOfStuds(sectionObj.getInt(KEY_COMPLETED_MILES));
                 section.setCompletedMiles(sectionObj.getInt(KEY_COMPLETED_MILES));
                 section.setTotalMiles(sectionObj.getInt(KEY_TOTAL_MILES));
                 section.setMilestoneId(sectionObj.getInt(KEY_MILESTONE_ID));

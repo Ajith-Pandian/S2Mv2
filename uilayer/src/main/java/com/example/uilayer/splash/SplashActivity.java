@@ -1,6 +1,7 @@
 package com.example.uilayer.splash;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Fade;
@@ -13,10 +14,12 @@ import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
+    final int TIME_IN_SECS = 2;
     NetworkHelper networkHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spash);
         setupWindowAnimations();
@@ -35,9 +38,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     void startNextActivity(Class<?> classname) {
-        Intent intent = new Intent(this, classname);
-        finish();
-        startActivity(intent);
+        final Intent intent = new Intent(this, classname);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+                startActivity(intent);
+            }
+        }, TIME_IN_SECS * 1000);
     }
 
     @SuppressWarnings("NewApi")

@@ -5,11 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.domainlayer.models.Category;
 import com.example.domainlayer.models.Milestones;
-import com.example.domainlayer.models.User;
 import com.example.uilayer.R;
 
 import java.util.ArrayList;
@@ -19,14 +18,14 @@ import java.util.ArrayList;
  */
 
 
-public class MilestonesSpinnerAdapter extends SpinnerAdapter<Milestones> {
-    private ArrayList<Milestones> milestonesArrayList;
+public class CategorySpinnerAdapter extends SpinnerAdapter<Category> {
+    private ArrayList<Category> categoryArrayList;
     private int textViewResourceId;
 
-    public MilestonesSpinnerAdapter(Context context, int resource,
-                                    int textViewResourceId, ArrayList<Milestones> objects) {
+    public CategorySpinnerAdapter(Context context, int resource,
+                                  int textViewResourceId, ArrayList<Category> objects) {
         super(context, resource, textViewResourceId, objects);
-        this.milestonesArrayList = objects;
+        this.categoryArrayList = objects;
         this.textViewResourceId = textViewResourceId;
     }
 
@@ -40,7 +39,7 @@ public class MilestonesSpinnerAdapter extends SpinnerAdapter<Milestones> {
                     .inflate(R.layout.item_spinner, parent, false);
         }
         TextView textView = (TextView) promptView.findViewById(R.id.text_spinner);
-        textView.setText(milestonesArrayList.get(position).getName());
+        textView.setText(categoryArrayList.get(position).getName());
         return promptView;
 
     }
@@ -54,20 +53,20 @@ public class MilestonesSpinnerAdapter extends SpinnerAdapter<Milestones> {
                     .inflate(R.layout.item_spinner, parent, false);
         }
         TextView textView = (TextView) dropDownView.findViewById(R.id.text_spinner);
-        textView.setText(milestonesArrayList.get(position).getName());
+        textView.setText(categoryArrayList.get(position).getName());
         return dropDownView;
 
     }
 
     @Nullable
     @Override
-    public Milestones getItem(int position) {
-        return milestonesArrayList.get(position);
+    public Category getItem(int position) {
+        return categoryArrayList.get(position);
     }
 
     @Override
     public int getCount() {
-        return milestonesArrayList.size();
+        return categoryArrayList.size();
     }
 
 }

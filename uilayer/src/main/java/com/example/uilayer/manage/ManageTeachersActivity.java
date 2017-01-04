@@ -66,11 +66,13 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.ADD_SECTIONS_URL;
 import static com.example.domainlayer.Constants.ADD_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.ALL_MILESTONES_URL;
-import static com.example.domainlayer.Constants.DETAILES_SECTIONS_URL;
+import static com.example.domainlayer.Constants.DELETE_TEACHERS_URL_SUFFIX;
+import static com.example.domainlayer.Constants.DETAILED_SECTIONS_URL;
 import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CLASS;
 import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
 import static com.example.domainlayer.Constants.KEY_ID;
@@ -83,14 +85,18 @@ import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
+import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
 import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+    private static String DONE = "Done";
+    private static String NEXT = "Next";
     boolean isTeachers;
     @BindView(R.id.viewpager_manage_teachers)
     ViewPager viewPager;
@@ -117,7 +123,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.layout_dummy_frame_manage)
     FrameLayout dummyLayout;
-    VolleyStringRequest teacherAddRequest;
+    VolleyStringRequest teacherAddRequest, teacherDeleteRequest;
     UpdateListener updateListener;
     VolleyStringRequest sectionAddRequest;
     VolleyStringRequest milestonesRequest;
@@ -180,8 +186,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             }
 
             @Override
-            public void onDeleteOptionSelected(boolean isTeacher) {
-
+            public void onDeleteOptionSelected(boolean isTeacher, int position) {
+                deleteTeacher(position);
             }
 
             @Override
@@ -205,7 +211,9 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (viewPager.getCurrentItem() == 0) {
+                if (nextButton.getText().toString().equals(DONE)) {
+                    finish();
+                } else if (viewPager.getCurrentItem() == 0) {
                     viewPager.setCurrentItem(1);
                     pagerAdapter.notifyDataSetChanged();
                 }
@@ -258,6 +266,78 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             backButton.setEnabled(false);
             updateButtonText(backButton);
         }
+    }
+
+    void deleteTeacher(final int position) {
+        final int teacherId = DataHolder.getInstance(this).getTeachersList().get(position).getId();
+        teacherDeleteRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + "2" + DELETE_TEACHERS_URL_SUFFIX,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(ManageTeachersActivity.this,
+                                "Teacher deleted successfully",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                return header;
+            }
+
+
+            @Override
+            public Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_TEACHER_ID, String.valueOf(teacherId));
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(teacherDeleteRequest);
     }
 
     void closeBottomSheet() {
@@ -388,7 +468,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 Sections sec = DataHolder.getInstance(this).getSectionsList().get(position);
                 bs_classNameInput.setText(sec.get_Class());
                 bs_sectionNameInput.setText(sec.getSection());
-             //   bs_numOfStudentsInput.setText(sec.getNumbetOfStudents());
+                bs_numOfStudentsInput.setText("" + sec.getNumOfStuds());
             }
 
         }
@@ -453,6 +533,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 
@@ -527,6 +608,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 
@@ -601,15 +683,15 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         if (position == 0) {
             stateBack = false;
             stateNext = true;
-            nextButton.setText("Next");
+            nextButton.setText(NEXT);
         } else if (position == indicatorsCount - 1) {
             stateBack = true;
-            stateNext = false;
-            nextButton.setText("Done");
+            stateNext = true;
+            nextButton.setText(DONE);
         } else {
             stateBack = true;
             stateNext = true;
-            nextButton.setText("Next");
+            nextButton.setText(NEXT);
         }
         backButton.setEnabled(stateBack);
         nextButton.setEnabled(stateNext);
@@ -678,6 +760,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 
@@ -901,6 +984,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> header = new ArrayMap<>();
                     header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                     return header;
                 }
 
@@ -915,7 +999,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
 
         void loadSections() {
-            sectionsRequest = new VolleyStringRequest(Request.Method.GET, DETAILES_SECTIONS_URL,
+            sectionsRequest = new VolleyStringRequest(Request.Method.GET, DETAILED_SECTIONS_URL,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -963,6 +1047,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> header = new ArrayMap<>();
                     header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                     return header;
                 }
             };
@@ -989,11 +1074,13 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                             Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + milesDatObject.getString(KEY_MILESTONE_NAME),
                             milesDatObject.getInt(KEY_MILESTONE_ID));
                     sectionsArrayList.add(section);
+                    DataHolder.getInstance(getActivity())
+                            .setSectionsList(sectionsArrayList);
                 }
             } catch (JSONException ex) {
                 Log.d("Error", "updateSections: " + ex);
             }
-            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2,teacherListener);
+            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener);
             recyclerView.setAdapter(adapter);
         }
 
@@ -1056,7 +1143,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             void onEditOptionSelected(boolean isTeacher, int position);
 
-            void onDeleteOptionSelected(boolean isTeacher);
+            void onDeleteOptionSelected(boolean isTeacher, int position);
         }
 
     }

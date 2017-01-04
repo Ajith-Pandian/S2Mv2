@@ -6,7 +6,7 @@ package com.example.domainlayer.models;
 
 public class Schools {
     int id;
-    String name, logo;
+    String name, logo,address;
 
     public int getId() {
         return id;
@@ -30,5 +30,13 @@ public class Schools {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

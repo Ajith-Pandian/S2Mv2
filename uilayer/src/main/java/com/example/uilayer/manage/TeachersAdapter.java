@@ -57,8 +57,8 @@ final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .inflate(R.layout.item_manage_teachers, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = (parent.getMeasuredHeight() -
-                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;
+       /* layoutParams.height = (parent.getMeasuredHeight() -
+                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / rowsCount;*/
         itemView.setLayoutParams(layoutParams);
         itemView.setLayoutParams(layoutParams);
         return new TeachersViewHolder(itemView);
@@ -266,7 +266,7 @@ final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     listener.onEditOptionSelected(true,position);
                     return true;
                 case R.id.menu_delete:
-                    listener.onDeleteOptionSelected(true);
+                    listener.onDeleteOptionSelected(true,position);
                     return true;
                 default:
             }

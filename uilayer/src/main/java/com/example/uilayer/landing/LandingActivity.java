@@ -36,6 +36,7 @@ import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.landing.message.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
+import com.example.uilayer.manage.SelectSchoolActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -347,16 +348,8 @@ public class LandingActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.nav_camera:
-                break;
-            case R.id.nav_gallery:
-
-                break;
-            case R.id.nav_slideshow:
-
-                break;
-            case R.id.nav_manage:
-
+            case R.id.nav_select_school:
+                startActivity(new Intent(LandingActivity.this, SelectSchoolActivity.class));
                 break;
             case R.id.nav_manage_teachers:
                 startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers",true));

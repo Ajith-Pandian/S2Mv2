@@ -40,6 +40,7 @@ import static com.example.domainlayer.Constants.ARCHIVE_URL;
 import static com.example.domainlayer.Constants.INTRO_TRAINING_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ARCHIVE;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_INTRO_CONTENT;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
@@ -50,6 +51,7 @@ import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_UNDOABLE_ID;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class MilestonesActivity extends AppCompatActivity {
     @BindView(R.id.recycler_milestones)
@@ -186,6 +188,7 @@ public class MilestonesActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 

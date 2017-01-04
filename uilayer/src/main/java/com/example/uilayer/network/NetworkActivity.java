@@ -20,6 +20,7 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,10 +33,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.NETWORK_URL_SUFFIX;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class NetworkActivity extends AppCompatActivity {
     @BindView(R.id.recycler_network)
@@ -53,6 +56,7 @@ public class NetworkActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
+        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1));
 
         getNetworkProfileInfo();
     }
@@ -106,6 +110,7 @@ public class NetworkActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
                 header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 

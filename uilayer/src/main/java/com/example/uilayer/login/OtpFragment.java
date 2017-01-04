@@ -24,6 +24,7 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -168,7 +169,7 @@ public class OtpFragment extends Fragment {
 
         };
 
-        VolleySingleton.getInstance(getActivity()).addToRequestQueue(otpRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(otpRequest);
     }
 
     void storeResponse(String response) {

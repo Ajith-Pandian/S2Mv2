@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.CustomProgressBar;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.milestones.MilestonesActivity;
@@ -43,6 +45,8 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
@@ -54,6 +58,7 @@ import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.MILES_URL;
 import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TRAININGS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.TYPE_TEACHER;
@@ -92,11 +97,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_section, parent, false);
-        /*ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
-        layoutParams.height = (parent.getMeasuredHeight() -
-                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()))) / rowsCount;
-        itemView.setLayoutParams(layoutParams);*/
+/*        layoutParams.height = (parent.getMeasuredHeight() -
+                ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()))) / rowsCount;*/
+        itemView.setLayoutParams(layoutParams);
         return new ViewHolder(itemView);
     }
 
@@ -114,7 +119,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
         holder.completedMiles.setText("" + sectionDetails.getCompletedMiles() + " miles completed");
         holder.progressBar.setProgress((int) progress);
-        holder.threeDots.setOnClickListener(new View.OnClickListener() {
+        holder.dotsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null)
@@ -196,110 +201,14 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put("accessToken", TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
 
         };
 
-        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
-    }
-
-    void getMilestoneDetails(final int position) {
-        String milesUrl = MILES_URL + sectionDetailsList.get(position).getMilestoneId() + MILES_URL_SUFFIX;
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, milesUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("Miles", "onResponse: " + response);
-
-
-                        openMilestonesActivity(position);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("Miles", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-
-        String trainingsUrl = TRAININGS_URL + sectionDetailsList.get(position).getMilestoneId() + TRAININGS_URL_SUFFIX;
-        VolleyStringRequest trainingsRequest = new VolleyStringRequest(Request.Method.GET, trainingsUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("Miles", "onResponse: " + response);
-                        openMilestonesActivity(position);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("Miles", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-
-        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
-        VolleySingleton.getInstance(context).addToRequestQueue(trainingsRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
     }
 
     void openMilestonesActivity(int position) {
@@ -361,10 +270,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.menu_edit:
-                    listener.onEditOptionSelected(true, position);
+                    listener.onEditOptionSelected(false, position);
                     return true;
                 case R.id.menu_delete:
-                    listener.onDeleteOptionSelected(true);
+                    listener.onDeleteOptionSelected(false,position);
                     return true;
                 default:
             }
@@ -389,6 +298,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         RelativeLayout bottomLayout;
         @BindView(R.id.card_school_update_root)
         LinearLayout rootLayout;
+      @BindView(R.id.layout_dots)
+      LinearLayout dotsLayout;
 
         @BindView(R.id.dots)
         TextView threeDots;
