@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Category;
+import com.example.domainlayer.models.Ticket;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
@@ -31,6 +33,12 @@ import com.example.uilayer.adapters.CategorySpinnerAdapter;
 import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 
 import org.json.JSONArray;
@@ -38,11 +46,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.android.volley.VolleyLog.TAG;
+import static com.example.domainlayer.Constants.FB_CHILD_TICKET;
+import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
 import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
@@ -57,6 +70,7 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 public class CreateTicketFragment extends BottomSheetDialogFragment {
     private static final String IS_S2M = "isS2m";
     static CreateTicketFragment newInstance;
+    final String TAG = "Fetch message";
     @BindView(R.id.spinner_category)
     PromptSpinner categorySpinner;
     @BindView(R.id.spinner_user)
@@ -65,9 +79,12 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
     ImageButton closeButton;
     @BindView(R.id.button_add_ticket)
     Button createButton;
+    @BindView(R.id.text_subject)
+    TextInputEditText subjectText;
     boolean isS2m;
     VolleyStringRequest getUsersRequest;
     BottomSheetBehavior bottomSheetBehavior;
+    Dialog thisDialog;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
@@ -110,13 +127,13 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         }
 
     }
-Dialog thisDialog;
+
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.fragment_add_ticket, null);
         dialog.setContentView(contentView);
-        thisDialog=dialog;
+        thisDialog = dialog;
         ButterKnife.bind(this, contentView);
         initViews();
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
@@ -157,6 +174,7 @@ Dialog thisDialog;
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                createTicket(subjectText.getText().toString(), "CONTENT");
                 Toast.makeText(getActivity().getBaseContext(), "Ticket Added", Toast.LENGTH_SHORT).show();
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 thisDialog.dismiss();
@@ -260,25 +278,56 @@ Dialog thisDialog;
                 user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
                 user.setId(userJson.getInt(Constants.KEY_ID));
                 user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
-                //user.setEmail(userJson.getString(Constants.KEY_EMAIL));
                 user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-                //user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
-                //user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
-                //user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
-
-                // user.setWow(userJson.getString(Constants.KEY_WOW));
                 user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
-                // user.setMiles(userJson.getString(Constants.KEY_MILES));
-                // user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
-                // user.setType(userJson.getString(Constants.KEY_TYPE));
                 teachersList.add(i, user);
             }
 
             DataHolder.getInstance(getContext()).setTeachersList(teachersList);
-            userSpinner.setAdapter(new TeachersSpinnerAdapter(getActivity(), R.layout.item_spinner, R.id.text_spinner, teachersList));
+            if (getActivity() != null)
+                userSpinner.setAdapter(
+                        new TeachersSpinnerAdapter(getActivity(),
+                                R.layout.item_spinner,
+                                R.id.text_spinner,
+                                teachersList));
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }
+    }
+
+    void createTicket(String subject, String type) {
+        int id = getTicketId();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ticket = database.getReference(FB_CHILD_TICKET_DETAILS);
+        DatabaseReference tickets = ticket.child(FB_CHILD_TICKET + id);
+        Ticket tiketObj = new Ticket();
+        tiketObj.setContent("some content");
+        tiketObj.setUserName("user name");
+        tiketObj.setStatus("open");
+        tiketObj.setProfileUrl("this is a profile url");
+        tiketObj.setCategory("content");
+        tiketObj.setId(3);
+        tiketObj.setNumber(4);
+        tickets.setValue(tiketObj);
+        ticket.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+                    Ticket value = childsnap.getValue(Ticket.class);
+                    Log.d(TAG, "Value is: " + value.getContent());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    int getTicketId() {
+        return 3;
     }
 }
 

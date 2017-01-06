@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.MCQCheckBox;
 import com.example.uilayer.milestones.MCQActivity;
 import com.example.uilayer.models.McqOptions;
 
@@ -72,7 +71,7 @@ public class MCQAnswersAdapter extends BaseAdapter {
         } else if (options.isWrong()) {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_red));
             holder.imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close_white_16dp));
-            holder.textAnswer.setTextColor(context.getResources().getColor(R.color.red));
+            holder.textAnswer.setTextColor(context.getResources().getColor(R.color.red4));
         } else {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_stroke_colr_sec));
             holder.imageButton.setImageDrawable(null);

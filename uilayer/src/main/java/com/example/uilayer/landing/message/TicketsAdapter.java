@@ -19,7 +19,6 @@ import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.manage.ManageTeachersActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -48,7 +47,7 @@ import static com.example.domainlayer.Constants.KEY_TYPE;
 
 public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHolder> {
 
-    private static final String OPEN = "open", CLOSED = "closed", SOLVED = "SOLVED";
+    private static final String OPEN = "OPEN", CLOSED = "CLOSED", SOLVED = "SOLVED";
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
@@ -76,9 +75,9 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
         holder.date.setText(ticket.getDate());
         String staus = ticket.getStatus();
         if (staus.equals(OPEN))
-            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red));
+            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red1));
         else if (staus.equals(CLOSED))
-            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.text_color2));
+            holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.grey1));
         holder.status.setText(ticket.getStatus());
         holder.ticketId.setText("" + ticket.getNumber());
 

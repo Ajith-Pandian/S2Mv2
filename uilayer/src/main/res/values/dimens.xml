@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -27,5 +27,5 @@
     <!--Teacher Item-->
     <dimen name="teacher_item_height">120dp</dimen>
     <dimen name="teacher_item_width">162dp</dimen>
-
+    <dimen name="design_fab_image_size" tools:override="true">15dp</dimen>
 </resources>

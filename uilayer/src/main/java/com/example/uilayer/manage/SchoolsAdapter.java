@@ -68,7 +68,7 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
 
             }
         });
-        Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_school);
+        Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_schools_small);
         holder.schollImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
         Target target = new Target() {
             @Override

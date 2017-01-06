@@ -150,7 +150,9 @@ public class SignUpActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
+                //startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
+                Snackbar.make(view, "Registered Successfully..!!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
     }

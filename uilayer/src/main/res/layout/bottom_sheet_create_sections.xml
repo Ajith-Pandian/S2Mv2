@@ -87,14 +87,7 @@
                 android:layout_gravity="center"
                 />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_below="@+id/spinner_milestones"
-                android:layout_height="3dp"
-                android:layout_gravity="bottom"
-                android:background="@color/text_input_layer_color"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+
         </RelativeLayout>
         <!--            style="@style/Widget.AppCompat.Spinner.Underlined"
             app:backgroundTint="@color/text_input_layer_color1"-->
@@ -128,13 +121,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_mob_and_mail" />
 
-    <View
+<!--    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/spinner_select_teacher"
         android:background="@color/text_input_layer_color"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp" />
+        android:paddingRight="8dp" />-->
     <!--0        style="@style/Widget.AppCompat.Spinner.Underlined"
         app:backgroundTint="@color/text_input_layer_color1" -->
 

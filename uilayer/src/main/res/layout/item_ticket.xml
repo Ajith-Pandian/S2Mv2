@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/rounded_background"
-                app:backgroundTint="@color/fade_red"
+                app:backgroundTint="@color/red1"
                 android:minHeight="0dp"
                 android:textColor="@android:color/white"
                 android:gravity="center"

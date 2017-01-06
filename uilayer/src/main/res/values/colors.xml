@@ -17,10 +17,11 @@
     <color name="card_color_five">#4c990c</color>
     <color name="card_color_six">#c2cc01</color>
 
-    <color name="pink_thumbs_down_light">#f15d5d</color>
-    <color name="pink_fade">#e78b8b</color>
-    <color name="pink_thumbs_down_dark">#f20606</color>
-    <color name="red">@color/pink_thumbs_down_dark</color>
+    <color name="red1">#f15d5d</color>
+    <color name="red2">#e78b8b</color>
+    <color name="red3">#f20606</color>
+    <color name="red4">@color/red3</color>
+    <color name="grey1">#7a7f80</color>
 
     <color name="profile_image_border">@color/text_secondary</color>
 

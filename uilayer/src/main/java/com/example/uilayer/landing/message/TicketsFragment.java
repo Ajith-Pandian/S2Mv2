@@ -49,7 +49,7 @@ public class TicketsFragment extends Fragment {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         ticketsRecycler.setLayoutManager(layoutManager);
-        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,3));
+        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1));
         ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), getTickets()));
         //ticketsRecycler.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
         //  Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
@@ -74,7 +74,7 @@ public class TicketsFragment extends Fragment {
         ticket1.setCategory("CONTENT");
         ticket1.setDate("22.10.2001");
         ticket1.setContent(getActivity().getResources().getString(R.string.school_msg_one));
-        ticket1.setStatus("open");
+        ticket1.setStatus("OPEN");
         ticket1.setProfileUrl("http://a1.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNTEzMDA0MDQ2.jpg");
 
         ticket2.setId(2);
@@ -82,7 +82,7 @@ public class TicketsFragment extends Fragment {
         ticket2.setUserName("Michel Jackson");
         ticket2.setCategory("CONTENT");
         ticket2.setDate("22.10.2001");
-        ticket2.setStatus("closed");
+        ticket2.setStatus("CLOSED");
         ticket2.setProfileUrl("http://a1.files.biography.com/image/upload/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNTEzMDA0MDQ2.jpg");
         ticket2.setContent(getActivity().getResources().getString(R.string.school_msg_two) + getActivity().getResources().getString(R.string.school_msg_two));
         tickets.add(ticket1);

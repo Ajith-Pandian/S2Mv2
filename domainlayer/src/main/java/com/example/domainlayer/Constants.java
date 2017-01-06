@@ -7,6 +7,7 @@ package com.example.domainlayer;
 public class Constants {
 
     //private static final String BASE_URL = "http://wowconnect.app/api/";
+    //private static final String BASE_URL = "http://192.168.0.106:8000/api/";
     private static final String BASE_URL = "http://192.168.0.106:8000/api/";
     public static final String LOGIN_URL = BASE_URL + "verify";
     public static final String OTP_VERIFY_URL = BASE_URL + "login";
@@ -168,5 +169,11 @@ public class Constants {
 
 
     public static final String PLACE_HOLDER_AUDIO = "http://www.iconsdb.com/icons/preview/green/dj-xxl.png";
+
+    //Firebase constants
+    public static final String FB_CHILD_TICKET_DETAILS = "tickets";
+    public static final String FB_CHILD_TICKET = "ticket";
+
+
 
 }

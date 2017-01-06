@@ -5,8 +5,8 @@ package com.example.domainlayer.models;
  */
 
 public class Schools {
-    int id;
-    String name, logo,address;
+    private int id;
+    private String name, logo,address;
 
     public int getId() {
         return id;
