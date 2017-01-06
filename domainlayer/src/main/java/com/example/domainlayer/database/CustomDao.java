@@ -12,16 +12,16 @@ import java.sql.SQLException;
  */
 
 
-public class CustomDao<T, ID> extends BaseDaoImpl<T, ID> {
-    protected CustomDao(final Class<T> dataClass) throws SQLException {
+public  class  CustomDao<T, ID> extends BaseDaoImpl<T, ID> {
+     public CustomDao(final Class<T> dataClass) throws SQLException {
         super(dataClass);
     }
 
-    protected CustomDao(final ConnectionSource connectionSource, final Class<T> dataClass) throws SQLException {
+    public CustomDao(final ConnectionSource connectionSource, final Class<T> dataClass) throws SQLException {
         super(connectionSource, dataClass);
     }
 
-    protected CustomDao(final ConnectionSource connectionSource, final DatabaseTableConfig<T> tableConfig) throws SQLException {
+    public CustomDao(final ConnectionSource connectionSource, final DatabaseTableConfig<T> tableConfig) throws SQLException {
         super(connectionSource, tableConfig);
     }
 

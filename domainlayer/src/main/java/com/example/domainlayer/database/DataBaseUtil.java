@@ -37,7 +37,8 @@ public class DataBaseUtil {
             return helper.getUserDao();
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "getLocalUserDao: ", ex);
-            throw new RuntimeException("Cannot get user Dao");
+            //throw new RuntimeException("Cannot get user Dao");
+            return null;
         }
     }
 

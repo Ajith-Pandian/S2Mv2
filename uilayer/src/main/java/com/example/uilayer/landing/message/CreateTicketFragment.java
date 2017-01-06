@@ -306,28 +306,13 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         tiketObj.setStatus("open");
         tiketObj.setProfileUrl("this is a profile url");
         tiketObj.setCategory("content");
-        tiketObj.setId(3);
-        tiketObj.setNumber(4);
+        tiketObj.setId(id);
+        tiketObj.setNumber(id);
         tickets.setValue(tiketObj);
-        ticket.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-                    Ticket value = childsnap.getValue(Ticket.class);
-                    Log.d(TAG, "Value is: " + value.getContent());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
     }
 
     int getTicketId() {
-        return 3;
+        return 8;
     }
 }
 

@@ -56,7 +56,7 @@ public class NetworkActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
-        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1));
+        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1,true));
 
         getNetworkProfileInfo();
     }

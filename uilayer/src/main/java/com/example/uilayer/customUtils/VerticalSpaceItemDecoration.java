@@ -12,18 +12,20 @@ public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int verticalSpaceHeight;
     private final int columsNum;
+    private final boolean isTopPadding;
 
-    public VerticalSpaceItemDecoration(int verticalSpaceHeight,int columsNum) {
+    public VerticalSpaceItemDecoration(int verticalSpaceHeight, int columsNum, boolean isTopPadding) {
         this.verticalSpaceHeight = verticalSpaceHeight;
         this.columsNum = columsNum;
+        this.isTopPadding = isTopPadding;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view);
-       if (position < columsNum)
-            outRect.top = Utils.getInstance().getPixelAsDp(view.getContext(), verticalSpaceHeight*3);
+        if (isTopPadding && position < columsNum)
+            outRect.top = Utils.getInstance().getPixelAsDp(view.getContext(), verticalSpaceHeight * 3);
         outRect.bottom = Utils.getInstance().getPixelAsDp(view.getContext(), verticalSpaceHeight);
     }
 }

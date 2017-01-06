@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by thoughtchimp on 11/25/2016.
  */
 
-public class MCQAnswersAdapter extends BaseAdapter {
+public class MCQAnswersAdapter extends BaseAdapter implements MCQActivity.AnswerStateListener {
     private ViewHolder holder;
     private ArrayList<McqOptions> optionsList;
     private Context context;
@@ -85,6 +85,11 @@ public class MCQAnswersAdapter extends BaseAdapter {
         return convertView;
     }
 
+    @Override
+    public void onNewState(boolean state) {
+        holder.imageButton.setClickable(state);
+    }
+
     public void resetStates() {
         holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_stroke_colr_sec));
         holder.imageButton.setImageDrawable(null);
@@ -100,4 +105,5 @@ public class MCQAnswersAdapter extends BaseAdapter {
         ImageButton imageButton;
         TextView textAnswer;
     }
+
 }

@@ -6,12 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.domainlayer.models.Ticket;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,10 +53,10 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
     private static final String OPEN = "OPEN", CLOSED = "CLOSED", SOLVED = "SOLVED";
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
-            R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
+            R.color.mile_oolor5};
     private List<Ticket> ticketsList;
 
-    public TicketsAdapter(Context context, List<Ticket> ticketsList) {
+    TicketsAdapter(Context context, List<Ticket> ticketsList) {
         this.ticketsList = ticketsList;
         this.context = context;
     }
@@ -67,19 +70,27 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Ticket ticket = ticketsList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final int exactPosition = holder.getAdapterPosition();
+        final Ticket ticket = ticketsList.get(position);
         holder.userName.setText(ticket.getUserName());
         holder.content.setText(ticket.getContent());
         holder.category.setText(ticket.getCategory());
+        holder.category.setTextColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
         holder.date.setText(ticket.getDate());
+      /*  holder.ticketLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, MessageActivity.class).putExtra("ticketId", ticket.getId()));
+            }
+        });*/
         String staus = ticket.getStatus();
-        if (staus.equals(OPEN))
+        if (staus.equalsIgnoreCase(OPEN))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red1));
-        else if (staus.equals(CLOSED))
+        else if (staus.equalsIgnoreCase(CLOSED))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.grey1));
         holder.status.setText(ticket.getStatus());
-        holder.ticketId.setText("" + ticket.getNumber());
+        holder.ticketId.setText(context.getResources().getString(R.string.blank_int, ticket.getId()));
 
         Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
         holder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
@@ -100,7 +111,7 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
 
             }
         };
-        if (!ticket.getProfileUrl().equals(""))
+        if (ticket.getProfileUrl() != null && !ticket.getProfileUrl().equals(""))
             Picasso.with(context).load(ticket.getProfileUrl()).placeholder(R.drawable.profile).into(target);
     }
 
@@ -162,6 +173,8 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
         TextView date;
         @BindView(R.id.text_status)
         AppCompatTextView status;
+        @BindView(R.id.layout_ticket)
+        LinearLayout ticketLayout;
 
         public ViewHolder(View view) {
             super(view);

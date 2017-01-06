@@ -11,5 +11,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
-        tools:src="@drawable/bulletin_back" />
+        tools:src="@drawable/ph_bulletin"
+        android:src="@drawable/ph_bulletin"
+        />
 </RelativeLayout>

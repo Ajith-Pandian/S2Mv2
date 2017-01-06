@@ -76,12 +76,16 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
     private List<Sections> sectionDetailsList;
+    private boolean editable;
 
-    public SectionsAdapter(Context context, List<Sections> sectionDetailsList, int rowsCount, ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener) {
+    public SectionsAdapter(Context context, List<Sections> sectionDetailsList,
+                           int rowsCount,
+                           ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener, boolean editable) {
         this.sectionDetailsList = sectionDetailsList;
         this.context = context;
         this.rowsCount = rowsCount;
         this.listener = listener;
+        this.editable = editable;
     }
 
     private void showPopupMenu(View view, int position) {
@@ -119,13 +123,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
         holder.completedMiles.setText("" + sectionDetails.getCompletedMiles() + " miles completed");
         holder.progressBar.setProgress((int) progress);
-        holder.dotsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null)
-                    showPopupMenu(view, position);
-            }
-        });
+
         //TODO:color coressponding milestone
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
 
@@ -141,6 +139,16 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
  /*       if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
             holder.threeDots.setVisibility(View.VISIBLE);
         } else holder.threeDots.setVisibility(View.GONE);*/
+        if (editable) {
+            holder.dotsLayout.setVisibility(View.VISIBLE);
+            holder.dotsLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null)
+                        showPopupMenu(view, position);
+                }
+            });
+        } else holder.dotsLayout.setVisibility(View.GONE);
     }
 
     void getOrderedMilestoneDetails(final int position) {
@@ -273,7 +281,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     listener.onEditOptionSelected(false, position);
                     return true;
                 case R.id.menu_delete:
-                    listener.onDeleteOptionSelected(false,position);
+                    listener.onDeleteOptionSelected(false, position);
                     return true;
                 default:
             }
@@ -298,8 +306,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         RelativeLayout bottomLayout;
         @BindView(R.id.card_school_update_root)
         LinearLayout rootLayout;
-      @BindView(R.id.layout_dots)
-      LinearLayout dotsLayout;
+        @BindView(R.id.layout_dots)
+        LinearLayout dotsLayout;
 
         @BindView(R.id.dots)
         TextView threeDots;

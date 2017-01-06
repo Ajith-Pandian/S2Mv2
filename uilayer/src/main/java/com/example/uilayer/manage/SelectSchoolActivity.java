@@ -51,7 +51,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         schoolRecycler.setLayoutManager(layoutManager);
-        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1));
+        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1,true));
         // schoolRecycler.setAdapter(new SchoolsAdapter(this, getSchools()));
         loadSchools();
     }

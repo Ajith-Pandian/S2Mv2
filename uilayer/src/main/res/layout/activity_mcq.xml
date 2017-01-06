@@ -41,7 +41,6 @@
             android:id="@+id/image_button_qus"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
             android:background="@null"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -53,14 +52,15 @@
         <TextView
             android:id="@+id/text_question"
             android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:layout_toRightOf="@+id/image_button_qus"
-            android:gravity="center"
             tools:text="@string/school_msg_one"
+            android:layout_toRightOf="@+id/image_button_qus"
+            android:layout_toEndOf="@+id/image_button_qus"
             android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            />
     </RelativeLayout>
 
     <ListView

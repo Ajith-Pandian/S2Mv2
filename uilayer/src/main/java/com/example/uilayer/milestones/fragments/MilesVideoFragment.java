@@ -83,7 +83,10 @@ public class MilesVideoFragment extends Fragment {
                 }
             });
             String url="https://img.youtube.com/vi/"+videoList.get(0).getUrl().split("=")[1]+"/0.jpg";
-            Picasso.with(getActivity()).load(url).into(imageView);
+            Picasso.with(getActivity())
+                    .load(url)
+                    .placeholder(R.drawable.ph_video_large)
+                    .into(imageView);
         } else {
 
             view = inflater.inflate(R.layout.fragment_miles_video_multi,

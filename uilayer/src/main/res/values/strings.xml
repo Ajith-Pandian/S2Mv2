@@ -191,5 +191,6 @@
     <string name="prompt_select_teacher">Select Teacher</string>
     <string name="prompt_select_milestones">Milestones</string>
 
+    <string name="blank_int">%d</string>
 
 </resources>

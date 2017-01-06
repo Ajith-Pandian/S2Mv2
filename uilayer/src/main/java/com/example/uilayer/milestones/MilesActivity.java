@@ -315,8 +315,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             @Override
             public void onClick(View view) {
                 if (selected_option != -1) {
-                    sendFeedback();
-
+                    //sendFeedback();
+                    showToast("Submitted SuccessFully");
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_HIDDEN);
+                   // finish();
                 } else
                     showToast("Please select one option to submit");
 

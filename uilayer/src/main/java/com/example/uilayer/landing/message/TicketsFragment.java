@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,19 @@ import com.example.domainlayer.models.Ticket;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.domainlayer.Constants.FB_CHILD_TICKET;
+import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
 
 
 /**
@@ -29,11 +38,29 @@ import butterknife.ButterKnife;
  */
 
 public class TicketsFragment extends Fragment {
-    final String OPEN = "open", CLOSED = "Closed", SOLVED = "SOLVED";
     @BindView(R.id.recycler_tickets)
     RecyclerView ticketsRecycler;
     @BindView(R.id.button_start)
     Button startButton;
+    CreateTicketFragment bottomSheetDialogFragment;
+    DatabaseReference ticketDatabaseReference;
+    ValueEventListener ticketsAddValueListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            ArrayList<Ticket> tickets = new ArrayList<>();
+            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                Ticket value = childSnapshot.getValue(Ticket.class);
+                tickets.add(value);
+            }
+            ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), tickets));
+        }
+
+        @Override
+        public void onCancelled(DatabaseError error) {
+            // Failed to read value
+            Log.w("FB", "Failed to read value.", error.toException());
+        }
+    };
 
     public TicketsFragment() {
 
@@ -49,20 +76,28 @@ public class TicketsFragment extends Fragment {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         ticketsRecycler.setLayoutManager(layoutManager);
-        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1));
-        ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), getTickets()));
-        //ticketsRecycler.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
-        //  Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
-        // imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
+        ticketsRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openBottomSheet(true);
             }
         });
+
+        //ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), getTickets()));
+        //ticketsRecycler.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
+        //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
+        // imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
+        fetchTickets();
+
         return view;
     }
 
+    void fetchTickets() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        ticketDatabaseReference = database.getReference(FB_CHILD_TICKET_DETAILS);
+        ticketDatabaseReference.addValueEventListener(ticketsAddValueListener);
+    }
 
     ArrayList<Ticket> getTickets() {
         ArrayList<Ticket> tickets = new ArrayList<>();
@@ -99,9 +134,20 @@ public class TicketsFragment extends Fragment {
         return tickets;
     }
 
-    void openBottomSheet(boolean isS2m) {
-        CreateTicketFragment bottomSheetDialogFragment = CreateTicketFragment.getNewInstance(isS2m);
+    final void openBottomSheet(boolean isS2m) {
+        bottomSheetDialogFragment = CreateTicketFragment.getNewInstance(isS2m);
         bottomSheetDialogFragment.show(getChildFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+
+    @Override
+    public void onDestroy() {
+
+        if (bottomSheetDialogFragment != null) {
+            bottomSheetDialogFragment = null;
+        }
+
+        ticketDatabaseReference.removeEventListener(ticketsAddValueListener);
+        super.onDestroy();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.uilayer.landing;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -130,6 +131,8 @@ public class HomeFragment extends Fragment {
         // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
         // textMiles.setText(user.getMiles() +Constants.SUFFIX_MILES);
         String avatar = user.getAvatar();
+        Bitmap placeHolder = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ph_profile);
+        profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), placeHolder));
         Picasso.with(getActivity())
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
@@ -137,6 +140,7 @@ public class HomeFragment extends Fragment {
 
         Picasso.with(getActivity())
                 .load(DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage())
+                .placeholder(R.drawable.ph_bulletin)
                 .into(bulletinImage);
         layoutNetwork.setOnClickListener(new View.OnClickListener() {
             @Override

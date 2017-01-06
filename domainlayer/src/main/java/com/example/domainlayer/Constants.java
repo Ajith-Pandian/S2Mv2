@@ -171,8 +171,10 @@ public class Constants {
     public static final String PLACE_HOLDER_AUDIO = "http://www.iconsdb.com/icons/preview/green/dj-xxl.png";
 
     //Firebase constants
-    public static final String FB_CHILD_TICKET_DETAILS = "tickets";
+    public static final String FB_CHILD_TICKET_DETAILS = "details";
     public static final String FB_CHILD_TICKET = "ticket";
+    public static final String FB_CHILD_CONVERSATIONS = "conversations";
+    public static final String FB_CHILD_MESSAGE = "message";
 
 
 

@@ -13,7 +13,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
-        tools:src="@drawable/bulletin_back" />
+        tools:src="@drawable/ph_video_small"
+        android:src="@drawable/ph_video_small" />
     <ImageButton
         android:layout_width="30dp"
         android:id="@+id/button_play"

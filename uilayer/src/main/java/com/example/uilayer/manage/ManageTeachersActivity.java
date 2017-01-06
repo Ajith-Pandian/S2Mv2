@@ -1080,7 +1080,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             } catch (JSONException ex) {
                 Log.d("Error", "updateSections: " + ex);
             }
-            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener);
+            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener, true);
             recyclerView.setAdapter(adapter);
         }
 

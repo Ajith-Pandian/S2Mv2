@@ -278,7 +278,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 validateInput();
                 break;
             case R.id.button_sign_up:
-                launchSignUp();
+                //launchSignUp();
                 break;
         }
     }

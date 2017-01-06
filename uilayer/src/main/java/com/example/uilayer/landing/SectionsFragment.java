@@ -91,8 +91,8 @@ public class SectionsFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         sectionsGrid.setLayoutManager(layoutManager);
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
-      //  Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
-       // imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
+        //  Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
+        // imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
         cardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,7 +192,7 @@ public class SectionsFragment extends Fragment {
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         sectionDetails1 = DataHolder.getInstance(getActivity()).getUser().getSectionsList();
-        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1,3,null));
+        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1, 3, null, false));
 
     }
 }

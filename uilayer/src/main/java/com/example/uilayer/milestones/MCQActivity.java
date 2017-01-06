@@ -73,6 +73,7 @@ public class MCQActivity extends AppCompatActivity {
     int selectedOption;
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
+    VolleyStringRequest choiceResultRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +162,12 @@ public class MCQActivity extends AppCompatActivity {
         choicesResult.put(String.valueOf(mcqsArrayList.get(currentQuestion).getId()), currentOptions.get(selectedOption).getLabel());
     }
 
+    @Override
+    protected void onDestroy() {
+        choiceResultRequest.removeStatusListener();
+        super.onDestroy();
+    }
+
     void sendResults() {
         final JSONArray array = new JSONArray();
 
@@ -176,14 +183,14 @@ public class MCQActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("sendResults", "sendResults: " + e);
         }
-        VolleyStringRequest choiceResultRequest = new VolleyStringRequest(Request.Method.POST, MCQ_RESULT_URL,
+        choiceResultRequest = new VolleyStringRequest(Request.Method.POST, MCQ_RESULT_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("sendResults", "onResponse: " + response);
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("isSuccess",true);
-                        setResult(Activity.RESULT_OK,returnIntent);
+                        returnIntent.putExtra("isSuccess", true);
+                        setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     }
                 },
@@ -298,7 +305,6 @@ public class MCQActivity extends AppCompatActivity {
         currentQuestion = position;
     }
 
-
     public void onClickRow(int position) {
         resetOptionStates(currentOptions);
         currentOptions.get(position).setSelected(true);
@@ -371,6 +377,10 @@ public class MCQActivity extends AppCompatActivity {
         };
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(milesRequest);
+    }
+
+    public interface AnswerStateListener {
+        void onNewState(boolean newState);
     }
 
 }

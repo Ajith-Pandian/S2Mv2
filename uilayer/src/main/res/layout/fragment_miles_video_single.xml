@@ -67,7 +67,8 @@
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:scaleType="fitXY"
-                    tools:src="@drawable/bulletin_back" />
+                    tools:src="@drawable/ph_video_large"
+                    android:src="@drawable/ph_video_large" />
 
                 <ImageButton
                     android:id="@+id/button_play"
