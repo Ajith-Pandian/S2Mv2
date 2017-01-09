@@ -56,9 +56,220 @@ public class NetworkActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
-        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1,true));
+        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
 
-        getNetworkProfileInfo();
+        //getNetworkProfileInfo();
+        String dummyNetworkUsers="[\n" +
+                "  {\n" +
+                "    \"id\": 4,\n" +
+                "    \"firstName\": \"Harsh\",\n" +
+                "    \"lastName\": \"Dunno\",\n" +
+                "    \"avatar\": \"http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png\",\n" +
+                "    \"email\": \"harsh@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"1234567890\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 1,\n" +
+                "    \"miles\": 32,\n" +
+                "    \"trainings\": 28\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 9,\n" +
+                "    \"firstName\": \"fname\",\n" +
+                "    \"lastName\": \"lname\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ameil@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"1234567653\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 10,\n" +
+                "    \"firstName\": \"fname\",\n" +
+                "    \"lastName\": \"lname\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ameil@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"1234567683\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 19,\n" +
+                "    \"firstName\": \"fname\",\n" +
+                "    \"lastName\": \"lname\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ameil@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"3132336742\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 28,\n" +
+                "    \"firstName\": \"fname\",\n" +
+                "    \"lastName\": \"lname\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ameil@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"3132222155\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 30,\n" +
+                "    \"firstName\": \"first_name\",\n" +
+                "    \"lastName\": \"last_name\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"thisisemailid@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"3132212155\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 31,\n" +
+                "    \"firstName\": \"first_name\",\n" +
+                "    \"lastName\": \"last_name\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"thisisemailid@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"3132212145\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 32,\n" +
+                "    \"firstName\": \"This is first name\",\n" +
+                "    \"lastName\": \"this is last name\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"thisisemail@email.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"1234567810\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 33,\n" +
+                "    \"firstName\": \"hi\",\n" +
+                "    \"lastName\": \"sechi\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ahijdgsjkd@gmail.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"8346153886\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 35,\n" +
+                "    \"firstName\": \"teacher\",\n" +
+                "    \"lastName\": \"new\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"ann@bb.cjn\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"9678437944\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 36,\n" +
+                "    \"firstName\": \"teacher\",\n" +
+                "    \"lastName\": \"q\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"gs@bb.nn\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"9770884542\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 37,\n" +
+                "    \"firstName\": \"ahfhfgdg\",\n" +
+                "    \"lastName\": \"dgdhd\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"sgshsjs@gsjs.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"1239999999\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 38,\n" +
+                "    \"firstName\": \"hhhhh\",\n" +
+                "    \"lastName\": \"A\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"hgggdhd@gnsvs.cm\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"8978464525\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 39,\n" +
+                "    \"firstName\": \"gydbd\",\n" +
+                "    \"lastName\": \"A\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"huh@nnn.mm\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"6794643945\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 40,\n" +
+                "    \"firstName\": \"jghjhhj\",\n" +
+                "    \"lastName\": \"A\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"fuh@vv.com\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"9368395368\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 41,\n" +
+                "    \"firstName\": \"hhhh ghh\",\n" +
+                "    \"lastName\": \"A\",\n" +
+                "    \"avatar\": \"\",\n" +
+                "    \"email\": \"hhh@ccc.nnn\",\n" +
+                "    \"role\": \"teacher\",\n" +
+                "    \"phone\": \"5398888888\",\n" +
+                "    \"schoolName\": \"School2\",\n" +
+                "    \"wows\": 0,\n" +
+                "    \"miles\": 0,\n" +
+                "    \"trainings\": 0\n" +
+                "  }\n" +
+                "]";
+        setNetworkProfiles(dummyNetworkUsers);
     }
 
     void getNetworkProfileInfo() {
@@ -125,6 +336,51 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
 
+    void setNetworkUsers() {
+        ArrayList<User> userArrayList = new ArrayList<>();
+        User user = new User();
+        user.setFirstName("AAA");
+        user.setLastName("AAA");
+        user.setPhoneNum("1234567890");
+        user.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user);
+        User user1 = new User();
+        user1.setFirstName("BBB");
+        user1.setLastName("BBB");
+        user1.setPhoneNum("1234567890");
+        user1.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user1);
+        User user2 = new User();
+        user2.setFirstName("CCC");
+        user2.setLastName("CCC");
+        user2.setPhoneNum("1234567890");
+        user2.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user2);
+        User user3 = new User();
+        user3.setFirstName("AAA");
+        user3.setLastName("AAA");
+        user3.setPhoneNum("1234567890");
+        user3.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user3);
+        User user4 = new User();
+        user4.setFirstName("BBB");
+        user4.setLastName("BBB");
+        user4.setPhoneNum("1234567890");
+        user4.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user4);
+        User user5 = new User();
+        user5.setFirstName("CCC");
+        user5.setLastName("CCC");
+        user5.setPhoneNum("1234567890");
+        user5.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
+        userArrayList.add(user5);
+        userArrayList.addAll(userArrayList);
+        userArrayList.addAll(userArrayList);
+        com.example.domainlayer.temp.DataHolder.getInstance(this).setTeachersList(userArrayList);
+        DataHolder.getInstance(getApplicationContext()).setNetworkProfiles(userArrayList);
+        networkRecycler.setAdapter(new NetworkAdapter(getApplicationContext(), userArrayList));
+    }
+
     public void setNetworkProfiles(String profilesString) {
 
         ArrayList<User> usersList = new ArrayList<>();
@@ -182,8 +438,10 @@ public class NetworkActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (networkRequest!=null) {
         networkRequest.removeStatusListener();
         networkRequest = null;
+        }
         super.onDestroy();
     }
 }

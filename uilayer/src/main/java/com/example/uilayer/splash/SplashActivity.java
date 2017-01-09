@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spash);
         setupWindowAnimations();
-        if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null)
+       /* if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null)
             startNextActivity(LoginActivity.class);
         else {
             networkHelper = new NetworkHelper(S2MApplication.getAppContext());
@@ -33,7 +33,8 @@ public class SplashActivity extends AppCompatActivity {
                     startNextActivity(LandingActivity.class);
                 }
             });
-        }
+        }*/
+        startNextActivity(LoginActivity.class);
 
     }
 

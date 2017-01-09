@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     @Override
-    public void onEnteredNumber(final String stringResponse) {
+    public void onEnteredNumber() {
         gotoOtp();
     }
 
@@ -77,10 +77,13 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if (DataHolder.getInstance(this).getLastLogin().equals("null"))
+     /*   if (DataHolder.getInstance(this).getLastLogin().equals("null"))
             lauchSignUp();
         else
             launchLanding();
+        finish();
+*/
+        launchLanding();
         finish();
     }
 }

@@ -133,73 +133,76 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         startActivity(new Intent(getActivity(), SignUpActivity.class).putExtra("isSignUp", true));
     }
 
+    /* public void sendOTP(final boolean isMail, final String text) {
+
+
+         VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
+                 new Response.Listener<String>() {
+                     @Override
+                     public void onResponse(String response) {
+                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                         Log.d("log", "onResponse: " + response);
+                         storeResponse(response);
+                         if (mListener != null) {
+                             mListener.onEnteredNumber(response);
+                         }
+                     }
+                 },
+                 new VolleyStringRequest.VolleyErrListener() {
+                     @Override
+                     public void onErrorResponse(VolleyError error) {
+                         super.onErrorResponse(error);
+                         Log.d("log", "onErrorResponsssse: " + error);
+                     }
+                 }, new VolleyStringRequest.StatusCodeListener() {
+             String TAG = "VolleyStringReq";
+
+             @Override
+             public void onBadRequest() {
+                 Log.d(TAG, "onBadRequest: ");
+             }
+
+             @Override
+             public void onUnauthorized() {
+                 Log.d(TAG, "onUnauthorized: ");
+             }
+
+             @Override
+             public void onNotFound() {
+                 Log.d(TAG, "onNotFound: ");
+             }
+
+             @Override
+             public void onConflict() {
+                 Log.d(TAG, "onConflict: ");
+             }
+
+             @Override
+             public void onTimeout() {
+                 Log.d(TAG, "onTimeout: ");
+             }
+         }) {
+
+             @Override
+             protected Map<String, String> getParams() {
+                 Map<String, String> params = new ArrayMap<>();
+                 if (isMail)
+                     params.put(Constants.KEY_EMAIL, text);
+                 else
+                     params.put(Constants.KEY_MOBILE, text);
+                 return params;
+             }
+         };
+         int socketTimeout = 30000;//30 seconds - change to what you want
+         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+         loginRequest.setRetryPolicy(policy);
+         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(loginRequest);
+
+     }*/
     public void sendOTP(final boolean isMail, final String text) {
-
-
-        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("log", "onResponse: " + response);
-                        storeResponse(response);
-                        if (mListener != null) {
-                            mListener.onEnteredNumber(response);
-                        }
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("log", "onErrorResponsssse: " + error);
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new ArrayMap<>();
-                if (isMail)
-                    params.put(Constants.KEY_EMAIL, text);
-                else
-                    params.put(Constants.KEY_MOBILE, text);
-                return params;
-            }
-        };
-        int socketTimeout = 30000;//30 seconds - change to what you want
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        loginRequest.setRetryPolicy(policy);
-        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(loginRequest);
-
+        if (mListener != null) {
+            mListener.onEnteredNumber();        }
     }
-
 
     void storeResponse(String response) {
         try {
@@ -388,7 +391,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onEnteredNumber(String emailOrPhone);
+        void onEnteredNumber();
 
     }
 }

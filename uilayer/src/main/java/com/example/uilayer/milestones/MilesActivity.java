@@ -133,7 +133,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
-    ArrayList<String> options ;
+    ArrayList<String> options;
     boolean isThumbsUp;
     View.OnClickListener thumbsClickListener = new View.OnClickListener() {
         @Override
@@ -237,7 +237,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     }
 
     void loadOptions(boolean isUp) {
-        options=new ArrayList<>();
+        options = new ArrayList<>();
         if (isUp) {
             options.add(getResources().getString(R.string.options_feedback_1));
             options.add(getResources().getString(R.string.options_feedback_2));
@@ -280,9 +280,10 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         if (getIntent().getBooleanExtra("isMile", false)) {
             toolbarTitle.setText("Miles");
             isMile = true;
-        } else
-        {    toolbarTitle.setText("Training");
-        isMile = false;}
+        } else {
+            toolbarTitle.setText("Training");
+            isMile = false;
+        }
 
         toolbarSubTitle.setText(title);
 
@@ -319,7 +320,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     showToast("Submitted SuccessFully");
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_HIDDEN);
-                   // finish();
+                    // finish();
                 } else
                     showToast("Please select one option to submit");
 
@@ -491,6 +492,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     void addFragments() {
         mileDataArrayList = DataHolder.getInstance(getApplicationContext()).getCurrentMileData();
+        //mileDataArrayList = getDummyMilesData();
         Fragment fragment = null;
         for (int i = 0; i < mileDataArrayList.size(); i++) {
             TMileData mileData = mileDataArrayList.get(i);
@@ -499,9 +501,9 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 case TYPE_TEXT:
                     fragment = MilesTextFragment.newInstance(mileData.getTitle(),
                             mileData.getBody());
+                           // "Content");
                     break;
                 case TYPE_VIDEO:
-
                     ArrayList<VideoMiles> milesList = new ArrayList<>();
                     for (int j = 0; j < mileData.getUrlsList().size(); j++) {
                         milesList.add(new VideoMiles(j, j, mileData.getUrlsList().get(j)));
@@ -534,6 +536,37 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         }
 
 
+    }
+
+
+    ArrayList<TMileData> getDummyMilesData() {
+        String body="<p>Lorem Ipsum is simply dummy text\" +\n" +
+                "                    \" of the printing and typesetting industry. \" +\n" +
+                "                    \"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, \" +\n" +
+                "                    \"when an unknown printer took a galley of type and scrambled it to make a type specimen book. \" +\n" +
+                "                    \"It has survived not only five centuries, but also the leap into electronic typesetting,\" +\n" +
+                "                    \" remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset\" +\n" +
+                "                    \" sheets containing Lorem Ipsum passages.</p><br><p>Lorem Ipsum is simply dummy text of the printing \" +\n" +
+                "                    \"and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,\" +\n" +
+                "                    \" but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the \" +\n" +
+                "                    \"1960s with the release of Letraset sheets containing Lorem Ipsum passages,</p>";
+        ArrayList<TMileData> mileDatas = new ArrayList<>();
+        TMileData textMile=new TMileData(1,"This is a title",TYPE_TEXT);
+        textMile.setBody(body);
+        mileDatas.add(1,textMile);
+        mileDatas.add(2,new TMileData(1,"Image",TYPE_IMAGE));
+        mileDatas.add(3,new TMileData(1,"Image",TYPE_IMAGE));
+        TMileData textMile1=new TMileData(1,"This is a title",TYPE_TEXT);
+        textMile1.setBody(body);
+        mileDatas.add(4,textMile1);
+        mileDatas.add(5,new TMileData(1,"Video",TYPE_VIDEO));
+        mileDatas.add(6,new TMileData(1,"Audio",TYPE_AUDIO));
+        mileDatas.add(7,new TMileData(1,"Audio",TYPE_AUDIO));
+        mileDatas.add(8,new TMileData(1,"Video",TYPE_VIDEO));
+        TMileData textMile2=new TMileData(1,"This is a title",TYPE_TEXT);
+        textMile2.setBody(body);
+        mileDatas.add(9,textMile2);
+        return mileDatas;
     }
 
     @Override

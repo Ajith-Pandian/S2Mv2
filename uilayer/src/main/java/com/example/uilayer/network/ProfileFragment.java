@@ -102,7 +102,120 @@ public class ProfileFragment extends Fragment {
             recyclerView.setAdapter(adapter);
         } else {
 
-            loadSections();
+           // loadSections();
+            String dummySections="[\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 4,\n" +
+                    "      \"class\": \"2\",\n" +
+                    "      \"section\": \"A\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 6,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 16,\n" +
+                    "      \"class\": \"5\",\n" +
+                    "      \"section\": \"A\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 18,\n" +
+                    "      \"class\": \"5\",\n" +
+                    "      \"section\": \"A\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 20,\n" +
+                    "      \"class\": \"5\",\n" +
+                    "      \"section\": \"A\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 21,\n" +
+                    "      \"class\": \"6\",\n" +
+                    "      \"section\": \"A\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 22,\n" +
+                    "      \"class\": \"6\",\n" +
+                    "      \"section\": \"b\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 23,\n" +
+                    "      \"class\": \"6\",\n" +
+                    "      \"section\": \"c\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 24,\n" +
+                    "      \"class\": \"6\",\n" +
+                    "      \"section\": \"d\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 25,\n" +
+                    "      \"class\": \"10\",\n" +
+                    "      \"section\": \"B\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"milestoneId\": 1,\n" +
+                    "    \"milestone\": \"1\",\n" +
+                    "    \"section\": {\n" +
+                    "      \"id\": 26,\n" +
+                    "      \"class\": \"11\",\n" +
+                    "      \"section\": \"N\"\n" +
+                    "    },\n" +
+                    "    \"completedMiles\": 1,\n" +
+                    "    \"totalMiles\": 14\n" +
+                    "  }\n" +
+                    "]";
+            updateSections(dummySections);
         }
 
 

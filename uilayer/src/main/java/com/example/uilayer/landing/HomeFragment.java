@@ -125,23 +125,28 @@ public class HomeFragment extends Fragment {
     }
 
     void loadUserData() throws SQLException {
-        user = new DataBaseUtil(S2MApplication.getAppContext()).getUser();
-        String nameString = user.getFirstName() + " " + user.getLastName();
+       // user = new DataBaseUtil(S2MApplication.getAppContext()).getUser();
+       // String nameString = user.getFirstName() + " " + user.getLastName();
+        String nameString = "Bill Gates";
         name.setText(nameString);
         // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
         // textMiles.setText(user.getMiles() +Constants.SUFFIX_MILES);
-        String avatar = user.getAvatar();
+       // String avatar = user.getAvatar();
         Bitmap placeHolder = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ph_profile);
         profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), placeHolder));
-        Picasso.with(getActivity())
+        /*Picasso.with(getActivity())
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
-                .into(target);
+                .into(target);*/
+        Bitmap dummyBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.profile);
+        profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), dummyBitmap));
+        bulletinImage.setImageDrawable(getResources().getDrawable(R.drawable.bulletin_back));
 
-        Picasso.with(getActivity())
+      /*  Picasso.with(getActivity())
                 .load(DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage())
                 .placeholder(R.drawable.ph_bulletin)
-                .into(bulletinImage);
+                .into(bulletinImage);*/
+        bulletinImage.setImageDrawable(getResources().getDrawable(R.drawable.bulletin_back));
         layoutNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

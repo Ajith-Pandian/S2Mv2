@@ -15,6 +15,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
@@ -84,9 +85,10 @@ public class MilestonesActivity extends AppCompatActivity {
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(),-1);
+      /*  milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(),-1);
 
-        recyclerView.setAdapter(milestonesAdapter);
+        recyclerView.setAdapter(milestonesAdapter);*/
+        loadAdapterItems();
     }
 
     @Override
@@ -105,7 +107,22 @@ public class MilestonesActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_archive:
-                getArchiveData();
+               /* getArchiveData();*/
+                ArrayList<TMiles> list = new ArrayList<>();
+                list.add(new TMiles(1, 1, 1, 0, "Mile Title", "Mile one", "Mile"));
+                list.add(new TMiles(2, 2, 2, 0, "Mile Title", "Mile two", "Mile"));
+                list.add(new TMiles(3, 2, 3, 1, "Training Title", "Training one", "Training"));
+                list.add(new TMiles(5, 3, 3, 0, "Mile Title", "Mile three", "Mile"));
+                list.add(new TMiles(4, 2, 4, 1, "Training Title", "Training two", "Training"));
+                list.add(new TMiles(7, 4, 4, 0, "Mile Title", "Mile four", "Mile"));
+                list.add(new TMiles(6, 2, 6, 1, "Training Title", "Training three", "Training"));
+                list.add(new TMiles(8, 5, 5, 0, "Mile Title", "Mile five", "Mile"));
+                list.add(new TMiles(9, 5, 6, 0, "Mile Title", "Mile five", "Mile"));
+                com.example.uilayer.DataHolder.getInstance(getApplicationContext()).
+                        setArchiveData(list);
+                com.example.uilayer.DataHolder.getInstance(getApplicationContext()).
+                        setUndoableId(9);
+                startActivity(new Intent(MilestonesActivity.this, ArchiveActivity.class));
                 break;
             default:
                 break;
@@ -203,15 +220,17 @@ public class MilestonesActivity extends AppCompatActivity {
     }
 
     void loadAdapterItems() {
-        ArrayList<Milestones> list = new ArrayList<>();
-        list.add(new Mile(1, 1, "Mile", "Mile one"));
-        list.add(new Mile(1, 2, "Mile", "Mile two"));
-        list.add(new Training(1, 2, "Training", "Training one"));
-        list.add(new Training(1, 2, "Training", "Training two"));
-        list.add(new Mile(1, 3, "Mile", "Mile three"));
-        list.add(new Training(1, 2, "Training", "Training three"));
-        list.add(new Mile(1, 4, "Mile", "Mile four"));
-        list.add(new Mile(1, 5, "Mile", "Mile five"));
-        // milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
+        ArrayList<TMiles> list = new ArrayList<>();
+        list.add(new TMiles(1, 1, 1, 0, "Mile Title", "Mile one", "Mile"));
+        list.add(new TMiles(2, 2, 2, 0, "Mile Title", "Mile two", "Mile"));
+        list.add(new TMiles(3, 2, 3, 1, "Training Title", "Training one", "Training"));
+        list.add(new TMiles(5, 3, 3, 0, "Mile Title", "Mile three", "Mile"));
+        list.add(new TMiles(4, 2, 4, 1, "Training Title", "Training two", "Training"));
+        list.add(new TMiles(7, 4, 4, 0, "Mile Title", "Mile four", "Mile"));
+        list.add(new TMiles(6, 2, 6, 1, "Training Title", "Training three", "Training"));
+        list.add(new TMiles(8, 5, 5, 0, "Mile Title", "Mile five", "Mile"));
+        list.add(new TMiles(9, 5, 6, 0, "Mile Title", "Mile five", "Mile"));
+        milestonesAdapter = new MilesAdapter(getApplicationContext(), list, -1);
+        recyclerView.setAdapter(milestonesAdapter);
     }
 }

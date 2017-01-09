@@ -392,11 +392,13 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             if (!isAdd) //fill the fields
             {
-                User teacher = DataHolder.getInstance(this).getTeachersList().get(position);
-                firstName.setText(teacher.getFirstName());
-                lastName.setText(teacher.getLastName());
-                phoneNum.setText(teacher.getPhoneNum());
-                email.setText(teacher.getEmail());
+                if (DataHolder.getInstance(this).getTeachersList() != null) {
+                    User teacher = DataHolder.getInstance(this).getTeachersList().get(position);
+                    firstName.setText(teacher.getFirstName());
+                    lastName.setText(teacher.getLastName());
+                    phoneNum.setText(teacher.getPhoneNum());
+                    email.setText(teacher.getEmail());
+                }
             }
         } else {
             //ADD SECTION
@@ -436,7 +438,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 }
             });
             if (milestonesList.size() == 0)
-                getMilestones();
+               // getMilestones();
+                updateMilesSpinner(milestonesList);
             else {
                 updateMilesSpinner(milestonesList);
             }
@@ -478,8 +481,18 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     }
 
     void updateMilesSpinner(ArrayList<Milestones> milestonesList) {
-        MilestonesSpinnerAdapter dataAdapter = new MilestonesSpinnerAdapter(this, R.layout.item_spinner, R.id.text_spinner, milestonesList);
-        //dataAdapter.setDropDownViewResource(R.layout.item_spinner);
+        ArrayList<Milestones> milestonesArrayList = new ArrayList<>();
+        milestonesArrayList.add(new Milestones(1,"Milestone 1"));
+        milestonesArrayList.add(new Milestones(2,"Milestone 2"));
+        milestonesArrayList.add(new Milestones(3,"Milestone 3"));
+        milestonesArrayList.add(new Milestones(4,"Milestone 4"));
+        milestonesArrayList.add(new Milestones(5,"Milestone 5"));
+        milestonesArrayList.add(new Milestones(6,"Milestone 6"));
+        milestonesArrayList.add(new Milestones(7,"Milestone 7"));
+        milestonesArrayList.add(new Milestones(8,"Milestone 8"));
+        milestonesArrayList.add(new Milestones(9,"Milestone 9"));
+        MilestonesSpinnerAdapter dataAdapter = new MilestonesSpinnerAdapter(this, R.layout.item_spinner, R.id.text_spinner, milestonesArrayList);
+       // MilestonesSpinnerAdapter dataAdapter = new MilestonesSpinnerAdapter(this, R.layout.item_spinner, R.id.text_spinner, milestonesList);
         bs_milestonesSpinner.setAdapter(dataAdapter);
     }
 
@@ -636,6 +649,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         } catch (JSONException ex) {
             Log.e("updateMilestones", "updateMilestones: ", ex);
         }
+
         updateMilesSpinner(milestonesList);
     }
 
@@ -843,13 +857,14 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             String titleString;
             isTeacher = getArguments().getBoolean(IS_TEACHER);
             if (isTeacher) {
-                //adapter = new TeachersAdapter(getContext(), getTeachers(), 5);
-                loadTeachers();
+                adapter = new TeachersAdapter(getContext(), getTeachers(), 5, teacherListener);
+                recyclerView.setAdapter(adapter);
+                // loadTeachers();
                 titleString = "Teacher";
             } else {
-                /*adapter = new SectionsAdapter(getContext(), getSections(), 4);
-                recyclerView.setAdapter(adapter);*/
-                loadSections();
+                adapter = new SectionsAdapter(getContext(), getSections(), 4, teacherListener, true);
+                recyclerView.setAdapter(adapter);
+                //loadSections();
                 titleString = "Sections";
             }
 
@@ -864,6 +879,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             return rootView;
         }
+
 
         ArrayList<Sections> getSections() {
             ArrayList<Sections> sectionsArrayList = new ArrayList<>();
@@ -891,6 +907,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
             sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
             sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
+            DataHolder.getInstance(getActivity())
+                    .setSectionsList(sectionsArrayList);
             return sectionsArrayList;
         }
 
@@ -932,6 +950,9 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             user5.setPhoneNum("1234567890");
             user5.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
             userArrayList.add(user5);
+            userArrayList.addAll(userArrayList);
+            userArrayList.addAll(userArrayList);
+            DataHolder.getInstance(getContext()).setTeachersList(userArrayList);
             return userArrayList;
         }
 
@@ -1063,16 +1084,16 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 Log.d("ARRAY", "updateSections: " + obj.toString());
                 JSONArray sectionsArray = new JSONArray(obj.getString(KEY_SECTIONS));
                 for (int i = 0; i < sectionsArray.length(); i++) {
-                    JSONObject milesDatObject = sectionsArray.getJSONObject(i);
+                    JSONObject sectionsObject = sectionsArray.getJSONObject(i);
                     Sections section
-                            = new Sections(milesDatObject.getInt(KEY_ID),
-                            (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
-                            (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
-                            milesDatObject.getInt(KEY_COMPLETED_MILES),
-                            milesDatObject.getInt(KEY_TOTAL_MILES),
-                            milesDatObject.getInt(KEY_SCHOOL_ID),
-                            Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + milesDatObject.getString(KEY_MILESTONE_NAME),
-                            milesDatObject.getInt(KEY_MILESTONE_ID));
+                            = new Sections(sectionsObject.getInt(KEY_ID),
+                            (PREFIX_CLASS + sectionsObject.getString(KEY_CLASS)),
+                            (PREFIX_SECTION + sectionsObject.getString(KEY_SECTION)),
+                            sectionsObject.getInt(KEY_COMPLETED_MILES),
+                            sectionsObject.getInt(KEY_TOTAL_MILES),
+                            sectionsObject.getInt(KEY_SCHOOL_ID),
+                            Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + sectionsObject.getString(KEY_MILESTONE_NAME),
+                            sectionsObject.getInt(KEY_MILESTONE_ID));
                     sectionsArrayList.add(section);
                     DataHolder.getInstance(getActivity())
                             .setSectionsList(sectionsArrayList);

@@ -130,7 +130,8 @@ public class LandingActivity extends AppCompatActivity
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
 
-        getSupportActionBar().setTitle(DataHolder.getInstance(S2MApplication.getAppContext()).getUser().getSchoolName());
+        //getSupportActionBar().setTitle(DataHolder.getInstance(S2MApplication.getAppContext()).getUser().getSchoolName());
+        getSupportActionBar().setTitle("Indian Academy");
         setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);

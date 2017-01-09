@@ -51,9 +51,9 @@ public class SelectSchoolActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         schoolRecycler.setLayoutManager(layoutManager);
-        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1,true));
-        // schoolRecycler.setAdapter(new SchoolsAdapter(this, getSchools()));
-        loadSchools();
+        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
+        schoolRecycler.setAdapter(new SchoolsAdapter(this, getSchools()));
+        //loadSchools();
     }
 
     ArrayList<Schools> getSchools() {
@@ -68,16 +68,56 @@ public class SelectSchoolActivity extends AppCompatActivity {
         school2.setLogo("http://www.civil-site.com/wp-content/uploads/2015/11/MJ-High-School-11.jpg");
         school2.setAddress("Bannergatta, Bangalore");
         schoolsArrayList.add(school2);
+        Schools school12 = new Schools();
+        school12.setName("Indian Academy");
+        school12.setLogo("http://www.civil-site.com/wp-content/uploads/2015/11/MJ-High-School-11.jpg");
+        school12.setAddress("Bannergatta, Bangalore");
+        schoolsArrayList.add(school2);
         Schools school3 = new Schools();
         school3.setName("The Shri Ram School");
         school3.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
         school3.setAddress("M.G.Road, Gurgaon");
         schoolsArrayList.add(school3);
+        Schools school4 = new Schools();
+        school4.setName("The Shri Ram School");
+        school4.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school4.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school4);
+        Schools school5 = new Schools();
+        school5.setName("The Shri Ram School");
+        school5.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school5.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school5);
+        Schools school6 = new Schools();
+        school6.setName("The Shri Ram School");
+        school6.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school6.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school6);
+        Schools school7 = new Schools();
+        school7.setName("The Shri Ram School");
+        school7.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school7.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school7);
+        Schools school8 = new Schools();
+        school8.setName("The Shri Ram School");
+        school8.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school8.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school8);
+        Schools school9 = new Schools();
+        school9.setName("The Shri Ram School");
+        school9.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school9.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school9);
+        Schools school0 = new Schools();
+        school0.setName("The Shri Ram School");
+        school0.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
+        school0.setAddress("M.G.Road, Gurgaon");
+        schoolsArrayList.add(school0);
         return schoolsArrayList;
     }
 
     void loadSchools() {
-        getSchoolsRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL ,
+        getSchoolsRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -140,7 +180,9 @@ public class SelectSchoolActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        getSchoolsRequest.removeStatusListener();
+        if (getSchoolsRequest != null) {
+            getSchoolsRequest.removeStatusListener();
+        }
         super.onDestroy();
     }
 

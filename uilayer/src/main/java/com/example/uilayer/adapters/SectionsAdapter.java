@@ -112,7 +112,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        Sections sectionDetails = sectionDetailsList.get(position);
+        final Sections sectionDetails = sectionDetailsList.get(position);
         holder.classname.setText(sectionDetails.get_Class());
         holder.classname.setAlpha(0.8f);
         holder.sectionName.setText(sectionDetails.getSection());
@@ -132,7 +132,14 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     @Override
                     public void onClick(View view) {
                         //  getMilestoneDetails(position);
-                        getOrderedMilestoneDetails(position);
+                        /*getOrderedMilestoneDetails(position);*/
+                        final Intent intent = new Intent(context, MilestonesActivity.class);
+                        DataHolder.getInstance(context).setCurrentClass(sectionDetails.get_Class());
+                        DataHolder.getInstance(context).setCurrentSection(sectionDetails.getSection());
+                        DataHolder.getInstance(context).setCurrentMileTitle(sectionDetails.getMilestoneName());
+                        intent.putExtra("class_name", sectionDetails.get_Class());
+                        intent.putExtra("section_name", sectionDetails.getSection());
+                        context.startActivity(intent);
                     }
                 });
 

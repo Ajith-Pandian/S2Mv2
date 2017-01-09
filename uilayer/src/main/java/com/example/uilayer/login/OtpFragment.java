@@ -109,7 +109,10 @@ public class OtpFragment extends Fragment {
     }
 
     public void onButtonPressed() {
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
+        if (mListener != null) {
+            mListener.onOtpEntered();
+        }
+       /* VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -169,7 +172,7 @@ public class OtpFragment extends Fragment {
 
         };
 
-        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(otpRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(otpRequest);*/
     }
 
     void storeResponse(String response) {

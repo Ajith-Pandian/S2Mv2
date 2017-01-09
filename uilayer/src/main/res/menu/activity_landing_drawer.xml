@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/nav_select_school"
-        android:title="Select school" />
-    
-    <item android:title="Manage">
-        <menu>
+
+    <group android:id="@+id/first_group"
+        android:checkableBehavior="none">
+            <item
+                android:id="@+id/nav_select_school"
+                android:icon="@drawable/ic_compare_arrows_black_24dp"
+                android:title="Switch School" />
             <item
                 android:id="@+id/nav_manage_teachers"
-                android:title="Manage Teachers" />
+                android:icon="@drawable/ic_group_black_24dp"
+                android:title="Manage Users" />
             <item
                 android:id="@+id/nav_manage_sections"
+                android:icon="@drawable/section_selected"
                 android:title="Manage Sections" />
-        </menu>
-    </item>
+    </group>
+    <group android:id="@+id/second_group"
+        android:checkableBehavior="none">
+            <item
+                android:id="@+id/nav_faq"
+                android:icon="@drawable/ic_error_black_24dp"
+                android:title="FAQ" />
+            <item
+                android:id="@+id/nav_sign_out"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="SignOut" />
+    </group>
 
 </menu>

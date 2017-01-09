@@ -5,8 +5,8 @@ package com.example.domainlayer.models;
  */
 
 public class Milestones {
-    int id;
-    String name;
+    private int id;
+    private String name;
 
     public Milestones(int id, String name) {
         this.id = id;

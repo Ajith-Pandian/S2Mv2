@@ -86,6 +86,68 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        final String dummyMileData="[\n" +
+                "  {\n" +
+                "    \"id\": 55,\n" +
+                "    \"title\": \"Content Heading\",\n" +
+                "    \"body\": \"<h2>Heading</h2><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>\",\n" +
+                "    \"type\": \"text\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 1,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_960_720.png\\\",\\\"https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_960_720.png\\\",\\\"https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_960_720.png\\\"]\",\n" +
+                "    \"type\": \"image\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 2,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_960_720.png\\\"]\",\n" +
+                "    \"type\": \"image\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 5,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"http://www.arrahman.com/images/biography-images/ar_next.jpg$https://soundcloud.com/djghostdragon/tcsclosergdedit\\\",\\\"\\nhttp://www.arrahman.com/images/biography-images/ar_next.jpg$https://soundcloud.com/21savage/no-heart\\\"]\",\n" +
+                "    \"type\": \"audio\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 9,\n" +
+                "    \"title\": \"Text Heading 2\",\n" +
+                "    \"body\": \"<h2>Heading</h2><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>\",\n" +
+                "    \"type\": \"text\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 7,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"<h2>Heading</h2><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>\",\n" +
+                "    \"type\": \"text\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 6,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"http://www.arrahman.com/images/biography-images/ar_next.jpg$https://soundcloud.com/john-c-cruz/lackin\\\"]\",\n" +
+                "    \"type\": \"audio\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 3,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"https://www.youtube.com/watch?v=hA9ViuZJVAA\\\"]\",\n" +
+                "    \"type\": \"video\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 4,\n" +
+                "    \"title\": \"m_content\",\n" +
+                "    \"body\": \"[\\\"https://www.youtube.com/watch?v=hA9ViuZJVAA\\\",\\\"https://www.youtube.com/watch?v=MiOnVcUN_Nk\\\",\\\"https://www.youtube.com/watch?v=mu0lvHkOzD8\\\"]\",\n" +
+                "    \"type\": \"video\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 8,\n" +
+                "    \"title\": \"Text Heading\",\n" +
+                "    \"body\": \"<h2>Heading</h2><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</p>\",\n" +
+                "    \"type\": \"text\"\n" +
+                "  }\n" +
+                "]";
         switch (holder.getItemViewType()) {
 
             case 0:
@@ -97,15 +159,19 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                     /*   DataHolder.getInstance(context).setCurrentMileTitle(mile.getTitle());
+                        getDetails(position, true);*/
                         DataHolder.getInstance(context).setCurrentMileTitle(mile.getTitle());
-                        getDetails(position, true);
+                        DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(dummyMileData));
+                        openActivity(MilesActivity.class, true);
 
                     }
                 });
                 viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        undoThisMile(mile.getId());
+                        //undoThisMile(mile.getId());
+                        Toast.makeText(context, "Undo done..!!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 if (undoId != -1 && undoId == mile.getId())
@@ -124,9 +190,10 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View view) {
                         //     openActivity(TrainingActivity.class);
+                        //getDetails(position, false);
                         DataHolder.getInstance(context).setCurrentMileTitle(training.getTitle());
-
-                        getDetails(position, false);
+                        DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(dummyMileData));
+                        openActivity(MilesActivity.class, false);
 
                     }
                 });

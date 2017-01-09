@@ -86,7 +86,7 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
 
             }
         };
-        if (!school.getLogo().equals(""))
+        if (school.getLogo() != null && !school.getLogo().equals(""))
             Picasso.with(context)
                     .load(school.getLogo())
                     .resize(50, 50)

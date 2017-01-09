@@ -96,7 +96,91 @@ public class MCQActivity extends AppCompatActivity {
             }
         });
         getMcqs();
-        setListViewState(false);
+        String dummyMcqs = "[\n" +
+                "  {\n" +
+                "    \"id\": 15,\n" +
+                "    \"question\": \"What is red?\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"1\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:03:10\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:03:10\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 16,\n" +
+                "    \"question\": \"What is yellow?\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"2\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:04:00\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:04:00\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 17,\n" +
+                "    \"question\": \"What has 4 legs?\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"3\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:04:22\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:04:22\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 18,\n" +
+                "    \"question\": \"Name an instrument\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"4\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:04:36\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:04:36\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 19,\n" +
+                "    \"question\": \"______ a day keeps the doctor away.\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"1\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:04:55\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:04:55\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 20,\n" +
+                "    \"question\": \"Monkey likes __________.\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"2\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:05:11\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:05:11\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 21,\n" +
+                "    \"question\": \"_______ eats mice.\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"3\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:05:39\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:05:39\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 22,\n" +
+                "    \"question\": \"_______ eats mice.\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"3\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-14 12:28:06\",\n" +
+                "    \"updated_at\": \"2016-12-14 12:28:06\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"id\": 23,\n" +
+                "    \"question\": \"_______ eats mice.\",\n" +
+                "    \"options\": \"{\\\"1\\\":\\\"Apple\\\",\\\"2\\\":\\\"Banana\\\",\\\"3\\\":\\\"Cat\\\",\\\"4\\\":\\\"Drum\\\"}\",\n" +
+                "    \"answer\": \"3\",\n" +
+                "    \"trainingId\": 5,\n" +
+                "    \"created_at\": \"2016-12-15 11:38:20\",\n" +
+                "    \"updated_at\": \"2016-12-15 11:38:20\"\n" +
+                "  }\n" +
+                "]";
+        loadQuestions(dummyMcqs);
+        setListViewState(true);
 
     }
 
@@ -139,9 +223,8 @@ public class MCQActivity extends AppCompatActivity {
                         showQuestions(currentQuestion + 1);
                     else {
                         buttonSubmit.setText("FINISH");
-                        //get feed back and go to next
-                        sendResults();
-                        //finish();
+                        //sendResults();
+                        finish();
                     }
                 else {
                     if (selected_option != -1) {
@@ -164,7 +247,9 @@ public class MCQActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        choiceResultRequest.removeStatusListener();
+        if (choiceResultRequest != null) {
+            choiceResultRequest.removeStatusListener();
+        }
         super.onDestroy();
     }
 
