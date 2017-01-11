@@ -1,18 +1,22 @@
 package com.example.domainlayer.models;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Created by thoughtchimp on 1/2/2017.
  */
 
 public class Ticket {
-    private int id,number;
-    private String date,category,userName,content,profileUrl,status;
+    private String id;
+    private Map<String,String> userIds;
+    private String date, category, subject, status, createdAt, updatedDate;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -32,36 +36,12 @@ public class Ticket {
         this.category = category;
     }
 
-    public int getNumber() {
-        return number;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getProfileUrl() {
-        return profileUrl;
-    }
-
-    public void setProfileUrl(String profileUrl) {
-        this.profileUrl = profileUrl;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getStatus() {
@@ -70,5 +50,29 @@ public class Ticket {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+ /*   public Map<String,String> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(Map<String,String> userIds) {
+        this.userIds = userIds;
+    }*/
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
     }
 }

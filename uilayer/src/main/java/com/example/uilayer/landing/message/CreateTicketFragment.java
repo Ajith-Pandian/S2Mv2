@@ -23,7 +23,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Category;
-import com.example.domainlayer.models.Ticket;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
@@ -33,12 +32,6 @@ import com.example.uilayer.adapters.CategorySpinnerAdapter;
 import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 
 
 import org.json.JSONArray;
@@ -46,19 +39,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.android.volley.VolleyLog.TAG;
-import static com.example.domainlayer.Constants.FB_CHILD_TICKET;
-import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
+import static com.example.domainlayer.Constants.CREATE_TICKET_URL;
 import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_CATEGORY;
+import static com.example.domainlayer.Constants.KEY_CREATOR_ID;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_RECEIVER_ID;
+import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SUBJECT;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
@@ -85,6 +79,22 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
     VolleyStringRequest getUsersRequest;
     BottomSheetBehavior bottomSheetBehavior;
     Dialog thisDialog;
+    /*    void createTicket(String subject, String type) {
+            int id = getTicketId();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ticket = database.getReference(FB_CHILD_TICKET_DETAILS);
+            DatabaseReference tickets = ticket.child(FB_CHILD_TICKET + id);
+            Ticket tiketObj = new Ticket();
+            tiketObj.setSubject("some content");
+            tiketObj.setUserName("user name");
+            tiketObj.setStatus("open");
+            tiketObj.setProfileUrl("this is a profile url");
+            tiketObj.setCategory("content");
+            tiketObj.setId(id);
+            tiketObj.setNumber(id);
+            tickets.setValue(tiketObj);
+        }*/
+    VolleyStringRequest createTicketRequest;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
@@ -174,10 +184,8 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createTicket(subjectText.getText().toString(), "CONTENT");
-                Toast.makeText(getActivity().getBaseContext(), "Ticket Added", Toast.LENGTH_SHORT).show();
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                thisDialog.dismiss();
+                createTicket(subjectText.getText().toString(), getCategory(), getUserID());
+
             }
         });
         categorySpinner.setPrompt("Category");
@@ -193,6 +201,14 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         createButton.requestLayout();
         createButton.requestFocus();
 
+    }
+
+    String getCategory() {
+        return ((Category) categorySpinner.getSelectedItem()).getName();
+    }
+
+    int getUserID() {
+        return ((User) userSpinner.getSelectedItem()).getId();
     }
 
     ArrayList<Category> getCategories() {
@@ -295,24 +311,85 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         }
     }
 
-    void createTicket(String subject, String type) {
-        int id = getTicketId();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ticket = database.getReference(FB_CHILD_TICKET_DETAILS);
-        DatabaseReference tickets = ticket.child(FB_CHILD_TICKET + id);
-        Ticket tiketObj = new Ticket();
-        tiketObj.setContent("some content");
-        tiketObj.setUserName("user name");
-        tiketObj.setStatus("open");
-        tiketObj.setProfileUrl("this is a profile url");
-        tiketObj.setCategory("content");
-        tiketObj.setId(id);
-        tiketObj.setNumber(id);
-        tickets.setValue(tiketObj);
+    void createTicket(final String subject, final String category, final int userId) {
+        createTicketRequest = new VolleyStringRequest(Request.Method.POST, CREATE_TICKET_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("createTicketRequest", "onResponse: " + response);
+                        Toast.makeText(getActivity().getBaseContext(), "Ticket Added", Toast.LENGTH_SHORT).show();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        thisDialog.dismiss();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.e("createTicketRequest", "onErrorResponse: ", error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                return header;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_CREATOR_ID, String.valueOf(DataHolder.getInstance(getContext()).getUser().getId()));
+                params.put(KEY_SCHOOL_ID, String.valueOf(DataHolder.getInstance(getContext()).getUser().getSchoolId()));
+                params.put(KEY_SUBJECT, subject);
+                params.put(KEY_CATEGORY, category);
+                //TODO:Validate with user type-- If teacher Default reciver is S2MAdmin -- IF S2M , he can choose a teacher
+                params.put(KEY_RECEIVER_ID, String.valueOf(userId));
+                Log.d(TAG, "getParams: " + params.toString());
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(createTicketRequest);
     }
 
     int getTicketId() {
-        return 8;
+        return 9;
     }
 }
 

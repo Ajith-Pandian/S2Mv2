@@ -1,32 +1,45 @@
 {
   "project_info": {
-    "project_number": "319027843085",
-    "firebase_url": "https://s2mconnect-c6623.firebaseio.com",
-    "project_id": "s2mconnect-c6623",
-    "storage_bucket": "s2mconnect-c6623.appspot.com"
+    "project_number": "689640945895",
+    "firebase_url": "https://s2mv2-76810.firebaseio.com",
+    "project_id": "s2mv2-76810",
+    "storage_bucket": "s2mv2-76810.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:319027843085:android:38c17c52b0dbaff3",
+        "mobilesdk_app_id": "1:689640945895:android:880b8bbebae727fd",
         "android_client_info": {
           "package_name": "com.example.uilayer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "319027843085-72kh0dkgdelgrp3vhav8184qftqvcviu.apps.googleusercontent.com",
+          "client_id": "689640945895-7onjuo6ahpcfl39donn6ov0qq771vpts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.uilayer",
+            "certificate_hash": "35AAD09A7BBAF7F24FD2E426397F17D740E7F78A"
+          }
+        },
+        {
+          "client_id": "689640945895-02gbceuspkuq07ib0phce54n12i3pujc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
-      "api_key": [{ "current_key": "" }],
-      "services": {
+     "api_key": [{"current_key":""}],
+	 "services": {
         "analytics_service": {
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689640945895-02gbceuspkuq07ib0phce54n12i3pujc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

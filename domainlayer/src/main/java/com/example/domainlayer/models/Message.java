@@ -6,7 +6,7 @@ package com.example.domainlayer.models;
 
 public class Message {
     private int id,senderId,ReceiverId;
-    private String content,date,time;
+    private String content, timestamp;
     private boolean isSend;
 
     public int getId() {
@@ -41,20 +41,12 @@ public class Message {
         this.content = content;
     }
 
-    public String getDate() {
-        return date;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public boolean isSend() {

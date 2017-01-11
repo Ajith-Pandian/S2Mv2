@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +19,6 @@ import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,29 +69,31 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final int exactPosition = holder.getAdapterPosition();
         final Ticket ticket = ticketsList.get(position);
-        holder.userName.setText(ticket.getUserName());
-        holder.content.setText(ticket.getContent());
+        holder.userName.setText("Receiver Name");
+        holder.content.setText(ticket.getSubject());
         holder.category.setText(ticket.getCategory());
         holder.category.setTextColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
-        holder.date.setText(ticket.getDate());
-      /*  holder.ticketLayout.setOnClickListener(new View.OnClickListener() {
+        String date = ticket.getCreatedAt().split(" ")[0];
+        String time = ticket.getCreatedAt().split(" ")[1];
+        holder.date.setText(date);
+        holder.ticketLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 context.startActivity(new Intent(context, MessageActivity.class).putExtra("ticketId", ticket.getId()));
             }
-        });*/
+        });
         String staus = ticket.getStatus();
         if (staus.equalsIgnoreCase(OPEN))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red1));
         else if (staus.equalsIgnoreCase(CLOSED))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.grey1));
-        holder.status.setText(ticket.getStatus());
-        holder.ticketId.setText(context.getResources().getString(R.string.blank_int, ticket.getId()));
+        holder.status.setText(ticket.getStatus().toUpperCase());
+        holder.ticketId.setText(String.valueOf(ticket.getId()));
 
         Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
         holder.profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
 
-        Target target = new Target() {
+       /* Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 holder.profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 0));
@@ -112,7 +110,7 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
             }
         };
         if (ticket.getProfileUrl() != null && !ticket.getProfileUrl().equals(""))
-            Picasso.with(context).load(ticket.getProfileUrl()).placeholder(R.drawable.profile).into(target);
+            Picasso.with(context).load(ticket.getProfileUrl()).placeholder(R.drawable.profile).into(target);*/
     }
 
 

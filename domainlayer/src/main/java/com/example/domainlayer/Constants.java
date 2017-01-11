@@ -40,6 +40,16 @@ public class Constants {
     public static final String NETWORK_SECTIONS_URL= SCHOOLS_URL+"2" + NETWORK_SECTIONS_URL_SUFFIX;
 
 
+
+    public static final String CREATE_TICKET_URL= BASE_URL+"createTicket";
+
+
+    public static final String KEY_CREATOR_ID = "creatorId";
+    public static final String KEY_CATEGORY = "category";
+    public static final String KEY_RECEIVER_ID = "receiverId";
+    public static final String KEY_SUBJECT = "subject";
+
+
     public static final String TEMP_EMAIL = "manit@gmail.com";
     public static final String TEMP_ACCESS_TOKEN = "1234567890/qwertyuiop";
     public static final String TEMP_ACCESS_TOKEN1 = "1234567899/qwertyuiop";

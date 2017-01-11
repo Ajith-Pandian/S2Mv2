@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
     Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(), bitmap, 20, 1));
+            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getContext(), bitmap, 20, 1));
         }
 
         @Override

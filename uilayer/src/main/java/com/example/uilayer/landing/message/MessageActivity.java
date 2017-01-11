@@ -44,7 +44,7 @@ public class MessageActivity extends AppCompatActivity {
             ArrayList<Message> messages = new ArrayList<>();
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Message value = childSnapshot.getValue(Message.class);
-                if (value.getSenderId() == 4)
+                if (value.getSenderId() == com.example.domainlayer.temp.DataHolder.getInstance(MessageActivity.this).getUser().getId())
                     value.setSend(true);
                 else
                     value.setSend(false);
@@ -58,7 +58,7 @@ public class MessageActivity extends AppCompatActivity {
             Log.w("FB", "Failed to read value.", error.toException());
         }
     };
-    int ticketId;
+    String ticketId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
         ButterKnife.bind(this);
         if (getIntent() != null) {
-            ticketId = getIntent().getIntExtra("ticketId", ticketId);
+            ticketId = getIntent().getStringExtra("ticketId");
         }
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -77,7 +77,10 @@ public class MessageActivity extends AppCompatActivity {
 
     void fetchMessages() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        messageDbReference = database.getReference(FB_CHILD_CONVERSATIONS).child(FB_CHILD_TICKET + ticketId);
+        messageDbReference = database.getReference("firebaseexample")
+                .child(String.valueOf(com.example.domainlayer.temp.DataHolder.getInstance(MessageActivity.this).getUser().getSchoolId()))
+                .child("convo")
+                .child(ticketId);
         messageDbReference.addValueEventListener(msgsAddValueListener);
     }
 

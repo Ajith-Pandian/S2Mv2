@@ -1,1 +1,1 @@
-include ':s', ':uilayer', ':domainlayer'
+include ':uilayer', ':domainlayer'

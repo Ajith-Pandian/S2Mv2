@@ -15,20 +15,23 @@
         android:background="@null"
         android:gravity="center"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_quiz"
+        android:src="@drawable/ic_quote"
         android:text="8"
         android:textColor="@android:color/white"
         android:textSize="25sp" />
 
     <TextView
+        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="12dp"
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:layout_toRightOf="@+id/image_quotes"
         android:layout_toEndOf="@+id/image_quotes"
         android:gravity="center"
-        tools:text="@string/school_msg_one"
+        tools:text="@string/msg_login"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 </RelativeLayout>
