@@ -21,6 +21,7 @@
     <color name="red2">#e78b8b</color>
     <color name="red3">#f20606</color>
     <color name="red4">@color/red3</color>
+    <color name="red5">#e2574c </color>
     <color name="grey1">#7a7f80</color>
 
     <color name="profile_image_border">@color/text_secondary</color>

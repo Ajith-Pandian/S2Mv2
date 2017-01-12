@@ -6,7 +6,7 @@ package com.example.domainlayer.models;
 
 public class Message {
     private int id,senderId,ReceiverId;
-    private String content, timestamp;
+    private String content, timestamp,type;
     private boolean isSend;
 
     public int getId() {
@@ -55,5 +55,13 @@ public class Message {
 
     public void setSend(boolean send) {
         isSend = send;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

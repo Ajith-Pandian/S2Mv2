@@ -24,8 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -52,7 +50,7 @@ public class TicketsFragment extends Fragment {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Ticket value = childSnapshot.getValue(Ticket.class);
                 value.setId(childSnapshot.getKey());
-             //   if (isUserValid(value.getUserIds()))
+                if (isUserValid(value.getUserIds()))
                     tickets.add(value);
             }
             ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), tickets));
@@ -69,7 +67,7 @@ public class TicketsFragment extends Fragment {
 
     }
 
-    boolean isUserValid(Map<String,String> userIds) {
+    boolean isUserValid(Map<String,Boolean> userIds) {
        /* List<Integer> userIdsArray = new ArrayList<>();
         for (int userId : userIds.containsKey()) userIdsArray.add(userId);*/
         return userIds.containsKey(String.valueOf(DataHolder.getInstance(getContext()).getUser().getId()));

@@ -1,6 +1,5 @@
 package com.example.domainlayer.models;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -8,9 +7,12 @@ import java.util.Map;
  */
 
 public class Ticket {
-    private String id;
-    private Map<String,String> userIds;
-    private String date, category, subject, status, createdAt, updatedDate;
+    private String id,creatorId;
+    private Map<String, Boolean>  userIds;
+    private String date, category, subject, status, createdAt, lastUpdatedAt;
+
+    public Ticket() {
+    }
 
     public String getId() {
         return id;
@@ -52,13 +54,15 @@ public class Ticket {
         this.status = status;
     }
 
- /*   public Map<String,String> getUserIds() {
+
+  public Map<String,Boolean>   getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(Map<String,String> userIds) {
+    public void setUserIds( Map<String, Boolean>    userIds) {
         this.userIds = userIds;
-    }*/
+    }
+
 
     public String getCreatedAt() {
         return createdAt;
@@ -68,11 +72,19 @@ public class Ticket {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedDate() {
-        return updatedDate;
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
     }
 
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 }

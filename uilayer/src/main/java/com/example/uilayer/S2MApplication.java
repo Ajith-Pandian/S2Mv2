@@ -3,6 +3,8 @@ package com.example.uilayer;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.firebase.FirebaseApp;
+
 
 /**
  * Created by thoughtchimp on 12/22/2016.
@@ -19,6 +21,7 @@ public class S2MApplication extends Application {
         }
         LeakCanary.install(this);*/
         appContext = this;
+        FirebaseApp.initializeApp(this);
     }
 
     public static Context getAppContext() {

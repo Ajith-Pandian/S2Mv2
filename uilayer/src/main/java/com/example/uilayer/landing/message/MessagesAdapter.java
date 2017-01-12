@@ -23,6 +23,7 @@ import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int SEND = 0;
     private final int RECEIVE = 1;
     private final int IS_FIRST = 21;
+
+    private final String TEXT = "text";
+    private final String IMAGE = "image";
+    private final String AUDIO = "audio";
+    private final String VIDEO = "video";
+    private final String PDF = "pdf";
+
+
     private Context context;
 
     private List<Message> messagesList;
@@ -70,20 +79,41 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.content.setText(message.getContent());
         } else {
             final MessageViewHolder viewHolder = (MessageViewHolder) holder;
-            // viewHolder.senderName.setText("Oponent Name");
             viewHolder.date.setText(message.getTimestamp().split(" ")[0]);
             viewHolder.time.setText(message.getTimestamp().split(" ")[1]);
-/*            TextContentFragment fragment = TextContentFragment.newInstance(message.getContent());
-            ((AppCompatActivity) context).
-                    getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(viewHolder.contentFrame.getId(), fragment)
-                    .commit();*/
-            viewHolder.contentFrame.removeAllViewsInLayout();
-            TextView textView = new TextView(viewHolder.contentFrame.getContext());
-            textView.setText(message.getContent());
-            textView.setTextColor(context.getResources().getColor(R.color.text_color2));
-            viewHolder.contentFrame.addView(textView);
+
+            switch (message.getType()) {
+                case TEXT:
+                    viewHolder.contentFrame.removeAllViewsInLayout();
+                    TextView textView = new TextView(viewHolder.contentFrame.getContext());
+                    textView.setText(message.getContent());
+                    textView.setTextColor(context.getResources().getColor(R.color.text_color2));
+                    viewHolder.contentFrame.addView(textView);
+                    break;
+                case IMAGE:
+                    viewHolder.contentFrame.removeAllViewsInLayout();
+                    View view = LayoutInflater
+                            .from(viewHolder.contentFrame.getContext())
+                            .inflate(R.layout.item_msg_image, null);
+                    viewHolder.contentFrame.addView(view);
+                    break;
+                case VIDEO:
+                case AUDIO:
+                    viewHolder.contentFrame.removeAllViewsInLayout();
+                    View mediaView = LayoutInflater
+                            .from(viewHolder.contentFrame.getContext())
+                            .inflate(R.layout.item_msg_video, null);
+                    viewHolder.contentFrame.addView(mediaView);
+                    break;
+                case PDF:
+                    viewHolder.contentFrame.removeAllViewsInLayout();
+                    View pdfView = LayoutInflater
+                            .from(viewHolder.contentFrame.getContext())
+                            .inflate(R.layout.item_msg_pdf, null);
+                    viewHolder.contentFrame.addView(pdfView);
+                    break;
+            }
+
 
             if (getItemViewType(position) == SEND) {
                 setSenderParams(viewHolder);
@@ -91,10 +121,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 setReceiverParams(viewHolder);
             }
 
+
             setTimeStampLayoutParams(viewHolder);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.timeDateLayout.getLayoutParams();
 
-            if (message.getContent().length() >= viewHolder.receiverName.getText().toString().length()) {
+            if ( message.getContent().length() >= viewHolder.receiverName.getText().toString().length()) {
                 params.addRule(RelativeLayout.ALIGN_RIGHT, viewHolder.contentFrame.getId());
             } else {
                 params.addRule(RelativeLayout.ALIGN_RIGHT, viewHolder.receiverName.getId());

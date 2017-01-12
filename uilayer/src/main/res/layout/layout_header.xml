@@ -30,7 +30,7 @@
         android:layout_gravity="start"
         android:layout_toRightOf="@+id/image_quotes"
         android:layout_toEndOf="@+id/image_quotes"
-        android:gravity="center"
+        android:gravity="left"
         tools:text="@string/msg_login"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp" />

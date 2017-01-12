@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,6 +38,9 @@ public class MessageActivity extends AppCompatActivity {
     EditText messageInput;
     @BindView(R.id.recycler_message)
     RecyclerView messageRecycler;
+    @BindView(R.id.toolbar_message)
+    Toolbar toolbar;
+
     DatabaseReference messageDbReference;
     ValueEventListener msgsAddValueListener = new ValueEventListener() {
         @Override
@@ -44,10 +48,12 @@ public class MessageActivity extends AppCompatActivity {
             ArrayList<Message> messages = new ArrayList<>();
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Message value = childSnapshot.getValue(Message.class);
-                if (value.getSenderId() == com.example.domainlayer.temp.DataHolder.getInstance(MessageActivity.this).getUser().getId())
+               if (value.getSenderId() == com.example.domainlayer.temp.DataHolder.
+                        getInstance(MessageActivity.this).getUser().getId())
                     value.setSend(true);
                 else
                     value.setSend(false);
+                //value.setType("text");
                 messages.add(value);
             }
             messageRecycler.setAdapter(new MessagesAdapter(MessageActivity.this, messages));
@@ -59,17 +65,26 @@ public class MessageActivity extends AppCompatActivity {
         }
     };
     String ticketId;
+/*  @BindView(R.id.button_back_toolbar)
+    ImageButton backButton;
+    @BindView(R.id.button_close_toolbar)
+    ImageButton closeTicketButton;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         ButterKnife.bind(this);
+       // ButterKnife.bind(this, toolbar);
         if (getIntent() != null) {
             ticketId = getIntent().getStringExtra("ticketId");
         }
+
+
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        // layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         messageRecycler.setLayoutManager(layoutManager);
         messageRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, false));
         fetchMessages();
