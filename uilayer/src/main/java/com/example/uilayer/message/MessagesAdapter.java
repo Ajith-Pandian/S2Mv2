@@ -1,4 +1,4 @@
-package com.example.uilayer.landing.message;
+package com.example.uilayer.message;
 
 import android.content.Context;
 
@@ -23,7 +23,6 @@ import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

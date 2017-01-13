@@ -1,4 +1,4 @@
-package com.example.uilayer.landing.message;
+package com.example.uilayer.message;
 
 import android.content.Context;
 import android.content.Intent;

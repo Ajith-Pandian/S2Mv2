@@ -1,11 +1,20 @@
 package com.example.domainlayer.utils;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+
+import java.util.Map;
+
+import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
  * Created by thoughtchimp on 12/5/2016.
@@ -81,6 +90,14 @@ public class VolleyStringRequest extends StringRequest {
 
         void onTimeout();
     }
+
+   /* @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        Map<String, String> header = new ArrayMap<>();
+        header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+        header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+        return header;
+    }*/
 
     public static class VolleyErrListener implements Response.ErrorListener {
         StatusCodeListener statusCodeListener;

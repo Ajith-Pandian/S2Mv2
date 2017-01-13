@@ -1,33 +1,18 @@
-package com.example.uilayer.landing.message;
+package com.example.uilayer.message;
 
 
 import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.domainlayer.models.Ticket;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
 
 
 /**

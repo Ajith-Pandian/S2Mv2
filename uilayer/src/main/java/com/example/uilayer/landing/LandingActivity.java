@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
-import com.example.uilayer.landing.message.TicketsFragment;
+import com.example.uilayer.message.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.SelectSchoolActivity;
 

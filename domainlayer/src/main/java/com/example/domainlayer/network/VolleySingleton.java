@@ -1,12 +1,13 @@
 package com.example.domainlayer.network;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
-import android.util.LruCache;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
@@ -21,9 +22,9 @@ public class VolleySingleton {
 
     private VolleySingleton(Context context) {
         mCtx = context;
-        mRequestQueue = getRequestQueue();
+        mRequestQueue = getThisRequestQueue();
 
-        mImageLoader = new ImageLoader(mRequestQueue,
+       /* mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
                             cache = new LruCache<String, Bitmap>(20);
@@ -37,7 +38,7 @@ public class VolleySingleton {
                     public void putBitmap(String url, Bitmap bitmap) {
                         cache.put(url, bitmap);
                     }
-                });
+                });*/
     }
 
     public static synchronized VolleySingleton getInstance(Context context) {
@@ -47,7 +48,7 @@ public class VolleySingleton {
         return mInstance;
     }
 
-    private RequestQueue getRequestQueue() {
+    private RequestQueue getThisRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
@@ -60,7 +61,12 @@ public class VolleySingleton {
 
     public <T> void addToRequestQueue(Request<T> req) {
         Log.d(TAG, "addToRequestQueue: added");
-        getRequestQueue().add(req);
+        req.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        getThisRequestQueue().add(req);
     }
 
     public ImageLoader getImageLoader() {
