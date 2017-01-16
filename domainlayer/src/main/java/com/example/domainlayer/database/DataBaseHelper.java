@@ -46,11 +46,15 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.dropTable(connectionSource, DbUser.class, true);
             TableUtils.dropTable(connectionSource, Sections.class, true);
+            TableUtils.clearTable(getConnectionSource(), DbUser.class);
+            TableUtils.clearTable(getConnectionSource(), Sections.class);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 
     /* User */
 

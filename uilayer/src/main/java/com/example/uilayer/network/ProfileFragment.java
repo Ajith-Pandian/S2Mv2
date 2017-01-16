@@ -42,13 +42,12 @@ import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_NAME;
 import static com.example.domainlayer.Constants.KEY_SECTION;
-import static com.example.domainlayer.Constants.KEY_TOTAL;
 import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.NETWORK_SECTIONS_URL;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
@@ -157,7 +156,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }

@@ -107,6 +107,19 @@ public class DataHolder {
         getEditor().putInt(KEY_USER_ID, userId).commit();
     }
 
+
+    ArrayList<User> networkProfiles;
+
+    public ArrayList<User> getNetworkProfiles() {
+        return networkProfiles;
+    }
+
+    public void setNetworkProfiles(ArrayList<User> networkProfiles) {
+        this.networkProfiles = networkProfiles;
+        DbUser user = new DbUser();
+
+    }
+
     public void saveUserDetails(JSONObject loginResultJson) {
         user = new DbUser();
         dataParser = new DataParser();

@@ -91,7 +91,7 @@ import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -318,7 +318,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -532,7 +532,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -607,7 +607,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -759,7 +759,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -983,7 +983,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> header = new ArrayMap<>();
-                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                     header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                     return header;
                 }
@@ -1046,7 +1046,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> header = new ArrayMap<>();
-                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                     header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                     return header;
                 }

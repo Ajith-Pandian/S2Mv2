@@ -91,13 +91,7 @@ public class VolleyStringRequest extends StringRequest {
         void onTimeout();
     }
 
-   /* @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String, String> header = new ArrayMap<>();
-        header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-        header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-        return header;
-    }*/
+
 
     public static class VolleyErrListener implements Response.ErrorListener {
         StatusCodeListener statusCodeListener;

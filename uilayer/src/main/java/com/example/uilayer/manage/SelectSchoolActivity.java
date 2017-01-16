@@ -13,12 +13,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Schools;
-import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
-import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 
 import org.json.JSONArray;
@@ -31,11 +28,10 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
+import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class SelectSchoolActivity extends AppCompatActivity {
@@ -124,7 +120,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }

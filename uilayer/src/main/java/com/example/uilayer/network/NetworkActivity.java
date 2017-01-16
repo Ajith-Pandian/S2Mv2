@@ -3,7 +3,6 @@ package com.example.uilayer.network;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
@@ -37,7 +36,6 @@ import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.NETWORK_URL_SUFFIX;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class NetworkActivity extends AppCompatActivity {
@@ -105,15 +103,13 @@ public class NetworkActivity extends AppCompatActivity {
                 Log.d(TAG, "onTimeout: ");
             }
         }) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN1);
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
-
             @Override
             public String getBodyContentType() {
                 return "application/x-www-form-urlencoded";
@@ -150,6 +146,7 @@ public class NetworkActivity extends AppCompatActivity {
                 usersList.add(i, user);
             }
             DataHolder.getInstance(getApplicationContext()).setNetworkProfiles(usersList);
+            //com.example.domainlayer.temp.DataHolder.getInstance(this).saveUserDetails();
             networkRecycler.setAdapter(new NetworkAdapter(getApplicationContext(), usersList));
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);

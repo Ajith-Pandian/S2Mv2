@@ -39,6 +39,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.example.domainlayer.Constants.KEY_MOBILE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -158,8 +160,8 @@ public class OtpFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
-                // params.put(KEY_MOBILE, DataHolder.getInstance(getActivity()).getUser());
-                params.put(Constants.KEY_MOBILE, "1234567890");
+                 params.put(KEY_MOBILE, com.example.uilayer.DataHolder.getInstance(getContext()).getPhoneNum());
+                //params.put(Constants.KEY_MOBILE, "1234567890");
                 //params.put(KEY_OTP, enteredOtp);
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
                 params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);

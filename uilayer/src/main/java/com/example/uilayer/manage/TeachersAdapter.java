@@ -104,7 +104,7 @@ final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.PopupMenu);
         final PopupMenu popup = new PopupMenu(wrapper, view);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_popup_card, popup.getMenu());
+        inflater.inflate(R.menu.menu_popup_sections, popup.getMenu());
         popup.setOnMenuItemClickListener(new TeacherMenuClickListener(position));
         popup.show();
     }

@@ -187,7 +187,6 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 params.put(KEY_SCHOOL_ID, "2");
                 return params;
             }
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
@@ -195,7 +194,6 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
-
         };
 
         VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);

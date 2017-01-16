@@ -53,7 +53,7 @@ public class Constants {
 
     public static final String TEMP_EMAIL = "manit@gmail.com";
     public static final String TEMP_ACCESS_TOKEN = "1234567890/qwertyuiop";
-    public static final String TEMP_ACCESS_TOKEN1 = "1234567899/qwertyuiop";
+   // public static final String TEMP_ACCESS_TOKEN = "1234567899/qwertyuiop";
     public static final String TEMP_OTP = "1111";
     public static final String TEMP_DEVICE_TYPE = "android";//Android or Ios
     public static final String TEMP_DEVICE_TOKEN = "abcdefghijklmnopqrstuvwxyz";
@@ -167,11 +167,11 @@ public class Constants {
     //activity-bulletin
     public static final String TYPE_BULLETIN = "bulletin_board";
     public static final String TYPE_ACTIVITY = "activity";
-    public static final String TYPE_TEACHER = "1";
+    public static final String TYPE_TEACHER = "teacher";
     public static final String LIKED = "Liked!";
     public static final String UNLIKED = "Unliked!";
-    public static final String TYPE_SCL_ADMIN = "2";
-    public static final String TYPE_S2M_ADMIN = "3";
+    public static final String TYPE_SCL_ADMIN = "SAdmin";
+    public static final String TYPE_S2M_ADMIN = "S2MAdmin";
 
     public static final String TEACHER = "Teacher";
     public static final String SCHOOL_ADMIN = "SchoolAdmin";

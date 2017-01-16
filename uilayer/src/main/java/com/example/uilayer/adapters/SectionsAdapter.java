@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,13 +54,8 @@ import static com.example.domainlayer.Constants.KEY_NOTE;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
-import static com.example.domainlayer.Constants.MILES_URL;
-import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TRAININGS_URL;
-import static com.example.domainlayer.Constants.TRAININGS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 
 /**
@@ -92,7 +86,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.PopupMenu);
         final PopupMenu popup = new PopupMenu(wrapper, view);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_popup_card, popup.getMenu());
+        inflater.inflate(R.menu.menu_popup_sections, popup.getMenu());
         popup.setOnMenuItemClickListener(new SectionMenuClickListener(position));
         popup.show();
     }
@@ -213,7 +207,6 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
-
         };
 
         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);

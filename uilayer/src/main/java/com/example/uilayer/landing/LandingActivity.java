@@ -31,6 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
@@ -129,8 +131,7 @@ public class LandingActivity extends AppCompatActivity
 
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
-
-        getSupportActionBar().setTitle(DataHolder.getInstance(S2MApplication.getAppContext()).getUser().getSchoolName());
+        getSupportActionBar().setTitle(new DataBaseUtil(S2MApplication.getAppContext()).getUser().getSchoolName());
         setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
@@ -195,8 +196,9 @@ public class LandingActivity extends AppCompatActivity
                     hideFabs();
             }
         });
-
-       // toolbar.setNavigationIcon(null);
+        if (new DataBaseUtil(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
+            toolbar.setNavigationIcon(null);
+        }
     }
 
     void showFabs() {

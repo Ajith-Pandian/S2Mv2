@@ -10,7 +10,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
-import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 
@@ -22,7 +21,6 @@ import java.util.Map;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN1;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
