@@ -8,7 +8,8 @@ public class Constants {
 
     //private static final String BASE_URL = "http://wowconnect.app/api/";
     //private static final String BASE_URL = "http://192.168.0.106:8000/api/";
-    private static final String BASE_URL = "http://192.168.0.104:8000/api/";
+    public static final String  SERVER_ADDRESS= "http://192.168.0.104:8000/";
+    private static final String BASE_URL = SERVER_ADDRESS+ "api/";
     public static final String LOGIN_URL = BASE_URL + "verify";
     public static final String OTP_VERIFY_URL = BASE_URL + "login";
     public static final String USER_DETAILS_URL = BASE_URL + "users/";

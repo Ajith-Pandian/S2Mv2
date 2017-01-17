@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
+
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,10 +26,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.models.Message;
+import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
@@ -41,17 +45,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.R.attr.data;
 import static com.example.domainlayer.Constants.CREATE_MSG_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
@@ -61,6 +66,9 @@ import static com.example.domainlayer.Constants.KEY_TICKET_ID;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TYPE_AUDIO;
+import static com.example.domainlayer.Constants.TYPE_IMAGE;
+import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 public class MessageActivity extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE = 3;
@@ -108,7 +116,11 @@ public class MessageActivity extends AppCompatActivity {
         @BindView(R.id.button_close_toolbar)
         ImageButton closeTicketButton;*/
     VolleyStringRequest sendMessageRequest;
-    String mCurrentPhotoPath;
+
+    String mCurrentFilePath;
+    String uploadFilePath = "";
+    String uploadFileMime = "";
+    String uploadFileExtension = "";
 
     public static boolean isAvailable(Context ctx, Intent intent) {
         final PackageManager mgr = ctx.getPackageManager();
@@ -211,6 +223,7 @@ public class MessageActivity extends AppCompatActivity {
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
+
             @Override
             public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new ArrayMap<>();
@@ -258,41 +271,76 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void dispatchAudioIntent() {
-        Intent intent =
+        Intent recordAudioIntent =
                 new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        if (isAvailable(getApplicationContext(), intent) && intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent,
-                    REQUEST_AUDIO_RECORDING);
-            Log.d("Audio", "started: ");
+
+        if (recordAudioIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File audioFile = null;
+            try {
+                audioFile = createTempFile(TYPE_AUDIO);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            if (isAvailable(getApplicationContext(), recordAudioIntent) && recordAudioIntent.resolveActivity(getPackageManager()) != null) {
+                Uri audioUri = FileProvider.getUriForFile(this,
+                        "com.example.uilayer.fileProvider",
+                        audioFile);
+                recordAudioIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
+                Log.d("Audio", "started: " + audioUri.toString());
+                startActivityForResult(recordAudioIntent,
+                        REQUEST_AUDIO_RECORDING);
+                Log.d("Audio", "started: ");
+            }
         }
     }
 
     private void dispatchTakeVideoIntent() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (isAvailable(getApplicationContext(), takeVideoIntent) && takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-            Log.d("Video", "started: ");
+        takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+        // Ensure that there's a camera activity to handle the intent
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File videoFile = null;
+            try {
+                videoFile = createTempFile(TYPE_VIDEO);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (isAvailable(getApplicationContext(), takeVideoIntent) && takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+                Uri videoURI = FileProvider.getUriForFile(this,
+                        "com.example.uilayer.fileProvider",
+                        videoFile);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI);
+                Log.d("image", "started: " + videoURI.toString());
+                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+                Log.d("Video", "started: ");
+            }
         }
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = createTempFile(TYPE_IMAGE);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-
+                ex.printStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.uilayer.fileProvider",
                         photoFile);
-              //  takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 Log.d("image", "started: " + photoURI.toString());
 
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -300,39 +348,67 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
+
+    private File createTempFile(String type) throws IOException {
+        String prefix = "FILE";
+        String suffix = ".jpg";
+        switch (type) {
+            case TYPE_IMAGE:
+                prefix = "IMG_";
+                suffix = ".jpg";
+                break;
+            case TYPE_VIDEO:
+                prefix = "VID_";
+                suffix = ".mp4";
+                break;
+            case TYPE_AUDIO:
+                prefix = "AUD_";
+                suffix = ".wav";
+                break;
+
+        }
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = prefix + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         // File storageDir = Environment.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
+        File tempFile = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                suffix,         /* suffix */
                 storageDir      /* directory */
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
+        mCurrentFilePath = tempFile.getAbsolutePath();
+        return tempFile;
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode,
-                resultCode, intent);
+
         if (requestCode == REQUEST_AUDIO_RECORDING && resultCode == RESULT_OK) {
             Uri audioUri = intent.getData();
+            // upload(TYPE_AUDIO, audioUri.toString());
+            upload(TYPE_AUDIO);
             Log.d("Audio", "onActivityResult: " + audioUri.toString());
         } else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             Uri videoUri = intent.getData();
+            upload(TYPE_VIDEO);
             Log.d("Video", "onActivityResult: " + videoUri.toString());
-        } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK && intent.getData() != null) {
-            Uri imageUri = intent.getData();
-            Log.d("image", "onActivityResult: " + imageUri.toString());
-           /*     Bundle extras = intent.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");*/
-            //mImageView.setImageBitmap(imageBitmap);
+        } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            // Uri imageUri = intent.getData();
+            //Log.d("image", "onActivityResult: " + imageUri.toString());
+            upload(TYPE_IMAGE);
+            /*try {
+                // Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(mCurrentPhotoPath));
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Log.d("Video", "onActivityResult: " + mCurrentFilePath);
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentFilePath, options);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }*/
         } else {
             super.onActivityResult(requestCode,
                     resultCode, intent);
@@ -341,11 +417,160 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    void upload(final String attachmentType) {
+        Log.d("upload", "in");
+        switch (attachmentType) {
+            case TYPE_IMAGE:
+                uploadFilePath = mCurrentFilePath;
+                uploadFileMime = "image/jpeg";
+                uploadFileExtension = ".jpg";
+                break;
+            case TYPE_VIDEO:
+                uploadFilePath = mCurrentFilePath;
+                uploadFileMime = "video/mp4";
+                uploadFileExtension = ".mp4";
+                break;
+            case TYPE_AUDIO:
+                uploadFilePath = mCurrentFilePath;
+                uploadFileMime = "audio/wav";
+                uploadFileExtension = ".wav";
+                break;
+
+        }
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                CREATE_MSG_URL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        String resultResponse = new String(response.data);
+                        Log.d("response", resultResponse);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    // String result = new String(networkResponse.data);
+                    try {
+                        // JSONObject response = new JSONObject(result);
+                        //String status = response.getString("status");
+                        String status = ("status");
+                        // String message = response.getString("message");
+                        String message = ("message");
+
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message + " Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message + " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message + " Something is getting wrong";
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+            }
+        }, new VolleyMultipartRequest.MultipartProgressListener() {
+            @Override
+            public void transferred(long transferred, int progress) {
+                Log.d("upload", "transferred: " + transferred + "   " + "progress: " + progress);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                return header;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_CONTENT, "THis is a content");
+                params.put(KEY_TYPE, attachmentType);
+                params.put(KEY_TICKET_ID, ticketId);
+                params.put(KEY_SCHOOL_ID, String.valueOf(com.example.domainlayer.temp.DataHolder.
+                        getInstance(MessageActivity.this).getUser().getSchoolId()));
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new ArrayMap<>();
+                try {
+                    File sourceFile = new File(uploadFilePath);
+                    params.put("file", new DataPart("file_avatar" + uploadFileExtension,
+                            fullyReadFileToBytes(sourceFile),
+                            uploadFileMime, sourceFile.length()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(multipartRequest);
+
+    }
+
+
+    @SuppressWarnings({"TryFinallyCanBeTryWithResources", "NewApi"})
+    byte[] fullyReadFileToBytes(File f) throws IOException {
+        int size = (int) f.length();
+        byte bytes[] = new byte[size];
+        byte tmpBuff[] = new byte[size];
+        Exception exception = null;
+        FileInputStream fis = new FileInputStream(f);
+        try {
+            int read = fis.read(bytes, 0, size);
+            if (read < size) {
+                int remain = size - read;
+                while (remain > 0) {
+                    read = fis.read(tmpBuff, 0, remain);
+                    System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
+                    remain -= read;
+                }
+            }
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+
+            if (exception != null) {
+                try {
+                    fis.close();
+                } catch (Throwable t) {
+                    exception.addSuppressed(t);
+                }
+            } else {
+
+                fis.close();
+            }
+        }
+
+        return bytes;
+    }
+
     public class AttachmentMenuClickListener implements PopupMenu.OnMenuItemClickListener {
 
         private int position;
 
-        public AttachmentMenuClickListener(int position) {
+        AttachmentMenuClickListener(int position) {
             this.position = position;
         }
 

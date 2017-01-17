@@ -17,10 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Message;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -94,6 +96,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     View view = LayoutInflater
                             .from(viewHolder.contentFrame.getContext())
                             .inflate(R.layout.item_msg_image, null);
+                    Picasso.with(view.getContext())
+                            .load(Constants.SERVER_ADDRESS + message.getContent())
+                            .resize(250,350)
+                            .into((ImageView) view.findViewById(R.id.image_msg));
                     viewHolder.contentFrame.addView(view);
                     break;
                 case VIDEO:
@@ -102,6 +108,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     View mediaView = LayoutInflater
                             .from(viewHolder.contentFrame.getContext())
                             .inflate(R.layout.item_msg_video, null);
+                    Picasso.with(mediaView.getContext())
+                            .load(Constants.SERVER_ADDRESS + message.getContent())
+                            .resize(250,350)
+                            .into((ImageView) mediaView.findViewById(R.id.image_msg_video));
                     viewHolder.contentFrame.addView(mediaView);
                     break;
                 case PDF:
@@ -124,7 +134,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             setTimeStampLayoutParams(viewHolder);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.timeDateLayout.getLayoutParams();
 
-            if ( message.getContent().length() >= viewHolder.receiverName.getText().toString().length()) {
+            if (message.getContent().length() >= viewHolder.receiverName.getText().toString().length()) {
                 params.addRule(RelativeLayout.ALIGN_RIGHT, viewHolder.contentFrame.getId());
             } else {
                 params.addRule(RelativeLayout.ALIGN_RIGHT, viewHolder.receiverName.getId());
