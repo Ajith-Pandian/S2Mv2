@@ -44,6 +44,7 @@ public class Constants {
 
     public static final String CREATE_TICKET_URL= BASE_URL+"createTicket";
     public static final String CREATE_MSG_URL= BASE_URL+"sendMsg";
+    public static final String MANAGE_TICKET_URL= BASE_URL+"manageTicket";
 
 
     public static final String KEY_CREATOR_ID = "creatorId";
@@ -124,6 +125,7 @@ public class Constants {
     public static final String PREFIX_CLASS = "Class ";
     public static final String PREFIX_SECTION = "Section ";
     public static final String KEY_TICKET_ID = "ticketId";
+    public static final String KEY_NEW_STATUS = "newStatus";
 
     public static final String KEY_ACTIVITIES = "activities";
     public static final String KEY_MESSAGE = "message";
@@ -189,6 +191,9 @@ public class Constants {
     public static final String FB_CHILD_TICKET = "ticket";
     public static final String FB_CHILD_CONVERSATIONS = "conversations";
     public static final String FB_CHILD_MESSAGE = "message";
+
+
+    public static final int AUDIO_RECORD_CODE = 123;
 
 
 

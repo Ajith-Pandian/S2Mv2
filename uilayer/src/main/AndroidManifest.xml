@@ -3,12 +3,13 @@
     package="com.example.uilayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-permission
-        android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".S2MApplication"
@@ -26,6 +27,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
         <activity
             android:name=".login.LoginActivity"
             android:launchMode="singleInstance"
@@ -49,8 +51,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:launchMode="singleInstance"
             android:name=".milestones.MilestonesActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".milestones.TrainingActivity"
@@ -98,8 +100,11 @@
             android:name=".message.MessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".manage.SelectSchoolActivity"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".manage.SelectSchoolActivity" />
+        <activity android:name=".message.RecordAudioActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

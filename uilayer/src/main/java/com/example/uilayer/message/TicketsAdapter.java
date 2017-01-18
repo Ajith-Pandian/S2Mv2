@@ -79,7 +79,8 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
         holder.ticketLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, MessageActivity.class).putExtra("ticketId", ticket.getId()));
+                context.startActivity(new Intent(context, MessageActivity.class).putExtra("ticketId", ticket.getId())
+                .putExtra("creatorId",ticket.getCreatorId()));
             }
         });
         String staus = ticket.getStatus();

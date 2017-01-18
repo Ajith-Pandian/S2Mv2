@@ -32,6 +32,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Message;
 import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
@@ -57,13 +58,16 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.domainlayer.Constants.AUDIO_RECORD_CODE;
 import static com.example.domainlayer.Constants.CREATE_MSG_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_NEW_STATUS;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_TICKET_ID;
 import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.MANAGE_TICKET_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
@@ -111,6 +115,7 @@ public class MessageActivity extends AppCompatActivity {
         }
     };
     String ticketId;
+    String creatorId;
     /*  @BindView(R.id.button_back_toolbar)
         ImageButton backButton;
         @BindView(R.id.button_close_toolbar)
@@ -121,6 +126,7 @@ public class MessageActivity extends AppCompatActivity {
     String uploadFilePath = "";
     String uploadFileMime = "";
     String uploadFileExtension = "";
+    VolleyStringRequest closeTicketRequest;
 
     public static boolean isAvailable(Context ctx, Intent intent) {
         final PackageManager mgr = ctx.getPackageManager();
@@ -138,9 +144,16 @@ public class MessageActivity extends AppCompatActivity {
         // ButterKnife.bind(this, toolbar);
         if (getIntent() != null) {
             ticketId = getIntent().getStringExtra("ticketId");
+            creatorId = getIntent().getStringExtra("creatorId");
         }
         backButton = (ImageButton) toolbar.findViewById(R.id.button_back_toolbar);
         closeTicketButton = (Button) toolbar.findViewById(R.id.button_close_toolbar);
+
+        if (creatorId.equals(String.valueOf(com.example.domainlayer.temp.DataHolder.
+                getInstance(MessageActivity.this).getUser().getId())))
+            closeTicketButton.setVisibility(View.VISIBLE);
+        else
+            closeTicketButton.setVisibility(View.GONE);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -169,7 +182,12 @@ public class MessageActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        closeTicketButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeTicket();
+            }
+        });
     }
 
     void sendMessage(final String message, final String type) {
@@ -253,6 +271,78 @@ public class MessageActivity extends AppCompatActivity {
         messageDbReference.addValueEventListener(msgsAddValueListener);
     }
 
+    void closeTicket() {
+        closeTicketRequest = new VolleyStringRequest(Request.Method.POST, MANAGE_TICKET_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("closeTicketRequest", "onResponse: " + response);
+
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("closeTicketRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                return header;
+            }
+
+            @Override
+            public Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_TICKET_ID, ticketId);
+                params.put(KEY_NEW_STATUS, "close");
+                params.put(KEY_SCHOOL_ID, String.valueOf(com.example.domainlayer.temp.DataHolder.
+                        getInstance(MessageActivity.this).getUser().getSchoolId()));
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
+
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(closeTicketRequest);
+    }
+
+
     private void showPopupMenu(View view) {
         Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.PopupMenu);
         final PopupMenu popup = new PopupMenu(wrapper, view);
@@ -289,9 +379,8 @@ public class MessageActivity extends AppCompatActivity {
                         audioFile);
                 recordAudioIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
                 Log.d("Audio", "started: " + audioUri.toString());
-                startActivityForResult(recordAudioIntent,
-                        REQUEST_AUDIO_RECORDING);
-                Log.d("Audio", "started: ");
+
+                startRecordActivity();
             }
         }
     }
@@ -363,7 +452,7 @@ public class MessageActivity extends AppCompatActivity {
                 break;
             case TYPE_AUDIO:
                 prefix = "AUD_";
-                suffix = ".wav";
+                suffix = ".amr";
                 break;
 
         }
@@ -380,6 +469,7 @@ public class MessageActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentFilePath = tempFile.getAbsolutePath();
+        Log.d("local path", "path: " + mCurrentFilePath);
         return tempFile;
     }
 
@@ -387,11 +477,8 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-        if (requestCode == REQUEST_AUDIO_RECORDING && resultCode == RESULT_OK) {
-            Uri audioUri = intent.getData();
-            // upload(TYPE_AUDIO, audioUri.toString());
+        if (requestCode == AUDIO_RECORD_CODE && resultCode == RESULT_OK) {
             upload(TYPE_AUDIO);
-            Log.d("Audio", "onActivityResult: " + audioUri.toString());
         } else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             Uri videoUri = intent.getData();
             upload(TYPE_VIDEO);
@@ -419,21 +506,19 @@ public class MessageActivity extends AppCompatActivity {
 
     void upload(final String attachmentType) {
         Log.d("upload", "in");
+        uploadFilePath = mCurrentFilePath;
         switch (attachmentType) {
             case TYPE_IMAGE:
-                uploadFilePath = mCurrentFilePath;
                 uploadFileMime = "image/jpeg";
                 uploadFileExtension = ".jpg";
                 break;
             case TYPE_VIDEO:
-                uploadFilePath = mCurrentFilePath;
                 uploadFileMime = "video/mp4";
                 uploadFileExtension = ".mp4";
                 break;
             case TYPE_AUDIO:
-                uploadFilePath = mCurrentFilePath;
-                uploadFileMime = "audio/wav";
-                uploadFileExtension = ".wav";
+                uploadFileMime = "audio/amr";
+                uploadFileExtension = ".amr";
                 break;
 
         }
@@ -564,6 +649,11 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         return bytes;
+    }
+
+    void startRecordActivity() {
+        startActivityForResult(new Intent(this, RecordAudioActivity.class).putExtra("path", mCurrentFilePath),
+                AUDIO_RECORD_CODE);
     }
 
     public class AttachmentMenuClickListener implements PopupMenu.OnMenuItemClickListener {

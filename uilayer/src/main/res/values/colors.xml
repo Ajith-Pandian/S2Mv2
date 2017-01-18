@@ -9,6 +9,9 @@
     <color name="text_secondary">#636161</color>
     <color name="transaprent_back_color">#636161</color>
 
+    <color name="record_audio_bs">#DD4E42</color>
+    <color name="record_audio_bg_dark">#C64C3C</color>
+
 
     <color name="fade_red">#EA5355</color>
     <color name="fade_orange">#F09105</color>
@@ -21,7 +24,7 @@
     <color name="red2">#e78b8b</color>
     <color name="red3">#f20606</color>
     <color name="red4">@color/red3</color>
-    <color name="red5">#e2574c </color>
+    <color name="red5">#e2574c</color>
     <color name="grey1">#7a7f80</color>
 
     <color name="profile_image_border">@color/text_secondary</color>
@@ -50,7 +53,6 @@
     <color name="text_color3">#666666</color>
     <color name="text_input_layer_color">#f79f9f9f</color>
     <color name="text_input_layer_color1">#F1F1F1</color>
-
 
 
 </resources>
