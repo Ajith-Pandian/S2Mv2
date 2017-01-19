@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.uilayer.DataHolder;
+
+import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.S2MApplication;
 import com.example.uilayer.signup.SignUpActivity;
 import com.example.uilayer.landing.LandingActivity;
 
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         super.onDestroy();
     }
 
-    void lauchSignUp() {
+    void launchSignUp() {
         startActivity(new Intent(LoginActivity.this, SignUpActivity.class).putExtra("isSignUp",false));
     }
 
@@ -77,8 +77,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if (DataHolder.getInstance(this).getLastLogin().equals("null"))
-            lauchSignUp();
+        if (DataHolder.getInstance(this).getUser().getLastLogin().equals("null"))
+            launchSignUp();
         else
             launchLanding();
         finish();

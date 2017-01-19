@@ -97,7 +97,7 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
     private static String DONE = "Done";
     private static String NEXT = "Next";
-    boolean isTeachers;
+    boolean isTeachers,isFirstTime;
     @BindView(R.id.viewpager_manage_teachers)
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
@@ -122,7 +122,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     @BindView(R.id.activity_manage_teachers)
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.layout_dummy_frame_manage)
-    FrameLayout dummyLayout;
+    FrameLayout dummyLayout;    @BindView(R.id.layout_bottom_bar)
+    RelativeLayout stepperLayout;
     VolleyStringRequest teacherAddRequest, teacherDeleteRequest;
     UpdateListener updateListener;
     VolleyStringRequest sectionAddRequest;
@@ -168,17 +169,12 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
         if (getIntent() != null) {
             isTeachers = getIntent().getBooleanExtra("isTeachers", false);
+            isFirstTime = getIntent().getBooleanExtra("isFirstTime", false);
         }
-        String title;
         int pagePosition;
-        if (isTeachers) {
-            pagePosition = 0;
-            title = "Teachers";
-        } else {
-            title = "Sections";
-            pagePosition = 1;
-        }
-        // getSupportActionBar().setTitle("Manage " + title);
+        pagePosition = isTeachers ? 0 : 1;
+        stepperLayout.setVisibility(isFirstTime ? View.VISIBLE : View.GONE);
+
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeachersSectionsFragment.TeacherListener() {
             @Override
             public void onAddOptionSelected(boolean isTeacher) {

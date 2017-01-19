@@ -98,10 +98,8 @@ public class SignUpActivity extends AppCompatActivity {
                 startActivity(new Intent(SignUpActivity.this,LandingActivity.class));
             }
         });
-        if(isSignUp)
-        {
-            Log.d("SIGNUP", "onCreate: innn");
-            loadData();}
+        if(!isSignUp)
+        {loadData();}
     }
 
     void configureTiltle() {
@@ -154,8 +152,15 @@ public class SignUpActivity extends AppCompatActivity {
                 //startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
                 Snackbar.make(view, "Registered Successfully..!!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                updateUser();
             }
         });
+    }
+
+    void updateUser()
+    {
+
     }
 
 }

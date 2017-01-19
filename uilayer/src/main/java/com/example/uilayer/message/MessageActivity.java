@@ -277,7 +277,7 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("closeTicketRequest", "onResponse: " + response);
-
+                        finish();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -327,7 +327,7 @@ public class MessageActivity extends AppCompatActivity {
             public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new ArrayMap<>();
                 params.put(KEY_TICKET_ID, ticketId);
-                params.put(KEY_NEW_STATUS, "close");
+                params.put(KEY_NEW_STATUS, "closed");
                 params.put(KEY_SCHOOL_ID, String.valueOf(com.example.domainlayer.temp.DataHolder.
                         getInstance(MessageActivity.this).getUser().getSchoolId()));
                 return params;
@@ -677,6 +677,7 @@ public class MessageActivity extends AppCompatActivity {
                     dispatchTakeVideoIntent();
                     return true;
                 case R.id.menu_document:
+                    startActivity(new Intent(MessageActivity.this, AddDocumentActivity.class));
                     return true;
             }
             return false;

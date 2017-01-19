@@ -25,6 +25,7 @@ import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -111,7 +112,7 @@ public class OtpFragment extends Fragment {
     }
 
     public void onButtonPressed() {
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.OTP_VERIFY_URL,
+        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -164,8 +165,12 @@ public class OtpFragment extends Fragment {
                 //params.put(Constants.KEY_MOBILE, "1234567890");
                 //params.put(KEY_OTP, enteredOtp);
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
-                params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
-                params.put(Constants.KEY_DEVICE_TOKEN, Constants.TEMP_DEVICE_TOKEN);
+                params.put(Constants.KEY_DEVICE_TYPE, SharedPreferenceHelper
+                        .getSharedPreferenceString(getContext(),
+                                Constants.KEY_DEVICE_TYPE,Constants.TEMP_DEVICE_TYPE));
+                 params.put(Constants.KEY_DEVICE_TOKEN, SharedPreferenceHelper
+                        .getSharedPreferenceString(getContext(),
+                                Constants.KEY_DEVICE_TOKEN,Constants.TEMP_DEVICE_TOKEN ));
                 return params;
             }
 

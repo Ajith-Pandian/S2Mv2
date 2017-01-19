@@ -37,6 +37,7 @@ import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.signup.SignUpActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
@@ -51,6 +52,9 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.example.domainlayer.Constants.KEY_DEVICE_TOKEN;
+import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 
 
 /**
@@ -136,7 +140,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void sendOTP(final boolean isMail, final String text) {
 
 
-        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
+        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.VERIFY_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -204,6 +208,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
+
+            SharedPreferenceHelper.setSharedPreferenceString(getContext(),
+                    KEY_DEVICE_TYPE
+                    ,responseJson.getString(KEY_DEVICE_TYPE));
+            SharedPreferenceHelper.setSharedPreferenceString(getContext(),
+                    KEY_DEVICE_TOKEN
+                    ,responseJson.getString(KEY_DEVICE_TOKEN));
             DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
             Log.d("OTP", "storeResponse: " + responseJson.getString(Constants.KEY_OTP));
         } catch (JSONException ex) {
@@ -278,7 +289,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 validateInput();
                 break;
             case R.id.button_sign_up:
-                //launchSignUp();
+                launchSignUp();
                 break;
         }
     }

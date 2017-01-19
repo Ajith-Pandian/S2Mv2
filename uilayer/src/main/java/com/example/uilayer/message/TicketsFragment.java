@@ -30,6 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 
 /**
@@ -87,7 +88,13 @@ public class TicketsFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openBottomSheet(true);
+                boolean isS2m=false;
+                if(DataHolder.getInstance(getContext()).getUser().getType().equals(TYPE_TEACHER))
+                    isS2m=true;
+                else
+                    isS2m=false;
+
+                openBottomSheet(isS2m);
             }
         });
 

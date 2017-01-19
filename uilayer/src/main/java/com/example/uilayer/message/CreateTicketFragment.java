@@ -374,6 +374,7 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
                 params.put(KEY_SUBJECT, subject);
                 params.put(KEY_CATEGORY, category);
                 //TODO:Validate with user type-- If teacher Default reciver is S2MAdmin -- IF S2M , he can choose a teacher
+                if (isS2m)
                 params.put(KEY_RECEIVER_ID, String.valueOf(userId));
                 Log.d(TAG, "getParams: " + params.toString());
                 return params;

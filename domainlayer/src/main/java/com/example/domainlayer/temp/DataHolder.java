@@ -131,7 +131,8 @@ public class DataHolder {
             user.setLastName(loginResultJson.getString(Constants.KEY_LAST_NAME));
             user.setEmail(loginResultJson.getString(Constants.KEY_EMAIL));
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
-            user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
+           // user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
+            user.setLastLogin("null");
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
 
            //TODO for s2m and school admin

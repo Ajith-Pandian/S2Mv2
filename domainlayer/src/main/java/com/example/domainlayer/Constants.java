@@ -10,8 +10,8 @@ public class Constants {
     //private static final String BASE_URL = "http://192.168.0.106:8000/api/";
     public static final String  SERVER_ADDRESS= "http://192.168.0.104:8000/";
     private static final String BASE_URL = SERVER_ADDRESS+ "api/";
-    public static final String LOGIN_URL = BASE_URL + "verify";
-    public static final String OTP_VERIFY_URL = BASE_URL + "login";
+    public static final String VERIFY_URL = BASE_URL + "verify";
+    public static final String LOGIN_URL = BASE_URL + "login";
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
     public static final String MILES_URL = BASE_URL + "milestones/";
     public static final String ALL_MILESTONES_URL = BASE_URL + "milestones";
@@ -192,6 +192,11 @@ public class Constants {
     public static final String FB_CHILD_CONVERSATIONS = "conversations";
     public static final String FB_CHILD_MESSAGE = "message";
 
+
+
+    public static final String STATUS_OPEN = "open";
+    public static final String STATUS_CLOSED = "closed";
+    public static final String STATUS_RESOLVED = "resolved";
 
     public static final int AUDIO_RECORD_CODE = 123;
 

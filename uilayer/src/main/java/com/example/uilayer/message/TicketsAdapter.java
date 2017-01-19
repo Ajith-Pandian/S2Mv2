@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Ticket;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
@@ -46,7 +47,6 @@ import static com.example.domainlayer.Constants.KEY_TYPE;
 
 public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHolder> {
 
-    private static final String OPEN = "OPEN", CLOSED = "CLOSED", SOLVED = "SOLVED";
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor5};
@@ -76,17 +76,19 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
         String date = ticket.getCreatedAt().split(" ")[0];
         String time = ticket.getCreatedAt().split(" ")[1];
         holder.date.setText(date);
+        final String status = ticket.getStatus();
         holder.ticketLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, MessageActivity.class).putExtra("ticketId", ticket.getId())
-                .putExtra("creatorId",ticket.getCreatorId()));
+                context.startActivity(new Intent(context, MessageActivity.class)
+                        .putExtra("ticketId", ticket.getId())
+                        .putExtra("status", status)
+                        .putExtra("creatorId",ticket.getCreatorId()));
             }
         });
-        String staus = ticket.getStatus();
-        if (staus.equalsIgnoreCase(OPEN))
+        if (status.equalsIgnoreCase(Constants.STATUS_OPEN))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.red1));
-        else if (staus.equalsIgnoreCase(CLOSED))
+        else if (status.equalsIgnoreCase(Constants.STATUS_CLOSED))
             holder.status.setSupportBackgroundTintList(context.getResources().getColorStateList(R.color.grey1));
         holder.status.setText(ticket.getStatus().toUpperCase());
         holder.ticketId.setText(String.valueOf(ticket.getId()));

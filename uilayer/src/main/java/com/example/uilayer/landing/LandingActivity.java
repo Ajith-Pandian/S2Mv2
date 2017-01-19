@@ -3,6 +3,7 @@ package com.example.uilayer.landing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -33,7 +34,6 @@ import android.widget.Toast;
 
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.message.TicketsFragment;
@@ -121,7 +121,7 @@ public class LandingActivity extends AppCompatActivity
         }
     };
     float fab1_left = 0.8f, fab1_bottom = .8f, fab2_bottom = 1.0f, fab3_right = .8f, fab3_bottom = .8f;
-    boolean isOutSideClicked = false;
+    ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +131,8 @@ public class LandingActivity extends AppCompatActivity
 
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
-        getSupportActionBar().setTitle(new DataBaseUtil(S2MApplication.getAppContext()).getUser().getSchoolName());
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(new DataBaseUtil(S2MApplication.getAppContext()).getUser().getSchoolName());
         setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
@@ -173,9 +174,9 @@ public class LandingActivity extends AppCompatActivity
     void initNavigationDrawer() {
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -348,7 +349,7 @@ public class LandingActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -357,10 +358,10 @@ public class LandingActivity extends AppCompatActivity
                 startActivity(new Intent(LandingActivity.this, SelectSchoolActivity.class));
                 break;
             case R.id.nav_manage_teachers:
-                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers",true));
+                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers", true));
                 break;
             case R.id.nav_manage_sections:
-                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers",false));
+                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers", false));
                 break;
         }
 
@@ -368,4 +369,10 @@ public class LandingActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (toggle != null)
+            drawer.addDrawerListener(toggle);
+    }
 }
