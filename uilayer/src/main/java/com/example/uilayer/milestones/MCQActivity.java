@@ -2,14 +2,13 @@ package com.example.uilayer.milestones;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,11 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataParser;
 import com.example.domainlayer.utils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.S2MApplication;
 import com.example.uilayer.milestones.adapters.MCQAnswersAdapter;
 import com.example.uilayer.models.MCQs;
 import com.example.uilayer.models.McqOptions;
@@ -48,10 +44,9 @@ import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_QUESTION;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.MCQ_RESULT_URL;
 import static com.example.domainlayer.Constants.MCQ_URL;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -88,7 +83,13 @@ public class MCQActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         toolbarTitle.setText("Quiz");
-        toolbarSubTitle.setText("Training Name");
+        //toolbarSubTitle.setText("Training Name");
+
+
+        if (getIntent()!=null) {
+        toolbarSubTitle.setText(getIntent().getStringExtra(KEY_TITLE));
+        }
+        else
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,7 +139,7 @@ public class MCQActivity extends AppCompatActivity {
                     if (currentQuestion < mcqsArrayList.size() - 1)
                         showQuestions(currentQuestion + 1);
                     else {
-                        buttonSubmit.setText("FINISH");
+                        buttonSubmit.setText("Finish");
                         //get feed back and go to next
                         sendResults();
                         //finish();
@@ -164,7 +165,9 @@ public class MCQActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (choiceResultRequest!=null) {
         choiceResultRequest.removeStatusListener();
+        }
         super.onDestroy();
     }
 
@@ -377,10 +380,6 @@ public class MCQActivity extends AppCompatActivity {
         };
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(milesRequest);
-    }
-
-    public interface AnswerStateListener {
-        void onNewState(boolean newState);
     }
 
 }

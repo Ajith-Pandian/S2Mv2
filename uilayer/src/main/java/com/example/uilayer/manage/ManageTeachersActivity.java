@@ -140,9 +140,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             selectedMilestoneId = ((Milestones) parent.getItemAtPosition(position)).getId();
             Log.d("selectedMilestoneId", "onItemSelected: " + selectedMilestoneId);
-
         }
-
         @Override
         public void onNothingSelected(AdapterView<?> arg0) {
         }

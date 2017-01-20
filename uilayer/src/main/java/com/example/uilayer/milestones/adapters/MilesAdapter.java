@@ -85,7 +85,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
 
             case 0:
@@ -98,7 +98,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View view) {
                         DataHolder.getInstance(context).setCurrentMileTitle(mile.getTitle());
-                        getDetails(position, true);
+                        getDetails(holder.getAdapterPosition(), true);
 
                     }
                 });
@@ -126,7 +126,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         //     openActivity(TrainingActivity.class);
                         DataHolder.getInstance(context).setCurrentMileTitle(training.getTitle());
 
-                        getDetails(position, false);
+                        getDetails(holder.getAdapterPosition(), false);
 
                     }
                 });
@@ -136,8 +136,11 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    void getDetails(final int position, final boolean isMile) {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL + "/1",
+    private void getDetails(final int position, final boolean isMile) {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
+                MILES_TRAININGS_URL + "/"
+                       // + milestonesList.get(position).getId(),
+                        +"1",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -187,6 +190,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 params.put(KEY_SCHOOL_ID, "2");
                 return params;
             }
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
@@ -276,7 +280,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return milestonesList.size();
+        return milestonesList.size() > 0 ? milestonesList.size() : 0;
     }
 
     @Override

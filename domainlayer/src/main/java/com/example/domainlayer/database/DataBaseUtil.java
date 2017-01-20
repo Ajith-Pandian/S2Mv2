@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,7 +51,7 @@ public class DataBaseUtil {
                 return userList.get(0);
             else {
                 return null;
-               // throw new RuntimeException("No users in table");
+                // throw new RuntimeException("No users in table");
             }
 
         } catch (SQLException ex) {
@@ -61,16 +62,52 @@ public class DataBaseUtil {
     }
 
     public void setUser(DbUser user) {
+        Dao<DbUser, Integer> userDao = getLocalUserDao();
+        if (userDao != null)
+            try {
+                //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
+                userDao.createOrUpdate(user);
+                Log.d(context.getClass().getSimpleName(), "setUser:");
+            } catch (SQLException ex) {
+                Log.e(context.getClass().getSimpleName(), "getUser: ", ex);
+                throw new RuntimeException("Cannot create user");
+            }
+    }
+
+    public void setNetworkUsers(ArrayList<DbUser> usersList) {
+
         try {
-            Dao<DbUser, Integer> userDao = getLocalUserDao();
-            //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
-            userDao.createOrUpdate(user);
-            Log.d(context.getClass().getSimpleName(), "setUser:");
+            for (DbUser user : usersList) {
+                Dao<DbUser, Integer> userDao = getLocalUserDao();
+                if (userDao != null) {
+                    userDao.createOrUpdate(user);
+                }
+            }
+            Log.d(context.getClass().getSimpleName(), "setNetworkUsers:");
         } catch (SQLException ex) {
-            Log.e(context.getClass().getSimpleName(), "getUser: ", ex);
+            Log.e(context.getClass().getSimpleName(), "setNetworkUsers: ", ex);
             throw new RuntimeException("Cannot create user");
         }
     }
 
 
+    public ArrayList<DbUser> getNetwokUsers() {
+        try {
+            Dao<DbUser, Integer> userDao = getLocalUserDao();
+            if (userDao != null) {
+                final List<DbUser> userList = userDao.queryForAll();
+                if (userList.size() > 0)
+                    return new ArrayList<>(userList);
+                else {
+                    return null;
+                }
+            } else throw new RuntimeException("No users in table");
+
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "getNetwokUsers: ", ex);
+            throw new RuntimeException("No users in table");
+        }
+
+
+    }
 }

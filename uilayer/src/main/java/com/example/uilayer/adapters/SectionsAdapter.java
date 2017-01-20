@@ -21,6 +21,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
@@ -51,6 +52,9 @@ import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
 import static com.example.domainlayer.Constants.KEY_NOTE;
+import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
@@ -63,9 +67,8 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
  */
 
 public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHolder> {
-    ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
-    int i = 0;
-    int rowsCount;
+    private ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
+    private int rowsCount;
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
             R.color.mile_oolor4, R.color.mile_oolor5, R.color.mile_oolor6};
@@ -96,7 +99,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_section, parent, false);
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.width = (int) ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
+        layoutParams.width = ((parent).getMeasuredWidth() - (2 * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()))) / 3;
 /*        layoutParams.height = (parent.getMeasuredHeight() -
                 ((rowsCount + 2) * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()))) / rowsCount;*/
         itemView.setLayoutParams(layoutParams);
@@ -104,9 +107,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        Sections sectionDetails = sectionDetailsList.get(position);
+        Sections sectionDetails = sectionDetailsList.get(holder.getAdapterPosition());
         holder.classname.setText(sectionDetails.get_Class());
         holder.classname.setAlpha(0.8f);
         holder.sectionName.setText(sectionDetails.getSection());
@@ -126,7 +129,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     @Override
                     public void onClick(View view) {
                         //  getMilestoneDetails(position);
-                        getOrderedMilestoneDetails(position);
+                        getOrderedMilestoneDetails(holder.getAdapterPosition());
                     }
                 });
 
@@ -139,14 +142,18 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 @Override
                 public void onClick(View view) {
                     if (listener != null)
-                        showPopupMenu(view, position);
+                        showPopupMenu(view, holder.getAdapterPosition());
                 }
             });
         } else holder.dotsLayout.setVisibility(View.GONE);
     }
 
-    void getOrderedMilestoneDetails(final int position) {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MILES_TRAININGS_URL,
+    private void getOrderedMilestoneDetails(final int position) {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
+                Constants.BASE_URL
+                        + KEY_SECTION
+                        + "/"+String.valueOf(sectionDetailsList.get(position).getId())
+                        + Constants.MILE_TRAININGS_SUFFIX,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -194,9 +201,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                 // params.put(KEY_SECTION_ID, sectionDetailsList.get(position).getId());
-                params.put("sectionId", "4");
+                params.put(KEY_SECTION_ID, String.valueOf(sectionDetailsList.get(position).getId()));
                 // params.put(KEY_SCHOOL_ID,  sectionDetailsList.get(position).getSchoolId());
-                params.put("schoolId", "2");
+                params.put(KEY_SCHOOL_ID, "2");
                 return params;
             }
 
@@ -212,7 +219,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
     }
 
-    void openMilestonesActivity(int position) {
+    private void openMilestonesActivity(int position) {
         String _class = sectionDetailsList.get(position).get_Class();
         String section = sectionDetailsList.get(position).getSection();
         String title = sectionDetailsList.get(position).getMilestoneName();
@@ -259,11 +266,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         return sectionDetailsList.size();
     }
 
-    public class SectionMenuClickListener implements PopupMenu.OnMenuItemClickListener {
+    private class SectionMenuClickListener implements PopupMenu.OnMenuItemClickListener {
 
         private int position;
 
-        public SectionMenuClickListener(int position) {
+        SectionMenuClickListener(int position) {
             this.position = position;
         }
 

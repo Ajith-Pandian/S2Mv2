@@ -37,7 +37,7 @@ import static com.example.domainlayer.Constants.TYPE_TEXT;
 public class DataParser {
 
 
-    ArrayList<Sections> getSectionsListFromJson(JSONArray sectionsArray) {
+    public ArrayList<Sections> getSectionsListFromJson(JSONArray sectionsArray) {
         ArrayList<Sections> sectionsArrayList = new ArrayList<>();
         try {
             for (int i = 0; i < sectionsArray.length(); i++) {
@@ -63,7 +63,8 @@ public class DataParser {
     public ArrayList<TMileData> getMilesData(String milesDataString) {
         ArrayList<TMileData> sectionsArrayList = new ArrayList<>();
         try {
-            JSONArray sectionsArray = new JSONArray(milesDataString);
+            JSONObject jsonObject = new JSONObject(milesDataString);
+            JSONArray sectionsArray = jsonObject.getJSONArray("contentMeta");
             for (int i = 0; i < sectionsArray.length(); i++) {
                 JSONObject milesDatObject = sectionsArray.getJSONObject(i);
                 String type = milesDatObject.getString(KEY_TYPE);
@@ -88,7 +89,7 @@ public class DataParser {
             }
         } catch (JSONException ex) {
 
-            Log.d("ex", "getMilesData: ", ex);
+            Log.e("ex", "getMilesData: ", ex);
         }
 
         return sectionsArrayList;

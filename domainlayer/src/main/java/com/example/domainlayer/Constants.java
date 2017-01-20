@@ -9,7 +9,7 @@ public class Constants {
     //private static final String BASE_URL = "http://wowconnect.app/api/";
     //private static final String BASE_URL = "http://192.168.0.106:8000/api/";
     public static final String  SERVER_ADDRESS= "http://192.168.0.104:8000/";
-    private static final String BASE_URL = SERVER_ADDRESS+ "api/";
+    public static final String BASE_URL = SERVER_ADDRESS+ "api/";
     public static final String VERIFY_URL = BASE_URL + "verify";
     public static final String LOGIN_URL = BASE_URL + "login";
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
@@ -27,15 +27,14 @@ public class Constants {
     public static final String ARCHIVE_URL = BASE_URL+"section/4/archiveMilesTrainings";
     public static final String FEEDBACK_CREATE_URL = BASE_URL+"feedback/create";
     public static final String FEEDBACK_UNDO_URL = BASE_URL+"feedback/undo";
-    public static final String ACTIVITY_LIKE_URL = SCHOOLS_URL+"2";
-    public static final String NETWORK_URL = SCHOOLS_URL+"2"+"/network";
-    public static final String TRAININGS_URL_SUFFIX = "/trainings";
     public static final String ACTIVITIES_URL_SUFFIX = "/activities/";
     public static final String NETWORK_URL_SUFFIX = "/network";
     public static final String GET_TEACHERS_URL_SUFFIX = "/getTeachers";
     public static final String ADD_TEACHERS_URL_SUFFIX = "/addTeacher";
     public static final String DELETE_TEACHERS_URL_SUFFIX = "/deleteTeacher";
     public static final String ADD_SECTIONS_URL_SUFFIX = "/create";
+    public static final String ACTIVITY_LIKE_URL_SUFFIX = "/like";
+    public static final String MILE_TRAININGS_SUFFIX = "/milesTrainings";
     public static final String NETWORK_SECTIONS_URL_SUFFIX = "/networkSections";
     public static final String ADD_SECTIONS_URL= SECTIONS_URL + ADD_SECTIONS_URL_SUFFIX;
     public static final String NETWORK_SECTIONS_URL= SCHOOLS_URL+"2" + NETWORK_SECTIONS_URL_SUFFIX;

@@ -106,7 +106,8 @@
         <activity
             android:name=".message.RecordAudioActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".message.AddDocumentActivity"></activity>
+        <activity android:name=".message.AddDocumentActivity" />
+        <activity android:name=".notification.NotificationActivity"/>
     </application>
 
 </manifest>

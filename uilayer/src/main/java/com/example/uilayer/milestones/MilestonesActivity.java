@@ -131,7 +131,7 @@ public class MilestonesActivity extends AppCompatActivity {
                                         milesJson.getInt(KEY_MILESTONE_ID),
                                         milesJson.getInt(KEY_MILE_INDEX),
                                         milesJson.getInt(KEY_IS_TRAINING),
-                                        milesJson.getString(KEY_TYPE),
+                                        milesJson.getString(KEY_TITLE),
                                         milesJson.getString(KEY_NOTE),
                                         milesJson.getString(KEY_TYPE)
                                 );

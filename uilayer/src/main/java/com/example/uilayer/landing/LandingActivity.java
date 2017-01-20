@@ -39,6 +39,7 @@ import com.example.uilayer.S2MApplication;
 import com.example.uilayer.message.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.SelectSchoolActivity;
+import com.example.uilayer.notification.NotificationActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -341,6 +342,7 @@ public class LandingActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_notification) {
+            startActivity(new Intent(this, NotificationActivity.class));
             return true;
         }
 

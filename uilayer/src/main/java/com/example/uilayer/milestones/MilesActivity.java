@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -17,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -39,7 +37,6 @@ import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.milestones.adapters.OptionsAdapter;
 import com.example.uilayer.milestones.fragments.MilesAudioFragment;
 import com.example.uilayer.milestones.fragments.MilesImageFragment;
@@ -58,14 +55,13 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.FEEDBACK_CREATE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.KEY_FEEDBACK_ID;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_REASON;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_THUMBS;
+import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.THUMBS_DOWN;
@@ -253,7 +249,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         listOptions.setAdapter(optionsAdapter);
         selected_option = -1;
     }
-
+    DataHolder holder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = null;
@@ -275,8 +271,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         setSupportActionBar(toolbar);
 
 
-        DataHolder holder = DataHolder.getInstance(this);
-        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
+        holder = DataHolder.getInstance(this);
         if (getIntent().getBooleanExtra("isMile", false)) {
             toolbarTitle.setText("Miles");
             isMile = true;
@@ -284,6 +279,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         {    toolbarTitle.setText("Training");
         isMile = false;}
 
+        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
         toolbarSubTitle.setText(title);
 
         forgroundLayout.getForeground().setAlpha(0);
@@ -315,7 +311,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             @Override
             public void onClick(View view) {
                 if (selected_option != -1) {
-                    //sendFeedback();
+                    sendFeedback();
                     showToast("Submitted SuccessFully");
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -445,7 +441,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             buttonComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class), REQUEST_CODE);
+                    startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class).putExtra(KEY_TITLE,
+                            holder.getCurrentMileTitle()), REQUEST_CODE);
                 }
             });
         }

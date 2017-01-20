@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
@@ -41,6 +42,7 @@ public class DataHolder {
     private ArrayList<TMiles> archiveData;
     private ArrayList<User> networkProfiles;
     private int undoableId;
+    private DbUser user;
 
     public static synchronized DataHolder getInstance(Context context) {
         if (mInstance == null) {
@@ -252,6 +254,14 @@ int userId;
 
     public void setCurrentMileTitle(String currentMileTitle) {
         this.currentMileTitle = currentMileTitle;
+    }
+
+    public DbUser getUser() {
+        return user;
+    }
+
+    public void setUser(DbUser user) {
+        this.user = user;
     }
 
     private class Section {

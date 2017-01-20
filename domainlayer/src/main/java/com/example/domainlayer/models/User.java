@@ -24,6 +24,7 @@ public class User implements Serializable {
     private String wow;
     private String trainings;
     private String avatar;
+    private String type;
     private Sections sections;
     private ArrayList<Sections> sectionsList;
     private ArrayList<SclActs> sclActs;
@@ -176,5 +177,13 @@ public class User implements Serializable {
 
     public void setBulletin(Bulletin bulletin) {
         this.bulletin = bulletin;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

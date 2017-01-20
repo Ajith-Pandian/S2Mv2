@@ -100,10 +100,8 @@ public class ProfileFragment extends Fragment {
                     getProfileFromUser());
             recyclerView.setAdapter(adapter);
         } else {
-
             loadSections();
         }
-
 
         return rootView;
     }
@@ -113,7 +111,7 @@ public class ProfileFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("getNetworkSectionsRest", "onResponse: " + response);
+                        Log.d("getNetworkSecRequest", "onResponse: " + response);
                         updateSections(response);
                     }
                 },
@@ -121,7 +119,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("getNetworkSectionsReest", "onErrorResponse: " + error);
+                        Log.d("getNetworkSecRequest", "onErrorResponse: " + error);
 
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {

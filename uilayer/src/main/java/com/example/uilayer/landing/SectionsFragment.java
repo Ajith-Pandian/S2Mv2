@@ -27,6 +27,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
@@ -110,6 +111,7 @@ public class SectionsFragment extends Fragment {
     }
 
     void getIntroTrainings() {
+
         VolleyStringRequest introTrainingsRequest = new VolleyStringRequest(Request.Method.GET, INTRO_TRAINING_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -118,11 +120,18 @@ public class SectionsFragment extends Fragment {
 
                         try {
                             JSONObject introResponse = new JSONObject(response);
-                            com.example.uilayer.DataHolder.getInstance(getActivity()).
+
+                            com.example.uilayer.DataHolder.getInstance(getContext()).
                                     setCurrentMileData(new DataParser().getMilesData(introResponse.getString(KEY_INTRO_CONTENT)));
+
+                            com.example.uilayer.DataHolder.getInstance(getContext()).setCurrentMileTitle(introResponse.getString(Constants.KEY_TITLE));
+
+
                         } catch (JSONException ex) {
                             Log.e("introMileDetails", "onResponse: ", ex);
                         }
+                        com.example.uilayer.DataHolder.getInstance(getContext()).setCurrentSection("Training");
+                        com.example.uilayer.DataHolder.getInstance(getContext()).setCurrentClass("Intro");
                         openActivity(MilesActivity.class, false);
                     }
                 },

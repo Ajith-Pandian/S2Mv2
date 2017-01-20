@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
@@ -121,6 +122,12 @@ public class HomeFragment extends Fragment {
                 likeBulletin();
             }
         });
+        if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
+                .getBulletin()
+                .getLiked())==1)
+                buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            else
+                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
         return view;
     }
 
@@ -156,7 +163,14 @@ public class HomeFragment extends Fragment {
     }
 
     void likeBulletin() {
-        VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL + "2" + ACTIVITIES_URL_SUFFIX + "4" + "/like",
+        VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
+                + String.valueOf(user.getSchoolId())
+                + ACTIVITIES_URL_SUFFIX
+                + String.valueOf(com.example.uilayer.DataHolder.getInstance(getContext())
+                                                                                .getUser()
+                                                                                .getBulletin()
+                                                                                .getId())
+                + ACTIVITY_LIKE_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
