@@ -1,4 +1,4 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets;
 
 
 import android.annotation.TargetApi;
@@ -78,7 +78,7 @@ public class TicketsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_messages,
+        View view = inflater.inflate(R.layout.fragment_tickets,
                 container, false);
         ButterKnife.bind(this, view);
         LinearLayoutManager layoutManager

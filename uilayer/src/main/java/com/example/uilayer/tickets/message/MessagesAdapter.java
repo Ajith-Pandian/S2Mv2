@@ -1,4 +1,4 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets.message;
 
 import android.content.Context;
 
@@ -37,26 +37,23 @@ import butterknife.ButterKnife;
 public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
+    final int MESSAGE_MARGIN = 100;
     private final int SEND = 0;
     private final int RECEIVE = 1;
     private final int IS_FIRST = 21;
-
     private final String TEXT = "text";
     private final String IMAGE = "image";
     private final String AUDIO = "audio";
     private final String VIDEO = "video";
     private final String PDF = "pdf";
-
-
     private Context context;
-
     private List<Message> messagesList;
+
 
     public MessagesAdapter(Context context, List<Message> messagesList) {
         this.messagesList = messagesList;
         this.context = context;
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -98,7 +95,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             .inflate(R.layout.item_msg_image, null);
                     Picasso.with(view.getContext())
                             .load(Constants.SERVER_ADDRESS + message.getContent())
-                            .resize(250,350)
+                            .placeholder(R.drawable.bulletin_back)
+                            .resize(250, 350)
                             .into((ImageView) view.findViewById(R.id.image_msg));
                     viewHolder.contentFrame.addView(view);
                     break;
@@ -110,7 +108,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             .inflate(R.layout.item_msg_video, null);
                     Picasso.with(mediaView.getContext())
                             .load(Constants.SERVER_ADDRESS + message.getContent())
-                            .resize(250,350)
+                            .placeholder(R.drawable.bulletin_back)
+                            .resize(250, 350)
                             .into((ImageView) mediaView.findViewById(R.id.image_msg_video));
                     viewHolder.contentFrame.addView(mediaView);
                     break;
@@ -148,9 +147,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-
     private void setReceiverParams(MessageViewHolder viewHolder) {
 
+        setMargin(viewHolder.rootLayout, false);
 
         ViewCompat.setBackgroundTintList(viewHolder.messageLayout,
                 ColorStateList.valueOf(context.getResources().getColor(R.color.text_input_layer_color1)));
@@ -183,11 +182,23 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void setSenderParams(MessageViewHolder viewHolder) {
         ViewCompat.setBackgroundTintList(viewHolder.messageLayout,
                 ColorStateList.valueOf(context.getResources().getColor(R.color.green7)));
-
         viewHolder.receiverImage.setVisibility(View.GONE);
         viewHolder.receiverName.setVisibility(View.GONE);
+        setMargin(viewHolder.rootLayout, true);
     }
 
+    void setMargin(RelativeLayout layout, boolean isSend) {
+        RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+        int margin = Utils.getInstance().getPixelAsDp(layout.getContext(), MESSAGE_MARGIN);
+        if (isSend) {
+            relativeParams.setMargins(margin, 0, 0, 0);  // left, top, right, bottom
+            relativeParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        } else {
+            relativeParams.setMargins(0, 0, margin, 0);
+            relativeParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        }// left, top, right, bottom
+        layout.setLayoutParams(relativeParams);
+    }
 
     @Override
     public int getItemCount() {
@@ -221,6 +232,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout timeDateLayout;
         @BindView(R.id.layout_message)
         RelativeLayout messageLayout;
+        @BindView(R.id.layout_root_message)
+        RelativeLayout rootLayout;
 
 
         private MessageViewHolder(View view) {

@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 public class HeightWrapListView extends ListView {
 
-    private android.view.ViewGroup.LayoutParams params;
+    android.view.ViewGroup.LayoutParams params;
     private int oldCount = 0;
 
     public HeightWrapListView(Context context, AttributeSet attrs)
@@ -24,10 +24,10 @@ public class HeightWrapListView extends ListView {
     {
         if (getCount() != oldCount)
         {
-            int height = getChildAt(0).getHeight() + 1 ;
+            int height = getChildAt(0).getHeight();// + 1 ;
             oldCount = getCount();
             params = getLayoutParams();
-            params.height = getCount() * (height+Utils.getInstance().getPixelAsDp(getContext(),10));
+            params.height = getCount() * (height+Utils.getInstance().getPixelAsDp(getContext(),1));
             setLayoutParams(params);
         }
 

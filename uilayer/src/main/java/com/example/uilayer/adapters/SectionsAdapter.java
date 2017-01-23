@@ -133,7 +133,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     }
                 });
 
- /*       if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
+ /*       if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getUserType().equals(TYPE_TEACHER)) {
             holder.threeDots.setVisibility(View.VISIBLE);
         } else holder.threeDots.setVisibility(View.GONE);*/
         if (editable) {

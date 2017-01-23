@@ -1,6 +1,7 @@
 package com.example.uilayer.manage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -51,6 +52,8 @@ import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
 import com.example.uilayer.customUtils.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.landing.LandingActivity;
+import com.example.uilayer.login.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +100,7 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
     private static String DONE = "Done";
     private static String NEXT = "Next";
-    boolean isTeachers,isFirstTime;
+    boolean isTeachers, isFirstTime;
     @BindView(R.id.viewpager_manage_teachers)
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
@@ -122,7 +125,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     @BindView(R.id.activity_manage_teachers)
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.layout_dummy_frame_manage)
-    FrameLayout dummyLayout;    @BindView(R.id.layout_bottom_bar)
+    FrameLayout dummyLayout;
+    @BindView(R.id.layout_bottom_bar)
     RelativeLayout stepperLayout;
     VolleyStringRequest teacherAddRequest, teacherDeleteRequest;
     UpdateListener updateListener;
@@ -141,6 +145,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             selectedMilestoneId = ((Milestones) parent.getItemAtPosition(position)).getId();
             Log.d("selectedMilestoneId", "onItemSelected: " + selectedMilestoneId);
         }
+
         @Override
         public void onNothingSelected(AdapterView<?> arg0) {
         }
@@ -206,7 +211,10 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public void onClick(View view) {
                 if (nextButton.getText().toString().equals(DONE)) {
-                    finish();
+                    if (isFirstTime)
+                        launchLanding();
+                    else
+                        finish();
                 } else if (viewPager.getCurrentItem() == 0) {
                     viewPager.setCurrentItem(1);
                     pagerAdapter.notifyDataSetChanged();
@@ -260,6 +268,10 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             backButton.setEnabled(false);
             updateButtonText(backButton);
         }
+    }
+
+    void launchLanding() {
+        startActivity(new Intent(ManageTeachersActivity.this, LandingActivity.class));
     }
 
     void deleteTeacher(final int position) {
@@ -1112,7 +1124,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                     user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
                     // user.setMiles(userJson.getString(Constants.KEY_MILES));
                     // user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
-                    // user.setType(userJson.getString(Constants.KEY_TYPE));
+                    // user.setUserType(userJson.getString(Constants.KEY_TYPE));
                     teachersList.add(i, user);
                 }
 

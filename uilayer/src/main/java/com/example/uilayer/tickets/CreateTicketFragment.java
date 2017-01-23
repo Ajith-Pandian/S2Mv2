@@ -1,4 +1,4 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets;
 
 import android.app.Dialog;
 import android.os.Build;

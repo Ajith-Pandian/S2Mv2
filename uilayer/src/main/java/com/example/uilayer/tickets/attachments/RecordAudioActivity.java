@@ -1,6 +1,5 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets.attachments;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.domainlayer.Constants;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.AudioVisualizer;
 

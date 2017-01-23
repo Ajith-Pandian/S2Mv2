@@ -36,7 +36,7 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
-import com.example.uilayer.message.TicketsFragment;
+import com.example.uilayer.tickets.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.SelectSchoolActivity;
 import com.example.uilayer.notification.NotificationActivity;

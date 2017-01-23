@@ -137,6 +137,7 @@
 
         <LinearLayout
             style="@style/LayoutStyle"
+            android:id="@+id/layout_school_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -222,6 +223,7 @@
         <LinearLayout
             style="@style/LayoutStyle"
             android:layout_width="match_parent"
+            android:id="@+id/layout_comment"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 

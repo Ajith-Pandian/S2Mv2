@@ -1,4 +1,4 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.tickets.message.MessageActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -22,15 +22,16 @@ import java.util.ArrayList;
 
 public class DataHolder {
     private static DataHolder mInstance;
-    ArrayList<Section> sectionsList;
-    int schoolId;
-    String avatar;
-    String currentMileTitle;
+    private ArrayList<Section> sectionsList;
+    private int schoolId;
+    private String avatar;
+    private String currentMileTitle;
     private String otp;
     private String firstName;
     private String lastName;
     private String phoneNum;
     private String accessToken;
+    private String userType;
     private String lastLogin;
     private String currentClass;
     private String currentSection;
@@ -157,12 +158,24 @@ int userId;
         try {
             this.userId = loginResultJson.getInt(Constants.KEY_ID);
             this.lastLogin = loginResultJson.getString(Constants.KEY_LAST_LOGIN);
-            this.otp = loginResultJson.getString(Constants.KEY_OTP);
+           // this.otp = loginResultJson.getString(Constants.KEY_OTP);
             this.email = loginResultJson.getString(Constants.KEY_EMAIL);
+            this.firstName = loginResultJson.getString(Constants.KEY_FIRST_NAME);
+            this.lastName = loginResultJson.getString(Constants.KEY_LAST_NAME);
             this.phoneNum = loginResultJson.getString(Constants.KEY_PHONE_NUM);
+            this.accessToken = loginResultJson.getString(Constants.KEY_ACCESS_TOKEN);
+            this.userType = loginResultJson.getString(Constants.KEY_TYPE);
         } catch (JSONException exception) {
             Log.e("DataHolder", "setLoginResultJson: ", exception);
         }
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getAvatar() {

@@ -20,7 +20,18 @@
     //hint
     <string name="hint_otp">Enter OTP here</string>
 
+    <string name="text_image">Image</string>
+    <string name="text_audio">Audio</string>
+    <string name="text_video">Video</string>
+    <string name="text_document">Document</string>
 
+
+    <string-array name="attachment_menu">
+        <item >@string/text_image</item>
+        <item >@string/text_audio</item>
+        <item >@string/text_video</item>
+        <item >@string/text_document</item>
+    </string-array>
     //ImageButton Content Description
     <string name="phone_number_button">Phone number button</string>
     <string name="otp_button">OTP button</string>

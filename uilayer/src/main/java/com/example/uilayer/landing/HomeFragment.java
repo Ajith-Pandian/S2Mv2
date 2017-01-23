@@ -122,12 +122,12 @@ public class HomeFragment extends Fragment {
                 likeBulletin();
             }
         });
-        if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
+     /*   if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
                 .getBulletin()
                 .getLiked())==1)
                 buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
             else
-                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));*/
         return view;
     }
 

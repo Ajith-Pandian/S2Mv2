@@ -1,5 +1,7 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets.message;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
@@ -21,9 +24,12 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -32,13 +38,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Message;
 import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.utils.VolleyStringRequest;
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.HeightWrapListView;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
+import com.example.uilayer.tickets.attachments.AddDocumentActivity;
+import com.example.uilayer.tickets.attachments.AttachmentsAdapter;
+import com.example.uilayer.tickets.attachments.RecordAudioActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -88,6 +98,10 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView messageRecycler;
     @BindView(R.id.toolbar_message)
     Toolbar toolbar;
+    @BindView(R.id.list_attachments)
+    HeightWrapListView attachmentsList;
+    @BindView(R.id.layout_bottom_message)
+    RelativeLayout messageInputLayout;
     ImageButton backButton;
     Button closeTicketButton;
     DatabaseReference messageDbReference;
@@ -103,7 +117,7 @@ public class MessageActivity extends AppCompatActivity {
                     value.setSend(true);
                 else
                     value.setSend(false);
-                //value.setType("text");
+                //value.setUserType("text");
                 messages.add(value);
             }
             messageRecycler.setAdapter(new MessagesAdapter(MessageActivity.this, messages));
@@ -127,6 +141,7 @@ public class MessageActivity extends AppCompatActivity {
     String uploadFileMime = "";
     String uploadFileExtension = "";
     VolleyStringRequest closeTicketRequest;
+    boolean isAttachmentShown = false;
 
     public static boolean isAvailable(Context ctx, Intent intent) {
         final PackageManager mgr = ctx.getPackageManager();
@@ -173,7 +188,11 @@ public class MessageActivity extends AppCompatActivity {
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(attachButton);
+                // showPopupMenu(attachButton);
+                if (!isAttachmentShown)
+                    showAttachmentPopup();
+                else
+                    hideAttachmentPopup();
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -188,8 +207,64 @@ public class MessageActivity extends AppCompatActivity {
                 closeTicket();
             }
         });
+       // ViewCompat.setElevation(messageInputLayout, 12);
+       // ViewCompat.setElevation(attachmentsList, 8);
+        final ViewGroup viewGroup =  (ViewGroup) this.findViewById(android.R.id.content);
+        viewGroup.bringChildToFront(messageInputLayout);
     }
 
+    void showAttachmentPopup() {
+        int[] iconIds = {
+                R.drawable.ic_intro_training,
+                R.drawable.ic_intro_training,
+                R.drawable.ic_intro_training,
+                R.drawable.ic_intro_training};
+        AttachmentsAdapter adapter =
+                new AttachmentsAdapter(this, getResources().getStringArray(R.array.attachment_menu), iconIds);
+        attachmentsList.setAdapter(adapter);
+        attachmentsList.setVisibility(View.VISIBLE);
+        isAttachmentShown = true;
+/*
+       attachmentsList.animate()
+                 .translationY(0)
+                .alpha(1.0f)
+                .setDuration(300)
+               .setListener(null).start();
+*/
+        //slideToTop(attachmentsList);
+    }
+
+    void hideAttachmentPopup() {
+        attachmentsList.setVisibility(View.GONE);
+        isAttachmentShown = false;
+       /*attachmentsList.animate()
+                .translationY(attachmentsList.getHeight())
+                .alpha(0.0f)
+                .setDuration(300)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        attachmentsList.setVisibility(View.GONE);
+
+                    }
+                }).start();*/
+        //slideToBottom(attachmentsList);
+    }
+
+    public void slideToTop(View view){
+        TranslateAnimation animate = new TranslateAnimation(0,0,0,-view.getHeight());
+        animate.setDuration(1000);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
+    }
+    public void slideToBottom(View view){
+        TranslateAnimation animate = new TranslateAnimation(0,0,0,view.getHeight());
+        animate.setDuration(1000);
+        animate.setFillAfter(false);
+        view.startAnimation(animate);
+        view.setVisibility(View.GONE);
+    }
     void sendMessage(final String message, final String type) {
         sendMessageRequest = new VolleyStringRequest(Request.Method.POST, CREATE_MSG_URL,
                 new Response.Listener<String>() {

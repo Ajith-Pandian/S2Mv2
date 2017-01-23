@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".message.MessageActivity">
+    tools:context=".tickets.message.MessageActivity">
 
     <include
         android:id="@+id/toolbar_message"
@@ -18,6 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/layout_bottom_message"
         android:layout_below="@+id/toolbar_message" />
+
+    <com.example.uilayer.customUtils.HeightWrapListView
+        android:id="@+id/list_attachments"
+        android:scrollbars="none"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_bottom_message" />
 
     <RelativeLayout
         android:id="@+id/layout_bottom_message"

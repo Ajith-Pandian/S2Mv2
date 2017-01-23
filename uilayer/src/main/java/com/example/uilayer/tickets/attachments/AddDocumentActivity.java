@@ -1,4 +1,4 @@
-package com.example.uilayer.message;
+package com.example.uilayer.tickets.attachments;
 
 import android.graphics.Color;
 import android.os.Environment;
