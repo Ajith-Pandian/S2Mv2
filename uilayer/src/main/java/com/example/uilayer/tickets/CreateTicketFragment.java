@@ -26,11 +26,11 @@ import com.example.domainlayer.models.Category;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.CategorySpinnerAdapter;
 import com.example.uilayer.adapters.TeachersSpinnerAdapter;
-import com.example.uilayer.customUtils.PromptSpinner;
+import com.example.uilayer.customUtils.views.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
 
 
@@ -184,7 +184,10 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createTicket(subjectText.getText().toString(), getCategory(), getUserID());
+                int userId = -1;
+                if (isS2m)
+                    userId = getUserID();
+                createTicket(subjectText.getText().toString(), getCategory(), userId);
 
             }
         });
@@ -375,7 +378,7 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
                 params.put(KEY_CATEGORY, category);
                 //TODO:Validate with user type-- If teacher Default reciver is S2MAdmin -- IF S2M , he can choose a teacher
                 if (isS2m)
-                params.put(KEY_RECEIVER_ID, String.valueOf(userId));
+                    params.put(KEY_RECEIVER_ID, String.valueOf(userId));
                 Log.d(TAG, "getParams: " + params.toString());
                 return params;
             }

@@ -19,7 +19,7 @@
         android:layout_above="@+id/layout_bottom_message"
         android:layout_below="@+id/toolbar_message" />
 
-    <com.example.uilayer.customUtils.HeightWrapListView
+    <com.example.uilayer.customUtils.views.HeightWrapListView
         android:id="@+id/list_attachments"
         android:scrollbars="none"
         android:background="@android:color/white"

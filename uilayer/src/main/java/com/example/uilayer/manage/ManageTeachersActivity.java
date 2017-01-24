@@ -44,16 +44,15 @@ import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.MilestonesSpinnerAdapter;
 import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.adapters.TeachersSpinnerAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
-import com.example.uilayer.customUtils.PromptSpinner;
+import com.example.uilayer.customUtils.views.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.landing.LandingActivity;
-import com.example.uilayer.login.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

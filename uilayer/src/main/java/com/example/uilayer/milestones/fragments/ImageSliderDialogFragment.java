@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.PinchZoomImageView;
+import com.example.uilayer.customUtils.views.PinchZoomImageView;
 import com.example.uilayer.models.ImageMiles;
 import com.squareup.picasso.Picasso;
 

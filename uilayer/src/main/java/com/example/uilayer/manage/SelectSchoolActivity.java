@@ -14,7 +14,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 

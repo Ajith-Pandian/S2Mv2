@@ -27,7 +27,7 @@ import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.Utils;
@@ -122,7 +122,7 @@ public class HomeFragment extends Fragment {
                 likeBulletin();
             }
         });
-     /*   if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
+      /* if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
                 .getBulletin()
                 .getLiked())==1)
                 buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
@@ -144,9 +144,10 @@ public class HomeFragment extends Fragment {
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
                 .into(target);
-
+        String image = DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage();
+        if(image!=null)
         Picasso.with(getActivity())
-                .load(DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage())
+                .load(image)
                 .placeholder(R.drawable.ph_bulletin)
                 .into(bulletinImage);
         layoutNetwork.setOnClickListener(new View.OnClickListener() {
@@ -167,9 +168,9 @@ public class HomeFragment extends Fragment {
                 + String.valueOf(user.getSchoolId())
                 + ACTIVITIES_URL_SUFFIX
                 + String.valueOf(com.example.uilayer.DataHolder.getInstance(getContext())
-                                                                                .getUser()
-                                                                                .getBulletin()
-                                                                                .getId())
+                .getUser()
+                .getBulletin()
+                .getId())
                 + ACTIVITY_LIKE_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override

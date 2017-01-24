@@ -42,7 +42,7 @@
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
-            <com.example.uilayer.customUtils.PromptSpinner
+            <com.example.uilayer.customUtils.views.PromptSpinner
                 android:id="@+id/spinner_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             <!--0        style="@style/Widget.AppCompat.Spinner.Underlined"
                 app:backgroundTint="@color/text_input_layer_color1" -->
 
-            <com.example.uilayer.customUtils.PromptSpinner
+            <com.example.uilayer.customUtils.views.PromptSpinner
                 android:id="@+id/spinner_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

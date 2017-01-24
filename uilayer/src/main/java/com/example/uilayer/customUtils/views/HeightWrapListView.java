@@ -1,9 +1,11 @@
-package com.example.uilayer.customUtils;
+package com.example.uilayer.customUtils.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.ListView;
+
+import com.example.uilayer.customUtils.Utils;
 
 /**
  * Created by thoughtchimp on 11/26/2016.
@@ -27,7 +29,7 @@ public class HeightWrapListView extends ListView {
             int height = getChildAt(0).getHeight();// + 1 ;
             oldCount = getCount();
             params = getLayoutParams();
-            params.height = getCount() * (height+Utils.getInstance().getPixelAsDp(getContext(),1));
+            params.height = getCount() * (height+ Utils.getInstance().getPixelAsDp(getContext(),1));
             setLayoutParams(params);
         }
 

@@ -1,4 +1,4 @@
-package com.example.domainlayer.temp;
+package com.example.uilayer.customUtils;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
@@ -9,7 +9,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.domainlayer.temp.DataHolder;
+import com.example.domainlayer.temp.DataParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +19,6 @@ import java.util.Map;
 
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.SECTIONS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;

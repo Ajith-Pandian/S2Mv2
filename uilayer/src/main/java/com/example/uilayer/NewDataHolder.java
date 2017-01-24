@@ -1,13 +1,8 @@
 package com.example.uilayer;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.Bulletin;
@@ -15,22 +10,17 @@ import com.example.domainlayer.models.BulletinMessage;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.*;
-import com.example.uilayer.customUtils.VolleyStringRequest;
+import com.example.domainlayer.temp.DataParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import static com.example.domainlayer.Constants.IS_LIKED;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
 import static com.example.domainlayer.Constants.KEY_BODY;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IMAGE;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
@@ -40,106 +30,73 @@ import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 /**
- * Created by thoughtchimp on 12/20/2016.
+ * Created by thoughtchimp on 1/24/2017.
  */
 
-public class NetworkHelper {
-    private final Context context;
-    private NetworkListener networkListener;
+public class NewDataHolder {
+    private static NewDataHolder mInstance;
+    private int userId;
+    private String firstName;
+    private String lastName;
+    private String phoneNum;
+    private String accessToken;
+    private String userType;
+    private String lastLogin;
+    private String email;
+    private Context context;
 
-    public NetworkHelper(Context context) {
+    private NewDataHolder(Context context) {
         this.context = context;
     }
 
-    public void removeListener() {
-        this.networkListener = null;
+    public static synchronized NewDataHolder getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new NewDataHolder(context);
+        }
+        return mInstance;
     }
 
-    public void getUserDetails(NetworkListener networkListener) {
-        this.networkListener = networkListener;
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.GET, Constants.USER_DETAILS_URL + String.valueOf(new DataBaseUtil(context).getUser().getId()),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("UserDetails", "onResponse:otp " + response);
-                        storeResponse(response);
-                        NetworkHelper.this.networkListener.onFinish();
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("UserDetails", "onResponse: " + error);
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-        };
-
-        VolleySingleton.getInstance(context).addToRequestQueue(otpRequest);
-    }
-
-    private void storeResponse(String response) {
+    public void setLoginResult(JSONObject userJson) {
         try {
-            JSONObject responseJson = new JSONObject(response);
-            com.example.domainlayer.temp.DataHolder.getInstance(context).saveUserDetails(responseJson);
-            saveUserDetailsForThisSession(responseJson);
-        } catch (JSONException ex) {
-            Log.e("networkHelper", "storeResponse: ", ex);
+            this.userId = userJson.getInt(Constants.KEY_ID);
+            this.lastLogin = userJson.getString(Constants.KEY_LAST_LOGIN);
+            // this.otp = userJson.getString(Constants.KEY_OTP);
+            this.email = userJson.getString(Constants.KEY_EMAIL);
+            this.firstName = userJson.getString(Constants.KEY_FIRST_NAME);
+            this.lastName = userJson.getString(Constants.KEY_LAST_NAME);
+            this.phoneNum = userJson.getString(Constants.KEY_PHONE_NUM);
+            this.accessToken = userJson.getString(Constants.KEY_ACCESS_TOKEN);
+            this.userType = userJson.getString(Constants.KEY_TYPE);
+        } catch (JSONException exception) {
+            Log.e("NewDataHolder", "setLoginResult: ", exception);
         }
     }
 
-    public interface NetworkListener {
-        void onFinish();
+    public void setVerifyDetails(JSONObject verifyDetailsJson) {
+        try {
+            this.userId = verifyDetailsJson.getInt(Constants.KEY_ID);
+            //  this.lastLogin = verifyDetailsJson.getString(Constants.KEY_LAST_LOGIN);
+            // this.otp = verifyDetailsJson.getString(Constants.KEY_OTP);
+            this.email = verifyDetailsJson.getString(Constants.KEY_EMAIL);
+            this.firstName = verifyDetailsJson.getString(Constants.KEY_FIRST_NAME);
+            this.lastName = verifyDetailsJson.getString(Constants.KEY_LAST_NAME);
+            this.phoneNum = verifyDetailsJson.getString(Constants.KEY_PHONE_NUM);
+            // this.accessToken = verifyDetailsJson.getString(Constants.KEY_ACCESS_TOKEN);
+            //  this.userType = verifyDetailsJson.getString(Constants.KEY_TYPE);
+        } catch (JSONException exception) {
+            Log.e("NewDataHolder", "setVerifyDetails: ", exception);
+        }
     }
 
 
-    public void saveUserDetailsForThisSession(JSONObject loginResultJson)
-    {
+    public void saveUserInDb(JSONObject loginResultJson) {
         DbUser user = new DbUser();
         DataParser dataParser = new DataParser();
         ArrayList<Sections> sectionsList = new ArrayList<>();
-        ArrayList <SclActs> sclActList = new ArrayList<>();
+        ArrayList<SclActs> sclActList = new ArrayList<>();
         try {
             user.setFirstName(loginResultJson.getString(Constants.KEY_FIRST_NAME));
             user.setId(loginResultJson.getInt(Constants.KEY_ID));
@@ -150,30 +107,12 @@ public class NetworkHelper {
             user.setLastLogin("null");
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
 
-            //TODO for s2m and school admin
-           /* JSONArray schoolsArray=new JSONArray(loginResultJson.getString(KEY_SCHOOLS));
-            ArrayList<Schools> schoolsList=new ArrayList<>();
-            for (int i = 0; i < schoolsArray.length(); i++) {
-                JSONObject schoolObject=schoolsArray.getJSONObject(i);
-                Schools school=new Schools();
-                school.setId(schoolObject.getInt(KEY_ID));
-                school.setName(schoolObject.getString(KEY_NAME));
-                school.setName(schoolObject.getString(KEY_LOGO));
-                schoolsList.add(i,school);
-            }
-            user.setSchoolsList(schoolsList);*/
             user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
             user.setWow(loginResultJson.getString(Constants.KEY_WOW));
             user.setAvatar(loginResultJson.getString(Constants.KEY_AVATAR));
             user.setMiles(loginResultJson.getString(Constants.KEY_MILES));
             user.setType(loginResultJson.getString(Constants.KEY_TYPE));
-
-/*
-            //Shared preferences
-            setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
-            setUserId(loginResultJson.getInt(Constants.KEY_ID));
-            setAccessToken(loginResultJson.getString(Constants.KEY_ACCESS_TOKEN));*/
 
             JSONObject bulletinJson = loginResultJson.getJSONObject(TYPE_BULLETIN);
             Bulletin bulletin = new Bulletin();
@@ -208,12 +147,21 @@ public class NetworkHelper {
             }
             user.setSclActs(sclActList);
 
-            DataHolder.getInstance(context).setUser(user);
+            new DataBaseUtil(context).setUser(user);
+
+
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     private BulletinMessage getMessage(String message) {
         BulletinMessage msg = null;
@@ -227,5 +175,61 @@ public class NetworkHelper {
             Log.e("GetMsg", "getMessage: ", ex);
         }
         return msg;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

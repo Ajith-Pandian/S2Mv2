@@ -1,4 +1,4 @@
-package com.example.uilayer.customUtils;
+package com.example.uilayer.customUtils.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;

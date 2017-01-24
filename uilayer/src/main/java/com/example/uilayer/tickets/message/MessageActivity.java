@@ -1,7 +1,5 @@
 package com.example.uilayer.tickets.message;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +10,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
@@ -41,10 +38,9 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.Message;
 import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.HeightWrapListView;
-import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.customUtils.views.HeightWrapListView;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 import com.example.uilayer.tickets.attachments.AddDocumentActivity;
 import com.example.uilayer.tickets.attachments.AttachmentsAdapter;

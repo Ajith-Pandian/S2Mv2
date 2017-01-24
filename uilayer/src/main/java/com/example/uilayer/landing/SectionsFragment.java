@@ -2,10 +2,7 @@ package com.example.uilayer.landing;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
@@ -20,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 
 import com.android.volley.AuthFailureError;
@@ -32,11 +28,10 @@ import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.temp.DataParser;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
-import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.milestones.MilesActivity;
 import com.example.uilayer.models.SectionDetails;
 
@@ -55,8 +50,6 @@ import static com.example.domainlayer.Constants.INTRO_TRAINING_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_INTRO_CONTENT;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 

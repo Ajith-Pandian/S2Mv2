@@ -18,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 
 import org.json.JSONArray;

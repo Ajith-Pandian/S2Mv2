@@ -1,6 +1,5 @@
-package com.example.domainlayer.utils;
+package com.example.uilayer.customUtils;
 
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -8,13 +7,9 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.domainlayer.utils.HttpStatusCodes;
 
 import java.util.Map;
-
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
  * Created by thoughtchimp on 12/5/2016.
@@ -59,6 +54,11 @@ public class VolleyStringRequest extends StringRequest {
         return super.parseNetworkResponse(response);
     }
 
+    @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        return super.getHeaders();
+    }
+
     private void checkStatusCode(int statusCode) {
         switch (statusCode) {
             case HttpStatusCodes.BAD_REQUEST:
@@ -80,7 +80,7 @@ public class VolleyStringRequest extends StringRequest {
     }
 
     public interface StatusCodeListener {
-        public void onBadRequest();
+         void onBadRequest();
 
         void onUnauthorized();
 

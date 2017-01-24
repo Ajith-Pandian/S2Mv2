@@ -21,7 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MCQAnswersAdapter;
 import com.example.uilayer.models.MCQs;

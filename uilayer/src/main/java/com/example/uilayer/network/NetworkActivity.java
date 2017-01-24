@@ -14,11 +14,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
-import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 

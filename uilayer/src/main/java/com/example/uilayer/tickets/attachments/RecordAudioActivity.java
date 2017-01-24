@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.AudioVisualizer;
+import com.example.uilayer.customUtils.views.AudioVisualizer;
 
 import java.io.IOException;
 

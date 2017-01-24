@@ -25,10 +25,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.PromptSpinner;
+import com.example.uilayer.customUtils.views.PromptSpinner;
 import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.squareup.picasso.Picasso;
@@ -68,8 +68,12 @@ public class SignUpActivity extends AppCompatActivity {
     LinearLayout schoolSpinnerLayout;
     @BindView(R.id.layout_comment)
     LinearLayout commentLayout;
+    @BindView(R.id.layout_next_button)
+    LinearLayout nextButtonLayout;
     @BindView(R.id.button_register)
-    Button buttonRegister;
+    Button registerButton;
+    @BindView(R.id.button_next)
+    Button nextButton;
     @BindView(R.id.user_image)
     ImageView imageUser;
 
@@ -127,9 +131,16 @@ public class SignUpActivity extends AppCompatActivity {
             loadData();
             schoolSpinnerLayout.setVisibility(View.GONE);
             commentLayout.setVisibility(View.GONE);
+            nextButtonLayout.setVisibility(View.VISIBLE);
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchLanding();
+                }
+            });
             customSchoolLayout.setVisibility(View.GONE);
             title = "Update";
-            buttonRegister.setText(title);
+            registerButton.setText(title);
         }
     }
 
@@ -177,7 +188,7 @@ public class SignUpActivity extends AppCompatActivity {
                 R.array.school_names, R.layout.spinner_text);
         spinnerSchoolSelect.setAdapter(adapter);
         spinnerSchoolSelect.setOnItemSelectedListener(countrySelectedListener);
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
@@ -198,7 +209,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Log.d("updateRequest", "onResponse: " + response);
                         String suffix = "";
                         suffix = title.substring(title.length() - 1).equals("e") ? "d" : "ed";
-                        Snackbar.make(buttonRegister,
+                        Snackbar.make(registerButton,
                                 title + suffix + " Successfully..!!",
                                 Snackbar.LENGTH_LONG).setAction("Action", null).show();
 

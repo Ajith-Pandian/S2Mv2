@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="60sp" />
 
-    <com.example.uilayer.customUtils.AudioVisualizer
+    <com.example.uilayer.customUtils.views.AudioVisualizer
         android:id="@+id/visualizer"
         android:layout_width="match_parent"
         android:layout_centerInParent="true"

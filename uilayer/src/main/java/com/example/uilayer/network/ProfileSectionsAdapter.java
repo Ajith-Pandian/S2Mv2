@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.domainlayer.models.Sections;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.CustomProgressBar;
+import com.example.uilayer.customUtils.views.CustomProgressBar;
 
 import java.util.List;
 import java.util.Random;

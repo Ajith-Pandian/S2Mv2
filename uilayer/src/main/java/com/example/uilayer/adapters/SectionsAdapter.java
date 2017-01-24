@@ -25,11 +25,11 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
-import com.example.uilayer.customUtils.CustomProgressBar;
+import com.example.uilayer.customUtils.views.CustomProgressBar;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.milestones.MilestonesActivity;
 
@@ -57,7 +57,6 @@ import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -129,7 +128,6 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                     @Override
                     public void onClick(View view) {
                         //  getMilestoneDetails(position);
-                        getOrderedMilestoneDetails(holder.getAdapterPosition());
                     }
                 });
 
@@ -147,6 +145,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             });
         } else holder.dotsLayout.setVisibility(View.GONE);
     }
+
 
     private void getOrderedMilestoneDetails(final int position) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,

@@ -20,15 +20,11 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.MilesActivity;
-import com.example.uilayer.milestones.TrainingActivity;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +35,6 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.KEY_FEEDBACK_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;

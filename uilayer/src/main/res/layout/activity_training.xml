@@ -237,7 +237,7 @@
                         android:src="@drawable/ic_thums_up" />
 
                 </LinearLayout>
-                <com.example.uilayer.customUtils.HeightWrapListView
+                <com.example.uilayer.customUtils.views.HeightWrapListView
                     android:id="@+id/list_view_options_bottom_sheet"
                     android:layout_width="wrap_content"
                     android:layout_alignRight="@+id/text_qus_mile_bottom_sheet"
@@ -249,7 +249,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_below="@+id/layout_thumbs_bottomsheet">
 
-                </com.example.uilayer.customUtils.HeightWrapListView>
+                </com.example.uilayer.customUtils.views.HeightWrapListView>
                   </RelativeLayout>
               </RelativeLayout>
 

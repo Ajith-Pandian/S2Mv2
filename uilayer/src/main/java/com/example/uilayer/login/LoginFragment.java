@@ -33,7 +33,8 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
@@ -215,7 +216,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             SharedPreferenceHelper.setSharedPreferenceString(getContext(),
                     KEY_DEVICE_TOKEN
                     ,responseJson.getString(KEY_DEVICE_TOKEN));
-            DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+           // DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+            NewDataHolder.getInstance(getActivity()).setVerifyDetails(responseJson);
+
             Log.d("OTP", "storeResponse: " + responseJson.getString(Constants.KEY_OTP));
         } catch (JSONException ex) {
         }

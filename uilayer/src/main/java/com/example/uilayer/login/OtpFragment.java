@@ -22,7 +22,8 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.domainlayer.utils.VolleyStringRequest;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.SharedPreferenceHelper;
@@ -161,7 +162,7 @@ public class OtpFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
-                 params.put(KEY_MOBILE, com.example.uilayer.DataHolder.getInstance(getContext()).getPhoneNum());
+                 params.put(KEY_MOBILE, NewDataHolder.getInstance(getContext()).getPhoneNum());
                 //params.put(Constants.KEY_MOBILE, "1234567890");
                 //params.put(KEY_OTP, enteredOtp);
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
