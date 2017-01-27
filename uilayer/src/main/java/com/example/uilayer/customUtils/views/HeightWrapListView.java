@@ -29,7 +29,7 @@ public class HeightWrapListView extends ListView {
             int height = getChildAt(0).getHeight();// + 1 ;
             oldCount = getCount();
             params = getLayoutParams();
-            params.height = getCount() * (height+ Utils.getInstance().getPixelAsDp(getContext(),1));
+            params.height = getCount() * (height+ Utils.getInstance().getPixelAsDp(getContext(),10));
             setLayoutParams(params);
         }
 

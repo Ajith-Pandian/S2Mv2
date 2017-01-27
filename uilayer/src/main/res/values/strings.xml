@@ -203,5 +203,15 @@
     <string name="prompt_select_milestones">Milestones</string>
 
     <string name="blank_int">%d</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">@android:string/cancel</string>
+
+    //Error messages
+    <string name="er_no_milestones_in_section">No milestones in this section</string>
+    <string name="er_no_intro_trainings">No introductory trainings found</string>
+    <string name="er_no_mcq">No MCQs found</string>
+    <string name="er_no_internet">No internet. Try again.</string>
+
+
 
 </resources>

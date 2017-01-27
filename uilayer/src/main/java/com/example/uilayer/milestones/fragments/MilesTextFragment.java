@@ -78,7 +78,9 @@ public class MilesTextFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             textContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
         } else {
-            textContent.setText(Html.fromHtml("<p>Lorem Ipsum is simply dummy text" +
+            textContent.setText(Html.fromHtml(content));
+
+            /*textContent.setText(Html.fromHtml("<p>Lorem Ipsum is simply dummy text" +
                     " of the printing and typesetting industry. " +
                     "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, " +
                     "when an unknown printer took a galley of type and scrambled it to make a type specimen book. " +
@@ -87,7 +89,7 @@ public class MilesTextFragment extends Fragment {
                     " sheets containing Lorem Ipsum passages.</p><br><p>Lorem Ipsum is simply dummy text of the printing " +
                     "and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s," +
                     " but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the " +
-                    "1960s with the release of Letraset sheets containing Lorem Ipsum passages,</p>"));
+                    "1960s with the release of Letraset sheets containing Lorem Ipsum passages,</p>"));*/
         }
 
         return view;

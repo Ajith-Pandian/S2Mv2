@@ -143,7 +143,8 @@ public class DataHolder {
     public JSONObject getLoginResultJson() {
         return loginResultJson;
     }
-int userId;
+
+    int userId;
 
     public int getUserId() {
         return userId;
@@ -157,14 +158,14 @@ int userId;
         this.loginResultJson = loginResultJson;
         try {
             this.userId = loginResultJson.getInt(Constants.KEY_ID);
-          //  this.lastLogin = loginResultJson.getString(Constants.KEY_LAST_LOGIN);
-           // this.otp = loginResultJson.getString(Constants.KEY_OTP);
+            //  this.lastLogin = loginResultJson.getString(Constants.KEY_LAST_LOGIN);
+            // this.otp = loginResultJson.getString(Constants.KEY_OTP);
             this.email = loginResultJson.getString(Constants.KEY_EMAIL);
             this.firstName = loginResultJson.getString(Constants.KEY_FIRST_NAME);
             this.lastName = loginResultJson.getString(Constants.KEY_LAST_NAME);
             this.phoneNum = loginResultJson.getString(Constants.KEY_PHONE_NUM);
-           // this.accessToken = loginResultJson.getString(Constants.KEY_ACCESS_TOKEN);
-          //  this.userType = loginResultJson.getString(Constants.KEY_TYPE);
+            // this.accessToken = loginResultJson.getString(Constants.KEY_ACCESS_TOKEN);
+            //  this.userType = loginResultJson.getString(Constants.KEY_TYPE);
         } catch (JSONException exception) {
             Log.e("DataHolder", "setLoginResultJson: ", exception);
         }
@@ -267,6 +268,17 @@ int userId;
 
     public void setCurrentMileTitle(String currentMileTitle) {
         this.currentMileTitle = currentMileTitle;
+    }
+
+
+    private int currentMilestoneID;
+
+    public int getCurrentMilestoneID() {
+        return currentMilestoneID;
+    }
+
+    public void setCurrentMilestoneID(int currentMilestoneID) {
+        this.currentMilestoneID = currentMilestoneID;
     }
 
     public DbUser getUser() {

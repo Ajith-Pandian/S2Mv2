@@ -38,7 +38,7 @@ import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 public class NewDataHolder {
     private static NewDataHolder mInstance;
-    private int userId;
+    private int userId,schoolId;
     private String firstName;
     private String lastName;
     private String phoneNum;
@@ -47,6 +47,8 @@ public class NewDataHolder {
     private String lastLogin;
     private String email;
     private Context context;
+    private DbUser user;
+    private int currentSectionId,currentMilestoneId,currentMileId;
 
     private NewDataHolder(Context context) {
         this.context = context;
@@ -59,10 +61,16 @@ public class NewDataHolder {
         return mInstance;
     }
 
+    private String avatar;
+    private String schoolName;
+
     public void setLoginResult(JSONObject userJson) {
+        ArrayList<SclActs> sclActList = new ArrayList<>();
+        DataParser dataParser = new DataParser();
         try {
             this.userId = userJson.getInt(Constants.KEY_ID);
-            this.lastLogin = userJson.getString(Constants.KEY_LAST_LOGIN);
+             this.lastLogin = userJson.getString(Constants.KEY_LAST_LOGIN);
+            //this.lastLogin = "null";
             // this.otp = userJson.getString(Constants.KEY_OTP);
             this.email = userJson.getString(Constants.KEY_EMAIL);
             this.firstName = userJson.getString(Constants.KEY_FIRST_NAME);
@@ -70,6 +78,59 @@ public class NewDataHolder {
             this.phoneNum = userJson.getString(Constants.KEY_PHONE_NUM);
             this.accessToken = userJson.getString(Constants.KEY_ACCESS_TOKEN);
             this.userType = userJson.getString(Constants.KEY_TYPE);
+            this.avatar = userJson.getString(Constants.KEY_AVATAR);
+            this.schoolName = userJson.getString(Constants.KEY_SCHOOL_NAME);
+            this.schoolId = userJson.getInt(Constants.KEY_SCHOOL_ID);
+            SharedPreferenceHelper.setAccessToken(accessToken);
+            SharedPreferenceHelper.setSchoolId(schoolId);
+            SharedPreferenceHelper.setUserId(userId);
+            DbUser user = new DbUser();
+            user.setId(userId);
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPhoneNum(phoneNum);
+            user.setAccessToken(accessToken);
+            user.setLastLogin(lastLogin);
+            user.setType(userType);
+            user.setAvatar(avatar);
+            user.setSchoolId(schoolId);
+            user.setSchoolName(schoolName);
+
+            JSONObject bulletinJson = userJson.getJSONObject(TYPE_BULLETIN);
+            Bulletin bulletin = new Bulletin();
+            bulletin.setId(bulletinJson.getInt(KEY_ID));
+            bulletin.setUserId(bulletinJson.getInt(KEY_USER_ID));
+            bulletin.setMsg(getMessage(bulletinJson.getString(KEY_MESSAGE)));
+            bulletin.setType(bulletinJson.getString(KEY_TYPE));
+            bulletin.setTimeStamp(bulletinJson.getString(KEY_TIMESTAMP));
+            bulletin.setLiked(bulletinJson.getInt(IS_LIKED));
+            user.setBulletin(bulletin);
+
+            JSONArray sectionsArray = userJson.getJSONArray(KEY_SECTIONS);
+            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray));
+
+            JSONArray schoolActivities = userJson.getJSONArray(KEY_ACTIVITIES);
+
+            for (int i = 0; i < schoolActivities.length(); i++) {
+                JSONObject schoolActivity = schoolActivities.getJSONObject(i);
+                SclActs sclActivities
+                        = new SclActs(schoolActivity.getInt(KEY_ID),
+                        schoolActivity.getInt(KEY_USER_ID),
+                        "",
+                        // schoolActivity.getString(KEY_SCHOOL_NAME),
+                        schoolActivity.getString(KEY_MESSAGE),
+                        //getMessage(schoolActivity.getString(KEY_MESSAGE)),
+                        schoolActivity.getString(KEY_TYPE),
+                        schoolActivity.getString(KEY_TIMESTAMP),
+                        schoolActivity.getInt(KEY_LIKES_COUNT),
+                        schoolActivity.getInt(IS_LIKED)
+                );
+                sclActList.add(sclActivities);
+            }
+            user.setSclActs(sclActList);
+            setUser(user);
+            new DataBaseUtil(context).setUser(user);
         } catch (JSONException exception) {
             Log.e("NewDataHolder", "setLoginResult: ", exception);
         }
@@ -78,14 +139,20 @@ public class NewDataHolder {
     public void setVerifyDetails(JSONObject verifyDetailsJson) {
         try {
             this.userId = verifyDetailsJson.getInt(Constants.KEY_ID);
-            //  this.lastLogin = verifyDetailsJson.getString(Constants.KEY_LAST_LOGIN);
+            // this.lastLogin = verifyDetailsJson.getString(Constants.KEY_LAST_LOGIN);
             // this.otp = verifyDetailsJson.getString(Constants.KEY_OTP);
             this.email = verifyDetailsJson.getString(Constants.KEY_EMAIL);
             this.firstName = verifyDetailsJson.getString(Constants.KEY_FIRST_NAME);
             this.lastName = verifyDetailsJson.getString(Constants.KEY_LAST_NAME);
             this.phoneNum = verifyDetailsJson.getString(Constants.KEY_PHONE_NUM);
             // this.accessToken = verifyDetailsJson.getString(Constants.KEY_ACCESS_TOKEN);
-            //  this.userType = verifyDetailsJson.getString(Constants.KEY_TYPE);
+            // this.userType = verifyDetailsJson.getString(Constants.KEY_TYPE);
+            DbUser user = new DbUser();
+            user.setId(userId);
+            user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPhoneNum(phoneNum);
         } catch (JSONException exception) {
             Log.e("NewDataHolder", "setVerifyDetails: ", exception);
         }
@@ -103,8 +170,8 @@ public class NewDataHolder {
             user.setLastName(loginResultJson.getString(Constants.KEY_LAST_NAME));
             user.setEmail(loginResultJson.getString(Constants.KEY_EMAIL));
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
-            // user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
-            user.setLastLogin("null");
+            user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
+            //user.setLastLogin("null");
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
 
             user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
@@ -147,9 +214,8 @@ public class NewDataHolder {
             }
             user.setSclActs(sclActList);
 
-            new DataBaseUtil(context).setUser(user);
-
-
+            // new DataBaseUtil(context).setUser(user);
+            setUser(user);
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }
@@ -231,5 +297,61 @@ public class NewDataHolder {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public DbUser getUser() {
+        return user;
+    }
+
+    public void setUser(DbUser user) {
+        this.user = user;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public int getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(int schoolId) {
+        this.schoolId = schoolId;
+    }
+
+    public int getCurrentSectionId() {
+        return currentSectionId;
+    }
+
+    public void setCurrentSectionId(int currentSectionId) {
+        this.currentSectionId = currentSectionId;
+    }
+
+    public int getCurrentMilestoneId() {
+        return currentMilestoneId;
+    }
+
+    public void setCurrentMilestoneId(int currentMilestoneId) {
+        this.currentMilestoneId = currentMilestoneId;
+    }
+
+    public int getCurrentMileId() {
+        return currentMileId;
+    }
+
+    public void setCurrentMileId(int currentMileId) {
+        this.currentMileId = currentMileId;
     }
 }

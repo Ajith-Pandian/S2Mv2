@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
@@ -36,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ARCHIVE_URL;
+import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ARCHIVE;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
@@ -44,6 +46,7 @@ import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
 import static com.example.domainlayer.Constants.KEY_NOTE;
+import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_UNDOABLE_ID;
@@ -81,7 +84,7 @@ public class MilestonesActivity extends AppCompatActivity {
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(),-1);
+        milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(), -1);
 
         recyclerView.setAdapter(milestonesAdapter);
     }
@@ -111,7 +114,10 @@ public class MilestonesActivity extends AppCompatActivity {
     }
 
     void getArchiveData() {
-        VolleyStringRequest archiveRequest = new VolleyStringRequest(Request.Method.GET, ARCHIVE_URL,
+        VolleyStringRequest archiveRequest = new VolleyStringRequest(Request.Method.GET,
+                //ARCHIVE_URL,
+                BASE_URL + KEY_SECTION + "/" + NewDataHolder.getInstance(this).getCurrentSectionId() + "/archiveMilesTrainings?schoolId="
+                        + NewDataHolder.getInstance(this).getUser().getSchoolId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

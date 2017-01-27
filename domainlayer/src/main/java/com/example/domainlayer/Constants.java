@@ -19,7 +19,7 @@ public class Constants {
     public static final String MILES_URL_SUFFIX = "miles";
     public static final String TRAININGS_URL = BASE_URL + "milestones/";
     public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/milesTrainings";
-    public static final String MCQ_URL = TRAININGS_URL + "1/trainings/5/mcqs";
+    public static final String MCQ_URL = TRAININGS_URL + "/6/mcqs";
     public static final String MCQ_RESULT_URL = TRAININGS_URL + "1/trainings/15/submitMcqResults";
     public static final String SCHOOLS_URL = BASE_URL + "schools/";
     public static final String SECTIONS_URL = SCHOOLS_URL + "2/sections";
@@ -35,6 +35,9 @@ public class Constants {
     public static final String DELETE_TEACHERS_URL_SUFFIX = "/deleteTeacher";
     public static final String ADD_SECTIONS_URL_SUFFIX = "/create";
     public static final String ACTIVITY_LIKE_URL_SUFFIX = "/like";
+    public static final String TRAININGS_SUFFIX = "/trainings";
+    public static final String MCQS_SUFFIX = "/mcqs";
+    public static final String SEPERATOR = "/";
     public static final String MILE_TRAININGS_SUFFIX = "/milesTrainings";
     public static final String NETWORK_SECTIONS_URL_SUFFIX = "/networkSections";
     public static final String ADD_SECTIONS_URL= SECTIONS_URL + ADD_SECTIONS_URL_SUFFIX;

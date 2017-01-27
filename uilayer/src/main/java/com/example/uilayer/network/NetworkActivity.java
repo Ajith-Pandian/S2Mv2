@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
@@ -59,7 +60,8 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
     void getNetworkProfileInfo() {
-        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + NETWORK_URL_SUFFIX,
+        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL
+                + NewDataHolder.getInstance(this).getUser().getSchoolId() + NETWORK_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -141,7 +143,7 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
                 user.setMiles(userJson.getString(Constants.KEY_MILES));
                 user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
-                 user.setType(userJson.getString("role"));
+                 //user.setType(userJson.getString(Constants.KEY_TYPE));
                 usersList.add(i, user);
             }
             //new DataBaseUtil(this).setUser(usersList);

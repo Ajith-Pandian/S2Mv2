@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 
 import com.android.volley.AuthFailureError;
@@ -24,10 +25,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.temp.DataParser;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.SectionsAdapter;
@@ -35,6 +41,7 @@ import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
 import com.example.uilayer.milestones.MilesActivity;
 import com.example.uilayer.models.SectionDetails;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,10 +55,17 @@ import butterknife.ButterKnife;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.example.domainlayer.Constants.INTRO_TRAINING_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_INTRO_CONTENT;
+import static com.example.domainlayer.Constants.KEY_TITLE;
+import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TYPE_AUDIO;
+import static com.example.domainlayer.Constants.TYPE_IMAGE;
+import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 
 /**
@@ -61,6 +75,9 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 public class SectionsFragment extends Fragment {
     @BindView(R.id.sections_recycle_grid)
     RecyclerView sectionsGrid;
+    @BindView(R.id.layout_no_sections)
+    RelativeLayout noSectionsLayout;
+
     @BindView(R.id.imageIntroductory)
     ImageView imageViewIntroductory;
     @BindView(R.id.card)
@@ -99,9 +116,14 @@ public class SectionsFragment extends Fragment {
     private void openActivity(Class<?> activityClass, boolean isMile) {
         Intent intent = new Intent(getActivity(), activityClass);
         intent.putExtra("isMile", isMile);
+        if (introTrainingId != -1) {
+            intent.putExtra(KEY_ID, isMile);
+        }
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
+
+    int introTrainingId = -1;
 
     void getIntroTrainings() {
 
@@ -113,10 +135,12 @@ public class SectionsFragment extends Fragment {
 
                         try {
                             JSONObject introResponse = new JSONObject(response);
-
+                            introTrainingId = introResponse.getInt(KEY_ID);
+                            /*com.example.uilayer.DataHolder.getInstance(getContext()).
+                                    setCurrentMileData(new DataParser().getMilesData(introResponse.getString(KEY_INTRO_CONTENT)))*/
+                            ;
                             com.example.uilayer.DataHolder.getInstance(getContext()).
-                                    setCurrentMileData(new DataParser().getMilesData(introResponse.getString(KEY_INTRO_CONTENT)));
-
+                                    setCurrentMileData(getMileData((introResponse.getString(KEY_INTRO_CONTENT))));
                             com.example.uilayer.DataHolder.getInstance(getContext()).setCurrentMileTitle(introResponse.getString(Constants.KEY_TITLE));
 
 
@@ -151,6 +175,7 @@ public class SectionsFragment extends Fragment {
             @Override
             public void onNotFound() {
                 Log.d(TAG, "onNotFound: ");
+                Utils.getInstance().showToast(getResources().getString(R.string.er_no_intro_trainings));
             }
 
             @Override
@@ -176,6 +201,57 @@ public class SectionsFragment extends Fragment {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(introTrainingsRequest);
     }
 
+    ArrayList<TMileData> getMileData(String milesDataString) {
+        ArrayList<TMileData> sectionsArrayList = new ArrayList<>();
+        try {
+            // JSONObject jsonObject = new JSONObject(milesDataString);
+            JSONArray sectionsArray = new JSONArray(milesDataString);
+            for (int i = 0; i < sectionsArray.length(); i++) {
+                JSONObject milesDatObject = sectionsArray.getJSONObject(i);
+                String type = milesDatObject.getString(KEY_TYPE);
+                TMileData mileData
+                        = new TMileData(milesDatObject.getInt(KEY_ID),
+                        milesDatObject.getString(KEY_TITLE), type
+                );
+                ArrayList<String> urlsList = new ArrayList<>();
+                ArrayList<String> imagesList = new ArrayList<>();
+                if (type.equals(TYPE_VIDEO) || type.equals(TYPE_AUDIO)) {
+                    JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
+
+                    for (int j = 0; j < urlsArray.length(); j++) {
+                        JSONObject data = urlsArray.getJSONObject(j);
+                        String url = data.getString("url");
+                        String image = data.getString("image");
+                        Log.d("URLS", "getMilesData: " + url);
+
+                        urlsList.add(url);
+                        imagesList.add(image);
+                    }
+                    mileData.setUrlsList(urlsList);
+                    mileData.setImagesList(imagesList);
+                } else if (type.equals(TYPE_IMAGE)) {
+                    JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
+
+                    for (int j = 0; j < urlsArray.length(); j++) {
+                        JSONObject data = urlsArray.getJSONObject(j);
+                        String url = data.getString("url");
+                        urlsList.add(url);
+                    }
+                    mileData.setUrlsList(urlsList);
+                } else
+                    mileData.setBody(milesDatObject.getString(KEY_BODY));
+                if (urlsList.size() == 1)
+                    mileData.setSingle(true);
+                sectionsArrayList.add(mileData);
+            }
+        } catch (JSONException ex) {
+
+            Log.e("ex", "getMilesData: ", ex);
+        }
+
+        return sectionsArrayList;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -193,8 +269,17 @@ public class SectionsFragment extends Fragment {
         sectionDetails.add(new SectionDetails("Class 9", "Section I", 37));
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        sectionDetails1 = DataHolder.getInstance(getActivity()).getUser().getSectionsList();
-        sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1, 3, null, false));
-
+        DbUser user = NewDataHolder.getInstance(getActivity()).getUser();
+        if (user != null) {
+            sectionDetails1 = user.getSectionsList();
+        }
+        //sectionDetails1 = new ArrayList<>();
+        if (sectionDetails1 != null && sectionDetails1.size() > 0) {
+            noSectionsLayout.setVisibility(View.GONE);
+            sectionsGrid.setAdapter(new SectionsAdapter(actionBar.getThemedContext(), sectionDetails1, 3, null, false));
+        } else {
+            noSectionsLayout.setVisibility(View.VISIBLE);
+            sectionsGrid.setVisibility(View.GONE);
+        }
     }
 }

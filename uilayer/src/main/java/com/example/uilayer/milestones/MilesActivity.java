@@ -34,6 +34,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
@@ -44,9 +46,16 @@ import com.example.uilayer.milestones.fragments.MilesTextFragment;
 import com.example.uilayer.milestones.fragments.MilesVideoFragment;
 import com.example.uilayer.models.AudioMiles;
 import com.example.uilayer.models.ImageMiles;
+import com.example.uilayer.models.MCQs;
+import com.example.uilayer.models.McqOptions;
 import com.example.uilayer.models.VideoMiles;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -54,18 +63,28 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.FEEDBACK_CREATE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_ANSWER;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
+import static com.example.domainlayer.Constants.KEY_OPTIONS;
+import static com.example.domainlayer.Constants.KEY_QUESTION;
 import static com.example.domainlayer.Constants.KEY_REASON;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_THUMBS;
 import static com.example.domainlayer.Constants.KEY_TITLE;
+import static com.example.domainlayer.Constants.MCQS_SUFFIX;
+import static com.example.domainlayer.Constants.MCQ_URL;
+import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.THUMBS_DOWN;
 import static com.example.domainlayer.Constants.THUMBS_UP;
+import static com.example.domainlayer.Constants.TRAININGS_SUFFIX;
+import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
 import static com.example.domainlayer.Constants.TYPE_IMAGE;
 import static com.example.domainlayer.Constants.TYPE_TEXT;
@@ -129,7 +148,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
-    ArrayList<String> options ;
+    ArrayList<String> options;
     boolean isThumbsUp;
     View.OnClickListener thumbsClickListener = new View.OnClickListener() {
         @Override
@@ -233,7 +252,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     }
 
     void loadOptions(boolean isUp) {
-        options=new ArrayList<>();
+        options = new ArrayList<>();
         if (isUp) {
             options.add(getResources().getString(R.string.options_feedback_1));
             options.add(getResources().getString(R.string.options_feedback_2));
@@ -249,7 +268,10 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         listOptions.setAdapter(optionsAdapter);
         selected_option = -1;
     }
+
     DataHolder holder;
+    int thisMileId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = null;
@@ -275,9 +297,12 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         if (getIntent().getBooleanExtra("isMile", false)) {
             toolbarTitle.setText("Miles");
             isMile = true;
-        } else
-        {    toolbarTitle.setText("Training");
-        isMile = false;}
+        } else {
+            toolbarTitle.setText("Training");
+            isMile = false;
+        }
+
+        thisMileId = getIntent().getIntExtra(KEY_ID, -1);
 
         String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
         toolbarSubTitle.setText(title);
@@ -315,7 +340,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     showToast("Submitted SuccessFully");
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_HIDDEN);
-                   // finish();
+                    // finish();
                 } else
                     showToast("Please select one option to submit");
 
@@ -380,10 +405,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     isTraining = 0;
                 else
                     isTraining = 1;
+                NewDataHolder holder=NewDataHolder.getInstance(MilesActivity.this);
                 params.put(KEY_IS_TRAINING, String.valueOf(isTraining));
-                params.put(KEY_MILE_ID, "4");
-                params.put(KEY_SCHOOL_ID, "2");
-                params.put(KEY_SECTION_ID, "4");
+                params.put(KEY_MILE_ID, String.valueOf(holder.getCurrentMileId()));
+                params.put(KEY_SCHOOL_ID,  String.valueOf(holder.getUser().getSchoolId()));
+                params.put(KEY_SECTION_ID, String.valueOf(holder.getCurrentSectionId()));
                 if (isThumbsUp)
                     thumbs = THUMBS_UP;
                 else
@@ -392,6 +418,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
 
                 params.put(KEY_REASON, options.get(selected_option));
+                Log.d("PARAMS", "getParams: "+params.toString());
                 return params;
             }
 
@@ -441,8 +468,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             buttonComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class).putExtra(KEY_TITLE,
-                            holder.getCurrentMileTitle()), REQUEST_CODE);
+                    getMcqs();
                 }
             });
         }
@@ -451,6 +477,104 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         buttonComplete.setBackgroundColor(buttonBackgroundColor);
         buttonComplete.setTextColor(buttonTextColor);
         textTiltle.setTextColor(titleTextColor);
+    }
+
+    void getMcqs() {
+        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
+                TRAININGS_URL + DataHolder.getInstance(this).getCurrentMilestoneID()
+                        + TRAININGS_SUFFIX + SEPERATOR + thisMileId + MCQS_SUFFIX
+                ,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("MCQ Details", "onResponse: " + response);
+                        loadQuestions(response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("MilesDetails", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+                Utils.getInstance().showToast(getString(R.string.er_no_mcq));
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new ArrayMap<>();
+                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
+                return header;
+            }
+
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(milesRequest);
+    }
+
+
+    void loadQuestions(String mcqString) {
+        ArrayList<MCQs> mcqsArrayList = new ArrayList<>();
+        try {
+            JSONArray mcqsJsonArray = new JSONArray(mcqString);
+            for (int i = 0; i < mcqsJsonArray.length(); i++) {
+                JSONObject mcqsJson = mcqsJsonArray.getJSONObject(i);
+                MCQs mcq = new MCQs();
+                mcq.setId(mcqsJson.getInt(KEY_ID));
+                mcq.setAnswer(mcqsJson.getString(KEY_ANSWER));
+                mcq.setQuestion(mcqsJson.getString(KEY_QUESTION));
+
+                JSONObject jObject = new JSONObject(mcqsJson.getString(KEY_OPTIONS));
+                Iterator<?> keys = jObject.keys();
+                ArrayList<McqOptions> optionsList = new ArrayList<>();
+                while (keys.hasNext()) {
+                    McqOptions options = new McqOptions();
+                    String key = (String) keys.next();
+                    String value = jObject.getString(key);
+                    options.setLabel(key);
+                    options.setText(value);
+                    optionsList.add(options);
+                }
+                mcq.setOptions(optionsList);
+                mcqsArrayList.add(i, mcq);
+            }
+            NewDataHolder.getInstance(this).setCurrentMileId(thisMileId);
+            startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class)
+                    .putExtra(KEY_TITLE, holder.getCurrentMileTitle())
+                    .putExtra(KEY_QUESTION, mcqsArrayList), REQUEST_CODE);
+
+
+        } catch (JSONException ex) {
+            Log.e("MCQ", "loadQuestions: ", ex);
+        }
     }
 
     @Override
@@ -508,8 +632,9 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 case TYPE_AUDIO:
                     ArrayList<AudioMiles> audioMilesList = new ArrayList<>();
                     for (int j = 0; j < mileData.getUrlsList().size(); j++) {
-                        String[] imageAndContentUrls = mileData.getUrlsList().get(j).split("\\$");
-                        audioMilesList.add(new AudioMiles(j, j, imageAndContentUrls[0], imageAndContentUrls[1]));
+                        String audioUrl = mileData.getUrlsList().get(j);
+                        String imageUrl = mileData.getImagesList().get(j);
+                        audioMilesList.add(new AudioMiles(j, j, imageUrl, audioUrl));
                     }
                     fragment = MilesAudioFragment.newInstance("AUDIO", audioMilesList);
                     break;

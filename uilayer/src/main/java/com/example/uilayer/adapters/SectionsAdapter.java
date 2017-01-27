@@ -25,6 +25,9 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
@@ -127,7 +130,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //  getMilestoneDetails(position);
+                        getOrderedMilestoneDetails(holder.getAdapterPosition());
                     }
                 });
 
@@ -184,6 +187,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             @Override
             public void onNotFound() {
                 Log.d(TAG, "onNotFound: ");
+                Utils.getInstance().showToast(context.getResources().getString(R.string.er_no_milestones_in_section));
             }
 
             @Override
@@ -202,14 +206,14 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 // params.put(KEY_SECTION_ID, sectionDetailsList.get(position).getId());
                 params.put(KEY_SECTION_ID, String.valueOf(sectionDetailsList.get(position).getId()));
                 // params.put(KEY_SCHOOL_ID,  sectionDetailsList.get(position).getSchoolId());
-                params.put(KEY_SCHOOL_ID, "2");
+                params.put(KEY_SCHOOL_ID, String.valueOf(SharedPreferenceHelper.getSchoolId()));
                 return params;
             }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, String.valueOf(SharedPreferenceHelper.getAccessToken()));
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -222,10 +226,15 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         String _class = sectionDetailsList.get(position).get_Class();
         String section = sectionDetailsList.get(position).getSection();
         String title = sectionDetailsList.get(position).getMilestoneName();
+        int milestoneId = sectionDetailsList.get(position).getMilestoneId();
+        int sectionId = sectionDetailsList.get(position).getId();
         final Intent intent = new Intent(context, MilestonesActivity.class);
         DataHolder.getInstance(context).setCurrentClass(_class);
         DataHolder.getInstance(context).setCurrentSection(section);
+        NewDataHolder.getInstance(context).setCurrentSectionId(sectionId);
+        NewDataHolder.getInstance(context).setCurrentMilestoneId(milestoneId);
         DataHolder.getInstance(context).setCurrentMileTitle(title);
+        DataHolder.getInstance(context).setCurrentMilestoneID(milestoneId);
         intent.putExtra("class_name", _class);
         intent.putExtra("section_name", section);
         context.startActivity(intent);

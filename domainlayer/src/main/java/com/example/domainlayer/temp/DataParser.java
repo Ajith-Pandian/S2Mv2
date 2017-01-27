@@ -28,7 +28,10 @@ import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.SPACE;
+import static com.example.domainlayer.Constants.TYPE_AUDIO;
+import static com.example.domainlayer.Constants.TYPE_IMAGE;
 import static com.example.domainlayer.Constants.TYPE_TEXT;
+import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 /**
  * Created by thoughtchimp on 12/9/2016.
@@ -73,16 +76,35 @@ public class DataParser {
                         milesDatObject.getString(KEY_TITLE), type
                 );
                 ArrayList<String> urlsList = new ArrayList<>();
-                if (!type.equals(TYPE_TEXT)) {
+                ArrayList<String> imagesList = new ArrayList<>();
+                if (type.equals(TYPE_VIDEO)||type.equals(TYPE_AUDIO)) {
                     JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
 
                     for (int j = 0; j < urlsArray.length(); j++) {
-                        String url = urlsArray.getString(j);
+                        JSONObject data = urlsArray.getJSONObject(j);
+                        String url = data.getString("url");
+                        String image = data.getString("image");
                         Log.d("URLS", "getMilesData: " + url);
+
+                        urlsList.add(url);
+                        imagesList.add(image);
+                    }
+                    mileData.setUrlsList(urlsList);
+                    mileData.setImagesList(imagesList);
+                }else
+                if(type.equals(TYPE_IMAGE))
+                {
+                    JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
+
+                    for (int j = 0; j < urlsArray.length(); j++) {
+                        JSONObject data = urlsArray.getJSONObject(j);
+                        String url = data.getString("url");
                         urlsList.add(url);
                     }
                     mileData.setUrlsList(urlsList);
                 }
+                else
+                    mileData.setBody(milesDatObject.getString(KEY_BODY));
                 if (urlsList.size() == 1)
                     mileData.setSingle(true);
                 sectionsArrayList.add(mileData);

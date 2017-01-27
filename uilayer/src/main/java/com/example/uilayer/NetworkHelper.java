@@ -109,7 +109,7 @@ public class NetworkHelper {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
+                header.put(KEY_ACCESS_TOKEN, SharedPreferenceHelper.getAccessToken());
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
@@ -149,6 +149,7 @@ public class NetworkHelper {
             // user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
             user.setLastLogin("null");
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
+            user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
             //TODO for s2m and school admin
            /* JSONArray schoolsArray=new JSONArray(loginResultJson.getString(KEY_SCHOOLS));
@@ -162,7 +163,7 @@ public class NetworkHelper {
                 schoolsList.add(i,school);
             }
             user.setSchoolsList(schoolsList);*/
-            user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
+            //user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
             user.setWow(loginResultJson.getString(Constants.KEY_WOW));
             user.setAvatar(loginResultJson.getString(Constants.KEY_AVATAR));
@@ -208,7 +209,7 @@ public class NetworkHelper {
             }
             user.setSclActs(sclActList);
 
-            DataHolder.getInstance(context).setUser(user);
+            NewDataHolder.getInstance(context).setUser(user);
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }

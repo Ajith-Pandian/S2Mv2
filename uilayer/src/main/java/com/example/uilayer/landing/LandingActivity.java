@@ -34,6 +34,8 @@ import android.widget.Toast;
 
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
+import com.example.domainlayer.models.DbUser;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.tickets.TicketsFragment;
@@ -132,8 +134,11 @@ public class LandingActivity extends AppCompatActivity
 
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(new DataBaseUtil(S2MApplication.getAppContext()).getUser().getSchoolName());
+        if (getSupportActionBar() != null) {
+            DbUser user = NewDataHolder.getInstance(S2MApplication.getAppContext()).getUser();
+            getSupportActionBar().setTitle(user.getSchoolName() != null && !user.getSchoolName().equals("") ? user.getSchoolName() : getResources().getString(R.string.app_name));
+
+        }
         setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
@@ -200,6 +205,7 @@ public class LandingActivity extends AppCompatActivity
         });
         if (new DataBaseUtil(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
             toolbar.setNavigationIcon(null);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 
@@ -342,7 +348,7 @@ public class LandingActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_notification) {
-            startActivity(new Intent(this, NotificationActivity.class));
+           // startActivity(new Intent(this, NotificationActivity.class));
             return true;
         }
 

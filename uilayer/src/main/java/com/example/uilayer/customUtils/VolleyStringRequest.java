@@ -54,6 +54,7 @@ public class VolleyStringRequest extends StringRequest {
         return super.parseNetworkResponse(response);
     }
 
+
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         return super.getHeaders();

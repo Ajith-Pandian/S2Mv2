@@ -1,14 +1,14 @@
 package com.example.uilayer.models;
 
+import java.io.Serializable;
+
 /**
  * Created by thoughtchimp on 12/15/2016.
  */
 
-public class McqOptions {
-    String label, text;
-    boolean isSelected;
-    boolean isRight;
-    boolean isWrong;
+public class McqOptions implements Serializable {
+    private String label, text;
+    private boolean isSelected, isRight, isWrong, isNotSelected;
 
     public boolean isNotSelected() {
         return isNotSelected;
@@ -18,7 +18,6 @@ public class McqOptions {
         isNotSelected = notSelected;
     }
 
-    boolean isNotSelected;
 
     public String getLabel() {
         return label;

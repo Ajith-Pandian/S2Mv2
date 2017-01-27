@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
@@ -32,12 +33,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
@@ -133,15 +137,17 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void getDetails(final int position, final boolean isMile) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
-                MILES_TRAININGS_URL + "/"
-                       // + milestonesList.get(position).getId(),
-                        +"1",
+                BASE_URL + KEY_SECTION + "/" + NewDataHolder.getInstance(context).getCurrentSectionId() + "/milesTrainings/" +
+                        String.valueOf(milestonesList.get(position).getId()),
+                //MILES_TRAININGS_URL + "/"
+                // + milestonesList.get(position).getId(),
+                //   + "1",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("MilesDetails", "onResponse: " + response);
                         DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(response));
-                        openActivity(MilesActivity.class, isMile);
+                        openActivity(MilesActivity.class, isMile, milestonesList.get(position).getId());
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -266,16 +272,17 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
     }
 
-    private void openActivity(Class<?> activityClass, boolean isMile) {
+    private void openActivity(Class<?> activityClass, boolean isMile, int id) {
         Intent intent = new Intent(context, activityClass);
         intent.putExtra("isMile", isMile);
+        intent.putExtra(KEY_ID, id);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
     @Override
     public int getItemCount() {
-        return milestonesList.size() > 0 ? milestonesList.size() : 0;
+        return (milestonesList != null && milestonesList.size() > 0) ? milestonesList.size() : 0;
     }
 
     @Override

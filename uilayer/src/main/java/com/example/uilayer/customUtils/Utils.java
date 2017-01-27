@@ -14,15 +14,23 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.uilayer.R;
+import com.example.uilayer.S2MApplication;
+
+import java.util.zip.Inflater;
 
 /**
  * Created by thoughtchimp on 11/23/2016.
@@ -49,8 +57,11 @@ public class Utils {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixel, context.getResources().getDisplayMetrics());
     }
 
+    public void showToast(String message) {
+        Toast.makeText(S2MApplication.getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
 
-    public  int[] getCenterPoint(Activity activity) {
+    public int[] getCenterPoint(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         final Point size = new Point();
         display.getSize(size);
@@ -199,7 +210,7 @@ public class Utils {
         });
     }
 
-    public  Bitmap getRoundedCornerBitmap(Context context,Bitmap bitmap, int cornerDips, int borderDips) {
+    public Bitmap getRoundedCornerBitmap(Context context, Bitmap bitmap, int cornerDips, int borderDips) {
         Bitmap output;
         output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -208,12 +219,12 @@ public class Utils {
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) borderDips,
-        context.getResources().getDisplayMetrics());
+                context.getResources().getDisplayMetrics());
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        canvas.drawCircle(bitmap.getWidth() / 2,  bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
@@ -222,8 +233,24 @@ public class Utils {
         paint.setColor(context.getResources().getColor(R.color.text_color2));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth((float) borderSizePx);
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,  bitmap.getWidth() / 2, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
 
         return output;
+    }
+
+
+    public View getErrorView(Context context, Drawable errorDrawable, String errorMessage) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View errorView = inflater.inflate(R.layout.layout_error, null, false);
+        ImageView errorImage = (ImageView) errorView.findViewById(R.id.image_error);
+        TextView errorText = (TextView) errorView.findViewById(R.id.text_error);
+        errorImage.setImageDrawable(errorDrawable);
+        errorText.setText(errorMessage);
+        return errorView;
+    }
+
+    public boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 }

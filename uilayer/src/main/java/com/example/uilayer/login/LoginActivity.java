@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 
 import com.example.domainlayer.temp.DataHolder;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.signup.SignUpActivity;
 import com.example.uilayer.landing.LandingActivity;
@@ -77,9 +78,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-        if (DataHolder.getInstance(this).getUser().getLastLogin().equals("null"))
+       /* if (NewDataHolder.getInstance(this).getUser().getLastLogin().equals("null"))
             launchSignUp();
-        else
+        else*/
             launchLanding();
         finish();
     }

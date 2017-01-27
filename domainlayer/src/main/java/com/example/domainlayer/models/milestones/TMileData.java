@@ -11,6 +11,16 @@ public class TMileData {
     private String title, body, type;
     private boolean isSingle;
     private ArrayList<String> urlsList;
+    private ArrayList<String> imagesList;
+
+
+    public ArrayList<String> getImagesList() {
+        return imagesList;
+    }
+
+    public void setImagesList(ArrayList<String> imagesList) {
+        this.imagesList = imagesList;
+    }
 
     public ArrayList<String> getUrlsList() {
         return urlsList;

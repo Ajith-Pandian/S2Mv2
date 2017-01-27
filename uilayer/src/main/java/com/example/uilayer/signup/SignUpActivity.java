@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
@@ -102,7 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
     boolean isSignUp;//true if signup -- false for modification
     VolleyStringRequest updateRequest;
     String title;
-    DataHolder holder;
+    NewDataHolder holder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +137,7 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     launchLanding();
+                    finish();
                 }
             });
             customSchoolLayout.setVisibility(View.GONE);
@@ -167,7 +169,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     void loadData() {
-        holder = DataHolder.getInstance(getApplicationContext());
+        holder = NewDataHolder.getInstance(getApplicationContext());
         textFirstName.setText(holder.getFirstName());
         textLastName.setText(holder.getLastName());
         textEmail.setText(holder.getEmail());

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/S2M.iml" filepath="$PROJECT_DIR$/S2M.iml" />
+      <module fileurl="file://$PROJECT_DIR$/S2Mv2.iml" filepath="$PROJECT_DIR$/S2Mv2.iml" />
       <module fileurl="file://$PROJECT_DIR$/domainlayer/domainlayer.iml" filepath="$PROJECT_DIR$/domainlayer/domainlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/uilayer/uilayer.iml" filepath="$PROJECT_DIR$/uilayer/uilayer.iml" />
     </modules>

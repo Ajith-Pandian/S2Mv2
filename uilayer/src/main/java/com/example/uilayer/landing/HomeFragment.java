@@ -27,6 +27,7 @@ import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
@@ -91,6 +92,7 @@ public class HomeFragment extends Fragment {
         }
     };
     DbUser user;
+    DbUser tempUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,17 +124,15 @@ public class HomeFragment extends Fragment {
                 likeBulletin();
             }
         });
-      /* if((com.example.uilayer.DataHolder.getInstance(getContext()).getUser()
-                .getBulletin()
-                .getLiked())==1)
-                buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
-            else
-                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));*/
+        if (tempUser != null && tempUser.getBulletin().getLiked() == 1)
+            buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
+        else
+            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
         return view;
     }
 
     void loadUserData() throws SQLException {
-        user = new DataBaseUtil(S2MApplication.getAppContext()).getUser();
+        user = new DataBaseUtil(getContext()).getUser();
         String nameString = user.getFirstName() + " " + user.getLastName();
         name.setText(nameString);
         // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
@@ -144,12 +144,17 @@ public class HomeFragment extends Fragment {
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
                 .into(target);
-        String image = DataHolder.getInstance(getActivity()).getUser().getBulletin().getMsg().getImage();
-        if(image!=null)
-        Picasso.with(getActivity())
-                .load(image)
-                .placeholder(R.drawable.ph_bulletin)
-                .into(bulletinImage);
+        tempUser = NewDataHolder.getInstance(getActivity()).getUser();
+        if (tempUser != null) {
+
+            String image = tempUser.getBulletin().getMsg().getImage();
+
+            if (image != null)
+                Picasso.with(getActivity())
+                        .load(image)
+                        .placeholder(R.drawable.ph_bulletin)
+                        .into(bulletinImage);
+        }
         layoutNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,7 +172,7 @@ public class HomeFragment extends Fragment {
         VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
                 + String.valueOf(user.getSchoolId())
                 + ACTIVITIES_URL_SUFFIX
-                + String.valueOf(com.example.uilayer.DataHolder.getInstance(getContext())
+                + String.valueOf(NewDataHolder.getInstance(getContext())
                 .getUser()
                 .getBulletin()
                 .getId())

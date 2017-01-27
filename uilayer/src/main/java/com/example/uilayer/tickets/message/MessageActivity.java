@@ -38,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.Message;
 import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.views.HeightWrapListView;
@@ -336,7 +337,7 @@ public class MessageActivity extends AppCompatActivity {
     void fetchMessages() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         messageDbReference = database.getReference("firebaseexample")
-                .child(String.valueOf(com.example.domainlayer.temp.DataHolder.getInstance(MessageActivity.this).getUser().getSchoolId()))
+                .child(String.valueOf(NewDataHolder.getInstance(MessageActivity.this).getUser().getSchoolId()))
                 .child("convo")
                 .child(ticketId);
         messageDbReference.addValueEventListener(msgsAddValueListener);

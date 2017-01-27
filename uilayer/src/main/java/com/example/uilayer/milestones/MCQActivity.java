@@ -3,6 +3,7 @@ package com.example.uilayer.milestones;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MCQAnswersAdapter;
@@ -49,6 +52,8 @@ import static com.example.domainlayer.Constants.MCQ_RESULT_URL;
 import static com.example.domainlayer.Constants.MCQ_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TRAININGS_SUFFIX;
+import static com.example.domainlayer.Constants.TRAININGS_URL;
 
 public class MCQActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_activity_mcq)
@@ -69,7 +74,6 @@ public class MCQActivity extends AppCompatActivity {
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
     VolleyStringRequest choiceResultRequest;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,57 +85,42 @@ public class MCQActivity extends AppCompatActivity {
         backButton = (ImageButton) toolbar.findViewById(R.id.button_back_toolbar);
         // toolbar.setTitle("Quiz");
         setSupportActionBar(toolbar);
+        if (getIntent() != null) {
+            mcqsArrayList = (ArrayList<MCQs>) getIntent().getSerializableExtra(KEY_QUESTION);
+        }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         toolbarTitle.setText("Quiz");
         //toolbarSubTitle.setText("Training Name");
 
-
-        if (getIntent()!=null) {
-        toolbarSubTitle.setText(getIntent().getStringExtra(KEY_TITLE));
-        }
-        else
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        getMcqs();
-        setListViewState(false);
-
+        loadQuestions();
+        if (getIntent() != null) {
+            toolbarSubTitle.setText(getIntent().getStringExtra(KEY_TITLE));
+        } else
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        setListViewState(true);
     }
 
-    void loadQuestions(String mcqString) {
-        mcqsArrayList = new ArrayList<>();
-        try {
-            JSONArray mcqsJsonArray = new JSONArray(mcqString);
-            for (int i = 0; i < mcqsJsonArray.length(); i++) {
-                JSONObject mcqsJson = mcqsJsonArray.getJSONObject(i);
-                MCQs mcq = new MCQs();
-                mcq.setId(mcqsJson.getInt(KEY_ID));
-                mcq.setAnswer(mcqsJson.getString(KEY_ANSWER));
-                mcq.setQuestion(mcqsJson.getString(KEY_QUESTION));
+    void loadQuestions() {
 
-                JSONObject jObject = new JSONObject(mcqsJson.getString(KEY_OPTIONS));
-                Iterator<?> keys = jObject.keys();
-                ArrayList<McqOptions> optionsList = new ArrayList<>();
-                while (keys.hasNext()) {
-                    McqOptions options = new McqOptions();
-                    String key = (String) keys.next();
-                    String value = jObject.getString(key);
-                    options.setLabel(key);
-                    options.setText(value);
-                    optionsList.add(options);
-                }
-                mcq.setOptions(optionsList);
-                mcqsArrayList.add(i, mcq);
-            }
-
-        } catch (JSONException ex) {
-            Log.e("MCQ", "loadQuestions: ", ex);
-        }
         Log.d("MCQS", "loadQuestions: " + mcqsArrayList.toString());
-        showQuestions(0);
+        if (mcqsArrayList.size() > 0) {
+            showQuestions(0);
+        } else {
+            //setContentView(R.layout.layout_error);
+            setContentView(Utils.getInstance().getErrorView(this, getResources().getDrawable(R.drawable.no_sections), getString(R.string.er_no_mcq)));
+            // Utils.getInstance().showToast();
+        }
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,8 +154,8 @@ public class MCQActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (choiceResultRequest!=null) {
-        choiceResultRequest.removeStatusListener();
+        if (choiceResultRequest != null) {
+            choiceResultRequest.removeStatusListener();
         }
         super.onDestroy();
     }
@@ -186,7 +175,10 @@ public class MCQActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("sendResults", "sendResults: " + e);
         }
-        choiceResultRequest = new VolleyStringRequest(Request.Method.POST, MCQ_RESULT_URL,
+        choiceResultRequest = new VolleyStringRequest(Request.Method.POST,
+                TRAININGS_URL+ NewDataHolder.getInstance(this).getCurrentMilestoneId()+TRAININGS_SUFFIX+"/"+
+                        NewDataHolder.getInstance(this).getCurrentMileId()+"/submitMcqResults",
+               // MCQ_RESULT_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -220,6 +212,7 @@ public class MCQActivity extends AppCompatActivity {
             @Override
             public void onNotFound() {
                 Log.d(TAG, "onNotFound: ");
+
             }
 
             @Override
@@ -325,61 +318,5 @@ public class MCQActivity extends AppCompatActivity {
         }
     }
 
-    void getMcqs() {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET, MCQ_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("MCQ Details", "onResponse: " + response);
-                        loadQuestions(response);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("MilesDetails", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-        };
-
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(milesRequest);
-    }
 
 }

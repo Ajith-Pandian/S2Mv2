@@ -183,8 +183,10 @@ public class OtpFragment extends Fragment {
     void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
-            DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
-            com.example.uilayer.DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+            //DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
+            NewDataHolder.getInstance(getActivity()).saveUserInDb(responseJson);
+            NewDataHolder.getInstance(getActivity()).setLoginResult(responseJson);
+            //com.example.uilayer.DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);
         }
