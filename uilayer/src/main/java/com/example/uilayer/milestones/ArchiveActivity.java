@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
@@ -32,6 +33,9 @@ import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.domainlayer.Constants.TYPE_MILE;
+import static com.example.domainlayer.Constants.TYPE_TRAINING;
 
 public class ArchiveActivity extends AppCompatActivity {
 
@@ -52,7 +56,7 @@ public class ArchiveActivity extends AppCompatActivity {
     TabLayout tabLayout;
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
-    DataHolder dataHolder;
+    NewDataHolder dataHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +75,9 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
-        dataHolder = DataHolder.getInstance(getApplicationContext());
+        dataHolder = NewDataHolder.getInstance(getApplicationContext());
         toolbarTitle.setText("Archive");
-        toolbarSubTitle.setText(dataHolder.getCurrentClass() + " " + dataHolder.getCurrentSection());
+        toolbarSubTitle.setText(dataHolder.getCurrentClassName() + " " + dataHolder.getCurrentSectionName());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -127,11 +131,8 @@ public class ArchiveActivity extends AppCompatActivity {
             archiveRecycler.setLayoutManager(mLayoutManager);
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(archiveRecycler.getContext(),
                     mLayoutManager.getOrientation());
-            int isTraining;
-            if (getArguments().getBoolean(IS_MILE))
-                isTraining = 0;
-            else
-                isTraining = 1;
+            boolean isTraining;
+            isTraining = getArguments().getBoolean(IS_MILE);
             archiveRecycler.addItemDecoration(mDividerItemDecoration);
             milestonesAdapter = new MilesAdapter(getContext(), getMilesOrTrainingsList(isTraining),
                     DataHolder.getInstance(getActivity()).getUndoableId());
@@ -139,11 +140,17 @@ public class ArchiveActivity extends AppCompatActivity {
             return rootView;
         }
 
-        ArrayList<TMiles> getMilesOrTrainingsList(int type) {
+        ArrayList<TMiles> getMilesOrTrainingsList(boolean isMile) {
+            String type = "";
+            if (isMile)
+                type = TYPE_MILE;
+            else
+                type = TYPE_TRAINING;
+
             ArrayList<TMiles> actualList = DataHolder.getInstance(getActivity()).getArchiveData();
             ArrayList<TMiles> filteredList = new ArrayList<>();
             for (int i = 0; i < actualList.size(); i++) {
-                if (actualList.get(i).getIsTraining() == type)
+                if (actualList.get(i).getType().equals(type))
                     filteredList.add(actualList.get(i));
             }
             Collections.reverse(filteredList);

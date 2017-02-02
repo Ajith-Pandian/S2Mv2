@@ -13,24 +13,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import static com.example.domainlayer.Constants.KEY_BODY;
-import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COMPLETED;
-import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
+import static com.example.domainlayer.Constants.KEY_CLASS_NAME;
+import static com.example.domainlayer.Constants.KEY_MILES_COMPLETED_COUNT;
+import static com.example.domainlayer.Constants.KEY_MILES_COUNT;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_MILES_COMPLETION_COUNT;
+import static com.example.domainlayer.Constants.KEY_SECTION_NAME;
 import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.KEY_TOTAL;
-import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.SPACE;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
 import static com.example.domainlayer.Constants.TYPE_IMAGE;
-import static com.example.domainlayer.Constants.TYPE_TEXT;
 import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 /**
@@ -47,11 +44,10 @@ public class DataParser {
                 JSONObject milesDatObject = sectionsArray.getJSONObject(i);
                 Sections section
                         = new Sections(milesDatObject.getInt(KEY_ID),
-                        (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
-                        (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
-                        milesDatObject.getInt(KEY_COMPLETED),
-                        milesDatObject.getInt(KEY_TOTAL),
-                        milesDatObject.getInt(KEY_SCHOOL_ID),
+                        (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS_NAME)),
+                        (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION_NAME)),
+                        milesDatObject.getInt(KEY_MILES_COMPLETION_COUNT),
+                        milesDatObject.getInt(KEY_MILES_COUNT),
                         (Constants.KEY_MILESTONE_PREFIX + SPACE + milesDatObject.getString(KEY_MILESTONE_NAME)),
                         milesDatObject.getInt(KEY_MILESTONE_ID));
                 sectionsArrayList.add(section);
@@ -77,7 +73,7 @@ public class DataParser {
                 );
                 ArrayList<String> urlsList = new ArrayList<>();
                 ArrayList<String> imagesList = new ArrayList<>();
-                if (type.equals(TYPE_VIDEO)||type.equals(TYPE_AUDIO)) {
+                if (type.equals(TYPE_VIDEO) || type.equals(TYPE_AUDIO)) {
                     JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
 
                     for (int j = 0; j < urlsArray.length(); j++) {
@@ -91,9 +87,7 @@ public class DataParser {
                     }
                     mileData.setUrlsList(urlsList);
                     mileData.setImagesList(imagesList);
-                }else
-                if(type.equals(TYPE_IMAGE))
-                {
+                } else if (type.equals(TYPE_IMAGE)) {
                     JSONArray urlsArray = new JSONArray(milesDatObject.getString(KEY_BODY));
 
                     for (int j = 0; j < urlsArray.length(); j++) {
@@ -102,8 +96,7 @@ public class DataParser {
                         urlsList.add(url);
                     }
                     mileData.setUrlsList(urlsList);
-                }
-                else
+                } else
                     mileData.setBody(milesDatObject.getString(KEY_BODY));
                 if (urlsList.size() == 1)
                     mileData.setSingle(true);
@@ -116,4 +109,6 @@ public class DataParser {
 
         return sectionsArrayList;
     }
+
+
 }

@@ -60,7 +60,7 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
     public void onBindViewHolder(final SchoolsAdapter.ViewHolder holder, final int position) {
         Schools school = schoolsList.get(position);
         holder.schoolName.setText(school.getName());
-        holder.schoolAddress.setText(school.getAddress());
+        holder.schoolAddress.setText(school.getLocality());
 
         holder.schoolLayout.setOnClickListener(new View.OnClickListener() {
             @Override

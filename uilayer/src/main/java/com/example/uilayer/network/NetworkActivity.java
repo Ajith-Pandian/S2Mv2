@@ -14,9 +14,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.domainlayer.temp.DataParser;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
@@ -33,8 +37,11 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
+import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.NETWORK_URL_SUFFIX;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -54,14 +61,15 @@ public class NetworkActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
-        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5,1,true));
+        networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
 
         getNetworkProfileInfo();
     }
 
+
     void getNetworkProfileInfo() {
-        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL
-                + NewDataHolder.getInstance(this).getUser().getSchoolId() + NETWORK_URL_SUFFIX,
+        networkRequest = new VolleyStringRequest(Request.Method.GET, Constants.SCHOOLS_URL +
+                SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_USERS,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -103,20 +111,7 @@ public class NetworkActivity extends AppCompatActivity {
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
+        });
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(networkRequest);
 
     }
@@ -124,26 +119,23 @@ public class NetworkActivity extends AppCompatActivity {
 
     public void setNetworkProfiles(String profilesString) {
 
-        ArrayList<User> usersList = new ArrayList<>();
+        ArrayList<DbUser> usersList = new ArrayList<>();
         try {
             JSONArray profilesArray = new JSONArray(profilesString);
             for (int i = 0; i < profilesArray.length(); i++) {
                 JSONObject userJson = profilesArray.getJSONObject(i);
-                User user = new User();
-                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+                DbUser user = new DbUser();
                 user.setId(userJson.getInt(Constants.KEY_ID));
+                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
                 user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
                 user.setEmail(userJson.getString(Constants.KEY_EMAIL));
-                user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-                //  user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
-                // user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
-                user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
-
-                user.setWow(userJson.getString(Constants.KEY_WOW));
-                user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
-                user.setMiles(userJson.getString(Constants.KEY_MILES));
-                user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
-                 //user.setType(userJson.getString(Constants.KEY_TYPE));
+                user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
+                user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
+                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
+                user.setMiles(userJson.getString(Constants.KEY_MILES_COMPLETION_COUNT));
+                user.setTrainings(userJson.getString(Constants.KEY_TRAININGS_COMPLETION_COUNT));
+                user.setType(userJson.getString(Constants.KEY_USER_TYPE));
+                user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS)));
                 usersList.add(i, user);
             }
             //new DataBaseUtil(this).setUser(usersList);

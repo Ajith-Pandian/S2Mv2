@@ -75,7 +75,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".milestones.MilestonesActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".milestones.TrainingActivity"

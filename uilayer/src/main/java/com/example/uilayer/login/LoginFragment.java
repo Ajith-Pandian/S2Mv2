@@ -35,7 +35,6 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.SharedPreferenceHelper;
@@ -54,6 +53,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.example.domainlayer.Constants.COUNTRY_CODE;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 
@@ -141,13 +141,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void sendOTP(final boolean isMail, final String text) {
 
 
-        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.VERIFY_URL,
+        VolleyStringRequest loginRequest = new VolleyStringRequest(Request.Method.POST, Constants.VALIDATE_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("log", "onResponse: " + response);
-                        storeResponse(response);
+                        Log.d("loginRequest", "onResponse: " + response);
+                       // storeResponse(response);
                         if (mListener != null) {
                             mListener.onEnteredNumber(response);
                         }
@@ -157,7 +157,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("log", "onErrorResponsssse: " + error);
+                        Log.d("loginRequest", "onErrorResponsssse: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
@@ -192,9 +192,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                 if (isMail)
-                    params.put(Constants.KEY_EMAIL, text);
+                    params.put(Constants.KEY_USER_NAME, text);
                 else
-                    params.put(Constants.KEY_MOBILE, text);
+                    params.put(Constants.KEY_USER_NAME, Constants.COUNTRY_CODE + text);
                 return params;
             }
         };
@@ -202,28 +202,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         loginRequest.setRetryPolicy(policy);
         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(loginRequest);
+        if (isMail)
+            NewDataHolder.getInstance(getContext()).setEnteredUserName(text);
+        else
+            NewDataHolder.getInstance(getContext()).setEnteredUserName(Constants.COUNTRY_CODE + text);
 
     }
-
-
-    void storeResponse(String response) {
-        try {
-            JSONObject responseJson = new JSONObject(response);
-
-            SharedPreferenceHelper.setSharedPreferenceString(getContext(),
-                    KEY_DEVICE_TYPE
-                    ,responseJson.getString(KEY_DEVICE_TYPE));
-            SharedPreferenceHelper.setSharedPreferenceString(getContext(),
-                    KEY_DEVICE_TOKEN
-                    ,responseJson.getString(KEY_DEVICE_TOKEN));
-           // DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
-            NewDataHolder.getInstance(getActivity()).setVerifyDetails(responseJson);
-
-            Log.d("OTP", "storeResponse: " + responseJson.getString(Constants.KEY_OTP));
-        } catch (JSONException ex) {
-        }
-    }
-
 
     @Override
     public void onAttach(Context context) {

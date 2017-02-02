@@ -218,8 +218,10 @@ public class Utils {
         final int color = 0xff424242;
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) borderDips,
-                context.getResources().getDisplayMetrics());
+        int borderSizePx = 0;
+        if (context != null)
+            borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) borderDips,
+                    context.getResources().getDisplayMetrics());
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);

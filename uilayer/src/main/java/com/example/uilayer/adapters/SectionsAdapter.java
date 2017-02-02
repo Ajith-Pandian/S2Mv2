@@ -2,7 +2,6 @@ package com.example.uilayer.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -17,15 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
@@ -42,26 +42,29 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_AUDIO_POSTER;
+import static com.example.domainlayer.Constants.KEY_AUDIO_URL;
+import static com.example.domainlayer.Constants.KEY_BODY;
+import static com.example.domainlayer.Constants.KEY_CONTENT;
+import static com.example.domainlayer.Constants.KEY_CONTENT_DATA;
 import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
-import static com.example.domainlayer.Constants.KEY_NOTE;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION;
-import static com.example.domainlayer.Constants.KEY_SECTION_ID;
+import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_VIDEO_ID;
+import static com.example.domainlayer.Constants.KEY_VIDEO_POSTER;
+import static com.example.domainlayer.Constants.KEY_VIDEO_POSTER_HD;
+import static com.example.domainlayer.Constants.SEPERATOR;
+import static com.example.domainlayer.Constants.TYPE_AUDIO;
+import static com.example.domainlayer.Constants.TYPE_IMAGE;
+import static com.example.domainlayer.Constants.TYPE_TEXT;
+import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 
 /**
@@ -152,16 +155,15 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
     private void getOrderedMilestoneDetails(final int position) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
-                Constants.BASE_URL
-                        + KEY_SECTION
-                        + "/"+String.valueOf(sectionDetailsList.get(position).getId())
-                        + Constants.MILE_TRAININGS_SUFFIX,
+                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
+                        + KEY_SECTIONS + SEPERATOR
+                        + String.valueOf(sectionDetailsList.get(position).getId()) + SEPERATOR
+                        + KEY_CONTENT,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Miles", "onResponse: " + response);
                         saveMiles(position, response);
-
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -199,7 +201,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
+        }); /*{
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
@@ -217,7 +219,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
                 return header;
             }
-        };
+        };*/
 
         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
     }
@@ -229,10 +231,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         int milestoneId = sectionDetailsList.get(position).getMilestoneId();
         int sectionId = sectionDetailsList.get(position).getId();
         final Intent intent = new Intent(context, MilestonesActivity.class);
-        DataHolder.getInstance(context).setCurrentClass(_class);
-        DataHolder.getInstance(context).setCurrentSection(section);
         NewDataHolder.getInstance(context).setCurrentSectionId(sectionId);
         NewDataHolder.getInstance(context).setCurrentMilestoneId(milestoneId);
+        NewDataHolder.getInstance(context).setCurrentClassName(_class);
+        NewDataHolder.getInstance(context).setCurrentSectionName(section);
         DataHolder.getInstance(context).setCurrentMileTitle(title);
         DataHolder.getInstance(context).setCurrentMilestoneID(milestoneId);
         intent.putExtra("class_name", _class);
@@ -242,31 +244,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     }
 
     private void saveMiles(int position, String milesResponse) {
-
-        TMiles miles = null;
-        ArrayList<TMiles> milesList = new ArrayList<>();
-        try {
-
-            JSONArray milesArray = new JSONArray(milesResponse);
-            for (int j = 0; j < milesArray.length(); j++) {
-                JSONObject milesJson = milesArray.getJSONObject(j);
-                miles = new TMiles(milesJson.getInt(KEY_ID),
-                        milesJson.getInt(KEY_MILESTONE_ID),
-                        milesJson.getInt(KEY_MILE_INDEX),
-                        milesJson.getInt(KEY_IS_TRAINING),
-                        milesJson.getString(KEY_TITLE),
-                        milesJson.getString(KEY_NOTE),
-                        milesJson.getString(KEY_TYPE)
-                );
-                milesList.add(j, miles);
-            }
-
-            DataHolder.getInstance(context).setMilesList(milesList);
-            openMilestonesActivity(position);
-
-        } catch (JSONException ex) {
-            Log.e("Save miles", "saveMiles: ", ex);
-        }
+        ArrayList<TMiles> milesList = new NewDataParser().getMiles(milesResponse);
+        NewDataHolder.getInstance(context).setMilesList(milesList);
+        openMilestonesActivity(position);
     }
 
     @Override

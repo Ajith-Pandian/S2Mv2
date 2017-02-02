@@ -25,12 +25,22 @@
     <string name="text_video">Video</string>
     <string name="text_document">Document</string>
 
+    <string name="menu_give_feedback">Give Feedback</string>
+    <string name="menu_share">Share Picture/Video</string>
+    <string name="menu_call_admin">Call Admin</string>
+
 
     <string-array name="attachment_menu">
         <item >@string/text_image</item>
         <item >@string/text_audio</item>
         <item >@string/text_video</item>
         <item >@string/text_document</item>
+    </string-array>
+
+    <string-array name="home_menu">
+        <item >@string/menu_give_feedback</item>
+        <item >@string/menu_share</item>
+        <item >@string/menu_call_admin</item>
     </string-array>
     //ImageButton Content Description
     <string name="phone_number_button">Phone number button</string>

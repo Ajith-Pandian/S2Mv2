@@ -79,10 +79,10 @@ public class MilesVideoFragment extends Fragment {
                 public void onClick(View view) {
                     final String DEVELOPER_KEY = "AIzaSyD9lGPATA3aXGnl0GWMICk1Y883TArl30Y";
                     startActivity(YouTubeIntents.createPlayVideoIntentWithOptions(getActivity(),
-                             videoList.get(0).getUrl().split("=")[1],true,true));
+                             videoList.get(0).getVideoId(),true,true));
                 }
             });
-            String url="https://img.youtube.com/vi/"+videoList.get(0).getUrl().split("=")[1]+"/0.jpg";
+            String url="https://img.youtube.com/vi/"+videoList.get(0).getVideoId()+"/0.jpg";
             Picasso.with(getActivity())
                     .load(url)
                     .placeholder(R.drawable.ph_video_large)

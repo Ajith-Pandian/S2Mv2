@@ -32,9 +32,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
@@ -64,7 +66,10 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.FEEDBACK_CREATE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ANSWER;
+import static com.example.domainlayer.Constants.KEY_COMPLETE;
+import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_DOWN;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
@@ -72,17 +77,19 @@ import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_QUESTION;
 import static com.example.domainlayer.Constants.KEY_REASON;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_THUMBS;
+import static com.example.domainlayer.Constants.KEY_THUMBS_DOWN;
+import static com.example.domainlayer.Constants.KEY_THUMBS_UP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
+import static com.example.domainlayer.Constants.KEY_UP;
 import static com.example.domainlayer.Constants.MCQS_SUFFIX;
 import static com.example.domainlayer.Constants.MCQ_URL;
 import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.THUMBS_DOWN;
-import static com.example.domainlayer.Constants.THUMBS_UP;
 import static com.example.domainlayer.Constants.TRAININGS_SUFFIX;
 import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
@@ -269,7 +276,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         selected_option = -1;
     }
 
-    DataHolder holder;
+    NewDataHolder holder;
     int thisMileId;
 
     @Override
@@ -293,7 +300,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         setSupportActionBar(toolbar);
 
 
-        holder = DataHolder.getInstance(this);
+        holder = NewDataHolder.getInstance(this);
         if (getIntent().getBooleanExtra("isMile", false)) {
             toolbarTitle.setText("Miles");
             isMile = true;
@@ -304,7 +311,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
         thisMileId = getIntent().getIntExtra(KEY_ID, -1);
 
-        String title = holder.getCurrentClass() + " " + holder.getCurrentSection();
+        String title = holder.getCurrentClassName() + " " + holder.getCurrentSectionName();
         toolbarSubTitle.setText(title);
 
         forgroundLayout.getForeground().setAlpha(0);
@@ -337,9 +344,6 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             public void onClick(View view) {
                 if (selected_option != -1) {
                     sendFeedback();
-                    showToast("Submitted SuccessFully");
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_HIDDEN);
                     // finish();
                 } else
                     showToast("Please select one option to submit");
@@ -351,7 +355,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     void sendFeedback() {
 
-        VolleyStringRequest feedbackRequest = new VolleyStringRequest(Request.Method.POST, FEEDBACK_CREATE_URL,
+        VolleyStringRequest feedbackRequest = new VolleyStringRequest(Request.Method.POST,
+                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
+                        + KEY_SECTIONS + SEPERATOR
+                        + String.valueOf(NewDataHolder.getInstance(this).getCurrentSectionId()) + SEPERATOR
+                        + KEY_CONTENT + SEPERATOR + thisMileId + SEPERATOR + KEY_COMPLETE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -359,6 +367,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                         showToast("Submitted successfully ");
                         BottomSheetBehavior.from(bottomSheet)
                                 .setState(BottomSheetBehavior.STATE_HIDDEN);
+                        finish();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -400,36 +409,27 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                 String thumbs;
-                int isTraining;
+                /*int isTraining;
                 if (isMile)
                     isTraining = 0;
                 else
                     isTraining = 1;
-                NewDataHolder holder=NewDataHolder.getInstance(MilesActivity.this);
+                NewDataHolder holder = NewDataHolder.getInstance(MilesActivity.this);
                 params.put(KEY_IS_TRAINING, String.valueOf(isTraining));
                 params.put(KEY_MILE_ID, String.valueOf(holder.getCurrentMileId()));
-                params.put(KEY_SCHOOL_ID,  String.valueOf(holder.getUser().getSchoolId()));
-                params.put(KEY_SECTION_ID, String.valueOf(holder.getCurrentSectionId()));
+                params.put(KEY_SCHOOL_ID, String.valueOf(holder.getUser().getSchoolId()));
+                params.put(KEY_SECTION_ID, String.valueOf(holder.getCurrentSectionId()));*/
+
                 if (isThumbsUp)
-                    thumbs = THUMBS_UP;
+                    thumbs = KEY_UP;
                 else
-                    thumbs = THUMBS_DOWN;
+                    thumbs = KEY_DOWN;
                 params.put(KEY_THUMBS, thumbs);
-
-
                 params.put(KEY_REASON, options.get(selected_option));
-                Log.d("PARAMS", "getParams: "+params.toString());
+                Log.d("PARAMS", "getParams: " + params.toString());
                 return params;
             }
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-
-                return header;
-            }
 
         };
 
@@ -611,7 +611,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     }
 
     void addFragments() {
-        mileDataArrayList = DataHolder.getInstance(getApplicationContext()).getCurrentMileData();
+        mileDataArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesDataList();
         Fragment fragment = null;
         for (int i = 0; i < mileDataArrayList.size(); i++) {
             TMileData mileData = mileDataArrayList.get(i);
@@ -624,10 +624,14 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 case TYPE_VIDEO:
 
                     ArrayList<VideoMiles> milesList = new ArrayList<>();
-                    for (int j = 0; j < mileData.getUrlsList().size(); j++) {
-                        milesList.add(new VideoMiles(j, j, mileData.getUrlsList().get(j)));
+                    for (int j = 0; j < mileData.getVideoIds().size(); j++) {
+                        milesList.add(
+                                new VideoMiles(j,
+                                        mileData.getVideoIds().get(j),
+                                        mileData.getImagesList().get(j),
+                                        mileData.getHdImagesList().get(j)));
                     }
-                    fragment = MilesVideoFragment.newInstance("VIDEOS", milesList);
+                    fragment = MilesVideoFragment.newInstance(mileData.getTitle(), milesList);
                     break;
                 case TYPE_AUDIO:
                     ArrayList<AudioMiles> audioMilesList = new ArrayList<>();
@@ -636,14 +640,14 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                         String imageUrl = mileData.getImagesList().get(j);
                         audioMilesList.add(new AudioMiles(j, j, imageUrl, audioUrl));
                     }
-                    fragment = MilesAudioFragment.newInstance("AUDIO", audioMilesList);
+                    fragment = MilesAudioFragment.newInstance(mileData.getTitle(), audioMilesList);
                     break;
                 case TYPE_IMAGE:
                     ArrayList<ImageMiles> imageMilesList = new ArrayList<>();
                     for (int j = 0; j < mileData.getUrlsList().size(); j++) {
                         imageMilesList.add(new ImageMiles(j, j, mileData.getTitle(), mileData.getUrlsList().get(j)));
                     }
-                    fragment = MilesImageFragment.newInstance("IMAGES", imageMilesList);
+                    fragment = MilesImageFragment.newInstance(mileData.getTitle(), imageMilesList);
                     break;
 
             }

@@ -41,7 +41,7 @@ public class VideoMilesAdapter extends RecyclerView.Adapter<VideoMilesAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         VideoMiles mile = milesList.get(position);
-        String url="https://img.youtube.com/vi/"+mile.getUrl().split("=")[1]+"/0.jpg";
+        String url = "https://img.youtube.com/vi/" + mile.getVideoId() + "/0.jpg";
         Picasso.with(context).load(url).into(holder.mileImage);
     }
 

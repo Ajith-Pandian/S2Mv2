@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.transition.Fade;
 import android.util.Log;
 
-import com.example.domainlayer.database.DataBaseUtil;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.helpers.DialogHelper;
 import com.example.uilayer.helpers.S2mAlertDialog;
 import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.login.LoginActivity;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 public class SplashActivity extends AppCompatActivity {
@@ -30,13 +28,18 @@ public class SplashActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_spash);
         //setupWindowAnimations();
 
-        Log.d("FCM", "TOKEN: "+ FirebaseInstanceId.getInstance().getToken());
-        if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null) {
+        Log.d("FCM", "TOKEN: " + FirebaseInstanceId.getInstance().getToken());
+        /*if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null) {
             startNextActivity(LoginActivity.class);
         } else {
             getLoginDetails();
-        }
+        } */
 
+        if (SharedPreferenceHelper.getConfiguration().equals("")) {
+            NetworkHelper helper = new NetworkHelper(this);
+            helper.downloadConfiguration();
+        }
+        startNextActivity(LoginActivity.class);
     }
 
     void getLoginDetails() {

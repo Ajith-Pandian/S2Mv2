@@ -58,9 +58,26 @@ public class SharedPreferenceHelper {
         return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ACCESS_TOKEN, "");
     }
 
+    public static void setSchoolName(String schoolName) {
+        setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, schoolName);
+    }
+
+    public static String getSchoolName() {
+        return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, "");
+    }
+
     public static void setAccessToken(String accessToken) {
         setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ACCESS_TOKEN, accessToken);
     }
+
+    static void storeConfiguration(String configuration) {
+        setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_CONFIGURATION, configuration);
+    }
+
+    public static String getConfiguration() {
+        return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_CONFIGURATION, "");
+    }
+
 
     /**
      * Set a Boolean shared preference

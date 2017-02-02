@@ -7,21 +7,14 @@ import java.io.Serializable;
  */
 
 public class VideoMiles implements Serializable {
-    int id, position;
-    String url;
+    int  position;
+    String videoId,imageUrl,hdImageUrl;
 
-    public VideoMiles(int position, int id, String url) {
+    public VideoMiles(int position, String videoId, String imageUrl, String hdImageUrl) {
         this.position = position;
-        this.id = id;
-        this.url = url;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.videoId = videoId;
+        this.imageUrl = imageUrl;
+        this.hdImageUrl = hdImageUrl;
     }
 
     public int getPosition() {
@@ -32,12 +25,27 @@ public class VideoMiles implements Serializable {
         this.position = position;
     }
 
-    public String getUrl() {
-        return url;
+    public String getVideoId() {
+        return videoId;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getHdImageUrl() {
+        return hdImageUrl;
+    }
+
+    public void setHdImageUrl(String hdImageUrl) {
+        this.hdImageUrl = hdImageUrl;
+    }
 }

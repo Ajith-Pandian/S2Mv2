@@ -3,6 +3,7 @@ package com.example.uilayer.milestones;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,16 +11,19 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.NewDataParser;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
@@ -36,20 +40,23 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.ARCHIVE_URL;
 import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ARCHIVE;
+import static com.example.domainlayer.Constants.KEY_ARCHIVED;
+import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
-import static com.example.domainlayer.Constants.KEY_NOTE;
+import static com.example.domainlayer.Constants.KEY_CONTENT_INDEX;
+import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
+import static com.example.domainlayer.Constants.KEY_MILES;
+import static com.example.domainlayer.Constants.KEY_MILES_TRAININGS;
 import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_UNDOABLE_ID;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -57,8 +64,7 @@ public class MilestonesActivity extends AppCompatActivity {
     @BindView(R.id.recycler_milestones)
     RecyclerView recyclerView;
     MilesAdapter milestonesAdapter;
-    boolean isBottom;
-    String sectionName, className;
+    String sectionName = "", className = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,20 +77,22 @@ public class MilestonesActivity extends AppCompatActivity {
             Intent intent = getIntent();
             className = intent.getStringExtra("class_name");
             sectionName = intent.getStringExtra("section_name");
-            getSupportActionBar().setTitle(className + " " + sectionName);
         }
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setTitle(className + " " + sectionName);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        // loadAdapterItems();
 
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        milestonesAdapter = new MilesAdapter(this, DataHolder.getInstance(getApplicationContext()).getMilesList(), -1);
+        milestonesAdapter = new MilesAdapter(this, NewDataHolder.getInstance(getApplicationContext()).getMilesList(), -1);
 
         recyclerView.setAdapter(milestonesAdapter);
     }
@@ -115,37 +123,28 @@ public class MilestonesActivity extends AppCompatActivity {
 
     void getArchiveData() {
         VolleyStringRequest archiveRequest = new VolleyStringRequest(Request.Method.GET,
-                //ARCHIVE_URL,
-                BASE_URL + KEY_SECTION + "/" + NewDataHolder.getInstance(this).getCurrentSectionId() + "/archiveMilesTrainings?schoolId="
-                        + NewDataHolder.getInstance(this).getUser().getSchoolId(),
+
+                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
+                        + KEY_SECTIONS + SEPERATOR
+                        + String.valueOf(NewDataHolder.getInstance(this).getCurrentSectionId()) + SEPERATOR
+                        + KEY_CONTENT + SEPERATOR + KEY_ARCHIVED,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("archiveRequest", "onResponse: " + response);
 
                         try {
-                            JSONObject introResponse = new JSONObject(response);
-                            TMiles miles = null;
-                            ArrayList<TMiles> archiveList = new ArrayList<>();
-                            JSONArray archiveArray = new JSONArray(introResponse.getString(KEY_ARCHIVE));
-                            for (int j = 0; j < archiveArray.length(); j++) {
-                                JSONObject milesJson = archiveArray.getJSONObject(j);
-                                miles = new TMiles(milesJson.getInt(KEY_ID),
-                                        milesJson.getInt(KEY_MILESTONE_ID),
-                                        milesJson.getInt(KEY_MILE_INDEX),
-                                        milesJson.getInt(KEY_IS_TRAINING),
-                                        milesJson.getString(KEY_TITLE),
-                                        milesJson.getString(KEY_NOTE),
-                                        milesJson.getString(KEY_TYPE)
-                                );
-                                archiveList.add(j, miles);
-                            }
+                            JSONObject archiveResponse = new JSONObject(response);
 
+                            ArrayList<TMiles> archiveList = new NewDataParser().getMiles(archiveResponse.getString(KEY_MILES_TRAININGS));
                             com.example.uilayer.DataHolder.getInstance(getApplicationContext()).
                                     setArchiveData(archiveList);
-                            com.example.uilayer.DataHolder.getInstance(getApplicationContext()).
-                                    setUndoableId(introResponse.getInt(KEY_UNDOABLE_ID));
-                            startActivity(new Intent(MilestonesActivity.this, ArchiveActivity.class));
+
+                            if (archiveList.size() > 0) {
+                                startActivity(new Intent(MilestonesActivity.this, ArchiveActivity.class));
+                            } else
+                                Toast.makeText(MilestonesActivity.this, "No Archives", Toast.LENGTH_SHORT).show();
+
 
                         } catch (JSONException ex) {
                             Log.e("archiveRequest", "onResponse: ", ex);
@@ -186,35 +185,10 @@ public class MilestonesActivity extends AppCompatActivity {
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-        };
+        });
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(archiveRequest);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
-    void loadAdapterItems() {
-        ArrayList<Milestones> list = new ArrayList<>();
-        list.add(new Mile(1, 1, "Mile", "Mile one"));
-        list.add(new Mile(1, 2, "Mile", "Mile two"));
-        list.add(new Training(1, 2, "Training", "Training one"));
-        list.add(new Training(1, 2, "Training", "Training two"));
-        list.add(new Mile(1, 3, "Mile", "Mile three"));
-        list.add(new Training(1, 2, "Training", "Training three"));
-        list.add(new Mile(1, 4, "Mile", "Mile four"));
-        list.add(new Mile(1, 5, "Mile", "Mile five"));
-        // milestonesAdapter = new MilesAdapter(getApplicationContext(), list);
-    }
 }

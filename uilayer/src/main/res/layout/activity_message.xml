@@ -22,6 +22,7 @@
     <com.example.uilayer.customUtils.views.HeightWrapListView
         android:id="@+id/list_attachments"
         android:scrollbars="none"
+        hasExtraSpace="false"
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

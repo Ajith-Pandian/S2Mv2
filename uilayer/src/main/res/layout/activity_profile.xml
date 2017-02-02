@@ -49,6 +49,7 @@
             android:layout_height="45dp"
             android:background="@color/colorPrimary"
             android:orientation="horizontal"
+            android:id="@+id/layout_teacher_details"
             android:theme="@style/AppTheme.PopupOverlay">
 
             <LinearLayout
@@ -176,6 +177,8 @@
             app:tabIndicatorColor="@color/green6"
             app:tabIndicatorHeight="3dp"
             app:tabPaddingEnd="-1dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
             app:tabPaddingStart="-1dp"
             app:tabSelectedTextColor="@color/colorPrimary"
             app:tabTextAppearance="@style/CustomTabText" />

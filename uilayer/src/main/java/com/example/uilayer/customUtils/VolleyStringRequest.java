@@ -1,5 +1,6 @@
 package com.example.uilayer.customUtils;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -7,7 +8,9 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.utils.HttpStatusCodes;
+import com.example.uilayer.SharedPreferenceHelper;
 
 import java.util.Map;
 
@@ -40,7 +43,7 @@ public class VolleyStringRequest extends StringRequest {
         return mStatusCodeListener;
     }
 
-    public  void removeStatusListener() {
+    public void removeStatusListener() {
         mStatusCodeListener = null;
     }
 
@@ -57,7 +60,10 @@ public class VolleyStringRequest extends StringRequest {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return super.getHeaders();
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put(Constants.KEY_ACCEPT, Constants.HEADER_ACCEPT);
+        headers.put(Constants.KEY_AUTHORIZATION, SharedPreferenceHelper.getAccessToken());
+        return headers;
     }
 
     private void checkStatusCode(int statusCode) {
@@ -81,7 +87,7 @@ public class VolleyStringRequest extends StringRequest {
     }
 
     public interface StatusCodeListener {
-         void onBadRequest();
+        void onBadRequest();
 
         void onUnauthorized();
 
@@ -91,7 +97,6 @@ public class VolleyStringRequest extends StringRequest {
 
         void onTimeout();
     }
-
 
 
     public static class VolleyErrListener implements Response.ErrorListener {

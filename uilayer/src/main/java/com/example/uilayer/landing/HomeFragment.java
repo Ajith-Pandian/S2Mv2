@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment {
     Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getContext(), bitmap, 20, 1));
+            profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(), bitmap, 20, 1));
         }
 
         @Override
@@ -124,10 +124,10 @@ public class HomeFragment extends Fragment {
                 likeBulletin();
             }
         });
-        if (tempUser != null && tempUser.getBulletin().getLiked() == 1)
+/*        if (tempUser != null && tempUser.getBulletin().isLiked())
             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
         else
-            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));*/
         return view;
     }
 
@@ -147,9 +147,10 @@ public class HomeFragment extends Fragment {
         tempUser = NewDataHolder.getInstance(getActivity()).getUser();
         if (tempUser != null) {
 
-            String image = tempUser.getBulletin().getMsg().getImage();
+            //String image = tempUser.getBulletin().getMsg().getImage();
+            String image = "";
 
-            if (image != null)
+            if (image != null&&!image.equals(""))
                 Picasso.with(getActivity())
                         .load(image)
                         .placeholder(R.drawable.ph_bulletin)
@@ -172,10 +173,7 @@ public class HomeFragment extends Fragment {
         VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
                 + String.valueOf(user.getSchoolId())
                 + ACTIVITIES_URL_SUFFIX
-                + String.valueOf(NewDataHolder.getInstance(getContext())
-                .getUser()
-                .getBulletin()
-                .getId())
+                + String.valueOf(NewDataHolder.getInstance(getContext()).getUser().getBulletin().getId())
                 + ACTIVITY_LIKE_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override

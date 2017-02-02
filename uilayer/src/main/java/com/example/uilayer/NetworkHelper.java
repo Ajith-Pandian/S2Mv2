@@ -35,6 +35,7 @@ import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IMAGE;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
+import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
@@ -60,9 +61,57 @@ public class NetworkHelper {
         this.networkListener = null;
     }
 
+    public void downloadConfiguration() {
+        VolleyStringRequest configurationRequest = new VolleyStringRequest(Request.Method.GET, Constants.CONFIGURATION_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        Log.d("configurationRequest", "onResponse " + response);
+                        SharedPreferenceHelper.storeConfiguration(response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("configurationRequest", "onError: " + error);
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(configurationRequest);
+    }
+
     public void getUserDetails(NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.GET, Constants.USER_DETAILS_URL + String.valueOf(new DataBaseUtil(context).getUser().getId()),
+        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.GET, Constants.SCHOOLS_URL + String.valueOf(new DataBaseUtil(context).getUser().getSchoolId()),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -122,8 +171,8 @@ public class NetworkHelper {
     private void storeResponse(String response) {
         try {
             JSONObject responseJson = new JSONObject(response);
-            com.example.domainlayer.temp.DataHolder.getInstance(context).saveUserDetails(responseJson);
-            saveUserDetailsForThisSession(responseJson);
+            // com.example.domainlayer.temp.DataHolder.getInstance(context).saveUserDetails(responseJson);
+            //saveUserDetailsForThisSession(responseJson);
         } catch (JSONException ex) {
             Log.e("networkHelper", "storeResponse: ", ex);
         }
@@ -134,12 +183,12 @@ public class NetworkHelper {
     }
 
 
-    public void saveUserDetailsForThisSession(JSONObject loginResultJson)
-    {
+
+    public void saveUserDetailsForThisSession(JSONObject loginResultJson) {
         DbUser user = new DbUser();
         DataParser dataParser = new DataParser();
         ArrayList<Sections> sectionsList = new ArrayList<>();
-        ArrayList <SclActs> sclActList = new ArrayList<>();
+        ArrayList<SclActs> sclActList = new ArrayList<>();
         try {
             user.setFirstName(loginResultJson.getString(Constants.KEY_FIRST_NAME));
             user.setId(loginResultJson.getInt(Constants.KEY_ID));
@@ -147,7 +196,6 @@ public class NetworkHelper {
             user.setEmail(loginResultJson.getString(Constants.KEY_EMAIL));
             user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
             // user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
-            user.setLastLogin("null");
             user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
             user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
@@ -184,7 +232,7 @@ public class NetworkHelper {
             bulletin.setType(bulletinJson.getString(KEY_TYPE));
             bulletin.setTimeStamp(bulletinJson.getString(KEY_TIMESTAMP));
             bulletin.setLiked(bulletinJson.getInt(IS_LIKED));
-            user.setBulletin(bulletin);
+            //user.setBulletin(bulletin);
 
             JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
             user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray));
@@ -193,19 +241,15 @@ public class NetworkHelper {
 
             for (int i = 0; i < schoolActivities.length(); i++) {
                 JSONObject schoolActivity = schoolActivities.getJSONObject(i);
-                SclActs sclActivities
+                /*SclActs sclActivities
                         = new SclActs(schoolActivity.getInt(KEY_ID),
                         schoolActivity.getInt(KEY_USER_ID),
-                        "",
-                        // schoolActivity.getString(KEY_SCHOOL_NAME),
                         schoolActivity.getString(KEY_MESSAGE),
-                        //getMessage(schoolActivity.getString(KEY_MESSAGE)),
-                        schoolActivity.getString(KEY_TYPE),
                         schoolActivity.getString(KEY_TIMESTAMP),
                         schoolActivity.getInt(KEY_LIKES_COUNT),
                         schoolActivity.getInt(IS_LIKED)
-                );
-                sclActList.add(sclActivities);
+                );*/
+                //sclActList.add(sclActivities);
             }
             user.setSclActs(sclActList);
 

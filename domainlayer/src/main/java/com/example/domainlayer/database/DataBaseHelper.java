@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "s2mv2.db";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
 
     private Dao<DbUser, Integer> mUserDao = null;
     private Dao<Sections, Integer> mSectionsDao = null;

@@ -873,29 +873,29 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         ArrayList<Sections> getSections() {
             ArrayList<Sections> sectionsArrayList = new ArrayList<>();
             sectionsArrayList = new ArrayList<>();
-            sectionsArrayList.add(new Sections(1, "Class 1", "Section A", 25, 100, 2, "Milestone 1", 1));
-            sectionsArrayList.add(new Sections(2, "Class 2", "Section B", 30, 100, 2, "Milestone 2", 2));
-            sectionsArrayList.add(new Sections(3, "Class 3", "Section C", 40, 100, 2, "Milestone 3", 3));
-            sectionsArrayList.add(new Sections(4, "Class 4", "Section D", 63, 100, 2, "Milestone 4", 4));
-            sectionsArrayList.add(new Sections(5, "Class 5", "Section E", 30, 100, 2, "Milestone 5", 5));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, 2, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, 2, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, 2, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, 2, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, 2, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, 2, "Milestone 11", 11));
+            sectionsArrayList.add(new Sections(1, "Class 1", "Section A", 25, 100, "Milestone 1", 1));
+            sectionsArrayList.add(new Sections(2, "Class 2", "Section B", 30, 100, "Milestone 2", 2));
+            sectionsArrayList.add(new Sections(3, "Class 3", "Section C", 40, 100, "Milestone 3", 3));
+            sectionsArrayList.add(new Sections(4, "Class 4", "Section D", 63, 100, "Milestone 4", 4));
+            sectionsArrayList.add(new Sections(5, "Class 5", "Section E", 30, 100, "Milestone 5", 5));
+            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
+            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
+            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
+            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
+            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
+            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
+            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
+            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
+            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
+            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
+            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
+            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
+            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
+            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
+            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
+            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
+            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
+            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
             return sectionsArrayList;
         }
 
@@ -1075,7 +1075,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                             (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
                             milesDatObject.getInt(KEY_COMPLETED_MILES),
                             milesDatObject.getInt(KEY_TOTAL_MILES),
-                            milesDatObject.getInt(KEY_SCHOOL_ID),
                             Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + milesDatObject.getString(KEY_MILESTONE_NAME),
                             milesDatObject.getInt(KEY_MILESTONE_ID));
                     sectionsArrayList.add(section);

@@ -56,18 +56,18 @@ public class SelectSchoolActivity extends AppCompatActivity {
         ArrayList<Schools> schoolsArrayList = new ArrayList<>();
         Schools school1 = new Schools();
         school1.setName("Diwan-BalluBhai School");
-        school1.setAddress("Sector 28 , Faridabad");
+        school1.setLocality("Sector 28 , Faridabad");
         school1.setLogo("http://www.civil-site.com/wp-content/uploads/2015/11/MJ-High-School-11.jpg");
         schoolsArrayList.add(school1);
         Schools school2 = new Schools();
         school2.setName("Indian Academy");
         school2.setLogo("http://www.civil-site.com/wp-content/uploads/2015/11/MJ-High-School-11.jpg");
-        school2.setAddress("Bannergatta, Bangalore");
+        school2.setLocality("Bannergatta, Bangalore");
         schoolsArrayList.add(school2);
         Schools school3 = new Schools();
         school3.setName("The Shri Ram School");
         school3.setLogo("https://image.freepik.com/free-vector/school-building_23-2147515924.jpg");
-        school3.setAddress("M.G.Road, Gurgaon");
+        school3.setLocality("M.G.Road, Gurgaon");
         schoolsArrayList.add(school3);
         return schoolsArrayList;
     }
@@ -149,7 +149,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
                 Schools school = new Schools();
                 school.setId(userJson.getInt(Constants.KEY_ID));
                 school.setName(userJson.getString(Constants.KEY_NAME));
-                school.setAddress(userJson.getString(Constants.KEY_ADDRESS));
+                school.setLocality(userJson.getString(Constants.KEY_ADDRESS));
                 school.setLogo(userJson.getString(Constants.KEY_LOGO));
 
                 schoolsArrayList.add(i, school);

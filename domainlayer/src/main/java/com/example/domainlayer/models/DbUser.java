@@ -2,10 +2,12 @@ package com.example.domainlayer.models;
 
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.CustomDao;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.example.domainlayer.Constants.TABLE_NAME_SECTIONS;
 import static com.example.domainlayer.Constants.TABLE_NAME_USERS;
@@ -29,30 +31,32 @@ public class DbUser {
     private String phoneNum;
     @DatabaseField(columnName = Constants.KEY_ACCESS_TOKEN)
     private String accessToken;
-    @DatabaseField(columnName = Constants.KEY_LAST_LOGIN)
-    private String lastLogin;
+    @DatabaseField(columnName = Constants.KEY_IS_FIRST_LOGIN)
+    private boolean isFirstLogin;
     @DatabaseField(columnName = Constants.KEY_TYPE)
     private String type;
     @DatabaseField(columnName = Constants.KEY_SCHOOL_ID)
     private int schoolId;
     @DatabaseField(columnName = Constants.KEY_MILES)
     private String miles;
+    @DatabaseField(columnName = Constants.KEY_TRAINING)
+    private String trainings;
     @DatabaseField(columnName = Constants.KEY_SCHOOL_NAME)
     private String schoolName;
     @DatabaseField(columnName = Constants.KEY_WOW)
     private String wow;
     @DatabaseField(columnName = Constants.KEY_AVATAR)
     private String avatar;
+    @DatabaseField(columnName = Constants.KEY_ROLES, dataType = DataType.SERIALIZABLE)
+    private String[] roles;
     @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
     private Sections sections;
     private ArrayList<Sections> sectionsList;
     private ArrayList<Schools> schoolsList;
     private ArrayList<SclActs> sclActs;
-    private Bulletin bulletin;
+    private SclActs bulletin;
 
     public DbUser() {
-        if(null==user)
-        user=new User();
     }
 
     public ArrayList<Sections> getSectionsList() {
@@ -79,16 +83,12 @@ public class DbUser {
         this.sclActs = sclActs;
     }
 
-    public Bulletin getBulletin() {
-        if (this.bulletin != null)
-            return bulletin;
-        else
-            return user.getBulletin();
+    public SclActs getBulletin() {
+        return bulletin;
     }
 
-    public void setBulletin(Bulletin bulletin) {
+    public void setBulletin(SclActs bulletin) {
         this.bulletin = bulletin;
-        user.setBulletin(bulletin);
     }
 
     public int getId() {
@@ -139,12 +139,12 @@ public class DbUser {
         this.accessToken = accessToken;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
+    public boolean isFirstLogin() {
+        return isFirstLogin;
     }
 
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setFirstLogin(boolean firstLogin) {
+        isFirstLogin = firstLogin;
     }
 
     public int getSchoolId() {
@@ -179,6 +179,14 @@ public class DbUser {
         this.miles = miles;
     }
 
+    public String getTrainings() {
+        return trainings;
+    }
+
+    public void setTrainings(String trainings) {
+        this.trainings = trainings;
+    }
+
     public String getWow() {
         return wow;
     }
@@ -201,5 +209,17 @@ public class DbUser {
 
     public void setSections(Sections sections) {
         this.sections = sections;
+    }
+
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = new String[roles.length];
+        System.arraycopy(roles, 0, this.roles, 0, roles.length);//5 is the length to copy
+        /*for (int i = 0; i < roles.length; i++) {
+            this.roles[i] = roles[i];
+        }*/
     }
 }

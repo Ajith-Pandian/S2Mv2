@@ -10,8 +10,8 @@ public class TMileData {
     private int id;
     private String title, body, type;
     private boolean isSingle;
-    private ArrayList<String> urlsList;
-    private ArrayList<String> imagesList;
+    private ArrayList<String> urlsList, imagesList, hdImagesList;
+    private ArrayList<String> videoIds;
 
 
     public ArrayList<String> getImagesList() {
@@ -32,6 +32,10 @@ public class TMileData {
 
     public TMileData(int id, String title, String type) {
         this.id = id;
+        this.title = title;
+        this.type = type;
+    }
+    public TMileData(String title, String type) {
         this.title = title;
         this.type = type;
     }
@@ -75,5 +79,21 @@ public class TMileData {
 
     public void setSingle(boolean single) {
         isSingle = single;
+    }
+
+    public ArrayList<String> getHdImagesList() {
+        return hdImagesList;
+    }
+
+    public void setHdImagesList(ArrayList<String> hdImagesList) {
+        this.hdImagesList = hdImagesList;
+    }
+
+    public ArrayList<String> getVideoIds() {
+        return videoIds;
+    }
+
+    public void setVideoIds(ArrayList<String> videoIds) {
+        this.videoIds = videoIds;
     }
 }

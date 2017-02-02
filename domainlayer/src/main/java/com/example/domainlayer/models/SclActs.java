@@ -5,20 +5,17 @@ package com.example.domainlayer.models;
  */
 
 public class SclActs {
-    int id, userId, likesCount;
-    String type, timeStamp, schoolName;
-     String msg;
-    int isLiked;
+    private int id, likesCount;
+    private String type, timeStamp, msg;
+    private boolean isLiked;
 
-    public SclActs(int id, int userId, String schoolName,String msg, String type, String timeStamp, int likesCount,int isLiked) {
+    public SclActs(int id, String type, String msg, String timeStamp, int likesCount, boolean isLiked) {
         this.id = id;
-        this.userId = userId;
         this.msg = msg;
         this.type = type;
         this.timeStamp = timeStamp;
-        this.schoolName=schoolName;
-        this.likesCount=likesCount;
-        this.isLiked=isLiked;
+        this.likesCount = likesCount;
+        this.isLiked = isLiked;
     }
 
     public SclActs() {
@@ -31,14 +28,6 @@ public class SclActs {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getMsg() {
@@ -65,5 +54,19 @@ public class SclActs {
         this.timeStamp = timeStamp;
     }
 
+    public int getLikesCount() {
+        return likesCount;
+    }
 
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 }

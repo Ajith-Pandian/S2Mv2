@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 import com.squareup.picasso.Picasso;
@@ -35,15 +37,15 @@ import static com.example.domainlayer.Constants.TEACHER;
 
 public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHolder> {
 
-    private List<User> networkProfilesList;
+    private List<DbUser> networkProfilesList;
     private Context context;
 
-    public NetworkAdapter(Context context, List<User> networkProfilesList) {
+    public NetworkAdapter(Context context, List<DbUser> networkProfilesList) {
         this.networkProfilesList = networkProfilesList;
         this.context = context;
     }
 
-    User getItem(int position) {
+    DbUser getItem(int position) {
         return networkProfilesList.get(position);
     }
 
@@ -57,17 +59,17 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final NetworkAdapter.ViewHolder holder, final int position) {
-        User user = networkProfilesList.get(position);
-        holder.name.setText(user.getName());
+        final DbUser user = networkProfilesList.get(position);
+        holder.name.setText(user.getFirstName() + " " + user.getLastName());
         holder.wowText.setText(user.getWow() + SUFFIX_WOWS);
         holder.milesText.setText(user.getMiles() + SUFFIX_MILES);
-        holder.textDesignation.setText(TEACHER);
+        holder.textDesignation.setText(user.getType());
         holder.netwrokLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                NewDataHolder.getInstance(context).setCurrentNetworkUser(user);
                 Intent intent = new Intent(context, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("com.example.domainlayer.models.User", getItem(position));
                 context.startActivity(intent);
             }
         });

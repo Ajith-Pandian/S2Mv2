@@ -21,12 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
-import com.example.uilayer.SharedPreferenceHelper;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -40,8 +38,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.example.domainlayer.Constants.KEY_MOBILE;
 
 
 /**
@@ -64,7 +60,7 @@ public class OtpFragment extends Fragment {
     @BindView(R.id.edit_text_otp)
     EditText edtTextOtp;
     @BindView(R.id.request_otp)
-    TextView requstOtpText;
+    TextView requestOtpText;
     CompositeSubscription subscriptions;
     String enteredOtp;
     // TODO: Rename and change types of parameters
@@ -112,13 +108,13 @@ public class OtpFragment extends Fragment {
         return view;
     }
 
-    public void onButtonPressed() {
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.LOGIN_URL,
+    public void verifyOtp() {
+        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.AUTHENTICATE_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("otp", "onResponse:otp " + response);
+                        Log.d("otpRequest", "onResponse:otp " + response);
                         storeResponse(response);
                         if (mListener != null) {
                             mListener.onOtpEntered();
@@ -129,7 +125,7 @@ public class OtpFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("otp-error", "onResponse: " + error);
+                        Log.d("otpRequest", "onResponse: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
@@ -162,16 +158,10 @@ public class OtpFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
-                 params.put(KEY_MOBILE, NewDataHolder.getInstance(getContext()).getPhoneNum());
-                //params.put(Constants.KEY_MOBILE, "1234567890");
-                //params.put(KEY_OTP, enteredOtp);
+                params.put(Constants.KEY_USER_NAME, NewDataHolder.getInstance(getContext()).getEnteredUserName());
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
-                params.put(Constants.KEY_DEVICE_TYPE, SharedPreferenceHelper
-                        .getSharedPreferenceString(getContext(),
-                                Constants.KEY_DEVICE_TYPE,Constants.TEMP_DEVICE_TYPE));
-                 params.put(Constants.KEY_DEVICE_TOKEN, SharedPreferenceHelper
-                        .getSharedPreferenceString(getContext(),
-                                Constants.KEY_DEVICE_TOKEN,Constants.TEMP_DEVICE_TOKEN ));
+                params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
+                Log.d(TAG, "getParams: " + params.toString());
                 return params;
             }
 
@@ -184,12 +174,68 @@ public class OtpFragment extends Fragment {
         try {
             JSONObject responseJson = new JSONObject(response);
             //DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
-            NewDataHolder.getInstance(getActivity()).saveUserInDb(responseJson);
+            //NewDataHolder.getInstance(getActivity()).saveUserInDb(responseJson);
             NewDataHolder.getInstance(getActivity()).setLoginResult(responseJson);
             //com.example.uilayer.DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);
         }
+    }
+
+
+    public void resendOtp() {
+        VolleyStringRequest resendOtpRequest = new VolleyStringRequest(Request.Method.POST, Constants.RESEND_OTP_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        Log.d("resendOtpRequest", "onResponse:otp " + response);
+                        Toast.makeText(getActivity(), "OTP sent again", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("resendOtpRequest", "onResponse: " + error);
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(Constants.KEY_USER_NAME, NewDataHolder.getInstance(getContext()).getEnteredUserName());
+                return params;
+            }
+
+        };
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(resendOtpRequest);
     }
 
     @Override
@@ -225,7 +271,7 @@ public class OtpFragment extends Fragment {
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
-                    onButtonPressed();
+                    verifyOtp();
                 } else if (length > 0) {
                     edtTextOtp.setCursorVisible(true);
                     edtTextOtp.setSelection(textViewTextChangeEvent.text().length());
@@ -236,15 +282,15 @@ public class OtpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (validateOtp(enteredOtp))
-                    onButtonPressed();
+                    verifyOtp();
                 else
                     edtTextOtp.setError("Please Enter Valid OTP");
             }
         });
-        requstOtpText.setOnClickListener(new View.OnClickListener() {
+        requestOtpText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Send OTP again", Toast.LENGTH_SHORT).show();
+                resendOtp();
             }
         });
     }

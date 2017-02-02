@@ -5,9 +5,9 @@
     android:id="@+id/fragment_home_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin">
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin">
 
 
     <RelativeLayout
@@ -31,10 +31,10 @@
 
                 <ImageView
                     android:id="@+id/profile_image"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_margin="16dp"
                     android:padding="6dp"
                     android:scaleType="centerCrop" />
@@ -43,10 +43,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/profile_image"
                     android:layout_toLeftOf="@+id/layout_network"
-                    android:layout_toStartOf="@+id/layout_network"
                     android:layout_toRightOf="@+id/profile_image"
-                    android:layout_toEndOf="@+id/profile_image">
+                    android:layout_toStartOf="@+id/layout_network">
 
                     <TextView
                         android:id="@+id/name"
@@ -115,13 +115,13 @@
                     android:id="@+id/layout_network"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:clickable="true"
-                    android:layout_marginRight="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:background="@drawable/bg_rounded_button_green"
+                    android:clickable="true"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
@@ -138,9 +138,9 @@
                         android:layout_gravity="center_vertical"
                         android:minHeight="0dp"
                         android:minWidth="0dp"
-                        android:paddingRight="4dp"
                         android:paddingEnd="4dp"
                         android:paddingLeft="2dp"
+                        android:paddingRight="4dp"
                         android:paddingStart="2dp"
                         android:text="Network"
                         android:textAllCaps="false"
@@ -184,8 +184,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:scaleType="fitXY"
-                    tools:src="@drawable/ph_bulletin"
-                    android:src="@drawable/ph_bulletin"/>
+                    android:src="@drawable/ph_bulletin"
+                    tools:src="@drawable/ph_bulletin" />
 
                 <ImageButton
                     android:id="@+id/image_btn_like"
@@ -196,6 +196,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_margin="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="3dp"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_heart_white_24dp" />
@@ -208,6 +209,7 @@
                     android:layout_alignTop="@+id/image_btn_like"
                     android:layout_toLeftOf="@+id/image_btn_like"
                     android:layout_toStartOf="@+id/image_btn_like"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="4dp"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_share_white_24dp" />

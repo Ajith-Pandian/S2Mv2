@@ -75,11 +75,10 @@ public class Sections {
     public Sections(int id, String _class,String section,
                     int completedMiles,
                      int totalMiles,
-                    int schoolId,String milestoneName, int milestoneId) {
+                    String milestoneName, int milestoneId) {
         this.section = section;
         this.id = id;
         this._class = _class;
-        this.schoolId = schoolId;
         this.totalMiles = totalMiles;
         this.completedMiles = completedMiles;
         this.milestoneName = milestoneName;

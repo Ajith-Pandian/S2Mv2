@@ -61,7 +61,7 @@ public class ProfileSectionsAdapter extends RecyclerView.Adapter<ProfileSections
         float progress = ((completed / total) * 100);
         holder.milesProgressBar.setProgress((int) progress);
         holder.completedMilesText.setText("" + sections.getCompletedMiles() + " miles completed");
-        holder.milestonesText.setText(sections.getMilestoneName());
+        holder.milestonesText.setText(sections.getMilestoneName().substring(0,2));
         holder.imageBackroundCircle.setImageDrawable(getDrawable(sections.getMilestoneId()));
     }
 

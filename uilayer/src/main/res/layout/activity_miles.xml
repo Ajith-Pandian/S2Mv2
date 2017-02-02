@@ -202,6 +202,7 @@
                         <com.example.uilayer.customUtils.views.HeightWrapListView
                             android:id="@+id/list_view_options_bottom_sheet"
                             android:layout_width="wrap_content"
+                            hasExtraSpace="true"
                             android:layout_height="wrap_content"
                             android:layout_alignLeft="@+id/text_qus_mile_bottom_sheet"
                             android:layout_alignRight="@+id/text_qus_mile_bottom_sheet"

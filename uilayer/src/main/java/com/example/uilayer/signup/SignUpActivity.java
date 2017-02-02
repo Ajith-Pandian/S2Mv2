@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
@@ -103,7 +104,7 @@ public class SignUpActivity extends AppCompatActivity {
     boolean isSignUp;//true if signup -- false for modification
     VolleyStringRequest updateRequest;
     String title;
-    NewDataHolder holder;
+    DbUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,14 +170,14 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     void loadData() {
-        holder = NewDataHolder.getInstance(getApplicationContext());
-        textFirstName.setText(holder.getFirstName());
-        textLastName.setText(holder.getLastName());
-        textEmail.setText(holder.getEmail());
-        textPhone.setText(holder.getPhoneNum());
+        user = NewDataHolder.getInstance(getApplicationContext()).getUser();
+        textFirstName.setText(user.getFirstName());
+        textLastName.setText(user.getLastName());
+        textEmail.setText(user.getEmail());
+        textPhone.setText(user.getPhoneNum());
         textComment.setText("");
         Picasso.with(getApplicationContext())
-                .load(holder.getAvatar())
+                .load(user.getAvatar())
                 .placeholder(R.drawable.ph_user_big)
                 .into(imageUser);
     }

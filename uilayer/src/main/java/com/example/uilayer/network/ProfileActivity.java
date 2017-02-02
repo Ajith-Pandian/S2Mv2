@@ -1,6 +1,5 @@
 package com.example.uilayer.network;
 
-import android.graphics.drawable.ClipDrawable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,11 +10,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.domainlayer.models.User;
+import com.example.domainlayer.models.DbUser;
 
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 
 import com.squareup.picasso.Picasso;
@@ -27,6 +29,7 @@ import static com.example.domainlayer.Constants.KEY_MILES;
 import static com.example.domainlayer.Constants.KEY_TRAINING;
 import static com.example.domainlayer.Constants.KEY_WOW;
 import static com.example.domainlayer.Constants.SPACE;
+import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
 
 public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_profile)
@@ -37,6 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.viewpager_profile)
     ViewPager viewPager;
+    @BindView(R.id.layout_teacher_details)
+    LinearLayout teacherDetailsLayout;
     @BindView(R.id.text_wows)
     TextView wowsText;
     @BindView(R.id.text_miles)
@@ -45,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView trainingsText;
 
     ProfilePagerAdapter profilePagerAdapter;
-    User user;
+    DbUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +58,31 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
-        user = (User) bundle.getSerializable("com.example.domainlayer.models.User");
-        toolbar.setTitle(user.getName());
+        //user = (User) bundle.getSerializable("com.example.domainlayer.models.User");
+        user = NewDataHolder.getInstance(this).getCurrentNetworkUser();
+        toolbar.setTitle(user.getFirstName() + " " + user.getLastName());
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
 
         profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
-
         viewPager.setAdapter(profilePagerAdapter);
-
         tabLayout.setupWithViewPager(viewPager);
+
+        if (profilePagerAdapter.getCount() == 1)
+            tabLayout.setSelectedTabIndicatorHeight(0);
+
+        if(user.getType().equals(TYPE_S2M_ADMIN))
+            teacherDetailsLayout.setVisibility(View.GONE);
 
         wowsText.setText(user.getWow() + SPACE + KEY_WOW);
         milesText.setText(user.getMiles() + SPACE + KEY_MILES);
         trainingsText.setText(user.getTrainings() + SPACE + KEY_TRAINING);
         if (!user.getAvatar().equals(""))
-        Picasso.with(getApplicationContext()).load(user.getAvatar()).into(profileImage);
+            Picasso.with(getApplicationContext()).load(user.getAvatar()).into(profileImage);
     }
 
     @Override
@@ -114,12 +127,19 @@ public class ProfileActivity extends AppCompatActivity {
                     break;
 
             }
-            return ProfileFragment.newInstance(type, user);
+            return ProfileFragment.newInstance(type);
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return getValidTabsCount();
+        }
+
+        int getValidTabsCount() {
+            if (user.getType().equals(TYPE_S2M_ADMIN))
+                return 1;
+            else
+                return 2;
         }
 
         @Override
@@ -135,3 +155,4 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 }
+

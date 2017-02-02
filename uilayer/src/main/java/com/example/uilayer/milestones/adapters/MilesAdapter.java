@@ -43,9 +43,11 @@ import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
+import static com.example.domainlayer.Constants.KEY_TRAINING;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TYPE_TRAINING;
 
 /**
  * Created by thoughtchimp on 11/24/2016.
@@ -84,7 +86,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         switch (holder.getItemViewType()) {
 
             case 0:
@@ -96,9 +98,10 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        DataHolder.getInstance(context).setCurrentMileTitle(mile.getTitle());
-                        getDetails(holder.getAdapterPosition(), true);
-
+                        NewDataHolder holder = NewDataHolder.getInstance(context);
+                        holder.setCurrentMileTitle(mile.getTitle());
+                        holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
+                        openActivity(MilesActivity.class, true, milestonesList.get(position).getId());
                     }
                 });
                 viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
@@ -122,10 +125,11 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tViewHolder.rootLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //     openActivity(TrainingActivity.class);
-                        DataHolder.getInstance(context).setCurrentMileTitle(training.getTitle());
+                        NewDataHolder holder = NewDataHolder.getInstance(context);
+                        holder.setCurrentMileTitle(training.getTitle());
+                        holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
+                        openActivity(MilesActivity.class, false, milestonesList.get(position).getId());
 
-                        getDetails(holder.getAdapterPosition(), false);
 
                     }
                 });
@@ -146,7 +150,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onResponse(String response) {
                         Log.d("MilesDetails", "onResponse: " + response);
-                        DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(response));
+                        //DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(response));
                         openActivity(MilesActivity.class, isMile, milestonesList.get(position).getId());
                     }
                 },
@@ -287,7 +291,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        return milestonesList.get(position).getIsTraining();
+        return milestonesList.get(position).getType().equals(TYPE_TRAINING) ? 1 : 0;
     }
 
     class MilesViewHolder extends RecyclerView.ViewHolder {

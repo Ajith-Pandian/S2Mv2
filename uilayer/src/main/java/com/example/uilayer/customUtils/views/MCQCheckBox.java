@@ -13,7 +13,7 @@ import com.example.uilayer.R;
  */
 
 public class MCQCheckBox extends ImageButton {
-
+    
     private static final int[] STATE_SELECTED = {R.attr.state_is_selected};
     private static final int[] STATE_NOT_SELECTED = {R.attr.state_not_selected};
     private static final int[] STATE_RIGHT = {R.attr.state_right};

@@ -14,7 +14,6 @@ import android.widget.Button;
 
 import com.example.domainlayer.models.Ticket;
 
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
@@ -48,14 +47,14 @@ public class TicketsFragment extends Fragment {
     ValueEventListener ticketsAddValueListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            ArrayList<Ticket> tickets = new ArrayList<>();
+            /*ArrayList<Ticket> tickets = new ArrayList<>();
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Ticket value = childSnapshot.getValue(Ticket.class);
                 value.setId(childSnapshot.getKey());
                 if (isUserValid(value.getUserIds()))
                     tickets.add(value);
             }
-            ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), tickets));
+            ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), tickets));*/
         }
 
         @Override
@@ -69,10 +68,10 @@ public class TicketsFragment extends Fragment {
 
     }
 
-    boolean isUserValid(Map<String,Boolean> userIds) {
+    boolean isUserValid(Map<String, Boolean> userIds) {
        /* List<Integer> userIdsArray = new ArrayList<>();
         for (int userId : userIds.containsKey()) userIdsArray.add(userId);*/
-        return userIds.containsKey(String.valueOf(NewDataHolder.getInstance(getContext()).getUserId()));
+        return userIds.containsKey(String.valueOf(NewDataHolder.getInstance(getContext()).getUser().getId()));
     }
 
     @TargetApi(17)
@@ -89,13 +88,8 @@ public class TicketsFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*boolean isS2m=false;
-                if(DataHolder.getInstance(getContext()).getUser().getType().equals(TYPE_TEACHER))
-                    isS2m=true;
-                else
-                    isS2m=false;
-
-                openBottomSheet(isS2m);*/
+                boolean isS2m = NewDataHolder.getInstance(getContext()).getUser().getType().equals(TYPE_TEACHER);
+                openBottomSheet(isS2m);
             }
         });
 
@@ -112,7 +106,7 @@ public class TicketsFragment extends Fragment {
     void fetchTickets() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ticketDatabaseReference = database.getReference("firebaseexample")
-                .child(String.valueOf(NewDataHolder.getInstance(getContext()).getSchoolId()))
+                .child(String.valueOf(NewDataHolder.getInstance(getContext()).getUser().getSchoolId()))
                 .child(FB_CHILD_TICKET_DETAILS);
         ticketDatabaseReference.addValueEventListener(ticketsAddValueListener);
     }

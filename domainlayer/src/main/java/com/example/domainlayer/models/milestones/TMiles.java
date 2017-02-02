@@ -1,18 +1,19 @@
 package com.example.domainlayer.models.milestones;
 
+import java.util.ArrayList;
+
 /**
  * Created by thoughtchimp on 12/9/2016.
  */
 
 public class TMiles {
-    private int id, milestoneId,mileIndex,isTraining;
+    private int id, milestoneId,mileIndex;
     private String title,note,type;
+    ArrayList<TMileData> mileData;
 
-    public TMiles( int id,int milestoneId, int mileIndex, int isTraining, String title, String note, String type) {
-        this.milestoneId = milestoneId;
+    public TMiles( int id, String title, String note, String type,int mileIndex ) {
         this.id = id;
         this.mileIndex = mileIndex;
-        this.isTraining = isTraining;
         this.title = title;
         this.note = note;
         this.type = type;
@@ -42,14 +43,6 @@ public class TMiles {
         this.mileIndex = mileIndex;
     }
 
-    public int getIsTraining() {
-        return isTraining;
-    }
-
-    public void setIsTraining(int isTraining) {
-        this.isTraining = isTraining;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -72,5 +65,13 @@ public class TMiles {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ArrayList<TMileData> getMileData() {
+        return mileData;
+    }
+
+    public void setMileData(ArrayList<TMileData> mileData) {
+        this.mileData = mileData;
     }
 }

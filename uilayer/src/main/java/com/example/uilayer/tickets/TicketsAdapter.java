@@ -34,10 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILE_INDEX;
-import static com.example.domainlayer.Constants.KEY_NOTE;
+import static com.example.domainlayer.Constants.KEY_CONTENT_INDEX;
+import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 
@@ -136,13 +134,10 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
             for (int j = 0; j < milesArray.length(); j++) {
                 JSONObject milesJson = milesArray.getJSONObject(j);
                 miles = new TMiles(milesJson.getInt(KEY_ID),
-                        milesJson.getInt(KEY_MILESTONE_ID),
-                        milesJson.getInt(KEY_MILE_INDEX),
-                        milesJson.getInt(KEY_IS_TRAINING),
                         milesJson.getString(KEY_TITLE),
-                        milesJson.getString(KEY_NOTE),
-                        milesJson.getString(KEY_TYPE)
-                );
+                        milesJson.getString(KEY_DESCRIPTION),
+                        milesJson.getString(KEY_TYPE),
+                        milesJson.getInt(KEY_CONTENT_INDEX));
                 milesList.add(j, miles);
             }
 
