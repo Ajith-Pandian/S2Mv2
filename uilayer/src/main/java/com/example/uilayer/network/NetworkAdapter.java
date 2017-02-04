@@ -29,7 +29,6 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.SUFFIX_MILES;
 import static com.example.domainlayer.Constants.SUFFIX_WOWS;
-import static com.example.domainlayer.Constants.TEACHER;
 
 /**
  * Created by thoughtchimp on 12/21/2016.

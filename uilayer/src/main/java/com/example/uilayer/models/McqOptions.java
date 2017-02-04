@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class McqOptions implements Serializable {
-    private String label, text;
+    private String text;
     private boolean isSelected, isRight, isWrong, isNotSelected;
 
     public boolean isNotSelected() {
@@ -18,14 +18,6 @@ public class McqOptions implements Serializable {
         isNotSelected = notSelected;
     }
 
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public String getText() {
         return text;

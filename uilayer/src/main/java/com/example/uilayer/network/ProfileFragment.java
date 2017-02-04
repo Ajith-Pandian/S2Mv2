@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -68,6 +69,8 @@ public class ProfileFragment extends Fragment {
     private static final String USER = "user";
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.layout_no_sections)
+    RelativeLayout noSectionsLayout;
     DbUser user;
     VolleyStringRequest getNetworkSectionsRequest;
 
@@ -102,17 +105,20 @@ public class ProfileFragment extends Fragment {
                     getProfileFromUser());
             recyclerView.setAdapter(adapter);
         } else {
-            ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(),
-                    user.getSectionsList());
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(mDividerItemDecoration);
-            recyclerView.setAdapter(adapter);
+            if (user.getSectionsList() != null && user.getSectionsList().size() > 0) {
+                noSectionsLayout.setVisibility(View.GONE);
+                ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(), user.getSectionsList());
+                recyclerView.setAdapter(adapter);
+            } else {
+                noSectionsLayout.setVisibility(View.VISIBLE);
+            }
         }
 
         return rootView;
     }
-
 
 
     ArrayList<ProfileModel> getProfileFromUser() {

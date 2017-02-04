@@ -74,6 +74,7 @@ public class MCQActivity extends AppCompatActivity {
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
     VolleyStringRequest choiceResultRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +131,7 @@ public class MCQActivity extends AppCompatActivity {
                     else {
                         buttonSubmit.setText("Finish");
                         //get feed back and go to next
+                        selected_option = -1;
                         sendResults();
                         //finish();
                     }
@@ -149,7 +151,7 @@ public class MCQActivity extends AppCompatActivity {
     }
 
     void storeResult() {
-        choicesResult.put(String.valueOf(mcqsArrayList.get(currentQuestion).getId()), currentOptions.get(selectedOption).getLabel());
+        choicesResult.put(String.valueOf(mcqsArrayList.get(currentQuestion).getId()), currentOptions.get(selectedOption).getText());
     }
 
     @Override
@@ -176,9 +178,9 @@ public class MCQActivity extends AppCompatActivity {
             Log.d("sendResults", "sendResults: " + e);
         }
         choiceResultRequest = new VolleyStringRequest(Request.Method.POST,
-                TRAININGS_URL+ NewDataHolder.getInstance(this).getCurrentMilestoneId()+TRAININGS_SUFFIX+"/"+
-                        NewDataHolder.getInstance(this).getCurrentMileId()+"/submitMcqResults",
-               // MCQ_RESULT_URL,
+                TRAININGS_URL + NewDataHolder.getInstance(this).getCurrentMilestoneId() + TRAININGS_SUFFIX + "/" +
+                        NewDataHolder.getInstance(this).getCurrentMileId() + "/submitMcqResults",
+                // MCQ_RESULT_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -262,7 +264,7 @@ public class MCQActivity extends AppCompatActivity {
     void checkResult(int selected) {
         selectedOption = selected;
         resetOptionStates(currentOptions);
-        if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(selected).getLabel())) {
+        if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(selected))) {
             currentOptions.get(selected).setRight(true);
         } else {
             currentOptions.get(selected).setWrong(true);
@@ -273,7 +275,7 @@ public class MCQActivity extends AppCompatActivity {
 
     int getCorrectOptionPosition() {
         for (int i = 0; i < currentOptions.size(); i++) {
-            if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(i).getLabel())) {
+            if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(i))) {
                 return i;
             }
         }

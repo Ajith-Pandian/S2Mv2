@@ -124,30 +124,6 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.ViewHold
 
     }
 
-    private void saveMiles(int position, String milesResponse) {
-
-        TMiles miles = null;
-        ArrayList<TMiles> milesList = new ArrayList<>();
-        try {
-
-            JSONArray milesArray = new JSONArray(milesResponse);
-            for (int j = 0; j < milesArray.length(); j++) {
-                JSONObject milesJson = milesArray.getJSONObject(j);
-                miles = new TMiles(milesJson.getInt(KEY_ID),
-                        milesJson.getString(KEY_TITLE),
-                        milesJson.getString(KEY_DESCRIPTION),
-                        milesJson.getString(KEY_TYPE),
-                        milesJson.getInt(KEY_CONTENT_INDEX));
-                milesList.add(j, miles);
-            }
-
-            DataHolder.getInstance(context).setMilesList(milesList);
-            openMessagesActivity(position);
-
-        } catch (JSONException ex) {
-            Log.e("Save miles", "saveMiles: ", ex);
-        }
-    }
 
     @Override
     public int getItemCount() {

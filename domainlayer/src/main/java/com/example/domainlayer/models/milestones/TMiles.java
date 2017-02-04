@@ -7,16 +7,18 @@ import java.util.ArrayList;
  */
 
 public class TMiles {
-    private int id, milestoneId,mileIndex;
-    private String title,note,type;
-    ArrayList<TMileData> mileData;
+    private int id, milestoneId, mileIndex;
+    private String title, note, type;
+    private ArrayList<TMileData> mileData;
+    private boolean isCompletable;
 
-    public TMiles( int id, String title, String note, String type,int mileIndex ) {
+    public TMiles(int id, String title, String note, String type, int mileIndex, boolean isCompletable) {
         this.id = id;
         this.mileIndex = mileIndex;
         this.title = title;
         this.note = note;
         this.type = type;
+        this.isCompletable = isCompletable;
     }
 
     public int getId() {
@@ -73,5 +75,13 @@ public class TMiles {
 
     public void setMileData(ArrayList<TMileData> mileData) {
         this.mileData = mileData;
+    }
+
+    public boolean isCompletable() {
+        return isCompletable;
+    }
+
+    public void setCompletable(boolean completable) {
+        isCompletable = completable;
     }
 }

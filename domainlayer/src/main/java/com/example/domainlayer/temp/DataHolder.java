@@ -39,7 +39,6 @@ import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
-import static com.example.domainlayer.Constants.SCHOOL_ADMIN;
 import static com.example.domainlayer.Constants.SHARED_PREFERENCE;
 import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 

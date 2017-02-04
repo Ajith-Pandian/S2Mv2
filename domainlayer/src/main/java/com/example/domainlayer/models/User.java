@@ -52,7 +52,7 @@ public class User implements Serializable {
     }
 
     public String getLastName() {
-        return lastName;
+        return lastName = (lastName != null && !lastName.equals("null")) ? lastName : "";
     }
 
     public void setLastName(String lastName) {

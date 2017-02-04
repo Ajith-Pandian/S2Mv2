@@ -36,6 +36,12 @@ public class Sections {
 
     @DatabaseField(columnName = Constants.KEY_MILESTONE_NAME)
     private String milestoneName;
+    @DatabaseField(columnName = Constants.KEY_TEACHER_NAME)
+    private String teacherName;
+
+    @DatabaseField(columnName = Constants.KEY_TEACHER_ID)
+    private int teacherId;
+
     @DatabaseField(columnName = Constants.KEY_NUM_OF_STUDS)
     private int numOfStuds;
 
@@ -60,11 +66,13 @@ public class Sections {
 
     public Sections() {
     }
-    public Sections(int id, String _class, String section)
-    {this.id = id;
+
+    public Sections(int id, String _class, String section) {
+        this.id = id;
         this._class = _class;
         this.section = section;
     }
+
     public Sections(int id, String _class, String section, int comp_ms, int tot_ms) {
         this.id = id;
         this.completedMiles = comp_ms;
@@ -72,10 +80,12 @@ public class Sections {
         this._class = _class;
         this.section = section;
     }
-    public Sections(int id, String _class,String section,
+
+    public Sections(int id, String _class, String section,
                     int completedMiles,
-                     int totalMiles,
-                    String milestoneName, int milestoneId) {
+                    int totalMiles,
+                    String milestoneName, int milestoneId,
+                   int numOfStuds) {
         this.section = section;
         this.id = id;
         this._class = _class;
@@ -83,7 +93,9 @@ public class Sections {
         this.completedMiles = completedMiles;
         this.milestoneName = milestoneName;
         this.milestoneId = milestoneId;
+        this.numOfStuds = numOfStuds;
     }
+
     public int getTotalMiles() {
         return totalMiles;
     }
@@ -146,5 +158,21 @@ public class Sections {
 
     public void setNumOfStuds(int numOfStuds) {
         this.numOfStuds = numOfStuds;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 }

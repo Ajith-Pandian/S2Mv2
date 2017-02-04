@@ -46,7 +46,7 @@ public class DataHelper {
                         try{
                         DataHolder.getInstance(context)
                                 .setSectionsList(new DataParser()
-                                        .getSectionsListFromJson(new JSONArray(response)));}
+                                        .getSectionsListFromJson(new JSONArray(response),true));}
                         catch (JSONException ex){
                             Log.e("sectionResponse", "onResponse: ", ex);
                         }

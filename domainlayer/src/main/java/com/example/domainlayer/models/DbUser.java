@@ -47,13 +47,13 @@ public class DbUser {
     private String wow;
     @DatabaseField(columnName = Constants.KEY_AVATAR)
     private String avatar;
-    @DatabaseField(columnName = Constants.KEY_ROLES, dataType = DataType.SERIALIZABLE)
-    private String[] roles;
+
     @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
     private Sections sections;
     private ArrayList<Sections> sectionsList;
     private ArrayList<Schools> schoolsList;
     private ArrayList<SclActs> sclActs;
+    private ArrayList<String> roles;
     private SclActs bulletin;
 
     public DbUser() {
@@ -211,15 +211,11 @@ public class DbUser {
         this.sections = sections;
     }
 
-    public String[] getRoles() {
+    public ArrayList<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(String[] roles) {
-        this.roles = new String[roles.length];
-        System.arraycopy(roles, 0, this.roles, 0, roles.length);//5 is the length to copy
-        /*for (int i = 0; i < roles.length; i++) {
-            this.roles[i] = roles[i];
-        }*/
+    public void setRoles(ArrayList<String> roles) {
+        this.roles = roles;
     }
 }

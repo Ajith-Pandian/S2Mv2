@@ -21,6 +21,9 @@ import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
 import static com.example.domainlayer.Constants.KEY_MILES_COMPLETION_COUNT;
 import static com.example.domainlayer.Constants.KEY_SECTION_NAME;
+import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
+import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
+import static com.example.domainlayer.Constants.KEY_TEACHER_NAME;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
@@ -37,7 +40,7 @@ import static com.example.domainlayer.Constants.TYPE_VIDEO;
 public class DataParser {
 
 
-    public ArrayList<Sections> getSectionsListFromJson(JSONArray sectionsArray) {
+    public ArrayList<Sections> getSectionsListFromJson(JSONArray sectionsArray, boolean isUserSections) {
         ArrayList<Sections> sectionsArrayList = new ArrayList<>();
         try {
             for (int i = 0; i < sectionsArray.length(); i++) {
@@ -49,7 +52,12 @@ public class DataParser {
                         milesDatObject.getInt(KEY_MILES_COMPLETION_COUNT),
                         milesDatObject.getInt(KEY_MILES_COUNT),
                         (Constants.KEY_MILESTONE_PREFIX + SPACE + milesDatObject.getString(KEY_MILESTONE_NAME)),
-                        milesDatObject.getInt(KEY_MILESTONE_ID));
+                        milesDatObject.getInt(KEY_MILESTONE_ID),
+                        milesDatObject.getInt(KEY_STUDENT_COUNT));
+                if (!isUserSections) {
+                    section.setTeacherName(milesDatObject.getString(KEY_TEACHER_NAME));
+                    section.setTeacherId(milesDatObject.getInt(KEY_TEACHER_ID));
+                }
                 sectionsArrayList.add(section);
             }
         } catch (JSONException ex) {

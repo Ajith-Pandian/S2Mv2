@@ -19,11 +19,12 @@ public class Constants {
 
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
     public static final String MILES_URL = BASE_URL + "milestones/";
-    public static final String ALL_MILESTONES_URL = BASE_URL + "milestones";
+    public static final String MILESTONES_URL = BASE_URL + "milestones";
     public static final String MILES_URL_SUFFIX = "miles";
     public static final String TRAININGS_URL = BASE_URL + "milestones/";
     public static final String MILES_TRAININGS_URL = BASE_URL + "section/4/milesTrainings";
     public static final String MCQ_URL = TRAININGS_URL + "/6/mcqs";
+    public static final String KEY_MCQS = "mcqs";
     public static final String MCQ_RESULT_URL = TRAININGS_URL + "1/trainings/15/submitMcqResults";
     public static final String SECTIONS_URL = SCHOOLS_URL + "2/sections";
     public static final String DETAILED_SECTIONS_URL = SCHOOLS_URL + "3/detailedSections";
@@ -53,6 +54,9 @@ public class Constants {
 
 
     public static final String KEY_CREATOR_ID = "creatorId";
+    public static final String KEY_CREATE = "create";
+    public static final String KEY_UPDATE = "update";
+    public static final String KEY_ASSIGN = "assign";
     public static final String KEY_CATEGORY = "category";
     public static final String KEY_RECEIVER_ID = "receiverId";
     public static final String KEY_SUBJECT = "subject";
@@ -65,8 +69,10 @@ public class Constants {
     public static final String TEMP_OTP = "123456";
     public static final String TEMP_DEVICE_TYPE = "android";//Android or Ios
     public static final String TEMP_DEVICE_TOKEN = "abcdefghijklmnopqrstuvwxyz";
-    public static final String KEY_STUDENT_COUNT = "studentCount";
-    public static final String KEY_TEACHER_ID = "teacherId";
+    public static final String KEY_STUDENT_COUNT = "students_count";
+    public static final String KEY_TEACHER_ID = "teacher_id";
+    public static final String KEY_TEACHER_NAME = "teacher_name";
+    public static final String KEY_TEACHERS = "teachers";
 
     // Request/Response TAGs
     public static final String KEY_ID = "id";
@@ -96,6 +102,7 @@ public class Constants {
     public static final String KEY_PROFILE_PICTURE = "profile_picture";
     public static final String KEY_USER_TYPE = "user_type";
     public static final String KEY_ROLES = "roles";
+    public static final String KEY_ROLES_ARRAY = "roles[]";
     public static final String KEY_LAST_LOGIN = "lastLogin";
     public static final String KEY_IS_FIRST_LOGIN = "is_first_time_login";
     public static final String VALUE = "null";
@@ -118,6 +125,7 @@ public class Constants {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_LIKES_COUNT = "likes_count";
     public static final String KEY_COUNTRY_CODES = "country_codes";
+    public static final String KEY_COUNTRY_CODE = "country_code";
     public static final String KEY_COLOR_SCHEME = "color_scheme";
 
     public static final String KEY_ANSWER = "answer";
@@ -129,6 +137,7 @@ public class Constants {
     public static final String KEY_SCHOOL_ID = "schoolId";
     public static final String KEY_SCHOOL_NAME = "schoolName";
     public static final String KEY_SCHOOLS = "schools";
+    public static final String KEY_SCHOOL = "school";
     public static final String KEY_SECTIONS = "sections";
     public static final String KEY_SECTION = "section";
     public static final String KEY_SECTION_NAME = "section_name";
@@ -145,7 +154,7 @@ public class Constants {
     public static final String KEY_REASON = "reason";
 
     public static final String KEY_THUMBS_UP = "thumbs_up";
-    public static final String KEY_THUMBS= "thumbs";
+    public static final String KEY_THUMBS = "thumbs";
     public static final String KEY_THUMBS_DOWN = "thumbs_down";
     public static final String KEY_UP = "up";
     public static final String KEY_DOWN = "down";
@@ -161,10 +170,10 @@ public class Constants {
     public static final String KEY_TITLE = "title";
     public static final String KEY_BODY = "body";
     public static final String KEY_AUDIO_URL = "audio_url";
-    public static final String KEY_AUDIO_POSTER= "audio_poster";
+    public static final String KEY_AUDIO_POSTER = "audio_poster";
     public static final String KEY_VIDEO_ID = "video_id";
-    public static final String KEY_VIDEO_POSTER= "video_poster";
-    public static final String KEY_VIDEO_POSTER_HD= "video_poster_hd";
+    public static final String KEY_VIDEO_POSTER = "video_poster";
+    public static final String KEY_VIDEO_POSTER_HD = "video_poster_hd";
     public static final String KEY_IMAGE = "image";
     public static final String SPACE = " ";
     public static final String SUFFIX_WOWS = SPACE + "Wows";
@@ -187,7 +196,7 @@ public class Constants {
 
 
     public static final String KEY_TIMESTAMP = "created_at";
-    public static final String IS_LIKED = "isLiked";
+    public static final String IS_LIKED = "is_liked";
     public static final String KEY_PENDING_MILESTONES = "pending_milestones";
     public static final String KEY_COMPLETED = "completed";
     public static final String KEY_MILES_COMPLETION_COUNT = "miles_completion_count";
@@ -208,16 +217,27 @@ public class Constants {
     //activity-bulletin
     public static final String TYPE_BULLETIN = "bulletin_board";
     public static final String TYPE_ACTIVITY = "activity";
-    public static final String TYPE_TEACHER = "teacher";
     public static final String LIKED = "Liked!";
     public static final String UNLIKED = "Unliked!";
-    public static final String TYPE_SCL_ADMIN = "SAdmin";
+
+    //User types based on roles
+    public static final String TYPE_TEACHER = "teacher";
     public static final String TYPE_S2M_ADMIN = "s2m_admin";
+    public static final String TYPE_SCL_ADMIN = "school_admin";
+    public static final String TYPE_T_SCL_ADMIN = "t_school_admin";
 
-    public static final String TEACHER = "Teacher";
-    public static final String SCHOOL_ADMIN = "SchoolAdmin";
-    public static final String S2M_ADMIN = "s2m_admin";
+    //User types
+    public static final String USER_TYPE_SCHOOL = "school";
+    public static final String USER_TYPE_S2M_ADMIN = "s2m_admin";
 
+    //User roles
+
+    public static final String ROLE_TEACHER = "teacher";
+    public static final String ROLE_SCL_ADMIN  = "school_admin";
+
+    public static final String ROLE_S2M_CONTENT = "s2m_content";
+    public static final String ROLE_S2M_HEAD = "s2m_head";
+    public static final String ROLE_S2M_RELATION  = "s2m_relation";
 
     public static final String SHARED_PREFERENCE = "s2mSharedPreference";
 

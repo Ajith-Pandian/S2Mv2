@@ -71,6 +71,8 @@
                         android:layout_marginTop="3dp"
                         android:layout_height="wrap_content"
                         android:text="Milestones"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:textColor="@color/colorPrimary"
                         android:textSize="10sp" />
 

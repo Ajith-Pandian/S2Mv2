@@ -121,7 +121,8 @@ public class NetworkActivity extends AppCompatActivity {
 
         ArrayList<DbUser> usersList = new ArrayList<>();
         try {
-            JSONArray profilesArray = new JSONArray(profilesString);
+            JSONObject usersObject = new JSONObject(profilesString);
+            JSONArray profilesArray = usersObject.getJSONArray(KEY_USERS);
             for (int i = 0; i < profilesArray.length(); i++) {
                 JSONObject userJson = profilesArray.getJSONObject(i);
                 DbUser user = new DbUser();
@@ -135,7 +136,7 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setMiles(userJson.getString(Constants.KEY_MILES_COMPLETION_COUNT));
                 user.setTrainings(userJson.getString(Constants.KEY_TRAININGS_COMPLETION_COUNT));
                 user.setType(userJson.getString(Constants.KEY_USER_TYPE));
-                user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS)));
+                user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
                 usersList.add(i, user);
             }
             //new DataBaseUtil(this).setUser(usersList);

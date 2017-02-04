@@ -7,4 +7,24 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <RelativeLayout
+        android:id="@+id/layout_no_sections"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_no_sections"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/no_sections" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_no_sections"
+            android:layout_centerHorizontal="true"
+            android:text="No Sections" />
+    </RelativeLayout>
 </RelativeLayout>

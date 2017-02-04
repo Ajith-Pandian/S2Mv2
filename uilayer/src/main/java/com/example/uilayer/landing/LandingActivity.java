@@ -262,10 +262,10 @@ public class LandingActivity extends AppCompatActivity
             }
         });
         //if (new DataBaseUtil(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
-        if (NewDataHolder.getInstance(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
+       /* if (NewDataHolder.getInstance(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
             toolbar.setNavigationIcon(null);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }
+        }*/
     }
 
 /*    void showFabs() {

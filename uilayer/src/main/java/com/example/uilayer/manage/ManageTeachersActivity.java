@@ -44,6 +44,9 @@ import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
+import com.example.domainlayer.temp.DataParser;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.MilestonesSpinnerAdapter;
@@ -67,32 +70,26 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ADD_SECTIONS_URL;
 import static com.example.domainlayer.Constants.ADD_TEACHERS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.ALL_MILESTONES_URL;
 import static com.example.domainlayer.Constants.DELETE_TEACHERS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.DETAILED_SECTIONS_URL;
-import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_LAST_NAME;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_MILESTONE_NAME;
 import static com.example.domainlayer.Constants.KEY_NAME;
 import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
+import static com.example.domainlayer.Constants.KEY_TEACHERS;
 import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
-import static com.example.domainlayer.Constants.KEY_TOTAL_MILES;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
-import static com.example.domainlayer.Constants.PREFIX_CLASS;
-import static com.example.domainlayer.Constants.PREFIX_SECTION;
+import static com.example.domainlayer.Constants.MILESTONES_URL;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -180,7 +177,11 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeachersSectionsFragment.TeacherListener() {
             @Override
             public void onAddOptionSelected(boolean isTeacher) {
-                openBottomSheet(isTeacher, true, -1);
+                //  openBottomSheet(isTeacher, true, -1);
+                if (isTeacher)
+                    openAddTeacherFragment(false, -1);
+                else
+                    openAddSectionsFragment(false, -1);
             }
 
             @Override
@@ -190,7 +191,11 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             @Override
             public void onEditOptionSelected(boolean isTeacher, int position) {
-                openBottomSheet(isTeacher, false, position);
+                //openBottomSheet(isTeacher, false, position);
+                if (isTeacher)
+                    openAddTeacherFragment(true, position);
+                else
+                    openAddSectionsFragment(true, position);
             }
         });
         viewPager.setAdapter(pagerAdapter);
@@ -267,6 +272,16 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             backButton.setEnabled(false);
             updateButtonText(backButton);
         }
+    }
+
+    final void openAddTeacherFragment(boolean isUpdate, int position) {
+        AddTeachersFragment bottomSheetDialogFragment = AddTeachersFragment.getNewInstance(isUpdate, position);
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+
+    final void openAddSectionsFragment(boolean isUpdate, int position) {
+        AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position);
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
     void launchLanding() {
@@ -565,7 +580,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
     void getMilestones() {
 
-        milestonesRequest = new VolleyStringRequest(Request.Method.GET, ALL_MILESTONES_URL,
+        milestonesRequest = new VolleyStringRequest(Request.Method.GET, MILESTONES_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -870,78 +885,9 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             return rootView;
         }
 
-        ArrayList<Sections> getSections() {
-            ArrayList<Sections> sectionsArrayList = new ArrayList<>();
-            sectionsArrayList = new ArrayList<>();
-            sectionsArrayList.add(new Sections(1, "Class 1", "Section A", 25, 100, "Milestone 1", 1));
-            sectionsArrayList.add(new Sections(2, "Class 2", "Section B", 30, 100, "Milestone 2", 2));
-            sectionsArrayList.add(new Sections(3, "Class 3", "Section C", 40, 100, "Milestone 3", 3));
-            sectionsArrayList.add(new Sections(4, "Class 4", "Section D", 63, 100, "Milestone 4", 4));
-            sectionsArrayList.add(new Sections(5, "Class 5", "Section E", 30, 100, "Milestone 5", 5));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
-            sectionsArrayList.add(new Sections(6, "Class 6", "Section F", 90, 100, "Milestone 6", 6));
-            sectionsArrayList.add(new Sections(7, "Class 7", "Section G", 46, 100, "Milestone 7", 7));
-            sectionsArrayList.add(new Sections(8, "Class 8", "Section H", 56, 100, "Milestone 8", 8));
-            sectionsArrayList.add(new Sections(9, "Class 9", "Section I", 30, 100, "Milestone 9", 9));
-            sectionsArrayList.add(new Sections(10, "Class 10", "Section J", 97, 100, "Milestone 10", 10));
-            sectionsArrayList.add(new Sections(11, "Class 11", "Section L", 37, 100, "Milestone 11", 11));
-            return sectionsArrayList;
-        }
-
-        ArrayList<User> getTeachers() {
-            ArrayList<User> userArrayList = new ArrayList<>();
-            User user = new User();
-            user.setFirstName("AAA");
-            user.setLastName("AAA");
-            user.setPhoneNum("1234567890");
-            user.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user);
-            User user1 = new User();
-            user1.setFirstName("BBB");
-            user1.setLastName("BBB");
-            user1.setPhoneNum("1234567890");
-            user1.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user1);
-            User user2 = new User();
-            user2.setFirstName("CCC");
-            user2.setLastName("CCC");
-            user2.setPhoneNum("1234567890");
-            user2.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user2);
-            User user3 = new User();
-            user3.setFirstName("AAA");
-            user3.setLastName("AAA");
-            user3.setPhoneNum("1234567890");
-            user3.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user3);
-            User user4 = new User();
-            user4.setFirstName("BBB");
-            user4.setLastName("BBB");
-            user4.setPhoneNum("1234567890");
-            user4.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user4);
-            User user5 = new User();
-            user5.setFirstName("CCC");
-            user5.setLastName("CCC");
-            user5.setPhoneNum("1234567890");
-            user5.setAvatar("http://fixcapitalism.com/wp-content/uploads/2015/07/Screen-Shot-2015-08-05-at-3.07.56-AM-256x256.png");
-            userArrayList.add(user5);
-            return userArrayList;
-        }
 
         public void loadTeachers() {
-            teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + GET_TEACHERS_URL_SUFFIX,
+            teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_TEACHERS,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -983,33 +929,17 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 public void onTimeout() {
                     Log.d(TAG, "onTimeout: ");
                 }
-            }) {
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> header = new ArrayMap<>();
-                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                    header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                    return header;
-                }
-
-                @Override
-                public String getBodyContentType() {
-                    return "application/x-www-form-urlencoded";
-                }
-
-            };
+            });
             VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherRequest);
 
         }
 
         void loadSections() {
-            sectionsRequest = new VolleyStringRequest(Request.Method.GET, DETAILED_SECTIONS_URL,
+            sectionsRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_SECTIONS,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.d("Sections", "onErrorResponse: " + response);
-
                             updateSections(response);
                         }
                     },
@@ -1018,7 +948,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                         public void onErrorResponse(VolleyError error) {
                             super.onErrorResponse(error);
                             Log.d("Sections", "onErrorResponse: " + error);
-
                         }
                     }, new VolleyStringRequest.StatusCodeListener() {
                 String TAG = "VolleyStringReq";
@@ -1047,45 +976,25 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 public void onTimeout() {
                     Log.d(TAG, "onTimeout: ");
                 }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> header = new ArrayMap<>();
-                    header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                    header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                    return header;
-                }
-            };
+            });
 
             VolleySingleton.getInstance(getContext()).addToRequestQueue(sectionsRequest);
         }
 
         @SuppressWarnings("NewApi")
         void updateSections(String teachersResponse) {
-            ArrayList<Sections> sectionsArrayList = new ArrayList<>();
             try {
                 JSONObject obj = new JSONObject(teachersResponse);
                 Log.d("ARRAY", "updateSections: " + obj.toString());
                 JSONArray sectionsArray = new JSONArray(obj.getString(KEY_SECTIONS));
-                for (int i = 0; i < sectionsArray.length(); i++) {
-                    JSONObject milesDatObject = sectionsArray.getJSONObject(i);
-                    Sections section
-                            = new Sections(milesDatObject.getInt(KEY_ID),
-                            (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS)),
-                            (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION)),
-                            milesDatObject.getInt(KEY_COMPLETED_MILES),
-                            milesDatObject.getInt(KEY_TOTAL_MILES),
-                            Constants.KEY_MILESTONE_PREFIX + Constants.SPACE + milesDatObject.getString(KEY_MILESTONE_NAME),
-                            milesDatObject.getInt(KEY_MILESTONE_ID));
-                    sectionsArrayList.add(section);
-                    DataHolder.getInstance(getActivity())
-                            .setSectionsList(sectionsArrayList);
-                }
+                ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray,false);
+
+                NewDataHolder.getInstance(getContext()).setSectionsList(sectionsArrayList);
+                adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener, true);
+                recyclerView.setAdapter(adapter);
             } catch (JSONException ex) {
                 Log.d("Error", "updateSections: " + ex);
             }
-            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener, true);
-            recyclerView.setAdapter(adapter);
         }
 
         @Override
@@ -1105,28 +1014,28 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         void updateTeachers(String teachersResponse) {
             ArrayList<User> teachersList = new ArrayList<>();
             try {
-                JSONArray profilesArray = new JSONArray(teachersResponse);
+                JSONObject profileObj = new JSONObject(teachersResponse);
+                JSONArray profilesArray = profileObj.getJSONArray(KEY_TEACHERS);
                 for (int i = 0; i < profilesArray.length(); i++) {
                     JSONObject userJson = profilesArray.getJSONObject(i);
                     User user = new User();
                     user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
                     user.setId(userJson.getInt(Constants.KEY_ID));
-                    user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
-                    //user.setEmail(userJson.getString(Constants.KEY_EMAIL));
-                    user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-                    //user.setLastLogin(userJson.getString(Constants.KEY_LAST_LOGIN));
-                    //user.setSchoolId(userJson.getInt(Constants.KEY_SCHOOL_ID));
-                    //user.setSchoolName(userJson.getString(Constants.KEY_SCHOOL_NAME));
+                    String lastName = userJson.getString(Constants.KEY_LAST_NAME);
+                    if (lastName != null && !lastName.equals("null"))
+                        user.setLastName(lastName);
+                    String email = userJson.getString(Constants.KEY_EMAIL);
+                    if (email != null && !email.equals("null"))
+                        user.setEmail(email);
+                    user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
+                    user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
 
-                    // user.setWow(userJson.getString(Constants.KEY_WOW));
-                    user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
-                    // user.setMiles(userJson.getString(Constants.KEY_MILES));
-                    // user.setTrainings(userJson.getString(Constants.KEY_TRAINING));
-                    // user.setUserType(userJson.getString(Constants.KEY_TYPE));
                     teachersList.add(i, user);
                 }
 
-                DataHolder.getInstance(getContext()).setTeachersList(teachersList);
+                //DataHolder.getInstance(getContext()).setTeachersList(teachersList);
+                NewDataHolder.getInstance(getContext()).setTeachersList(teachersList);
+
                 adapter = new TeachersAdapter(getContext(), teachersList, 5, teacherListener);
                 recyclerView.setAdapter(adapter);
             } catch (JSONException exception) {

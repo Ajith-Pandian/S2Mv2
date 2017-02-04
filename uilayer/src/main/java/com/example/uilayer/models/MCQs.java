@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by thoughtchimp on 12/14/2016.
  */
 
-public class MCQs  implements Serializable{
+public class MCQs implements Serializable {
     private ArrayList<McqOptions> options;
     private int id;
     private String question, answer;

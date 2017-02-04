@@ -21,7 +21,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
@@ -36,10 +35,6 @@ import com.example.uilayer.customUtils.views.CustomProgressBar;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.milestones.MilestonesActivity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,24 +42,9 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_AUDIO_POSTER;
-import static com.example.domainlayer.Constants.KEY_AUDIO_URL;
-import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
-import static com.example.domainlayer.Constants.KEY_CONTENT_DATA;
-import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.KEY_TYPE;
-import static com.example.domainlayer.Constants.KEY_VIDEO_ID;
-import static com.example.domainlayer.Constants.KEY_VIDEO_POSTER;
-import static com.example.domainlayer.Constants.KEY_VIDEO_POSTER_HD;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TYPE_AUDIO;
-import static com.example.domainlayer.Constants.TYPE_IMAGE;
-import static com.example.domainlayer.Constants.TYPE_TEXT;
-import static com.example.domainlayer.Constants.TYPE_VIDEO;
 
 
 /**
@@ -133,7 +113,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        getOrderedMilestoneDetails(holder.getAdapterPosition());
+                        getMilestoneDetails(holder.getAdapterPosition());
                     }
                 });
 
@@ -153,7 +133,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     }
 
 
-    private void getOrderedMilestoneDetails(final int position) {
+    private void getMilestoneDetails(final int position) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
                 Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
                         + KEY_SECTIONS + SEPERATOR

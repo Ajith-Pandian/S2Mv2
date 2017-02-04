@@ -115,18 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             boolean type;
-            switch (position) {
-                case 0:
-                    type = true;
-                    break;
-                case 1:
-                    type = false;
-                    break;
-                default:
-                    type = true;
-                    break;
-
-            }
+            type = position == 0;
             return ProfileFragment.newInstance(type);
         }
 
@@ -136,10 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         int getValidTabsCount() {
-            if (user.getType().equals(TYPE_S2M_ADMIN))
-                return 1;
-            else
-                return 2;
+            return user.getType().equals(TYPE_S2M_ADMIN) ? 1 : 2;
         }
 
         @Override

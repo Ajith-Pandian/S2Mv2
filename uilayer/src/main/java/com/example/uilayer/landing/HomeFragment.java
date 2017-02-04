@@ -121,7 +121,10 @@ public class HomeFragment extends Fragment {
         buttonlike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                likeBulletin();
+                if (NewDataHolder.getInstance(getContext()).getUser().getBulletin() != null) {
+
+                    likeBulletin();
+                } else Utils.getInstance().showToast("No bulletin");
             }
         });
 /*        if (tempUser != null && tempUser.getBulletin().isLiked())
@@ -132,9 +135,10 @@ public class HomeFragment extends Fragment {
     }
 
     void loadUserData() throws SQLException {
-        user = new DataBaseUtil(getContext()).getUser();
-        String nameString = user.getFirstName() + " " + user.getLastName();
+        user = NewDataHolder.getInstance(getContext()).getUser();
+        String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
+        designation.setText(user.getType());
         // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
         // textMiles.setText(user.getMiles() +Constants.SUFFIX_MILES);
         String avatar = user.getAvatar();
@@ -150,7 +154,7 @@ public class HomeFragment extends Fragment {
             //String image = tempUser.getBulletin().getMsg().getImage();
             String image = "";
 
-            if (image != null&&!image.equals(""))
+            if (image != null && !image.equals(""))
                 Picasso.with(getActivity())
                         .load(image)
                         .placeholder(R.drawable.ph_bulletin)
@@ -227,15 +231,7 @@ public class HomeFragment extends Fragment {
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-        };
+        });
 
         VolleySingleton.getInstance(getActivity()).addToRequestQueue(likeRequest);
     }

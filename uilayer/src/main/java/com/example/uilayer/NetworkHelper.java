@@ -235,7 +235,7 @@ public class NetworkHelper {
             //user.setBulletin(bulletin);
 
             JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
-            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray));
+            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray,true));
 
             JSONArray schoolActivities = loginResultJson.getJSONArray(KEY_ACTIVITIES);
 

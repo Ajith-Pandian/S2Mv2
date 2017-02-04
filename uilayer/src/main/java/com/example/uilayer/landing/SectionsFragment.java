@@ -77,7 +77,6 @@ public class SectionsFragment extends Fragment {
     RecyclerView sectionsGrid;
     @BindView(R.id.layout_no_sections)
     RelativeLayout noSectionsLayout;
-
     @BindView(R.id.imageIntroductory)
     ImageView imageViewIntroductory;
     @BindView(R.id.card)

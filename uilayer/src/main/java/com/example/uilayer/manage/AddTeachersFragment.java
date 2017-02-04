@@ -1,4 +1,4 @@
-package com.example.uilayer.tickets;
+package com.example.uilayer.manage;
 
 import android.app.Dialog;
 import android.os.Build;
@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -23,16 +25,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Category;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.uilayer.customUtils.VolleyStringRequest;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.adapters.CategorySpinnerAdapter;
-import com.example.uilayer.adapters.TeachersSpinnerAdapter;
-import com.example.uilayer.customUtils.views.PromptSpinner;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
-
+import com.example.uilayer.customUtils.VolleyStringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,63 +45,77 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.domainlayer.Constants.ADD_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.CREATE_TICKET_URL;
 import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CATEGORY;
+import static com.example.domainlayer.Constants.KEY_COUNTRY_CODE;
+import static com.example.domainlayer.Constants.KEY_COUNTRY_CODES;
+import static com.example.domainlayer.Constants.KEY_CREATE;
 import static com.example.domainlayer.Constants.KEY_CREATOR_ID;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_EMAIL;
+import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
+import static com.example.domainlayer.Constants.KEY_LAST_NAME;
+import static com.example.domainlayer.Constants.KEY_MOBILE_NO;
+import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
 import static com.example.domainlayer.Constants.KEY_RECEIVER_ID;
+import static com.example.domainlayer.Constants.KEY_ROLES;
+import static com.example.domainlayer.Constants.KEY_ROLES_ARRAY;
+import static com.example.domainlayer.Constants.KEY_SCHOOL;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SUBJECT;
+import static com.example.domainlayer.Constants.KEY_UPDATE;
+import static com.example.domainlayer.Constants.KEY_USERS;
+import static com.example.domainlayer.Constants.KEY_USER_TYPE;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 /**
  * Created by thoughtchimp on 1/4/2017.
  */
 
-public class CreateTicketFragment extends BottomSheetDialogFragment {
-    private static final String IS_S2M = "isS2m";
-    static CreateTicketFragment newInstance;
+public class AddTeachersFragment extends BottomSheetDialogFragment {
+    private static final String IS_UPDATE = "isUpdate";
+    private static final String POSITION = "position";
+    static AddTeachersFragment newInstance;
     final String TAG = "Fetch message";
-    @BindView(R.id.spinner_category)
-    PromptSpinner categorySpinner;
-    @BindView(R.id.spinner_user)
-    PromptSpinner userSpinner;
+    @BindView(R.id.text_create_teacher)
+    TextView title;
+    @BindView(R.id.text_teacher_first_name)
+    TextInputEditText firstName;
+    @BindView(R.id.text_teacher_last_name)
+    TextInputEditText lastName;
+    @BindView(R.id.text_mobile_number)
+    TextInputEditText phoneNum;
+    @BindView(R.id.text_teacher_email)
+    TextInputEditText email;
     @BindView(R.id.close_icon)
     ImageButton closeButton;
-    @BindView(R.id.button_add_ticket)
-    Button createButton;
-    @BindView(R.id.text_subject)
-    TextInputEditText subjectText;
-    boolean isS2m;
+    @BindView(R.id.button_add_teacher)
+    Button addButton;
+
+    boolean isUpdate;
+    int position;
     VolleyStringRequest getUsersRequest;
     BottomSheetBehavior bottomSheetBehavior;
     Dialog thisDialog;
-    /*    void createTicket(String subject, String type) {
-            int id = getTicketId();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference ticket = database.getReference(FB_CHILD_TICKET_DETAILS);
-            DatabaseReference tickets = ticket.child(FB_CHILD_TICKET + id);
-            Ticket tiketObj = new Ticket();
-            tiketObj.setSubject("some content");
-            tiketObj.setUserName("user name");
-            tiketObj.setStatus("open");
-            tiketObj.setProfileUrl("this is a profile url");
-            tiketObj.setCategory("content");
-            tiketObj.setId(id);
-            tiketObj.setNumber(id);
-            tickets.setValue(tiketObj);
-        }*/
     VolleyStringRequest createTicketRequest;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss();
+            switch (newState) {
+                case BottomSheetBehavior.STATE_DRAGGING:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    break;
+                case BottomSheetBehavior.STATE_HIDDEN:
+                    dismiss();
+                    break;
             }
 
         }
@@ -110,10 +125,11 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         }
     };
 
-    public static CreateTicketFragment getNewInstance(boolean isS2m) {
-        newInstance = new CreateTicketFragment();
+    public static AddTeachersFragment getNewInstance(boolean isUpdate, int position) {
+        newInstance = new AddTeachersFragment();
         Bundle args = new Bundle();
-        args.putBoolean(IS_S2M, isS2m);
+        args.putBoolean(IS_UPDATE, isUpdate);
+        args.putInt(POSITION, position);
         newInstance.setArguments(args);
         return newInstance;
     }
@@ -133,7 +149,8 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isS2m = getArguments().getBoolean(IS_S2M);
+            isUpdate = getArguments().getBoolean(IS_UPDATE);
+            position = getArguments().getInt(POSITION, -1);
         }
 
     }
@@ -141,7 +158,7 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.fragment_bottom_add_ticket, null);
+        View contentView = View.inflate(getContext(), R.layout.fragment_bottom_add_teacher, null);
         dialog.setContentView(contentView);
         thisDialog = dialog;
         ButterKnife.bind(this, contentView);
@@ -152,24 +169,16 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
             bottomSheetBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
-            bottomSheetBehavior.setPeekHeight(Utils.getInstance().getPixelAsDp(dialog.getContext(), 300));
-            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    switch (newState) {
-                        case BottomSheetBehavior.STATE_DRAGGING:
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            break;
-
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                }
-            });
+            bottomSheetBehavior.setPeekHeight(Utils.getInstance().getPixelAsDp(dialog.getContext(), 350));
         }
+    }
+
+    String getTextFromView(EditText editText) {
+        return editText.getText().toString();
+    }
+
+    int getSelectedTeacherId() {
+        return NewDataHolder.getInstance(getContext()).getTeachersList().get(this.position).getId();
     }
 
     void initViews() {
@@ -181,20 +190,41 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
                 thisDialog.dismiss();
             }
         });
-        createButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int userId = -1;
-                if (isS2m)
-                    userId = getUserID();
-                createTicket(subjectText.getText().toString(), getCategory(), userId);
-
+                boolean hasLastName, hasEmail;
+                hasLastName = !getTextFromView(lastName).equals("");
+                hasEmail = !getTextFromView(email).equals("");
+                if (isUpdate) {
+                    updateTeacher(getSelectedTeacherId(),
+                            getTextFromView(firstName),
+                            hasLastName, getTextFromView(lastName),
+                            hasEmail, getTextFromView(email),
+                            getTextFromView(phoneNum));
+                } else {
+                    addTeacher(getTextFromView(firstName),
+                            hasLastName, getTextFromView(lastName),
+                            hasEmail, getTextFromView(email),
+                            getTextFromView(phoneNum));
+                }
             }
         });
-        categorySpinner.setPrompt("Category");
+
+        if (isUpdate) {
+            User teacher = NewDataHolder.getInstance(getContext()).getTeachersList().get(position);
+            firstName.setText(teacher.getFirstName());
+            lastName.setText(teacher.getLastName());
+            email.setText(teacher.getEmail());
+            phoneNum.setText(teacher.getPhoneNum());
+            title.setText("Update Teachers");
+            addButton.setText("Update");
+
+        }
+        /*categorySpinner.setPrompt("Category");
         categorySpinner.setAdapter(new CategorySpinnerAdapter(getActivity(), R.layout.item_spinner, R.id.text_spinner, getCategories()));
 
-        if (isS2m) {
+        if (isUpdate) {
             userSpinner.setVisibility(View.VISIBLE);
             userSpinner.setPrompt("User");
             loadTeachers();
@@ -203,34 +233,29 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         createButton.requestLayout();
         createButton.requestFocus();
-
+*/
     }
 
-    String getCategory() {
+   /* String getCategory() {
         return ((Category) categorySpinner.getSelectedItem()).getName();
     }
 
     int getUserID() {
         return ((User) userSpinner.getSelectedItem()).getId();
-    }
+    }*/
 
-    ArrayList<Category> getCategories() {
-        ArrayList<Category> categoryArrayList = new ArrayList<>();
 
-        categoryArrayList.add(new Category(1, "Content"));
-        categoryArrayList.add(new Category(1, "Accounts"));
-        categoryArrayList.add(new Category(1, "Training"));
-        categoryArrayList.add(new Category(1, "Assessments"));
-        return categoryArrayList;
-    }
+    VolleyStringRequest teacherAddRequest;
 
-    public void loadTeachers() {
-        getUsersRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + GET_TEACHERS_URL_SUFFIX,
+    void addTeacher(final String firstName, final boolean hasLastName, final String lastName, final boolean hasEmail, final String email, final String phoneNum) {
+
+        teacherAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
+                + SEPERATOR + KEY_USERS + SEPERATOR + KEY_CREATE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("teacherRequest", "onResponse: " + response);
-                        updateTeachers(response);
+                        Toast.makeText(getActivity(), "Teacher added successfully", Toast.LENGTH_SHORT).show();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -270,66 +295,44 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         }) {
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
+            public Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(KEY_FIRST_NAME, firstName);
 
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
+                if (hasLastName)
+                    params.put(KEY_LAST_NAME, lastName);
+
+                if (hasEmail)
+                    params.put(KEY_EMAIL, email);
+
+                params.put(KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
+                params.put(KEY_MOBILE_NO, phoneNum);
+                params.put(KEY_USER_TYPE, KEY_SCHOOL);
+                params.put(KEY_ROLES_ARRAY, TYPE_TEACHER);
+                return params;
             }
 
         };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(getUsersRequest);
-
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherAddRequest);
     }
 
-    void updateTeachers(String teachersResponse) {
-        ArrayList<User> teachersList = new ArrayList<>();
-        try {
-            JSONArray profilesArray = new JSONArray(teachersResponse);
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject userJson = profilesArray.getJSONObject(i);
-                User user = new User();
-                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
-                user.setId(userJson.getInt(Constants.KEY_ID));
-                user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
-                user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-                user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
-                teachersList.add(i, user);
-            }
+    void updateTeacher(final int teacherId, final String firstName, final boolean hasLastName, final String lastName, final boolean hasEmail, final String email, final String phoneNum) {
 
-            DataHolder.getInstance(getContext()).setTeachersList(teachersList);
-            if (getActivity() != null)
-                userSpinner.setAdapter(
-                        new TeachersSpinnerAdapter(getActivity(),
-                                R.layout.item_spinner,
-                                R.id.text_spinner,
-                                teachersList));
-        } catch (JSONException exception) {
-            Log.e("DataHolder", "saveUserDetails: ", exception);
-        }
-    }
-
-    void createTicket(final String subject, final String category, final int userId) {
-        createTicketRequest = new VolleyStringRequest(Request.Method.POST, CREATE_TICKET_URL,
+        teacherAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
+                + SEPERATOR + KEY_USERS + SEPERATOR + teacherId + SEPERATOR + KEY_UPDATE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("createTicketRequest", "onResponse: " + response);
-                        Toast.makeText(getActivity().getBaseContext(), "Ticket Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Teacher added successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        thisDialog.dismiss();
+                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).loadTeachers();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.e("createTicketRequest", "onErrorResponse: ", error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
 
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
@@ -362,24 +365,21 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         }) {
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
+            public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new ArrayMap<>();
-                params.put(KEY_CREATOR_ID, String.valueOf(DataHolder.getInstance(getContext()).getUser().getId()));
-                params.put(KEY_SCHOOL_ID, String.valueOf(DataHolder.getInstance(getContext()).getUser().getSchoolId()));
-                params.put(KEY_SUBJECT, subject);
-                params.put(KEY_CATEGORY, category);
-                //TODO:Validate with user type-- If teacher Default reciver is S2MAdmin -- IF S2M , he can choose a teacher
-                if (isS2m)
-                    params.put(KEY_RECEIVER_ID, String.valueOf(userId));
-                Log.d(TAG, "getParams: " + params.toString());
+                params.put(KEY_FIRST_NAME, firstName);
+
+                if (hasLastName)
+                    params.put(KEY_LAST_NAME, lastName);
+
+                if (hasEmail)
+                    params.put(KEY_EMAIL, email);
+
+                params.put(KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
+                params.put(KEY_PHONE_NUM, phoneNum);
+                params.put(KEY_USER_TYPE, TYPE_TEACHER);
+                params.put(KEY_ROLES + "[]", "s2m_content");
+
                 return params;
             }
 
@@ -389,11 +389,8 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
             }
 
         };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(createTicketRequest);
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherAddRequest);
     }
 
-    int getTicketId() {
-        return 9;
-    }
 }
 

@@ -7,6 +7,7 @@ import com.example.domainlayer.models.S2mConfiguration;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
+import com.example.uilayer.customUtils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,30 +143,46 @@ public class NewDataParser {
         return options;
     }
 
+
     public ArrayList<TMiles> getMiles(String milesResponse) {
         ArrayList<TMiles> milesList = new ArrayList<>();
         try {
-
+            boolean completable = false;
+            boolean isFirstMile = true;
             JSONArray milesArray = new JSONArray(milesResponse);
             for (int j = 0; j < milesArray.length(); j++) {
                 JSONObject milesJson = milesArray.getJSONObject(j);
+                String type = milesJson.getString(KEY_TYPE);
+                if (type.equals("mile")) {
+                    if (isFirstMile) {
+                        isFirstMile = false;
+                        completable = true;
+                    } else {
+                        completable = false;
+                    }
+
+                } else {
+                    completable = true;
+                }
+                Log.d("Completable", "getMiles: " + String.valueOf(completable));
                 TMiles miles = new TMiles(milesJson.getInt(KEY_ID),
                         milesJson.getString(KEY_TITLE),
                         milesJson.getString(KEY_DESCRIPTION),
                         milesJson.getString(KEY_TYPE),
+                        1,
                         //milesJson.getInt(KEY_CONTENT_INDEX));
-                        1);
+                        completable);//First
 
 
                 JSONArray milesDataJsonArray = milesJson.getJSONArray(KEY_CONTENT_DATA);
                 ArrayList<TMileData> milesDataList = new ArrayList<>();
                 for (int i = 0; i < milesDataJsonArray.length(); i++) {
                     JSONObject dataJson = milesDataJsonArray.getJSONObject(i);
-                    String type = dataJson.getString(KEY_TYPE);
-                    TMileData data = new TMileData(dataJson.getString(KEY_TITLE), type);
+                    String dataType = dataJson.getString(KEY_TYPE);
+                    TMileData data = new TMileData(dataJson.getString(KEY_TITLE), dataType);
 
 
-                    switch (type) {
+                    switch (dataType) {
                         case TYPE_TEXT:
                             data.setBody(dataJson.getString(KEY_BODY));
                             break;

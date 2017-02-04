@@ -101,7 +101,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(mile.getTitle());
                         holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
-                        openActivity(MilesActivity.class, true, milestonesList.get(position).getId());
+                        openActivity(MilesActivity.class, true,mile.isCompletable(), milestonesList.get(position).getId());
                     }
                 });
                 viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(training.getTitle());
                         holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
-                        openActivity(MilesActivity.class, false, milestonesList.get(position).getId());
+                        openActivity(MilesActivity.class, false, training.isCompletable(),milestonesList.get(position).getId());
 
 
                     }
@@ -138,75 +138,6 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-
-    private void getDetails(final int position, final boolean isMile) {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
-                BASE_URL + KEY_SECTION + "/" + NewDataHolder.getInstance(context).getCurrentSectionId() + "/milesTrainings/" +
-                        String.valueOf(milestonesList.get(position).getId()),
-                //MILES_TRAININGS_URL + "/"
-                // + milestonesList.get(position).getId(),
-                //   + "1",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("MilesDetails", "onResponse: " + response);
-                        //DataHolder.getInstance(context).setCurrentMileData(new DataParser().getMilesData(response));
-                        openActivity(MilesActivity.class, isMile, milestonesList.get(position).getId());
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("MilesDetails", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new ArrayMap<>();
-                params.put(KEY_SCHOOL_ID, "2");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-        };
-
-        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
-    }
 
     void undoThisMile(final int undoId) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.POST, FEEDBACK_UNDO_URL,
@@ -276,10 +207,11 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
     }
 
-    private void openActivity(Class<?> activityClass, boolean isMile, int id) {
+    private void openActivity(Class<?> activityClass, boolean isMile, boolean isCompletable,int id) {
         Intent intent = new Intent(context, activityClass);
         intent.putExtra("isMile", isMile);
         intent.putExtra(KEY_ID, id);
+        intent.putExtra("isCompletable", isCompletable);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
