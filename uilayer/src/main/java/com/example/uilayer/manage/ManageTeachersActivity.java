@@ -45,6 +45,7 @@ import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
 import com.example.domainlayer.temp.DataParser;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
@@ -174,7 +175,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         pagePosition = isTeachers ? 0 : 1;
         stepperLayout.setVisibility(isFirstTime ? View.VISIBLE : View.GONE);
 
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeachersSectionsFragment.TeacherListener() {
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeacherOrSectionListener() {
             @Override
             public void onAddOptionSelected(boolean isTeacher) {
                 //  openBottomSheet(isTeacher, true, -1);
@@ -186,12 +187,14 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
             @Override
             public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                deleteTeacher(position);
+                if (isTeacher)
+                    deleteTeacher(position);
+                else
+                    deleteSection(position);
             }
 
             @Override
             public void onEditOptionSelected(boolean isTeacher, int position) {
-                //openBottomSheet(isTeacher, false, position);
                 if (isTeacher)
                     openAddTeacherFragment(true, position);
                 else
@@ -289,76 +292,25 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     }
 
     void deleteTeacher(final int position) {
-        final int teacherId = DataHolder.getInstance(this).getTeachersList().get(position).getId();
-        teacherDeleteRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + "2" + DELETE_TEACHERS_URL_SUFFIX,
-                new Response.Listener<String>() {
+        new NetworkHelper(this).deleteTeacher(NewDataHolder.getInstance(this).getTeachersList().get(position).getId(),
+                new NetworkHelper.NetworkListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(ManageTeachersActivity.this,
-                                "Teacher deleted successfully",
-                                Toast.LENGTH_SHORT).show();
+                    public void onFinish() {
+                        Utils.getInstance().showToast("Teacher Deleted");
                     }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("teacherRequest", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-
-            @Override
-            public Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new ArrayMap<>();
-                params.put(KEY_TEACHER_ID, String.valueOf(teacherId));
-                return params;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
-        VolleySingleton.getInstance(this).addToRequestQueue(teacherDeleteRequest);
+                });
     }
+
+    void deleteSection(final int position) {
+        new NetworkHelper(this).deleteSection(NewDataHolder.getInstance(this).getSectionsList().get(position).getId(),
+                new NetworkHelper.NetworkListener() {
+                    @Override
+                    public void onFinish() {
+                        Utils.getInstance().showToast("Section Deleted");
+                    }
+                });
+    }
+
 
     void closeBottomSheet() {
         InputMethodManager keyboard = (InputMethodManager)
@@ -737,7 +689,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                     public void onResponse(String response) {
                         Toast.makeText(ManageTeachersActivity.this, "Teacher added successfully", Toast.LENGTH_SHORT).show();
                         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).loadTeachers();
+                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).getTeachers();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -812,7 +764,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     public static class TeachersSectionsFragment extends Fragment implements UpdateListener {
 
         private static final String IS_TEACHER = "is_teacher";
-        static TeacherListener teacherListener;
+        static TeacherOrSectionListener teacherListener;
         @BindView(R.id.recycler_fragment_teachers_sections)
         RecyclerView recyclerView;
         @BindView(R.id.toolbar_manage)
@@ -828,7 +780,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
         }
 
-        public static TeachersSectionsFragment newInstance(boolean isTeacher, TeacherListener teacherListener1) {
+        public static TeachersSectionsFragment newInstance(boolean isTeacher, TeacherOrSectionListener teacherListener1) {
             TeachersSectionsFragment fragment = new TeachersSectionsFragment();
             Bundle args = new Bundle();
             args.putBoolean(IS_TEACHER, isTeacher);
@@ -886,52 +838,15 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
 
 
-        public void loadTeachers() {
-            teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_TEACHERS,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("teacherRequest", "onResponse: " + response);
-                            updateTeachers(response);
-                        }
-                    },
-                    new VolleyStringRequest.VolleyErrListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            super.onErrorResponse(error);
-                            Log.d("teacherRequest", "onErrorResponse: " + error);
-
-                        }
-                    }, new VolleyStringRequest.StatusCodeListener() {
-                String TAG = "VolleyStringReq";
-
+        void loadTeachers() {
+            new NetworkHelper(getContext()).getTeachers(new NetworkHelper.NetworkListener() {
                 @Override
-                public void onBadRequest() {
-                    Log.d(TAG, "onBadRequest: ");
-                }
-
-                @Override
-                public void onUnauthorized() {
-                    Log.d(TAG, "onUnauthorized: ");
-                }
-
-                @Override
-                public void onNotFound() {
-                    Log.d(TAG, "onNotFound: ");
-                }
-
-                @Override
-                public void onConflict() {
-                    Log.d(TAG, "onConflict: ");
-                }
-
-                @Override
-                public void onTimeout() {
-                    Log.d(TAG, "onTimeout: ");
+                public void onFinish() {
+                    teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+                    adapter = new TeachersAdapter(getContext(), teachersList, 5, teacherListener);
+                    recyclerView.setAdapter(adapter);
                 }
             });
-            VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherRequest);
-
         }
 
         void loadSections() {
@@ -967,6 +882,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                     Log.d(TAG, "onNotFound: ");
                 }
 
+
                 @Override
                 public void onConflict() {
                     Log.d(TAG, "onConflict: ");
@@ -987,7 +903,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 JSONObject obj = new JSONObject(teachersResponse);
                 Log.d("ARRAY", "updateSections: " + obj.toString());
                 JSONArray sectionsArray = new JSONArray(obj.getString(KEY_SECTIONS));
-                ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray,false);
+                ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
 
                 NewDataHolder.getInstance(getContext()).setSectionsList(sectionsArrayList);
                 adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener, true);
@@ -1011,37 +927,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             super.onDestroyView();
         }
 
-        void updateTeachers(String teachersResponse) {
-            ArrayList<User> teachersList = new ArrayList<>();
-            try {
-                JSONObject profileObj = new JSONObject(teachersResponse);
-                JSONArray profilesArray = profileObj.getJSONArray(KEY_TEACHERS);
-                for (int i = 0; i < profilesArray.length(); i++) {
-                    JSONObject userJson = profilesArray.getJSONObject(i);
-                    User user = new User();
-                    user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
-                    user.setId(userJson.getInt(Constants.KEY_ID));
-                    String lastName = userJson.getString(Constants.KEY_LAST_NAME);
-                    if (lastName != null && !lastName.equals("null"))
-                        user.setLastName(lastName);
-                    String email = userJson.getString(Constants.KEY_EMAIL);
-                    if (email != null && !email.equals("null"))
-                        user.setEmail(email);
-                    user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
-                    user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
-
-                    teachersList.add(i, user);
-                }
-
-                //DataHolder.getInstance(getContext()).setTeachersList(teachersList);
-                NewDataHolder.getInstance(getContext()).setTeachersList(teachersList);
-
-                adapter = new TeachersAdapter(getContext(), teachersList, 5, teacherListener);
-                recyclerView.setAdapter(adapter);
-            } catch (JSONException exception) {
-                Log.e("DataHolder", "saveUserDetails: ", exception);
-            }
-        }
 
         public ArrayList<User> getTeachersList() {
             return teachersList;
@@ -1051,20 +936,13 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             teacherListener = null;
         }
 
-        public interface TeacherListener {
-            void onAddOptionSelected(boolean isTeacher);
-
-            void onEditOptionSelected(boolean isTeacher, int position);
-
-            void onDeleteOptionSelected(boolean isTeacher, int position);
-        }
 
     }
 
     public class PagerAdapter extends FragmentPagerAdapter {
-        TeachersSectionsFragment.TeacherListener optionsListener;
+        TeacherOrSectionListener optionsListener;
 
-        public PagerAdapter(FragmentManager fm, TeachersSectionsFragment.TeacherListener optionsListener) {
+        public PagerAdapter(FragmentManager fm, TeacherOrSectionListener optionsListener) {
             super(fm);
             this.optionsListener = optionsListener;
         }

@@ -39,9 +39,14 @@ import com.example.uilayer.notification.NotificationActivity;
 import com.example.uilayer.tickets.attachments.AttachmentsAdapter;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
 
 public class LandingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -149,12 +154,24 @@ public class LandingActivity extends AppCompatActivity
     boolean isMenuShown;
 
     void showMenu() {
-        int[] iconIds = {
-                R.drawable.ic_intro_training,
+        int[] iconIds = {R.drawable.ic_intro_training,
                 R.drawable.ic_intro_training,
                 R.drawable.ic_intro_training};
+        int menuId = 0;
+
+        ArrayList<String> userRoles = NewDataHolder.getInstance(this).getUser().getRoles();
+        if (NewDataHolder.getInstance(this).getUser().getType().equals(TYPE_S2M_ADMIN))
+            menuId = R.array.home_menu_s2m_admin;
+        else if (userRoles.contains(ROLE_COORDINATOR))
+            menuId = R.array.home_menu_coordinator;
+        else if (userRoles.contains(ROLE_SCL_ADMIN))
+            menuId = R.array.home_menu_school_admin;
+        else
+            menuId = R.array.home_menu_teacher;
+
+        //TODO:More roles validation
         AttachmentsAdapter adapter =
-                new AttachmentsAdapter(this, getResources().getStringArray(R.array.home_menu), iconIds);
+                new AttachmentsAdapter(this, getResources().getStringArray(menuId), iconIds);
         menuList.setAdapter(adapter);
         menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -261,11 +278,23 @@ public class LandingActivity extends AppCompatActivity
                     hideMenu();
             }
         });
-        //if (new DataBaseUtil(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
-       /* if (NewDataHolder.getInstance(S2MApplication.getAppContext()).getUser().getType().equals(Constants.TYPE_TEACHER)) {
-            toolbar.setNavigationIcon(null);
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }*/
+        String userType = NewDataHolder.getInstance(this).getUser().getType();
+        switch (userType) {
+            case Constants.TYPE_TEACHER:
+                toolbar.setNavigationIcon(null);
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                break;
+            case Constants.TYPE_SCL_ADMIN:
+            case Constants.TYPE_T_SCL_ADMIN:
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.activity_landing_drawer_school_admin);
+                break;
+            case Constants.TYPE_S2M_ADMIN:
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.activity_landing_drawer_s2m_admin);
+                break;
+        }
+
     }
 
 /*    void showFabs() {
@@ -411,6 +440,7 @@ public class LandingActivity extends AppCompatActivity
             return true;
         }
 
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -418,9 +448,8 @@ public class LandingActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.nav_select_school:
                 startActivity(new Intent(LandingActivity.this, SelectSchoolActivity.class));
                 break;

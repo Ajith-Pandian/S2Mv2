@@ -135,7 +135,7 @@ public class ArchiveActivity extends AppCompatActivity {
             isTraining = getArguments().getBoolean(IS_MILE);
             archiveRecycler.addItemDecoration(mDividerItemDecoration);
             milestonesAdapter = new MilesAdapter(getContext(), getMilesOrTrainingsList(isTraining),
-                    DataHolder.getInstance(getActivity()).getUndoableId());
+                    DataHolder.getInstance(getActivity()).getUndoableId(),false);
             archiveRecycler.setAdapter(milestonesAdapter);
             return rootView;
         }

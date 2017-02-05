@@ -61,10 +61,12 @@ import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 public class MilestonesActivity extends AppCompatActivity {
+
     @BindView(R.id.recycler_milestones)
     RecyclerView recyclerView;
     MilesAdapter milestonesAdapter;
     String sectionName = "", className = "";
+    boolean isIntro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class MilestonesActivity extends AppCompatActivity {
             Intent intent = getIntent();
             className = intent.getStringExtra("class_name");
             sectionName = intent.getStringExtra("section_name");
+            isIntro = intent.getBooleanExtra("is_intro", false);
         }
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();
@@ -91,8 +94,16 @@ public class MilestonesActivity extends AppCompatActivity {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
+        ArrayList<TMiles> milesArrayList;
 
-        milestonesAdapter = new MilesAdapter(this, NewDataHolder.getInstance(getApplicationContext()).getMilesList(), -1);
+        if (isIntro) {
+            milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getIntroTrainingsList();
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, -1, true);
+        } else {
+            milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesList();
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, -1, false);
+        }
+
 
         recyclerView.setAdapter(milestonesAdapter);
     }

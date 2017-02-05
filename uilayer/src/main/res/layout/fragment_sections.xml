@@ -60,6 +60,7 @@
 
             <RelativeLayout
                 android:id="@+id/layout_no_sections"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

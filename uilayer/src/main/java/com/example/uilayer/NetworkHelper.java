@@ -3,21 +3,19 @@ package com.example.uilayer;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
-import com.example.domainlayer.database.DataBaseUtil;
-import com.example.domainlayer.models.Bulletin;
-import com.example.domainlayer.models.BulletinMessage;
-import com.example.domainlayer.models.DbUser;
-import com.example.domainlayer.models.SclActs;
-import com.example.domainlayer.models.Sections;
+import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.*;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
+import com.example.uilayer.manage.ManageTeachersActivity;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,24 +24,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.example.domainlayer.Constants.IS_LIKED;
+import static com.example.domainlayer.Constants.DELETE_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
-import static com.example.domainlayer.Constants.KEY_BODY;
+import static com.example.domainlayer.Constants.KEY_DASHBOARD;
+import static com.example.domainlayer.Constants.KEY_DELETE;
+import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IMAGE;
-import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
-import static com.example.domainlayer.Constants.KEY_MESSAGE;
-import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
-import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.KEY_TYPE;
-import static com.example.domainlayer.Constants.KEY_USER_ID;
+import static com.example.domainlayer.Constants.KEY_TEACHERS;
+import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
+import static com.example.domainlayer.Constants.KEY_USERS;
+import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 /**
  * Created by thoughtchimp on 12/20/2016.
@@ -109,15 +103,17 @@ public class NetworkHelper {
         VolleySingleton.getInstance(context).addToRequestQueue(configurationRequest);
     }
 
-    public void getUserDetails(NetworkListener networkListener) {
+    public void getDashBoardDetails(NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.GET, Constants.SCHOOLS_URL + String.valueOf(new DataBaseUtil(context).getUser().getSchoolId()),
+        VolleyStringRequest getDashBoardRequest = new VolleyStringRequest(Request.Method.GET, Constants.SCHOOLS_URL
+                + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_DASHBOARD,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("UserDetails", "onResponse:otp " + response);
-                        storeResponse(response);
+                        Log.d("getDashBoardRequest", "onResponse " + response);
+                        //storeResponse(response);
+                        NewDataHolder.getInstance(context).saveDashboardDetails(response);
                         NetworkHelper.this.networkListener.onFinish();
                     }
                 },
@@ -125,7 +121,7 @@ public class NetworkHelper {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("UserDetails", "onResponse: " + error);
+                        Log.d("getDashBoardRequest", "onError: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
@@ -154,123 +150,206 @@ public class NetworkHelper {
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(getDashBoardRequest);
+    }
+
+
+    public void getTeachers(NetworkListener networkListener) {
+        this.networkListener = networkListener;
+        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_TEACHERS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("teacherRequest", "onResponse: " + response);
+                        saveTeachers(response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, SharedPreferenceHelper.getAccessToken());
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
             }
 
-        };
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
 
-        VolleySingleton.getInstance(context).addToRequestQueue(otpRequest);
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
+
     }
 
-    private void storeResponse(String response) {
+    void saveTeachers(String teachersResponse) {
+        ArrayList<User> teachersList = new ArrayList<>();
         try {
-            JSONObject responseJson = new JSONObject(response);
-            // com.example.domainlayer.temp.DataHolder.getInstance(context).saveUserDetails(responseJson);
-            //saveUserDetailsForThisSession(responseJson);
-        } catch (JSONException ex) {
-            Log.e("networkHelper", "storeResponse: ", ex);
-        }
-    }
+            JSONObject profileObj = new JSONObject(teachersResponse);
+            JSONArray profilesArray = profileObj.getJSONArray(KEY_TEACHERS);
+            for (int i = 0; i < profilesArray.length(); i++) {
+                JSONObject userJson = profilesArray.getJSONObject(i);
+                User user = new User();
+                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+                user.setId(userJson.getInt(Constants.KEY_ID));
+                String lastName = userJson.getString(Constants.KEY_LAST_NAME);
+                if (lastName != null && !lastName.equals("null"))
+                    user.setLastName(lastName);
+                String email = userJson.getString(Constants.KEY_EMAIL);
+                if (email != null && !email.equals("null"))
+                    user.setEmail(email);
+                user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
+                user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
 
-    public interface NetworkListener {
-        void onFinish();
-    }
-
-
-
-    public void saveUserDetailsForThisSession(JSONObject loginResultJson) {
-        DbUser user = new DbUser();
-        DataParser dataParser = new DataParser();
-        ArrayList<Sections> sectionsList = new ArrayList<>();
-        ArrayList<SclActs> sclActList = new ArrayList<>();
-        try {
-            user.setFirstName(loginResultJson.getString(Constants.KEY_FIRST_NAME));
-            user.setId(loginResultJson.getInt(Constants.KEY_ID));
-            user.setLastName(loginResultJson.getString(Constants.KEY_LAST_NAME));
-            user.setEmail(loginResultJson.getString(Constants.KEY_EMAIL));
-            user.setPhoneNum(loginResultJson.getString(Constants.KEY_PHONE_NUM));
-            // user.setLastLogin(loginResultJson.getString(Constants.KEY_LAST_LOGIN));
-            user.setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
-            user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
-
-            //TODO for s2m and school admin
-           /* JSONArray schoolsArray=new JSONArray(loginResultJson.getString(KEY_SCHOOLS));
-            ArrayList<Schools> schoolsList=new ArrayList<>();
-            for (int i = 0; i < schoolsArray.length(); i++) {
-                JSONObject schoolObject=schoolsArray.getJSONObject(i);
-                Schools school=new Schools();
-                school.setId(schoolObject.getInt(KEY_ID));
-                school.setName(schoolObject.getString(KEY_NAME));
-                school.setName(schoolObject.getString(KEY_LOGO));
-                schoolsList.add(i,school);
+                teachersList.add(i, user);
             }
-            user.setSchoolsList(schoolsList);*/
-            //user.setSchoolName(loginResultJson.getString(Constants.KEY_SCHOOL_NAME));
 
-            user.setWow(loginResultJson.getString(Constants.KEY_WOW));
-            user.setAvatar(loginResultJson.getString(Constants.KEY_AVATAR));
-            user.setMiles(loginResultJson.getString(Constants.KEY_MILES));
-            user.setType(loginResultJson.getString(Constants.KEY_TYPE));
+            //DataHolder.getInstance(getContext()).setTeachersList(teachersList);
+            NewDataHolder.getInstance(context).setTeachersList(teachersList);
+            this.networkListener.onFinish();
 
-/*
-            //Shared preferences
-            setSchoolId(loginResultJson.getInt(Constants.KEY_SCHOOL_ID));
-            setUserId(loginResultJson.getInt(Constants.KEY_ID));
-            setAccessToken(loginResultJson.getString(Constants.KEY_ACCESS_TOKEN));*/
-
-            JSONObject bulletinJson = loginResultJson.getJSONObject(TYPE_BULLETIN);
-            Bulletin bulletin = new Bulletin();
-            bulletin.setId(bulletinJson.getInt(KEY_ID));
-            bulletin.setUserId(bulletinJson.getInt(KEY_USER_ID));
-            bulletin.setMsg(getMessage(bulletinJson.getString(KEY_MESSAGE)));
-            bulletin.setType(bulletinJson.getString(KEY_TYPE));
-            bulletin.setTimeStamp(bulletinJson.getString(KEY_TIMESTAMP));
-            bulletin.setLiked(bulletinJson.getInt(IS_LIKED));
-            //user.setBulletin(bulletin);
-
-            JSONArray sectionsArray = loginResultJson.getJSONArray(KEY_SECTIONS);
-            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray,true));
-
-            JSONArray schoolActivities = loginResultJson.getJSONArray(KEY_ACTIVITIES);
-
-            for (int i = 0; i < schoolActivities.length(); i++) {
-                JSONObject schoolActivity = schoolActivities.getJSONObject(i);
-                /*SclActs sclActivities
-                        = new SclActs(schoolActivity.getInt(KEY_ID),
-                        schoolActivity.getInt(KEY_USER_ID),
-                        schoolActivity.getString(KEY_MESSAGE),
-                        schoolActivity.getString(KEY_TIMESTAMP),
-                        schoolActivity.getInt(KEY_LIKES_COUNT),
-                        schoolActivity.getInt(IS_LIKED)
-                );*/
-                //sclActList.add(sclActivities);
-            }
-            user.setSclActs(sclActList);
-
-            NewDataHolder.getInstance(context).setUser(user);
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }
     }
 
+    public void deleteTeacher(int teacherId, NetworkListener networkListener) {
+        this.networkListener = networkListener;
+        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.POST,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
+                        KEY_USERS + SEPERATOR + teacherId + SEPERATOR + KEY_DELETE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("teacherRequest", "onResponse: " + response);
+                        NetworkHelper.this.networkListener.onFinish();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
 
-    private BulletinMessage getMessage(String message) {
-        BulletinMessage msg = null;
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
 
-        try {
-            JSONObject msgObject = new JSONObject(message);
-            msg = new BulletinMessage(msgObject.getString(KEY_TITLE),
-                    msgObject.getString(KEY_IMAGE),
-                    msgObject.getString(KEY_BODY));
-        } catch (JSONException ex) {
-            Log.e("GetMsg", "getMessage: ", ex);
-        }
-        return msg;
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
+
     }
+
+    public void deleteSection(int sectionId, NetworkListener networkListener) {
+        this.networkListener = networkListener;
+        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.POST,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
+                        KEY_SECTIONS + SEPERATOR + sectionId + SEPERATOR + KEY_DELETE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("teacherRequest", "onResponse: " + response);
+                        NetworkHelper.this.networkListener.onFinish();
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("teacherRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
+
+    }
+
+    private void storeResponse(String response) {
+        try {
+            JSONObject responseJson = new JSONObject(response);
+
+        } catch (JSONException ex) {
+            Log.e("networkHelper", "storeResponse: ", ex);
+        }
+    }
+
+
+    public interface NetworkListener {
+        void onFinish();
+    }
+
 }

@@ -61,6 +61,10 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         holder.schoolName.setText(school.getName());
         holder.schoolAddress.setText(school.getLocality());
 
+        if (school.isActive()) {
+            holder.schoolName.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+            holder.schoolAddress.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        }
         holder.schoolLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

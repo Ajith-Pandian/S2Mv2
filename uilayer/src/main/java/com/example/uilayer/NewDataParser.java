@@ -20,10 +20,13 @@ import static com.example.domainlayer.Constants.KEY_AUDIO_URL;
 import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_COLOR_SCHEME;
 import static com.example.domainlayer.Constants.KEY_CONTENT_DATA;
+import static com.example.domainlayer.Constants.KEY_CONTENT_INDEX;
 import static com.example.domainlayer.Constants.KEY_COUNTRY_CODES;
 import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
 import static com.example.domainlayer.Constants.KEY_FEEDBACK_QUESTIONS;
 import static com.example.domainlayer.Constants.KEY_ID;
+import static com.example.domainlayer.Constants.KEY_IS_COMPLETED;
+import static com.example.domainlayer.Constants.KEY_MILE;
 import static com.example.domainlayer.Constants.KEY_MILES;
 import static com.example.domainlayer.Constants.KEY_MILESTONE;
 import static com.example.domainlayer.Constants.KEY_MILESTONES;
@@ -132,7 +135,7 @@ public class NewDataParser {
         return getStringsFromArray(optionsArray);
     }
 
-    private ArrayList<String> getStringsFromArray(JSONArray stringJsonArray) {
+    public ArrayList<String> getStringsFromArray(JSONArray stringJsonArray) {
         ArrayList<String> options = new ArrayList<>();
         try {
             for (int i = 0; i < stringJsonArray.length(); i++)
@@ -153,7 +156,7 @@ public class NewDataParser {
             for (int j = 0; j < milesArray.length(); j++) {
                 JSONObject milesJson = milesArray.getJSONObject(j);
                 String type = milesJson.getString(KEY_TYPE);
-                if (type.equals("mile")) {
+                if (type.equals(KEY_MILE)) {
                     if (isFirstMile) {
                         isFirstMile = false;
                         completable = true;
@@ -162,16 +165,18 @@ public class NewDataParser {
                     }
 
                 } else {
-                    completable = true;
+                    if (!milesJson.isNull(KEY_IS_COMPLETED))
+                    completable = !milesJson.getBoolean(KEY_IS_COMPLETED);
                 }
                 Log.d("Completable", "getMiles: " + String.valueOf(completable));
-                TMiles miles = new TMiles(milesJson.getInt(KEY_ID),
-                        milesJson.getString(KEY_TITLE),
-                        milesJson.getString(KEY_DESCRIPTION),
-                        milesJson.getString(KEY_TYPE),
-                        1,
-                        //milesJson.getInt(KEY_CONTENT_INDEX));
-                        completable);//First
+                TMiles miles = new TMiles();
+                miles.setId(milesJson.getInt(KEY_ID));
+                miles.setType(milesJson.getString(KEY_TYPE));
+                miles.setTitle(milesJson.getString(KEY_TITLE));
+                miles.setNote(milesJson.getString(KEY_DESCRIPTION));
+                if (!milesJson.isNull(KEY_CONTENT_INDEX))
+                    miles.setMileIndex(milesJson.getInt(KEY_CONTENT_INDEX));
+                miles.setCompletable(completable);
 
 
                 JSONArray milesDataJsonArray = milesJson.getJSONArray(KEY_CONTENT_DATA);

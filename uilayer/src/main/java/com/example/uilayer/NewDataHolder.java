@@ -24,15 +24,19 @@ import java.util.ArrayList;
 import static com.example.domainlayer.Constants.IS_LIKED;
 import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
 import static com.example.domainlayer.Constants.KEY_BODY;
+import static com.example.domainlayer.Constants.KEY_BULLETIN_BOARD;
+import static com.example.domainlayer.Constants.KEY_ICON;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IMAGE;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
+import static com.example.domainlayer.Constants.KEY_TEACHERS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
 import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
 import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
@@ -55,7 +59,8 @@ public class NewDataHolder {
     private DbUser user, currentNetworkUser;
     private int currentSectionId, currentMilestoneId, currentMileId;
     private ArrayList<TMiles> milesList;
-    private ArrayList<TMileData> milesDataList;
+    private ArrayList<TMiles> introTrainingsList;
+    private ArrayList<TMileData> milesDataList, introDataList;
     private ArrayList<User> teachersList;
     private ArrayList<Sections> sectionsList;
     private String currentMileTitle;
@@ -72,8 +77,7 @@ public class NewDataHolder {
     }
 
     public void setLoginResult(JSONObject userJson) {
-        ArrayList<SclActs> sclActList = new ArrayList<>();
-        DataParser dataParser = new DataParser();
+
         try {
 
             DbUser user = new DbUser();
@@ -114,35 +118,7 @@ public class NewDataHolder {
                 user.setSchoolName(schoolsArrayList.get(0).getName());
             }
 
-            JSONArray sectionsArray = userJson.getJSONArray(KEY_SECTIONS);
-            user.setSectionsList(dataParser.getSectionsListFromJson(sectionsArray, true));
-
-            JSONArray schoolActivitiesArray = userJson.getJSONArray(KEY_ACTIVITIES);
-            if (schoolActivitiesArray != null && schoolActivitiesArray.length() > 0) {
-                //Bulletin
-                JSONObject bulletinJson = schoolActivitiesArray.getJSONObject(0);
-                SclActs bulletin
-                        = new SclActs(bulletinJson.getInt(KEY_ID),
-                        bulletinJson.getString(KEY_TYPE),
-                        bulletinJson.getString(KEY_MESSAGE),
-                        bulletinJson.getString(KEY_TIMESTAMP),
-                        bulletinJson.getInt(KEY_LIKES_COUNT),
-                        bulletinJson.getBoolean(IS_LIKED));
-                user.setBulletin(bulletin);
-
-                for (int i = 1; i < schoolActivitiesArray.length(); i++) {
-                    JSONObject schoolActivity = schoolActivitiesArray.getJSONObject(i);
-                    SclActs sclActivities
-                            = new SclActs(schoolActivity.getInt(KEY_ID),
-                            schoolActivity.getString(KEY_TYPE),
-                            schoolActivity.getString(KEY_MESSAGE),
-                            schoolActivity.getString(KEY_TIMESTAMP),
-                            schoolActivity.getInt(KEY_LIKES_COUNT),
-                            schoolActivity.getBoolean(IS_LIKED));
-                    sclActList.add(sclActivities);
-                }
-                user.setSclActs(sclActList);
-            }
+          /* */
             setUser(user);
 
             SharedPreferenceHelper.setAccessToken(user.getAccessToken());
@@ -158,6 +134,54 @@ public class NewDataHolder {
     }
 
 
+    public void saveDashboardDetails(String dashBoardString) {
+        ArrayList<SclActs> sclActList = new ArrayList<>();
+        try {
+            JSONObject dashBoardJson = new JSONObject(dashBoardString);
+
+            if (!dashBoardJson.isNull(KEY_BULLETIN_BOARD)) {
+
+                JSONObject bulletinJson = dashBoardJson.getJSONObject(KEY_BULLETIN_BOARD);
+                SclActs bulletin
+                        = new SclActs(bulletinJson.getInt(KEY_ID),
+                        bulletinJson.getString(KEY_TYPE),
+                        bulletinJson.getString(KEY_TITLE),
+                        bulletinJson.getString(KEY_MESSAGE),
+                        bulletinJson.getString(KEY_TIMESTAMP),
+                        bulletinJson.getInt(KEY_LIKES_COUNT),
+                        bulletinJson.getBoolean(IS_LIKED),
+                        bulletinJson.getString(KEY_ICON)
+                );
+                user.setBulletin(bulletin);
+            }
+
+            JSONArray schoolActivitiesArray = dashBoardJson.getJSONArray(KEY_ACTIVITIES);
+            if (schoolActivitiesArray != null && schoolActivitiesArray.length() > 0) {
+                //Bulletin
+
+
+                for (int i = 1; i < schoolActivitiesArray.length(); i++) {
+                    JSONObject schoolActivity = schoolActivitiesArray.getJSONObject(i);
+                    SclActs sclActivities
+                            = new SclActs(schoolActivity.getInt(KEY_ID),
+                            schoolActivity.getString(KEY_TYPE),
+                            "",
+                           // schoolActivity.getString(KEY_TITLE),
+                            schoolActivity.getString(KEY_MESSAGE),
+                            schoolActivity.getString(KEY_TIMESTAMP),
+                            schoolActivity.getInt(KEY_LIKES_COUNT),
+                            schoolActivity.getBoolean(IS_LIKED),
+                            schoolActivity.getString(KEY_ICON)
+                    );
+                    sclActList.add(sclActivities);
+                }
+                user.setSclActs(sclActList);
+            }
+        } catch (JSONException ex) {
+            Log.e("NewDataHolder", "saveDashboardDetails: ", ex);
+        }
+    }
+
     private ArrayList<String> getStringsFromArray(JSONArray stringJsonArray) {
         ArrayList<String> options = new ArrayList<>();
         try {
@@ -169,12 +193,21 @@ public class NewDataHolder {
         return options;
     }
 
+    public  void saveUserSections(JSONArray sectionsArray)
+    {
+        ArrayList<Sections> sectionsArrayList=new DataParser().getSectionsListFromJson(sectionsArray, false);
+        user.setSectionsList(sectionsArrayList);
+        setSectionsList(sectionsArrayList);
+    }
+
 
     private String getTypeByRoles(String userType, ArrayList<String> userRoles) {
         String type = "";
 
         switch (userType) {
             case USER_TYPE_SCHOOL:
+                /*if(userRoles.contains(ROLE_COORDINATOR))
+                    type = TYPE_COORDINATOR;*/
                 if (userRoles.contains(ROLE_TEACHER) && userRoles.contains(ROLE_SCL_ADMIN))
                     type = TYPE_T_SCL_ADMIN;
                 else if (userRoles.contains(ROLE_SCL_ADMIN))
@@ -308,5 +341,13 @@ public class NewDataHolder {
 
     public void setSectionsList(ArrayList<Sections> sectionsList) {
         this.sectionsList = sectionsList;
+    }
+
+    public ArrayList<TMiles> getIntroTrainingsList() {
+        return introTrainingsList;
+    }
+
+    public void setIntroTrainingsList(ArrayList<TMiles> introTrainingsList) {
+        this.introTrainingsList = introTrainingsList;
     }
 }

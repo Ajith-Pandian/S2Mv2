@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
@@ -116,9 +117,7 @@ public class OtpFragment extends Fragment {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
                         Log.d("otpRequest", "onResponse:otp " + response);
                         storeResponse(response);
-                        if (mListener != null) {
-                            mListener.onOtpEntered();
-                        }
+
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -176,7 +175,15 @@ public class OtpFragment extends Fragment {
             //DataHolder.getInstance(getActivity()).saveUserDetails(responseJson);
             //NewDataHolder.getInstance(getActivity()).saveUserInDb(responseJson);
             NewDataHolder.getInstance(getActivity()).setLoginResult(responseJson);
-            //com.example.uilayer.DataHolder.getInstance(getActivity()).setLoginResultJson(responseJson);
+            new NetworkHelper(getContext()).getDashBoardDetails(new NetworkHelper.NetworkListener() {
+                @Override
+                public void onFinish() {
+                    if (mListener != null) {
+                        mListener.onOtpEntered();
+                    }
+                }
+            });
+
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);
         }

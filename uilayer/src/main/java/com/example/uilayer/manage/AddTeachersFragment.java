@@ -227,7 +227,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
         if (isUpdate) {
             userSpinner.setVisibility(View.VISIBLE);
             userSpinner.setPrompt("User");
-            loadTeachers();
+            getTeachers();
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -325,7 +325,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
                     public void onResponse(String response) {
                         Toast.makeText(getActivity(), "Teacher added successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).loadTeachers();
+                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).getTeachers();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -377,15 +377,8 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
 
                 params.put(KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
                 params.put(KEY_PHONE_NUM, phoneNum);
-                params.put(KEY_USER_TYPE, TYPE_TEACHER);
-                params.put(KEY_ROLES + "[]", "s2m_content");
 
                 return params;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
             }
 
         };

@@ -45,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
     void getLoginDetails() {
         if (Utils.getInstance().isNetworkConnected(this)) {
             networkHelper = new NetworkHelper(S2MApplication.getAppContext());
-            networkHelper.getUserDetails(new NetworkHelper.NetworkListener() {
+            networkHelper.getDashBoardDetails(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
                     startNextActivity(LandingActivity.class);

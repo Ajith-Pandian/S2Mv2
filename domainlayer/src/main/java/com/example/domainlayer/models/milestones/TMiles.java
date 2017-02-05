@@ -12,6 +12,9 @@ public class TMiles {
     private ArrayList<TMileData> mileData;
     private boolean isCompletable;
 
+    public TMiles() {
+    }
+
     public TMiles(int id, String title, String note, String type, int mileIndex, boolean isCompletable) {
         this.id = id;
         this.mileIndex = mileIndex;

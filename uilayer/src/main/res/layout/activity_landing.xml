@@ -20,5 +20,5 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_landing"
-        app:menu="@menu/activity_landing_drawer" />
+        app:menu="@menu/activity_landing_drawer_s2m_admin" />
 </android.support.v4.widget.DrawerLayout>

@@ -39,12 +39,12 @@ import butterknife.ButterKnife;
 
 final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
+    TeacherOrSectionListener listener;
     private int rowsCount;
     private List<User> teachersList;
     private Context context;
 
-    TeachersAdapter(Context context, List<User> teachersList, int rowsCount, ManageTeachersActivity.TeachersSectionsFragment.TeacherListener teacherListener) {
+    TeachersAdapter(Context context, List<User> teachersList, int rowsCount, TeacherOrSectionListener teacherListener) {
         this.teachersList = teachersList;
         this.context = context;
         this.rowsCount = rowsCount;

@@ -70,9 +70,13 @@
                         android:layout_height="wrap_content"
                         android:textAllCaps="true"
                         android:gravity="center"
-                        android:text="Teacher"
+                        tools:text="Teacher"
                         android:textColor="@color/colorPrimary"
                         android:textSize="10sp" />
+                    <LinearLayout
+                        android:id="@+id/layout_wows"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
                     <View
                         android:layout_width="1dp"
                         android:layout_marginTop="2dp"
@@ -105,6 +109,7 @@
                         tools:text="28 Miles"
                         android:textColor="@color/text_secondary"
                         android:textSize="10sp" />
+                </LinearLayout>
                 </LinearLayout>
 
             </RelativeLayout>

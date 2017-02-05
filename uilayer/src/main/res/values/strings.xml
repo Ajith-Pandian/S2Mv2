@@ -28,6 +28,11 @@
     <string name="menu_give_feedback">Give Feedback</string>
     <string name="menu_share">Share Picture/Video</string>
     <string name="menu_call_admin">Call Admin</string>
+    <string name="menu_raise_ticket">Raise A Ticket</string>
+    <string name="menu_manage_teachers">Manage Teachers</string>
+    <string name="menu_school_updates">School Updates</string>
+    <string name="menu_broadcast">Broadcast</string>
+    <string name="menu_call_coordinator">Call Coordinator</string>
 
 
     <string-array name="attachment_menu">
@@ -37,10 +42,27 @@
         <item >@string/text_document</item>
     </string-array>
 
-    <string-array name="home_menu">
+    <string-array name="home_menu_teacher">
         <item >@string/menu_give_feedback</item>
         <item >@string/menu_share</item>
         <item >@string/menu_call_admin</item>
+    </string-array>
+
+    <string-array name="home_menu_coordinator">
+        <item >@string/menu_raise_ticket</item>
+        <item >@string/menu_manage_teachers</item>
+        <item >@string/menu_call_admin</item>
+    </string-array>
+
+    <string-array name="home_menu_school_admin">
+        <item >@string/menu_give_feedback</item>
+        <item >@string/menu_school_updates</item>
+        <item >@string/menu_call_admin</item>
+    </string-array>
+    <string-array name="home_menu_s2m_admin">
+        <item >@string/menu_broadcast</item>
+        <item >@string/menu_raise_ticket</item>
+        <item >@string/menu_call_coordinator</item>
     </string-array>
     //ImageButton Content Description
     <string name="phone_number_button">Phone number button</string>

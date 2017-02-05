@@ -7,6 +7,7 @@ package com.example.domainlayer.models;
 public class Schools {
     private int id;
     private String name, logo, locality, city;
+    boolean isActive;
 
     public int getId() {
         return id;
@@ -46,5 +47,13 @@ public class Schools {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

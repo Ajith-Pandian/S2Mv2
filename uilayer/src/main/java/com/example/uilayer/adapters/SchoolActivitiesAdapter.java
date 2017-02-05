@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.domainlayer.models.SclActs;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.models.SchoolDetails;
@@ -25,11 +26,11 @@ import butterknife.ButterKnife;
 
 public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActivitiesAdapter.ViewHolder> {
 
-    private List<SchoolDetails> schoolDetailsList;
+    private List<SclActs> sclActsList;
     private Context context;
 
-    public SchoolActivitiesAdapter(Context context, List<SchoolDetails> schoolDetailsList) {
-        this.schoolDetailsList = schoolDetailsList;
+    public SchoolActivitiesAdapter(Context context, List<SclActs> sclActsList) {
+        this.sclActsList = sclActsList;
         this.context = context;
     }
 
@@ -43,19 +44,22 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SchoolDetails schoolDetail = schoolDetailsList.get(position);
-        holder.schoolName.setText(schoolDetail.getName());
-        holder.schoolActivityMessage.setText(schoolDetail.getMessage());
-        holder.textTime.setText(schoolDetail.getTime());
-        holder.textDate.setText(schoolDetail.getDate());
-        holder.textLikes.setText(schoolDetail.getLikes());
+        SclActs sclActs = sclActsList.get(position);
+        holder.schoolName.setText(sclActs.getTitle());
+        holder.schoolActivityMessage.setText(sclActs.getMsg());
+        String timpeStamp=sclActs.getTimeStamp();
+        String date=timpeStamp.split(" ")[0];
+        String time=timpeStamp.split(" ")[1];
+        holder.textDate.setText(date);
+        holder.textTime.setText(time);
+        holder.textLikes.setText(sclActs.getLikesCount());
         Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
         holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
     }
 
     @Override
     public int getItemCount() {
-        return schoolDetailsList.size();
+        return sclActsList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

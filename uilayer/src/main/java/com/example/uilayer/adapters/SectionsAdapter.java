@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.views.CustomProgressBar;
 import com.example.uilayer.manage.ManageTeachersActivity;
+import com.example.uilayer.manage.TeacherOrSectionListener;
 import com.example.uilayer.milestones.MilestonesActivity;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.SEPERATOR;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 
 /**
@@ -52,7 +55,7 @@ import static com.example.domainlayer.Constants.SEPERATOR;
  */
 
 public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHolder> {
-    private ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener;
+    private TeacherOrSectionListener listener;
     private int rowsCount;
     private Context context;
     private int[] colorsArray = {R.color.mile_oolor1, R.color.mile_oolor2, R.color.mile_oolor3,
@@ -61,8 +64,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     private boolean editable;
 
     public SectionsAdapter(Context context, List<Sections> sectionDetailsList,
-                           int rowsCount,
-                           ManageTeachersActivity.TeachersSectionsFragment.TeacherListener listener, boolean editable) {
+                           int rowsCount, TeacherOrSectionListener listener, boolean editable) {
         this.sectionDetailsList = sectionDetailsList;
         this.context = context;
         this.rowsCount = rowsCount;
@@ -109,19 +111,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         //TODO:color coressponding milestone
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
 
-        holder.rootLayout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getMilestoneDetails(holder.getAdapterPosition());
-                    }
-                });
 
- /*       if (!com.example.domainlayer.temp.DataHolder.getInstance(context).getUser().getUserType().equals(TYPE_TEACHER)) {
+        if (!NewDataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
             holder.threeDots.setVisibility(View.VISIBLE);
-        } else holder.threeDots.setVisibility(View.GONE);*/
-        if (editable) {
-            holder.dotsLayout.setVisibility(View.VISIBLE);
             holder.dotsLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -129,7 +121,29 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                         showPopupMenu(view, holder.getAdapterPosition());
                 }
             });
-        } else holder.dotsLayout.setVisibility(View.GONE);
+
+        } else {
+            holder.threeDots.setVisibility(View.GONE);
+            holder.rootLayout.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getMilestoneDetails(holder.getAdapterPosition());
+                        }
+                    });
+        }
+        if (sectionDetails.getTeacherId() == NewDataHolder.getInstance(context).getUser().getId()) {
+            holder.ownBadge.setVisibility(View.VISIBLE);
+            holder.rootLayout.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getMilestoneDetails(holder.getAdapterPosition());
+                        }
+                    });
+        } else
+            holder.ownBadge.setVisibility(View.GONE);
+
     }
 
 
@@ -181,25 +195,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }); /*{
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new ArrayMap<>();
-                // params.put(KEY_SECTION_ID, sectionDetailsList.get(position).getId());
-                params.put(KEY_SECTION_ID, String.valueOf(sectionDetailsList.get(position).getId()));
-                // params.put(KEY_SCHOOL_ID,  sectionDetailsList.get(position).getSchoolId());
-                params.put(KEY_SCHOOL_ID, String.valueOf(SharedPreferenceHelper.getSchoolId()));
-                return params;
-            }
+        });
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, String.valueOf(SharedPreferenceHelper.getAccessToken()));
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-        };*/
 
         VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
     }
@@ -219,6 +216,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         DataHolder.getInstance(context).setCurrentMilestoneID(milestoneId);
         intent.putExtra("class_name", _class);
         intent.putExtra("section_name", section);
+        intent.putExtra("is_intro", false);
         context.startActivity(intent);
 
     }
@@ -276,9 +274,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         LinearLayout rootLayout;
         @BindView(R.id.layout_dots)
         LinearLayout dotsLayout;
-
         @BindView(R.id.dots)
         TextView threeDots;
+        @BindView(R.id.badge_own)
+        ImageView ownBadge;
 
         public ViewHolder(View view) {
             super(view);

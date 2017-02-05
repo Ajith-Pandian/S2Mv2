@@ -10,7 +10,11 @@ public class Constants {
     public static final String BASE_URL = SERVER_ADDRESS + "api/";
     public static final String CONFIGURATION_URL = BASE_URL + "configuration";
     public static final String USER_URL = BASE_URL + "user/";
+    public static final String USER_SECTIONS_URL = BASE_URL + "user/sections";
     public static final String SCHOOLS_URL = BASE_URL + "schools/";
+
+    public static final String KEY_INTRO_TRAININGS = "intro_trainings";
+    public static final String INTRO_TRAININGS_URL = BASE_URL + KEY_INTRO_TRAININGS;
 
     public static final String VALIDATE_URL = USER_URL + "validate";
     public static final String AUTHENTICATE_URL = USER_URL + "authenticate";
@@ -28,7 +32,6 @@ public class Constants {
     public static final String MCQ_RESULT_URL = TRAININGS_URL + "1/trainings/15/submitMcqResults";
     public static final String SECTIONS_URL = SCHOOLS_URL + "2/sections";
     public static final String DETAILED_SECTIONS_URL = SCHOOLS_URL + "3/detailedSections";
-    public static final String INTRO_TRAINING_URL = BASE_URL + "introTraining";
     public static final String ARCHIVE_URL = BASE_URL + "section/4/archiveMilesTrainings";
     public static final String FEEDBACK_CREATE_URL = BASE_URL + "feedback/create";
     public static final String FEEDBACK_UNDO_URL = BASE_URL + "feedback/undo";
@@ -61,6 +64,7 @@ public class Constants {
     public static final String KEY_RECEIVER_ID = "receiverId";
     public static final String KEY_SUBJECT = "subject";
     public static final String KEY_USERS = "users";
+    public static final String KEY_DASHBOARD = "dashboard";
 
 
     public static final String TEMP_EMAIL = "manit@gmail.com";
@@ -97,6 +101,7 @@ public class Constants {
 
     public static final String KEY_IS_ACTIVE = "isActive";
     public static final String KEY_IS_TRAINING = "isTraining";
+    public static final String KEY_IS_COMPLETED = "is_completed";
     public static final String KEY_OTP = "otp";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_PROFILE_PICTURE = "profile_picture";
@@ -108,6 +113,7 @@ public class Constants {
     public static final String VALUE = "null";
 
     public static final String KEY_MILES = "miles";
+    public static final String KEY_MILE = "mile";
     public static final String KEY_MILES_TRAININGS = "miles_trainings";
     public static final String KEY_WOW = "wows";
     public static final String KEY_WOW_COUNT = "wow_count";
@@ -123,6 +129,7 @@ public class Constants {
     public static final String KEY_MILE_ID = "mileId";
     public static final String KEY_CONTENT_INDEX = "content_index";
     public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_DELETE = "delete";
     public static final String KEY_LIKES_COUNT = "likes_count";
     public static final String KEY_COUNTRY_CODES = "country_codes";
     public static final String KEY_COUNTRY_CODE = "country_code";
@@ -141,6 +148,7 @@ public class Constants {
     public static final String KEY_SECTIONS = "sections";
     public static final String KEY_SECTION = "section";
     public static final String KEY_SECTION_NAME = "section_name";
+    public static final String KEY_BULLETIN_BOARD= "bulletin_board";
     public static final String KEY_SECTION_ID = "sectionId";
     public static final String KEY_CLASS = "class";
     public static final String KEY_CLASS_NAME = "class_name";
@@ -196,6 +204,7 @@ public class Constants {
 
 
     public static final String KEY_TIMESTAMP = "created_at";
+    public static final String KEY_ICON = "icon";
     public static final String IS_LIKED = "is_liked";
     public static final String KEY_PENDING_MILESTONES = "pending_milestones";
     public static final String KEY_COMPLETED = "completed";
@@ -226,6 +235,11 @@ public class Constants {
     public static final String TYPE_SCL_ADMIN = "school_admin";
     public static final String TYPE_T_SCL_ADMIN = "t_school_admin";
 
+    //User types based on roles
+    public static final String TEXT_TEACHER = "Teacher";
+    public static final String TEXT_S2M_ADMIN = "S2M Admin";
+    public static final String TEXT_SCL_ADMIN = "School Admin";
+
     //User types
     public static final String USER_TYPE_SCHOOL = "school";
     public static final String USER_TYPE_S2M_ADMIN = "s2m_admin";
@@ -234,6 +248,7 @@ public class Constants {
 
     public static final String ROLE_TEACHER = "teacher";
     public static final String ROLE_SCL_ADMIN  = "school_admin";
+    public static final String ROLE_COORDINATOR  = "coordinator";
 
     public static final String ROLE_S2M_CONTENT = "s2m_content";
     public static final String ROLE_S2M_HEAD = "s2m_head";

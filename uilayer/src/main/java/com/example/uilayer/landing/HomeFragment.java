@@ -52,6 +52,13 @@ import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TEXT_S2M_ADMIN;
+import static com.example.domainlayer.Constants.TEXT_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TEXT_TEACHER;
+import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
+import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
 
 
 /**
@@ -138,9 +145,15 @@ public class HomeFragment extends Fragment {
         user = NewDataHolder.getInstance(getContext()).getUser();
         String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
-        designation.setText(user.getType());
-        // textWow.setText(user.getWow() + Constants.SUFFIX_WOWS);
-        // textMiles.setText(user.getMiles() +Constants.SUFFIX_MILES);
+        String userType = user.getType();
+        if (userType.equals(TYPE_TEACHER))
+            designation.setText(TEXT_TEACHER);
+       else if (userType.equals(TYPE_SCL_ADMIN) || userType.equals(TYPE_T_SCL_ADMIN))
+            designation.setText(TEXT_SCL_ADMIN);
+        else if (userType.equals(TYPE_S2M_ADMIN))
+            designation.setText(TEXT_S2M_ADMIN);
+
+
         String avatar = user.getAvatar();
         Bitmap placeHolder = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ph_profile);
         profileImage.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), placeHolder));
@@ -148,11 +161,10 @@ public class HomeFragment extends Fragment {
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
                 .into(target);
-        tempUser = NewDataHolder.getInstance(getActivity()).getUser();
-        if (tempUser != null) {
+        if (user.getBulletin() != null) {
 
-            //String image = tempUser.getBulletin().getMsg().getImage();
-            String image = "";
+            String image = user.getBulletin().getMsg();
+           // String image = "";
 
             if (image != null && !image.equals(""))
                 Picasso.with(getActivity())

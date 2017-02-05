@@ -30,6 +30,7 @@ import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
 import com.example.uilayer.R;
@@ -68,6 +69,7 @@ import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
+import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
 import static com.example.domainlayer.Constants.KEY_UPDATE;
 import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.KEY_USER_ID;
@@ -102,13 +104,10 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
     ImageButton closeButton;
     @BindView(R.id.button_add_section)
     Button addButton;
-
     boolean isUpdate;
     int position;
-    VolleyStringRequest getUsersRequest;
     BottomSheetBehavior bottomSheetBehavior;
     Dialog thisDialog;
-    VolleyStringRequest createTicketRequest;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
@@ -195,14 +194,23 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         return NewDataHolder.getInstance(getContext()).getSectionsList().get(this.position).getId();
     }
 
-    int getSpinnerTeacherId() {
-        return ((User) teachersSpinner.getSelectedItem()).getId();
-
+    String getSpinnerTeacherId() {
+        if (teachersSpinner.getSelectedItem() != null)
+            return String.valueOf(((User) teachersSpinner.getSelectedItem()).getId());
+        else {
+            return "";
+        }
     }
 
-    int getSpinnerMilestoneId() {
-        return ((Milestones) milestoneSpinner.getSelectedItem()).getId();
+    String getSpinnerMilestoneId() {
+        if (milestoneSpinner.getSelectedItem() != null)
+            return String.valueOf(((Milestones) milestoneSpinner.getSelectedItem()).getId());
+        else {
+            Utils.getInstance().showToast("Pls select Milestone");
+            return "";
+        }
     }
+
 
     void initViews() {
         initSpinners();
@@ -255,12 +263,21 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 milestoneSpinner.setSelection(i);
         }
     }
-    void selectTeacher(int teacherId) {
-        ArrayList<User> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
 
-        for (int i = 0; i < teachersList.size(); i++) {
-            if (teacherId == teachersList.get(i).getId())
-                teachersSpinner.setSelection(i);
+    void selectTeacher(final int teacherId) {
+        ArrayList<User> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+        if (teachersList != null) {
+            for (int i = 0; i < teachersList.size(); i++) {
+                if (teacherId == teachersList.get(i).getId())
+                    teachersSpinner.setSelection(i);
+            }
+        } else {
+            new NetworkHelper(getContext()).getTeachers(new NetworkHelper.NetworkListener() {
+                @Override
+                public void onFinish() {
+                    selectTeacher(teacherId);
+                }
+            });
         }
     }
 
@@ -326,9 +343,9 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
 
     VolleyStringRequest sectionAddRequest;
 
-    void addSection(final String className, final String sectionName, final String milestoneId, final String userId, final String studCOunt) {
+    void addSection(final String className, final String sectionName, final String milestoneId, final String teacherId, final String studCOunt) {
         sectionAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
-                KEY_SECTIONS + SEPERATOR + KEY_ASSIGN,
+                KEY_SECTIONS + SEPERATOR + KEY_CREATE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -380,8 +397,9 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 params.put(KEY_CLASS, className);
                 params.put(KEY_SECTION, sectionName);
                 params.put(KEY_MILESTONE_ID, milestoneId);
-                params.put(KEY_USER_ID, userId);
                 params.put(KEY_STUDENT_COUNT, studCOunt);
+                if (teacherId != null && !teacherId.isEmpty())
+                    params.put(KEY_TEACHER_ID, teacherId);
                 return params;
             }
         };
@@ -399,7 +417,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                         Log.d("sectionUpdate", "onResponse: " + response);
                         Toast.makeText(getActivity(), "Section added successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).loadTeachers();
+                        //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).getTeachers();
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -437,18 +455,16 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 Log.d(TAG, "onTimeout: ");
             }
         }) {
-
             @Override
             public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new ArrayMap<>();
                 params.put(KEY_CLASS, className);
                 params.put(KEY_SECTION, sectionName);
                 params.put(KEY_MILESTONE_ID, milestoneId);
-                params.put(KEY_USER_ID, userId);
+                params.put(KEY_TEACHER_ID, userId);
                 params.put(KEY_STUDENT_COUNT, studCOunt);
                 return params;
             }
-
 
         };
         VolleySingleton.getInstance(getContext()).addToRequestQueue(sectionAddRequest);

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Manage">
+        <menu>
+            <item
+                android:id="@+id/nav_manage_teachers"
+                android:title="Manage Teachers" />
+            <item
+                android:id="@+id/nav_manage_sections"
+                android:title="Manage Sections" />
+        </menu>
+    </item>
+
+</menu>

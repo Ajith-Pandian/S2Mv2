@@ -488,7 +488,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     }
 
     void getMcqs() {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
+        VolleyStringRequest mcqsRequest = new VolleyStringRequest(Request.Method.GET,
                 MILESTONES_URL + SEPERATOR + NewDataHolder.getInstance(this).getCurrentMilestoneId()
                         + TRAININGS_SUFFIX + SEPERATOR + thisMileId + MCQS_SUFFIX,
                 new Response.Listener<String>() {
@@ -502,7 +502,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("MilesDetails", "onErrorResponse: " + error);
+                        Log.d("MCQ Details", "onErrorResponse: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
@@ -534,7 +534,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             }
         });
 
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(milesRequest);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(mcqsRequest);
     }
 
 

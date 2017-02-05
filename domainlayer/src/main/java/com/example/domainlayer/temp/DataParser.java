@@ -44,20 +44,22 @@ public class DataParser {
         ArrayList<Sections> sectionsArrayList = new ArrayList<>();
         try {
             for (int i = 0; i < sectionsArray.length(); i++) {
-                JSONObject milesDatObject = sectionsArray.getJSONObject(i);
+                JSONObject sectionJsonObject = sectionsArray.getJSONObject(i);
                 Sections section
-                        = new Sections(milesDatObject.getInt(KEY_ID),
-                        (PREFIX_CLASS + milesDatObject.getString(KEY_CLASS_NAME)),
-                        (PREFIX_SECTION + milesDatObject.getString(KEY_SECTION_NAME)),
-                        milesDatObject.getInt(KEY_MILES_COMPLETION_COUNT),
-                        milesDatObject.getInt(KEY_MILES_COUNT),
-                        (Constants.KEY_MILESTONE_PREFIX + SPACE + milesDatObject.getString(KEY_MILESTONE_NAME)),
-                        milesDatObject.getInt(KEY_MILESTONE_ID),
-                        milesDatObject.getInt(KEY_STUDENT_COUNT));
-                if (!isUserSections) {
-                    section.setTeacherName(milesDatObject.getString(KEY_TEACHER_NAME));
-                    section.setTeacherId(milesDatObject.getInt(KEY_TEACHER_ID));
-                }
+                        = new Sections(sectionJsonObject.getInt(KEY_ID),
+                        (PREFIX_CLASS + sectionJsonObject.getString(KEY_CLASS_NAME)),
+                        (PREFIX_SECTION + sectionJsonObject.getString(KEY_SECTION_NAME)),
+                        sectionJsonObject.getInt(KEY_MILES_COMPLETION_COUNT),
+                        sectionJsonObject.getInt(KEY_MILES_COUNT),
+                        (Constants.KEY_MILESTONE_PREFIX + SPACE + sectionJsonObject.getString(KEY_MILESTONE_NAME)),
+                        sectionJsonObject.getInt(KEY_MILESTONE_ID),
+                        sectionJsonObject.getInt(KEY_STUDENT_COUNT));
+
+                if (sectionJsonObject.has(KEY_TEACHER_NAME)&&!sectionJsonObject.isNull(KEY_TEACHER_NAME))
+                    section.setTeacherName(sectionJsonObject.getString(KEY_TEACHER_NAME));
+                if (sectionJsonObject.has(KEY_TEACHER_ID)&&!sectionJsonObject.isNull(KEY_TEACHER_ID))
+                    section.setTeacherId(sectionJsonObject.getInt(KEY_TEACHER_ID));
+
                 sectionsArrayList.add(section);
             }
         } catch (JSONException ex) {

@@ -28,8 +28,11 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_SCHOOL;
+import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
@@ -47,7 +50,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         schoolRecycler.setLayoutManager(layoutManager);
-        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1,true));
+        schoolRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
         // schoolRecycler.setAdapter(new SchoolsAdapter(this, getSchools()));
         loadSchools();
     }
@@ -73,7 +76,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
     }
 
     void loadSchools() {
-        getSchoolsRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL ,
+        getSchoolsRequest = new VolleyStringRequest(Request.Method.GET, BASE_URL + KEY_SCHOOLS,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -115,22 +118,7 @@ public class SelectSchoolActivity extends AppCompatActivity {
             public void onTimeout() {
                 Log.d(TAG, "onTimeout: ");
             }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
+        });
         VolleySingleton.getInstance(this).addToRequestQueue(getSchoolsRequest);
     }
 
@@ -143,14 +131,21 @@ public class SelectSchoolActivity extends AppCompatActivity {
     void updateSchools(String schoolsResponse) {
         ArrayList<Schools> schoolsArrayList = new ArrayList<>();
         try {
-            JSONArray schoolsArray = new JSONArray(schoolsResponse);
+            JSONObject schoolsJson = new JSONObject(schoolsResponse);
+            JSONArray schoolsArray = schoolsJson.getJSONArray(KEY_SCHOOLS);
             for (int i = 0; i < schoolsArray.length(); i++) {
                 JSONObject userJson = schoolsArray.getJSONObject(i);
                 Schools school = new Schools();
+
                 school.setId(userJson.getInt(Constants.KEY_ID));
                 school.setName(userJson.getString(Constants.KEY_NAME));
-                school.setLocality(userJson.getString(Constants.KEY_ADDRESS));
+                school.setLocality(userJson.getString(Constants.KEY_LOCALITY));
+                school.setCity(userJson.getString(Constants.KEY_CITY));
                 school.setLogo(userJson.getString(Constants.KEY_LOGO));
+                if (i == 0)
+                    school.setActive(true);
+                else
+                    school.setActive(false);
 
                 schoolsArrayList.add(i, school);
             }

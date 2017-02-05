@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.DbUser;
-import com.example.domainlayer.models.User;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
@@ -22,13 +26,20 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.example.domainlayer.Constants.SUFFIX_MILES;
 import static com.example.domainlayer.Constants.SUFFIX_WOWS;
+import static com.example.domainlayer.Constants.TEXT_S2M_ADMIN;
+import static com.example.domainlayer.Constants.TEXT_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TEXT_TEACHER;
+import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_TEACHER;
+import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
 
 /**
  * Created by thoughtchimp on 12/21/2016.
@@ -62,13 +73,29 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         holder.name.setText(user.getFirstName() + " " + user.getLastName());
         holder.wowText.setText(user.getWow() + SUFFIX_WOWS);
         holder.milesText.setText(user.getMiles() + SUFFIX_MILES);
-        holder.textDesignation.setText(user.getType());
-        holder.netwrokLayout.setOnClickListener(new View.OnClickListener() {
+        String userType = user.getType();
+
+        if (userType.equals(TYPE_TEACHER))
+            holder.textDesignation.setText(TEXT_TEACHER);
+        else if (userType.equals(TYPE_SCL_ADMIN) || userType.equals(TYPE_T_SCL_ADMIN))
+            holder.textDesignation.setText(TEXT_SCL_ADMIN);
+        else if (userType.equals(TYPE_S2M_ADMIN)) {
+            holder.textDesignation.setText(TEXT_S2M_ADMIN);
+            holder.wowLayout.setVisibility(View.GONE);
+        }
+
+        holder.callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeCall(user.getPhoneNum());
+            }
+        });
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NewDataHolder.getInstance(context).setCurrentNetworkUser(user);
                 Intent intent = new Intent(context, ProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
@@ -94,6 +121,16 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
             Picasso.with(context).load(user.getAvatar()).placeholder(R.drawable.profile).into(target);
     }
 
+    private void makeCall(String phoneNumber) {
+        Intent in = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+" + Constants.COUNTRY_CODE + phoneNumber));
+        try {
+            in.setFlags(FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(in);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "Could not find an activity to place the call.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -112,8 +149,12 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         TextView textDesignation;
         @BindView(R.id.image_profile)
         ImageView profileImage;
+        @BindView(R.id.button_call)
+        ImageButton callButton;
         @BindView(R.id.layout_network)
-        RelativeLayout netwrokLayout;
+        RelativeLayout rootLayout;
+        @BindView(R.id.layout_wows)
+        LinearLayout wowLayout;
 
         public ViewHolder(View view) {
             super(view);

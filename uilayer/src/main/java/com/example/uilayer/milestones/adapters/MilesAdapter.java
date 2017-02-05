@@ -17,6 +17,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
@@ -26,6 +27,7 @@ import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.MilesActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,11 +60,13 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<TMiles> milestonesList;
     private Context context;
     private int undoId;
+    private boolean isIntro;
 
-    public MilesAdapter(Context context, List<TMiles> milestonesList, int undoId) {
+    public MilesAdapter(Context context, List<TMiles> milestonesList, int undoId, boolean isIntro) {
         this.milestonesList = milestonesList;
         this.context = context;
         this.undoId = undoId;
+        this.isIntro = isIntro;
     }
 
     @Override
@@ -101,7 +105,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(mile.getTitle());
                         holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
-                        openActivity(MilesActivity.class, true,mile.isCompletable(), milestonesList.get(position).getId());
+                        openActivity(MilesActivity.class, true, mile.isCompletable(), milestonesList.get(position).getId());
                     }
                 });
                 viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
@@ -127,8 +131,14 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     public void onClick(View view) {
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(training.getTitle());
-                        holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
-                        openActivity(MilesActivity.class, false, training.isCompletable(),milestonesList.get(position).getId());
+                        ArrayList<TMileData> mileDataArrayList;
+                        if (isIntro)
+                            mileDataArrayList = holder.getIntroTrainingsList().get(position).getMileData();
+                        else
+                            mileDataArrayList = holder.getMilesList().get(position).getMileData();
+
+                        holder.setMilesDataList(mileDataArrayList);
+                        openActivity(MilesActivity.class, false, training.isCompletable(), milestonesList.get(position).getId());
 
 
                     }
@@ -207,7 +217,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
     }
 
-    private void openActivity(Class<?> activityClass, boolean isMile, boolean isCompletable,int id) {
+    private void openActivity(Class<?> activityClass, boolean isMile, boolean isCompletable, int id) {
         Intent intent = new Intent(context, activityClass);
         intent.putExtra("isMile", isMile);
         intent.putExtra(KEY_ID, id);
