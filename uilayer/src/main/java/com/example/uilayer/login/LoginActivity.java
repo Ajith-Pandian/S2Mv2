@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 
-import com.example.domainlayer.temp.DataHolder;
-import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.signup.SignUpActivity;
+import com.example.uilayer.profile.RegisterActivity;
 import com.example.uilayer.landing.LandingActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, OtpFragment.OtpListener {
@@ -56,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     void launchSignUp() {
-        startActivity(new Intent(LoginActivity.this, SignUpActivity.class).putExtra("isSignUp",false));
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class).putExtra("isSignUp",false));
     }
 
     void launchLanding() {

@@ -1,5 +1,6 @@
 package com.example.uilayer.network;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -20,6 +22,8 @@ import com.example.domainlayer.models.DbUser;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.profile.ProfileUpdateActivity;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -31,7 +35,7 @@ import static com.example.domainlayer.Constants.KEY_WOW;
 import static com.example.domainlayer.Constants.SPACE;
 import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
 
-public class ProfileActivity extends AppCompatActivity {
+public class NetworkProfileActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_profile)
     Toolbar toolbar;
     @BindView(R.id.image_profile_toolbar)
@@ -75,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (profilePagerAdapter.getCount() == 1)
             tabLayout.setSelectedTabIndicatorHeight(0);
 
-        if(user.getType().equals(TYPE_S2M_ADMIN))
+        if (user.getType().equals(TYPE_S2M_ADMIN))
             teacherDetailsLayout.setVisibility(View.GONE);
 
         wowsText.setText(user.getWow() + SPACE + KEY_WOW);
@@ -86,10 +90,22 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (user.getId() == SharedPreferenceHelper.getUserId()) {
+            getMenuInflater().inflate(R.menu.menu_profile, menu);
+            return true;
+        } else
+            return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+            case R.id.action_edit_profile:
+                startActivity(new Intent(this, ProfileUpdateActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

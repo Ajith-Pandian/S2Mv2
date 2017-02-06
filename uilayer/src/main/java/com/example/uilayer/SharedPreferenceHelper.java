@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 
 import com.example.domainlayer.Constants;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by thoughtchimp on 1/19/2017.
  */
@@ -78,6 +82,26 @@ public class SharedPreferenceHelper {
         return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_CONFIGURATION, "");
     }
 
+    private static final String ROLES = "roles";
+
+    public static void setUserRoles(ArrayList<String> userRoles) {
+        Set<String> set = new HashSet<String>();
+        set.addAll(userRoles);
+        getEditor().putStringSet(ROLES, set);
+        getEditor().apply();
+    }
+
+    private static SharedPreferences getSharedPreference() {
+        return S2MApplication.getAppContext().getSharedPreferences(PREF_FILE, 0);
+    }
+
+    private static SharedPreferences.Editor getEditor() {
+        return getSharedPreference().edit();
+    }
+
+    public static ArrayList<String> getUserRoles() {
+        return new ArrayList<>(getSharedPreference().getStringSet(ROLES, new HashSet<String>()));
+    }
 
     /**
      * Set a Boolean shared preference
@@ -127,4 +151,6 @@ public class SharedPreferenceHelper {
         SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
         return settings.getBoolean(key, defValue);
     }
+
+
 }

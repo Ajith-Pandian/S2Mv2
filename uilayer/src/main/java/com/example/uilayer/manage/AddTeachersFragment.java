@@ -124,8 +124,10 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         }
     };
+    static AddOrUpdateListener addOrUpdateListener;
 
-    public static AddTeachersFragment getNewInstance(boolean isUpdate, int position) {
+    public static AddTeachersFragment getNewInstance(boolean isUpdate, int position, AddOrUpdateListener listener) {
+        addOrUpdateListener = listener;
         newInstance = new AddTeachersFragment();
         Bundle args = new Bundle();
         args.putBoolean(IS_UPDATE, isUpdate);
@@ -256,6 +258,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
                     public void onResponse(String response) {
                         Toast.makeText(getActivity(), "Teacher added successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        addOrUpdateListener.onFinish(false);
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -323,8 +326,9 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getActivity(), "Teacher added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Teacher updated successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        addOrUpdateListener.onFinish(true);
                         //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).getTeachers();
                     }
                 },

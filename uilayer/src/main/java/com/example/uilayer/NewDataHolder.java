@@ -63,6 +63,8 @@ public class NewDataHolder {
     private ArrayList<TMileData> milesDataList, introDataList;
     private ArrayList<User> teachersList;
     private ArrayList<Sections> sectionsList;
+    private ArrayList<SclActs> sclActList;
+    private SclActs bulletin;
     private String currentMileTitle;
 
     private NewDataHolder(Context context) {
@@ -82,12 +84,11 @@ public class NewDataHolder {
 
             DbUser user = new DbUser();
             user.setId(userJson.getInt(Constants.KEY_ID));
-            user.setEmail(userJson.getString(Constants.KEY_EMAIL));
-            String lastName = userJson.getString(Constants.KEY_FIRST_NAME);
-            if (lastName != null && !lastName.equals("null"))
-                user.setFirstName(lastName);
-            user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
+            user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+            if (!userJson.isNull(Constants.KEY_LAST_NAME))
+                user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
             user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
+            user.setEmail(userJson.getString(Constants.KEY_EMAIL));
             user.setAccessToken(userJson.getString(Constants.KEY_ACCESS_TOKEN));
             user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
 
@@ -107,8 +108,10 @@ public class NewDataHolder {
                 school.setLogo(schoolJsonObj.getString(Constants.KEY_LOGO));
                 school.setLocality(schoolJsonObj.getString(Constants.KEY_LOCALITY));
                 school.setCity(schoolJsonObj.getString(Constants.KEY_CITY));
-                roles = getStringsFromArray(schoolJsonObj.getJSONArray(Constants.KEY_ROLES));
-                user.setRoles(roles);
+                //roles = ;
+                //user.setRoles(roles);
+                if (i == 0)
+                    SharedPreferenceHelper.setUserRoles(getStringsFromArray(schoolJsonObj.getJSONArray(Constants.KEY_ROLES)));
                 schoolsArrayList.add(school);
             }
             user.setType(getTypeByRoles(userType, roles));
@@ -116,18 +119,18 @@ public class NewDataHolder {
             if (schoolsArrayList.size() > 0) {
                 user.setSchoolId(schoolsArrayList.get(0).getId());
                 user.setSchoolName(schoolsArrayList.get(0).getName());
-            }
-
-          /* */
-            setUser(user);
-
-            SharedPreferenceHelper.setAccessToken(user.getAccessToken());
-            SharedPreferenceHelper.setUserId(user.getId());
-            if (schoolsArrayList.size() > 0) {
                 SharedPreferenceHelper.setSchoolId(user.getSchoolsList().get(0).getId());
                 SharedPreferenceHelper.setSchoolName(user.getSchoolsList().get(0).getName());
             }
-            // new DataBaseUtil(context).setUser(user);
+
+          /* */
+            // setUser(user);
+
+            SharedPreferenceHelper.setAccessToken(user.getAccessToken());
+            SharedPreferenceHelper.setUserId(user.getId());
+
+            user.setLoggedIn(true);
+            new DataBaseUtil(context).setUser(user);
         } catch (JSONException exception) {
             Log.e("NewDataHolder", "setLoginResult: ", exception);
         }
@@ -152,30 +155,29 @@ public class NewDataHolder {
                         bulletinJson.getBoolean(IS_LIKED),
                         bulletinJson.getString(KEY_ICON)
                 );
-                user.setBulletin(bulletin);
+                //user.setBulletin(bulletin);
+                setBulletin(bulletin);
             }
 
             JSONArray schoolActivitiesArray = dashBoardJson.getJSONArray(KEY_ACTIVITIES);
             if (schoolActivitiesArray != null && schoolActivitiesArray.length() > 0) {
-                //Bulletin
-
-
                 for (int i = 1; i < schoolActivitiesArray.length(); i++) {
                     JSONObject schoolActivity = schoolActivitiesArray.getJSONObject(i);
-                    SclActs sclActivities
+                    SclActs sclActivity
                             = new SclActs(schoolActivity.getInt(KEY_ID),
                             schoolActivity.getString(KEY_TYPE),
                             "",
-                           // schoolActivity.getString(KEY_TITLE),
+                            // schoolActivity.getString(KEY_TITLE),
                             schoolActivity.getString(KEY_MESSAGE),
                             schoolActivity.getString(KEY_TIMESTAMP),
                             schoolActivity.getInt(KEY_LIKES_COUNT),
                             schoolActivity.getBoolean(IS_LIKED),
                             schoolActivity.getString(KEY_ICON)
                     );
-                    sclActList.add(sclActivities);
+                    sclActList.add(sclActivity);
                 }
-                user.setSclActs(sclActList);
+                //user.setSclActs(sclActList);
+                setSclActList(sclActList);
             }
         } catch (JSONException ex) {
             Log.e("NewDataHolder", "saveDashboardDetails: ", ex);
@@ -193,10 +195,9 @@ public class NewDataHolder {
         return options;
     }
 
-    public  void saveUserSections(JSONArray sectionsArray)
-    {
-        ArrayList<Sections> sectionsArrayList=new DataParser().getSectionsListFromJson(sectionsArray, false);
-        user.setSectionsList(sectionsArrayList);
+    public void saveUserSections(JSONArray sectionsArray) {
+        ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
+        //user.setSectionsList(sectionsArrayList);
         setSectionsList(sectionsArrayList);
     }
 
@@ -222,21 +223,6 @@ public class NewDataHolder {
 
         return type;
     }
-
-    private BulletinMessage getMessage(String message) {
-        BulletinMessage msg = null;
-
-        try {
-            JSONObject msgObject = new JSONObject(message);
-            msg = new BulletinMessage(msgObject.getString(KEY_TITLE),
-                    msgObject.getString(KEY_IMAGE),
-                    msgObject.getString(KEY_BODY));
-        } catch (JSONException ex) {
-            Log.e("GetMsg", "getMessage: ", ex);
-        }
-        return msg;
-    }
-
 
     public DbUser getUser() {
         return user;
@@ -349,5 +335,21 @@ public class NewDataHolder {
 
     public void setIntroTrainingsList(ArrayList<TMiles> introTrainingsList) {
         this.introTrainingsList = introTrainingsList;
+    }
+
+    public ArrayList<SclActs> getSclActList() {
+        return sclActList;
+    }
+
+    public void setSclActList(ArrayList<SclActs> sclActList) {
+        this.sclActList = sclActList;
+    }
+
+    public SclActs getBulletin() {
+        return bulletin;
+    }
+
+    public void setBulletin(SclActs bulletin) {
+        this.bulletin = bulletin;
     }
 }

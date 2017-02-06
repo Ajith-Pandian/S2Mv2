@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.example.domainlayer.models.DbUser;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.views.HeightWrapListView;
 import com.example.uilayer.tickets.TicketsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
@@ -76,6 +78,7 @@ public class LandingActivity extends AppCompatActivity
     FrameLayout frameLayout;
     @BindView(R.id.dummy_view)
     View dummyView;
+    int selectedTab = 0;
     View.OnClickListener buttonsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -84,17 +87,21 @@ public class LandingActivity extends AppCompatActivity
                 setState(view);
                 switch (view.getId()) {
                     case R.id.button_home:
+                        selectedTab = 1;
                         replaceFragment(new HomeFragment());
                         break;
                     case R.id.button_section:
+                        selectedTab = 2;
                         replaceFragment(new SectionsFragment());
                         break;
                     case R.id.button_messages: {
+                        selectedTab = 3;
                         TicketsFragment ticketsFragment = new TicketsFragment();
                         replaceFragment(ticketsFragment);
                     }
                     break;
                     case R.id.button_video:
+                        selectedTab = 4;
                         TicketsFragment ticketsFragment = new TicketsFragment();
                         replaceFragment(ticketsFragment);
                         break;
@@ -135,20 +142,40 @@ public class LandingActivity extends AppCompatActivity
 
         initNavigationDrawer();
         frameLayout.getForeground().setAlpha(0);
-        if (getSupportActionBar() != null) {
-            DbUser user = NewDataHolder.getInstance(S2MApplication.getAppContext()).getUser();
-            //getSupportActionBar().setTitle("Hai");
-            getSupportActionBar().setTitle(user.getSchoolName() != null && !user.getSchoolName().equals("") ? user.getSchoolName() : getResources().getString(R.string.app_name));
 
-        }
         // setupWindowAnimations();
         homeButton.setOnClickListener(buttonsClickListener);
         sectionButton.setOnClickListener(buttonsClickListener);
         messagesButton.setOnClickListener(buttonsClickListener);
         videoButton.setOnClickListener(buttonsClickListener);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(SharedPreferenceHelper.getSchoolName() != null &&
+                    !SharedPreferenceHelper.getSchoolName().equals("") ? SharedPreferenceHelper.getSchoolName() : getResources().getString(R.string.app_name));
+        }
         //loading home fragment for first time
-        homeButton.performClick();
+        switch (selectedTab) {
+            case 0:
+                homeButton.performClick();
+                break;
+            case 1:
+                sectionButton.performClick();
+                break;
+            case 3:
+                messagesButton.performClick();
+                break;
+            case 4:
+                videoButton.performClick();
+                break;
+            default:
+                homeButton.performClick();
+        }
+
     }
 
     boolean isMenuShown;
@@ -159,8 +186,8 @@ public class LandingActivity extends AppCompatActivity
                 R.drawable.ic_intro_training};
         int menuId = 0;
 
-        ArrayList<String> userRoles = NewDataHolder.getInstance(this).getUser().getRoles();
-        if (NewDataHolder.getInstance(this).getUser().getType().equals(TYPE_S2M_ADMIN))
+        ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
+        if (new DataBaseUtil(this).getUser().getType().equals(TYPE_S2M_ADMIN))
             menuId = R.array.home_menu_s2m_admin;
         else if (userRoles.contains(ROLE_COORDINATOR))
             menuId = R.array.home_menu_coordinator;
@@ -278,7 +305,7 @@ public class LandingActivity extends AppCompatActivity
                     hideMenu();
             }
         });
-        String userType = NewDataHolder.getInstance(this).getUser().getType();
+        String userType = new DataBaseUtil(this).getUser().getType();
         switch (userType) {
             case Constants.TYPE_TEACHER:
                 toolbar.setNavigationIcon(null);

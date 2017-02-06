@@ -99,7 +99,6 @@ public class HomeFragment extends Fragment {
         }
     };
     DbUser user;
-    DbUser tempUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,9 +111,7 @@ public class HomeFragment extends Fragment {
         } catch (SQLException ex) {
             Log.e(TAG, "onCreateView: ", ex);
         }
-        // Bitmap imageBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.profile);
 
-        //Utils.getInstance().getCirclularImage(getActivity(), imageBitmap);
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +125,7 @@ public class HomeFragment extends Fragment {
         buttonlike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (NewDataHolder.getInstance(getContext()).getUser().getBulletin() != null) {
+                if (NewDataHolder.getInstance(getContext()).getBulletin() != null) {
 
                     likeBulletin();
                 } else Utils.getInstance().showToast("No bulletin");
@@ -142,7 +139,7 @@ public class HomeFragment extends Fragment {
     }
 
     void loadUserData() throws SQLException {
-        user = NewDataHolder.getInstance(getContext()).getUser();
+        user = new DataBaseUtil(getContext()).getUser();
         String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
         String userType = user.getType();
@@ -161,9 +158,9 @@ public class HomeFragment extends Fragment {
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
                 .into(target);
-        if (user.getBulletin() != null) {
+        if (NewDataHolder.getInstance(getContext()).getBulletin() != null) {
 
-            String image = user.getBulletin().getMsg();
+            String image = NewDataHolder.getInstance(getContext()).getBulletin().getMsg();
            // String image = "";
 
             if (image != null && !image.equals(""))
@@ -189,7 +186,7 @@ public class HomeFragment extends Fragment {
         VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
                 + String.valueOf(user.getSchoolId())
                 + ACTIVITIES_URL_SUFFIX
-                + String.valueOf(NewDataHolder.getInstance(getContext()).getUser().getBulletin().getId())
+                + String.valueOf(NewDataHolder.getInstance(getContext()).getBulletin().getId())
                 + ACTIVITY_LIKE_URL_SUFFIX,
                 new Response.Listener<String>() {
                     @Override

@@ -21,6 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
@@ -46,7 +47,13 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
+import static com.example.domainlayer.Constants.PREFIX_CLASS;
+import static com.example.domainlayer.Constants.PREFIX_SECTION;
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.SEPERATOR;
+import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
 import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 
@@ -97,9 +104,9 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         Sections sectionDetails = sectionDetailsList.get(holder.getAdapterPosition());
-        holder.classname.setText(sectionDetails.get_Class());
+        holder.classname.setText(PREFIX_CLASS + sectionDetails.get_Class());
         holder.classname.setAlpha(0.8f);
-        holder.sectionName.setText(sectionDetails.getSection());
+        holder.sectionName.setText(PREFIX_SECTION + sectionDetails.getSection());
         holder.mileStoneName.setText(sectionDetails.getMilestoneName());
         float completed = (float) sectionDetails.getCompletedMiles();
         float total = (float) sectionDetails.getTotalMiles();
@@ -110,9 +117,26 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
         //TODO:color coressponding milestone
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
+        Boolean canEdit, canSeeOwn;
+        ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
+        if (new DataBaseUtil(context).getUser().getType().equals(TYPE_S2M_ADMIN)) {
+            canEdit = true;
+            canSeeOwn = false;
+        } else if (userRoles.contains(ROLE_COORDINATOR)) {
+            canEdit = true;
+            canSeeOwn = false;
+        } else if (userRoles.contains(ROLE_SCL_ADMIN) && userRoles.contains(ROLE_TEACHER)) {
+            canEdit = true;
+            canSeeOwn = true;
+        } else if (userRoles.contains(ROLE_SCL_ADMIN)) {
+            canEdit = true;
+            canSeeOwn = false;
+        } else {
+            canEdit = false;
+            canSeeOwn = false;
+        }
 
-
-        if (!NewDataHolder.getInstance(context).getUser().getType().equals(TYPE_TEACHER)) {
+        if (canEdit) {
             holder.threeDots.setVisibility(View.VISIBLE);
             holder.dotsLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,7 +145,6 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                         showPopupMenu(view, holder.getAdapterPosition());
                 }
             });
-
         } else {
             holder.threeDots.setVisibility(View.GONE);
             holder.rootLayout.setOnClickListener(
@@ -132,7 +155,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                         }
                     });
         }
-        if (sectionDetails.getTeacherId() == NewDataHolder.getInstance(context).getUser().getId()) {
+        if (canSeeOwn && sectionDetails.getTeacherId() == new DataBaseUtil(context).getUser().getId()) {
             holder.ownBadge.setVisibility(View.VISIBLE);
             holder.rootLayout.setOnClickListener(
                     new View.OnClickListener() {
@@ -210,8 +233,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         final Intent intent = new Intent(context, MilestonesActivity.class);
         NewDataHolder.getInstance(context).setCurrentSectionId(sectionId);
         NewDataHolder.getInstance(context).setCurrentMilestoneId(milestoneId);
-        NewDataHolder.getInstance(context).setCurrentClassName(_class);
-        NewDataHolder.getInstance(context).setCurrentSectionName(section);
+        NewDataHolder.getInstance(context).setCurrentClassName(PREFIX_CLASS + _class);
+        NewDataHolder.getInstance(context).setCurrentSectionName(PREFIX_SECTION + section);
         DataHolder.getInstance(context).setCurrentMileTitle(title);
         DataHolder.getInstance(context).setCurrentMilestoneID(milestoneId);
         intent.putExtra("class_name", _class);

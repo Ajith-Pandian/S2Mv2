@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
@@ -29,12 +30,12 @@ public class SplashActivity extends AppCompatActivity {
         //setupWindowAnimations();
 
         Log.d("FCM", "TOKEN: " + FirebaseInstanceId.getInstance().getToken());
-        /*if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null) {
+       /* if (new DataBaseUtil(S2MApplication.getAppContext()).getUser() == null) {
             startNextActivity(LoginActivity.class);
         } else {
             getLoginDetails();
-        } */
-
+        }
+        */
         if (SharedPreferenceHelper.getConfiguration().equals("")) {
             NetworkHelper helper = new NetworkHelper(this);
             helper.downloadConfiguration();

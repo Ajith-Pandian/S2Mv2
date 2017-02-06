@@ -47,17 +47,17 @@ public class DataParser {
                 JSONObject sectionJsonObject = sectionsArray.getJSONObject(i);
                 Sections section
                         = new Sections(sectionJsonObject.getInt(KEY_ID),
-                        (PREFIX_CLASS + sectionJsonObject.getString(KEY_CLASS_NAME)),
-                        (PREFIX_SECTION + sectionJsonObject.getString(KEY_SECTION_NAME)),
-                        sectionJsonObject.getInt(KEY_MILES_COMPLETION_COUNT),
-                        sectionJsonObject.getInt(KEY_MILES_COUNT),
+                        (sectionJsonObject.getString(KEY_CLASS_NAME)),
+                        (sectionJsonObject.getString(KEY_SECTION_NAME)),
+                        getIntFromJson(sectionJsonObject, KEY_MILES_COMPLETION_COUNT),
+                        getIntFromJson(sectionJsonObject, KEY_MILES_COUNT),
                         (Constants.KEY_MILESTONE_PREFIX + SPACE + sectionJsonObject.getString(KEY_MILESTONE_NAME)),
                         sectionJsonObject.getInt(KEY_MILESTONE_ID),
                         sectionJsonObject.getInt(KEY_STUDENT_COUNT));
 
-                if (sectionJsonObject.has(KEY_TEACHER_NAME)&&!sectionJsonObject.isNull(KEY_TEACHER_NAME))
+                if (sectionJsonObject.has(KEY_TEACHER_NAME) && !sectionJsonObject.isNull(KEY_TEACHER_NAME))
                     section.setTeacherName(sectionJsonObject.getString(KEY_TEACHER_NAME));
-                if (sectionJsonObject.has(KEY_TEACHER_ID)&&!sectionJsonObject.isNull(KEY_TEACHER_ID))
+                if (sectionJsonObject.has(KEY_TEACHER_ID) && !sectionJsonObject.isNull(KEY_TEACHER_ID))
                     section.setTeacherId(sectionJsonObject.getInt(KEY_TEACHER_ID));
 
                 sectionsArrayList.add(section);
@@ -67,6 +67,13 @@ public class DataParser {
         }
 
         return sectionsArrayList;
+    }
+
+    int getIntFromJson(JSONObject jsonObject, String key) throws JSONException {
+        if (!jsonObject.isNull(KEY_TEACHER_ID))
+            return jsonObject.getInt(key);
+        else
+            return 0;
     }
 
     public ArrayList<TMileData> getMilesData(String milesDataString) {

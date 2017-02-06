@@ -94,7 +94,7 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 NewDataHolder.getInstance(context).setCurrentNetworkUser(user);
-                Intent intent = new Intent(context, ProfileActivity.class);
+                Intent intent = new Intent(context, NetworkProfileActivity.class);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

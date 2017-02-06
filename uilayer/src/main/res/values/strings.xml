@@ -36,33 +36,33 @@
 
 
     <string-array name="attachment_menu">
-        <item >@string/text_image</item>
-        <item >@string/text_audio</item>
-        <item >@string/text_video</item>
-        <item >@string/text_document</item>
+        <item>@string/text_image</item>
+        <item>@string/text_audio</item>
+        <item>@string/text_video</item>
+        <item>@string/text_document</item>
     </string-array>
 
     <string-array name="home_menu_teacher">
-        <item >@string/menu_give_feedback</item>
-        <item >@string/menu_share</item>
-        <item >@string/menu_call_admin</item>
+        <item>@string/menu_give_feedback</item>
+        <item>@string/menu_share</item>
+        <item>@string/menu_call_admin</item>
     </string-array>
 
     <string-array name="home_menu_coordinator">
-        <item >@string/menu_raise_ticket</item>
-        <item >@string/menu_manage_teachers</item>
-        <item >@string/menu_call_admin</item>
+        <item>@string/menu_raise_ticket</item>
+        <item>@string/menu_manage_teachers</item>
+        <item>@string/menu_call_admin</item>
     </string-array>
 
     <string-array name="home_menu_school_admin">
-        <item >@string/menu_give_feedback</item>
-        <item >@string/menu_school_updates</item>
-        <item >@string/menu_call_admin</item>
+        <item>@string/menu_give_feedback</item>
+        <item>@string/menu_school_updates</item>
+        <item>@string/menu_call_admin</item>
     </string-array>
     <string-array name="home_menu_s2m_admin">
-        <item >@string/menu_broadcast</item>
-        <item >@string/menu_raise_ticket</item>
-        <item >@string/menu_call_coordinator</item>
+        <item>@string/menu_broadcast</item>
+        <item>@string/menu_raise_ticket</item>
+        <item>@string/menu_call_coordinator</item>
     </string-array>
     //ImageButton Content Description
     <string name="phone_number_button">Phone number button</string>
@@ -161,6 +161,7 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="action_archive">Archive</string>
+    <string name="update_profile">Update Profile</string>
 
 
     //School prompt
@@ -207,6 +208,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_notification">Notification</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_save">Save</string>
 
     //Sections Fragment
     <string name="text_intro_training"><b>Introductory</b> Trainings </string>
@@ -243,7 +246,6 @@
     <string name="er_no_intro_trainings">No introductory trainings found</string>
     <string name="er_no_mcq">No MCQs found</string>
     <string name="er_no_internet">No internet. Try again.</string>
-
 
 
 </resources>

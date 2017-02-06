@@ -58,7 +58,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(context, ProfileActivity.class);
+                /*Intent intent = new Intent(context, NetworkProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("com.example.domainlayer.models.User", getItem(holder.getAdapterPosition()));
                 context.startActivity(intent);*/

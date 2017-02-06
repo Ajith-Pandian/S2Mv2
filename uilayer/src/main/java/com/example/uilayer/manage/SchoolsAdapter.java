@@ -1,5 +1,6 @@
 package com.example.uilayer.manage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,10 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.domainlayer.models.Schools;
-import com.example.domainlayer.models.User;
+import com.example.uilayer.NetworkHelper;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.network.ProfileActivity;
+import com.example.uilayer.landing.LandingActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -25,9 +29,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.example.domainlayer.Constants.SUFFIX_MILES;
-import static com.example.domainlayer.Constants.SUFFIX_WOWS;
 
 /**
  * Created by thoughtchimp on 12/21/2016.
@@ -57,26 +58,32 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final SchoolsAdapter.ViewHolder holder, final int position) {
-        Schools school = schoolsList.get(position);
+        final Schools school = schoolsList.get(position);
         holder.schoolName.setText(school.getName());
         holder.schoolAddress.setText(school.getLocality());
 
-        if (school.isActive()) {
-            holder.schoolName.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-            holder.schoolAddress.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-        }
+        updateActiveSchoolVisibility(position, holder);
         holder.schoolLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                setActiveSchool(school);
+                updateActiveSchoolVisibility(position, holder);
+                notifyDataSetChanged();
+                new NetworkHelper(context).getDashBoardDetails(new NetworkHelper.NetworkListener() {
+                    @Override
+                    public void onFinish() {
+                        ((Activity) context).finish();
+                        context.startActivity(new Intent(context, LandingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                });
             }
         });
         Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_schools_small);
-        holder.schollImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+        holder.schoolImage.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                holder.schollImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 0));
+                holder.schoolImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 0));
             }
 
             @Override
@@ -98,6 +105,29 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
     }
 
 
+    private void setActiveSchool(Schools school) {
+        removeOldActiveSchool();
+        school.setActive(true);
+        SharedPreferenceHelper.setSchoolName(school.getName());
+        SharedPreferenceHelper.setSchoolId(school.getId());
+        Utils.getInstance().showToast("School Changed");
+    }
+
+    private void removeOldActiveSchool() {
+        for (Schools school : schoolsList) {
+            school.setActive(false);
+        }
+    }
+
+    private void updateActiveSchoolVisibility(int position, ViewHolder holder) {
+        boolean isActive = schoolsList.get(position).isActive();
+
+        int color = context.getResources().getColor(isActive ? R.color.colorPrimary : android.R.color.black);
+        holder.schoolName.setTextColor(color);
+        holder.schoolAddress.setTextColor(color);
+        holder.activeBadge.setVisibility(isActive ? View.VISIBLE : View.GONE);
+    }
+
     @Override
     public int getItemCount() {
         return schoolsList.size();
@@ -109,8 +139,11 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         TextView schoolName;
         @BindView(R.id.text_school_address)
         TextView schoolAddress;
+        @BindView(R.id.text_active_badge)
+        TextView activeBadge;
         @BindView(R.id.image_school)
-        ImageView schollImage;
+        ImageView schoolImage;
+
         @BindView(R.id.layout_school)
         RelativeLayout schoolLayout;
 

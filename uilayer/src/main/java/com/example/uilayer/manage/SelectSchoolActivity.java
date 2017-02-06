@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VerticalSpaceItemDecoration;
@@ -34,6 +35,7 @@ import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_SCHOOL;
 import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SHARED_PREFERENCE;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -134,15 +136,15 @@ public class SelectSchoolActivity extends AppCompatActivity {
             JSONObject schoolsJson = new JSONObject(schoolsResponse);
             JSONArray schoolsArray = schoolsJson.getJSONArray(KEY_SCHOOLS);
             for (int i = 0; i < schoolsArray.length(); i++) {
-                JSONObject userJson = schoolsArray.getJSONObject(i);
+                JSONObject schoolJson = schoolsArray.getJSONObject(i);
                 Schools school = new Schools();
-
-                school.setId(userJson.getInt(Constants.KEY_ID));
-                school.setName(userJson.getString(Constants.KEY_NAME));
-                school.setLocality(userJson.getString(Constants.KEY_LOCALITY));
-                school.setCity(userJson.getString(Constants.KEY_CITY));
-                school.setLogo(userJson.getString(Constants.KEY_LOGO));
-                if (i == 0)
+                int id = schoolJson.getInt(Constants.KEY_ID);
+                school.setId(id);
+                school.setName(schoolJson.getString(Constants.KEY_NAME));
+                school.setLocality(schoolJson.getString(Constants.KEY_LOCALITY));
+                school.setCity(schoolJson.getString(Constants.KEY_CITY));
+                school.setLogo(schoolJson.getString(Constants.KEY_LOGO));
+                if (SharedPreferenceHelper.getSchoolId() == id)
                     school.setActive(true);
                 else
                     school.setActive(false);

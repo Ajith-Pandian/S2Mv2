@@ -232,7 +232,9 @@ public class Utils {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         // draw border
+        if (context!=null) {
         paint.setColor(context.getResources().getColor(R.color.text_color2));
+        }
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth((float) borderSizePx);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);

@@ -72,7 +72,6 @@ import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
 import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
 import static com.example.domainlayer.Constants.KEY_UPDATE;
 import static com.example.domainlayer.Constants.KEY_USERS;
-import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.KEY_USER_TYPE;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
@@ -112,8 +111,13 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss();
+            switch (newState) {
+                case BottomSheetBehavior.STATE_DRAGGING:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    break;
+                case BottomSheetBehavior.STATE_HIDDEN:
+                    dismiss();
+                    break;
             }
 
         }
@@ -122,8 +126,10 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         }
     };
+    static AddOrUpdateListener addOrUpdateListener;
 
-    public static AddSectionsFragment getNewInstance(boolean isUpdate, int position) {
+    public static AddSectionsFragment getNewInstance(boolean isUpdate, int position, AddOrUpdateListener listener) {
+        addOrUpdateListener = listener;
         newInstance = new AddSectionsFragment();
         Bundle args = new Bundle();
         args.putBoolean(IS_UPDATE, isUpdate);
@@ -168,21 +174,6 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
             bottomSheetBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
             bottomSheetBehavior.setPeekHeight(Utils.getInstance().getPixelAsDp(dialog.getContext(), 330));
-            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    switch (newState) {
-                        case BottomSheetBehavior.STATE_DRAGGING:
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            break;
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                }
-            });
         }
     }
 
@@ -266,7 +257,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
 
     void selectTeacher(final int teacherId) {
         ArrayList<User> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
-        if (teachersList != null) {
+        if (teachersList != null && teachersList.size() > 0) {
             for (int i = 0; i < teachersList.size(); i++) {
                 if (teacherId == teachersList.get(i).getId())
                     teachersSpinner.setSelection(i);
@@ -351,6 +342,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                     public void onResponse(String response) {
                         Utils.getInstance().showToast("Section added successfully");
                         Log.d("sectionAddRequest", "response: " + response);
+                        addOrUpdateListener.onFinish(false);
                         closeButton.performClick();
                     }
                 },
@@ -415,9 +407,10 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                     public void onResponse(String response) {
 
                         Log.d("sectionUpdate", "onResponse: " + response);
-                        Toast.makeText(getActivity(), "Section added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Section Updated successfully", Toast.LENGTH_SHORT).show();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                         //   ((TeachersSectionsFragment) pagerAdapter.getItem(0)).getTeachers();
+
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -463,6 +456,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 params.put(KEY_MILESTONE_ID, milestoneId);
                 params.put(KEY_TEACHER_ID, userId);
                 params.put(KEY_STUDENT_COUNT, studCOunt);
+                Log.d("Update Sections", "getParams: " + params.toString());
                 return params;
             }
 

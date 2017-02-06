@@ -138,6 +138,7 @@ public class NetworkActivity extends AppCompatActivity {
                 DbUser user = new DbUser();
                 user.setId(userJson.getInt(Constants.KEY_ID));
                 user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+                if (!userJson.isNull(Constants.KEY_LAST_NAME))
                 user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
                 user.setEmail(userJson.getString(Constants.KEY_EMAIL));
                 user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));

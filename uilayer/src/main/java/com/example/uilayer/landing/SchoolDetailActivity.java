@@ -49,7 +49,7 @@ public class SchoolDetailActivity extends AppCompatActivity {
                 "09.11.2019", "5.32 PM", "102"));
         strings.add(new SchoolDetails("St.Jhons Hr Sec School", getResources().getString(R.string.school_msg_one),
                 "09.11.2020", "9.05 PM", "098"));
-        recyclerView.setAdapter(new SchoolActivitiesAdapter(getApplicationContext(), NewDataHolder.getInstance(this).getUser().getSclActs()));
+        recyclerView.setAdapter(new SchoolActivitiesAdapter(getApplicationContext(), NewDataHolder.getInstance(this).getSclActList()));
     }
 
 

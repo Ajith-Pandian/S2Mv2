@@ -10,8 +10,10 @@ public class Constants {
     public static final String BASE_URL = SERVER_ADDRESS + "api/";
     public static final String CONFIGURATION_URL = BASE_URL + "configuration";
     public static final String USER_URL = BASE_URL + "user/";
+    public static final String UPDATE_PROFILE_URL = BASE_URL + "user/update_profile";
     public static final String USER_SECTIONS_URL = BASE_URL + "user/sections";
     public static final String SCHOOLS_URL = BASE_URL + "schools/";
+    public static final String REGISTER_URL = BASE_URL + "register_requests/create";
 
     public static final String KEY_INTRO_TRAININGS = "intro_trainings";
     public static final String INTRO_TRAININGS_URL = BASE_URL + KEY_INTRO_TRAININGS;
@@ -79,6 +81,7 @@ public class Constants {
     public static final String KEY_TEACHERS = "teachers";
 
     // Request/Response TAGs
+    public static final String KEY_DB_ID = "db_id";
     public static final String KEY_ID = "id";
     public static final String KEY_USER_ID = "userId";
 
@@ -133,6 +136,7 @@ public class Constants {
     public static final String KEY_LIKES_COUNT = "likes_count";
     public static final String KEY_COUNTRY_CODES = "country_codes";
     public static final String KEY_COUNTRY_CODE = "country_code";
+    public static final String KEY_COMMENT = "comment";
     public static final String KEY_COLOR_SCHEME = "color_scheme";
 
     public static final String KEY_ANSWER = "answer";
@@ -141,8 +145,8 @@ public class Constants {
     public static final String KEY_FEEDBACK_ID = "feedbackId";
 
 
-    public static final String KEY_SCHOOL_ID = "schoolId";
-    public static final String KEY_SCHOOL_NAME = "schoolName";
+    public static final String KEY_SCHOOL_ID = "school_id";
+    public static final String KEY_SCHOOL_NAME = "school_name";
     public static final String KEY_SCHOOLS = "schools";
     public static final String KEY_SCHOOL = "school";
     public static final String KEY_SECTIONS = "sections";

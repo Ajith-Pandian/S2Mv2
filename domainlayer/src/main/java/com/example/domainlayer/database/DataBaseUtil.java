@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.data;
+
 
 /**
  * Created by thoughtchimp on 12/6/2016.
@@ -65,7 +67,6 @@ public class DataBaseUtil {
         Dao<DbUser, Integer> userDao = getLocalUserDao();
         if (userDao != null)
             try {
-                //  userDao.createOrUpdate(getUserFromJson(userJsonObject));
                 userDao.createOrUpdate(user);
                 Log.d(context.getClass().getSimpleName(), "setUser:");
             } catch (SQLException ex) {

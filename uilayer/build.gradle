@@ -22,6 +22,11 @@ android {
         }
     }
 }
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -50,7 +55,8 @@ dependencies {
 
     compile project(':domainlayer')
 
-
+    compile 'com.github.jkwiecien:EasyImage:1.2.3'
+    compile 'com.github.tajchert:nammu:1.1.1'
 /*    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'*/

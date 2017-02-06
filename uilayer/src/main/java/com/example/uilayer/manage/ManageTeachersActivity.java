@@ -87,7 +87,6 @@ import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
 import static com.example.domainlayer.Constants.KEY_TEACHERS;
 import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
-import static com.example.domainlayer.Constants.KEY_USER_ID;
 import static com.example.domainlayer.Constants.MILESTONES_URL;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
@@ -126,7 +125,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     @BindView(R.id.layout_bottom_bar)
     RelativeLayout stepperLayout;
     VolleyStringRequest teacherAddRequest, teacherDeleteRequest;
-    UpdateListener updateListener;
     VolleyStringRequest sectionAddRequest;
     VolleyStringRequest milestonesRequest;
     TextInputEditText bs_classNameInput, bs_sectionNameInput, bs_numOfStudentsInput;
@@ -175,32 +173,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         pagePosition = isTeachers ? 0 : 1;
         stepperLayout.setVisibility(isFirstTime ? View.VISIBLE : View.GONE);
 
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), new TeacherOrSectionListener() {
-            @Override
-            public void onAddOptionSelected(boolean isTeacher) {
-                //  openBottomSheet(isTeacher, true, -1);
-                if (isTeacher)
-                    openAddTeacherFragment(false, -1);
-                else
-                    openAddSectionsFragment(false, -1);
-            }
-
-            @Override
-            public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                if (isTeacher)
-                    deleteTeacher(position);
-                else
-                    deleteSection(position);
-            }
-
-            @Override
-            public void onEditOptionSelected(boolean isTeacher, int position) {
-                if (isTeacher)
-                    openAddTeacherFragment(true, position);
-                else
-                    openAddSectionsFragment(true, position);
-            }
-        });
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(this);
 
@@ -277,13 +250,13 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
     }
 
-    final void openAddTeacherFragment(boolean isUpdate, int position) {
-        AddTeachersFragment bottomSheetDialogFragment = AddTeachersFragment.getNewInstance(isUpdate, position);
+    final void openAddTeacherFragment(boolean isUpdate, int position,AddOrUpdateListener listener) {
+        AddTeachersFragment bottomSheetDialogFragment = AddTeachersFragment.getNewInstance(isUpdate, position,listener);
         bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
-    final void openAddSectionsFragment(boolean isUpdate, int position) {
-        AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position);
+    final void openAddSectionsFragment(boolean isUpdate, int position, AddOrUpdateListener listener) {
+        AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position, listener);
         bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
@@ -291,25 +264,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         startActivity(new Intent(ManageTeachersActivity.this, LandingActivity.class));
     }
 
-    void deleteTeacher(final int position) {
-        new NetworkHelper(this).deleteTeacher(NewDataHolder.getInstance(this).getTeachersList().get(position).getId(),
-                new NetworkHelper.NetworkListener() {
-                    @Override
-                    public void onFinish() {
-                        Utils.getInstance().showToast("Teacher Deleted");
-                    }
-                });
-    }
-
-    void deleteSection(final int position) {
-        new NetworkHelper(this).deleteSection(NewDataHolder.getInstance(this).getSectionsList().get(position).getId(),
-                new NetworkHelper.NetworkListener() {
-                    @Override
-                    public void onFinish() {
-                        Utils.getInstance().showToast("Section Deleted");
-                    }
-                });
-    }
 
 
     void closeBottomSheet() {
@@ -333,121 +287,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         super.onDestroy();
     }
 
-    void openBottomSheet(boolean isTeacher, boolean isAdd, int position) {
-        View sheetInnerLayout;
-        String addOrUpdate = "";
-        String teacherOrSection = "";
-        if (isAdd)
-            addOrUpdate = "Create";
-        else
-            addOrUpdate = "Update";
-        if (isTeacher) {
-            teacherOrSection = "Teacher";
-            //ADD TEACHER
-            sheetInnerLayout = getLayoutInflater().inflate(R.layout.bottom_sheet_create_teacher, null);
-            final TextView title = (TextView) sheetInnerLayout.findViewById(R.id.text_create_teacher);
-            final TextInputEditText firstName = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_first_name);
-            final TextInputEditText lastName = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_last_name);
-            final TextInputEditText phoneNum = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_mobile_number);
-            final TextInputEditText email = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_teacher_email);
-
-            title.setText(addOrUpdate + Constants.SPACE + teacherOrSection);
-            Button adddButton = (Button) sheetInnerLayout.findViewById(R.id.button_add_teacher);
-            adddButton.setText(addOrUpdate);
-            adddButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addTeacher(firstName.getText().toString(), lastName.getText().toString()
-                            , phoneNum.getText().toString(), email.getText().toString());
-                }
-            });
-
-            if (!isAdd) //fill the fields
-            {
-                User teacher = DataHolder.getInstance(this).getTeachersList().get(position);
-                firstName.setText(teacher.getFirstName());
-                lastName.setText(teacher.getLastName());
-                phoneNum.setText(teacher.getPhoneNum());
-                email.setText(teacher.getEmail());
-            }
-        } else {
-            //ADD SECTION
-            teacherOrSection = "Section";
-            sheetInnerLayout = getLayoutInflater().inflate(R.layout.bottom_sheet_create_sections, null);
-            final TextView title = (TextView) sheetInnerLayout.findViewById(R.id.text_create_sections);
-            bs_classNameInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_class_name);
-            bs_sectionNameInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_section_name);
-            bs_numOfStudentsInput = (TextInputEditText) sheetInnerLayout.findViewById(R.id.text_num_of_stud);
-            bs_milestonesSpinner = (PromptSpinner) sheetInnerLayout.findViewById(R.id.spinner_milestones);
-            bs_milestonesSpinner.setPrompt("Milestones");
-            bs_milestonesSpinner.setOnItemSelectedListener(milestoneSelectedListener);
-            bs_teacherSpinner = (PromptSpinner) sheetInnerLayout.findViewById(R.id.spinner_select_teacher);
-
-            title.setText(addOrUpdate + Constants.SPACE + teacherOrSection);
-            {//Reduce spinner drop down view height
-                android.util.TypedValue value = new android.util.TypedValue();
-                getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, value, true);
-                android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(metrics);
-                float ret = value.getDimension(metrics);
-                bs_teacherSpinner.setMinimumHeight((int) (ret - 1 * metrics.density));
-            }
-            bs_teacherSpinner.setPrompt("Teachers");
-            bs_teacherSpinner.setOnItemSelectedListener(teacherSelectedListener);
-            bs_addTeacherBtn = (Button) sheetInnerLayout.findViewById(R.id.button_add_section);
-            bs_addTeacherBtn.setText(addOrUpdate);
-            bs_addTeacherBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addSection(bs_classNameInput.getText().toString(),
-                            bs_sectionNameInput.getText().toString(),
-                            String.valueOf(selectedMilestoneId),
-                            String.valueOf(selectedTeacherId),
-                            bs_numOfStudentsInput.getText().toString());
-
-                }
-            });
-            if (milestonesList.size() == 0)
-                getMilestones();
-            else {
-                updateMilesSpinner(milestonesList);
-            }
-
-            try {
-                Field popup = Spinner.class.getDeclaredField("mPopup");
-                popup.setAccessible(true);
-
-                // Get private mPopup member variable and try cast to ListPopupWindow
-                android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(bs_milestonesSpinner);
-                android.widget.ListPopupWindow popupWindow1 = (android.widget.ListPopupWindow) popup.get(bs_teacherSpinner);
-
-                // Set popupWindow height to 500px
-                popupWindow.setHeight(Utils.getInstance().getPixelAsDp(this, 300));
-                popupWindow1.setHeight(Utils.getInstance().getPixelAsDp(this, 300));
-            } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-
-            }
-
-            TeachersSpinnerAdapter teacherAdapter = new TeachersSpinnerAdapter(this,
-                    R.layout.item_spinner,
-                    R.id.text_spinner,
-                    (DataHolder.getInstance(this).getTeachersList()));
-            //teacherAdapter.setDropDownViewResource(R.layout.item_spinner);
-            bs_teacherSpinner.setAdapter(teacherAdapter);
-
-            if (!isAdd) //fill the fields
-            {
-                Sections sec = DataHolder.getInstance(this).getSectionsList().get(position);
-                bs_classNameInput.setText(sec.get_Class());
-                bs_sectionNameInput.setText(sec.getSection());
-                bs_numOfStudentsInput.setText("" + sec.getNumOfStuds());
-            }
-
-        }
-        bottomSheetLayout.removeAllViewsInLayout();
-        bottomSheetLayout.addView(sheetInnerLayout);
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-    }
 
     void updateMilesSpinner(ArrayList<Milestones> milestonesList) {
         MilestonesSpinnerAdapter dataAdapter = new MilestonesSpinnerAdapter(this, R.layout.item_spinner, R.id.text_spinner, milestonesList);
@@ -455,161 +294,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         bs_milestonesSpinner.setAdapter(dataAdapter);
     }
 
-    void addSection(final String className, final String sectionName, final String milestoneId, final String userId, final String studCOunt) {
-        sectionAddRequest = new VolleyStringRequest(Request.Method.POST, ADD_SECTIONS_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(ManageTeachersActivity.this, "Section added successfully", Toast.LENGTH_SHORT).show();
-                        Log.d("sectionAddRequest", "response: " + response);
-                        bottomSheetCloseButton.performClick();
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("sectionAddRequest", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-
-            @Override
-            public Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new ArrayMap<>();
-                params.put(KEY_CLASS, className);
-                params.put(KEY_SECTION, sectionName);
-                params.put(KEY_MILESTONE_ID, milestoneId);
-                params.put(KEY_USER_ID, userId);
-                params.put(KEY_STUDENT_COUNT, studCOunt);
-                return params;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
-        VolleySingleton.getInstance(this).addToRequestQueue(sectionAddRequest);
-    }
-
-    void getMilestones() {
-
-        milestonesRequest = new VolleyStringRequest(Request.Method.GET, MILESTONES_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("milestonesRequest", "onResponse: " + response);
-                        updateMilestones(response);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.e("milestonesRequest", "onErrorResponse: ", error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
-        VolleySingleton.getInstance(this).addToRequestQueue(milestonesRequest);
-
-    }
-
-    void updateMilestones(String response) {
-        ArrayList<Milestones> milestonesArrayList = new ArrayList<>();
-        try {
-            JSONArray milestonesArray = new JSONArray(response);
-            for (int i = 0; i < milestonesArray.length(); i++) {
-                JSONObject milestone = milestonesArray.getJSONObject(i);
-                milestonesArrayList.add(i,
-                        new Milestones(milestone.getInt(KEY_ID),
-                                milestone.getString(KEY_NAME)));
-            }
-            milestonesList = new ArrayList<>(milestonesArrayList);
-        } catch (JSONException ex) {
-            Log.e("updateMilestones", "updateMilestones: ", ex);
-        }
-        updateMilesSpinner(milestonesList);
-    }
 
     void setupPagerIndicatorWithPosition(int position) {
         indicatorsCount = pagerAdapter.getCount();
@@ -757,11 +441,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         VolleySingleton.getInstance(this).addToRequestQueue(teacherAddRequest);
     }
 
-    interface UpdateListener {
-        void onTeacherUpdate();
-    }
 
-    public static class TeachersSectionsFragment extends Fragment implements UpdateListener {
+    public static class TeachersSectionsFragment extends Fragment  {
 
         private static final String IS_TEACHER = "is_teacher";
         static TeacherOrSectionListener teacherListener;
@@ -769,7 +450,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         RecyclerView recyclerView;
         @BindView(R.id.toolbar_manage)
         Toolbar toolbar;
-        RecyclerView.Adapter adapter;
+        static RecyclerView.Adapter adapter;
         Boolean isTeacher;
         VolleyStringRequest teacherRequest;
         VolleyStringRequest sectionsRequest;
@@ -780,19 +461,14 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
         }
 
-        public static TeachersSectionsFragment newInstance(boolean isTeacher, TeacherOrSectionListener teacherListener1) {
+        public static TeachersSectionsFragment newInstance(boolean isTeacher) {
             TeachersSectionsFragment fragment = new TeachersSectionsFragment();
             Bundle args = new Bundle();
             args.putBoolean(IS_TEACHER, isTeacher);
             fragment.setArguments(args);
-            teacherListener = teacherListener1;
             return fragment;
         }
 
-        @Override
-        public void onTeacherUpdate() {
-            loadTeachers();
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -829,7 +505,25 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    teacherListener.onAddOptionSelected(isTeacher);
+                    //teacherListener.onAddOptionSelected(isTeacher);
+                    if (isTeacher)
+                        ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(false, -1,new AddOrUpdateListener() {
+                            @Override
+                            public void onFinish(boolean isTeacher) {
+                                loadTeachers();
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
+                            }
+                        });
+                    else
+                        ((ManageTeachersActivity) getActivity()).openAddSectionsFragment(false, -1, new AddOrUpdateListener() {
+                            @Override
+                            public void onFinish(boolean isTeacher) {
+                                loadSections();
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
+                            }
+                        });
                 }
             });
             title.setText("Manage " + titleString);
@@ -842,11 +536,38 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             new NetworkHelper(getContext()).getTeachers(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
-                    teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
-                    adapter = new TeachersAdapter(getContext(), teachersList, 5, teacherListener);
+                    adapter = new TeachersAdapter(getContext(), NewDataHolder.getInstance(getContext()).getTeachersList(), 5, new TeacherOrSectionListener() {
+                        @Override
+                        public void onAddOptionSelected(boolean isTeacher) {
+
+                        }
+
+                        @Override
+                        public void onEditOptionSelected(boolean isTeacher, int position) {
+                            ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(true, position, new AddOrUpdateListener() {
+                                @Override
+                                public void onFinish(boolean isTeacher) {
+                                    loadTeachers();
+                                    recyclerView.getAdapter().notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onDeleteOptionSelected(boolean isTeacher, int position) {
+                            deleteTeacher(position);
+                            loadTeachers();
+                            recyclerView.getAdapter().notifyDataSetChanged();
+
+                        }
+                    });
                     recyclerView.setAdapter(adapter);
                 }
             });
+        }
+
+        public static RecyclerView.Adapter getAdapter() {
+            return adapter;
         }
 
         void loadSections() {
@@ -906,11 +627,61 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
 
                 NewDataHolder.getInstance(getContext()).setSectionsList(sectionsArrayList);
-                adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, teacherListener, true);
+                adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, new TeacherOrSectionListener() {
+                    @Override
+                    public void onAddOptionSelected(boolean isTeacher) {
+
+                    }
+
+                    @Override
+                    public void onEditOptionSelected(boolean isTeacher, int position) {
+                        ((ManageTeachersActivity) getActivity()).openAddSectionsFragment(true, position, new AddOrUpdateListener() {
+                            @Override
+                            public void onFinish(boolean isTeacher) {
+                                loadSections();
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onDeleteOptionSelected(boolean isTeacher, int position) {
+                        deleteSection(position);
+                        loadSections();
+                        recyclerView.getAdapter().notifyDataSetChanged();
+
+                    }
+                }, true);
                 recyclerView.setAdapter(adapter);
             } catch (JSONException ex) {
                 Log.d("Error", "updateSections: " + ex);
             }
+        }
+
+        void deleteTeacher(final int position) {
+            new NetworkHelper(getContext()).deleteTeacher(NewDataHolder.getInstance(getContext()).getTeachersList().get(position).getId(),
+                    new NetworkHelper.NetworkListener() {
+                        @Override
+                        public void onFinish() {
+                            Utils.getInstance().showToast("Teacher Deleted");
+                            loadTeachers();
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
+                    });
+        }
+
+        void deleteSection(final int position) {
+            new NetworkHelper(getContext()).deleteSection(NewDataHolder.getInstance(getContext()).getSectionsList().get(position).getId(),
+                    new NetworkHelper.NetworkListener() {
+                        @Override
+                        public void onFinish() {
+                            Utils.getInstance().showToast("Section Deleted");
+                            loadSections();
+                            recyclerView.getAdapter().notifyDataSetChanged();
+
+                        }
+                    });
         }
 
         @Override
@@ -928,10 +699,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
 
 
-        public ArrayList<User> getTeachersList() {
-            return teachersList;
-        }
-
         void removeListener() {
             teacherListener = null;
         }
@@ -940,11 +707,11 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     }
 
     public class PagerAdapter extends FragmentPagerAdapter {
-        TeacherOrSectionListener optionsListener;
+        //TeacherOrSectionListener optionsListener;
 
-        public PagerAdapter(FragmentManager fm, TeacherOrSectionListener optionsListener) {
+        public PagerAdapter(FragmentManager fm) {
             super(fm);
-            this.optionsListener = optionsListener;
+            //this.optionsListener = optionsListener;
         }
 
         @Override
@@ -955,12 +722,12 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 case 0:
                     isTeachers = true;
                     // teachersFragment = TeachersSectionsFragment.newInstance(true, optionsListener);
-                    fragment = TeachersSectionsFragment.newInstance(true, optionsListener);
+                    fragment = TeachersSectionsFragment.newInstance(true);
                     break;
                 case 1:
                     isTeachers = false;
                     //sectionsFragment = TeachersSectionsFragment.newInstance(false, optionsListener);
-                    fragment = TeachersSectionsFragment.newInstance(false, optionsListener);
+                    fragment = TeachersSectionsFragment.newInstance(false);
                     break;
             }
             return fragment;

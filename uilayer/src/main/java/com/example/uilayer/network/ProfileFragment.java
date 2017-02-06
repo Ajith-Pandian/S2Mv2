@@ -71,7 +71,6 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.layout_no_sections)
     RelativeLayout noSectionsLayout;
-    DbUser user;
     VolleyStringRequest getNetworkSectionsRequest;
 
     public ProfileFragment() {
@@ -98,8 +97,8 @@ public class ProfileFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
-
-        user = NewDataHolder.getInstance(getContext()).getCurrentNetworkUser();
+        NewDataHolder holder = NewDataHolder.getInstance(getContext());
+        //user = .getCurrentNetworkUser();
         if (getArguments().getBoolean(IS_BASIC)) {
             BaseInfoAdapter adapter = new BaseInfoAdapter(getActivity(),
                     getProfileFromUser());
@@ -108,9 +107,9 @@ public class ProfileFragment extends Fragment {
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(mDividerItemDecoration);
-            if (user.getSectionsList() != null && user.getSectionsList().size() > 0) {
+            if (holder.getSectionsList() != null && holder.getSectionsList().size() > 0) {
                 noSectionsLayout.setVisibility(View.GONE);
-                ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(), user.getSectionsList());
+                ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(), holder.getSectionsList());
                 recyclerView.setAdapter(adapter);
             } else {
                 noSectionsLayout.setVisibility(View.VISIBLE);
@@ -123,8 +122,8 @@ public class ProfileFragment extends Fragment {
 
     ArrayList<ProfileModel> getProfileFromUser() {
         ArrayList<ProfileModel> profileModels = new ArrayList<>();
-        profileModels.add(new ProfileModel(R.drawable.email, user.getEmail(), KEY_EMAIL));
-        profileModels.add(new ProfileModel(R.drawable.phone, user.getPhoneNum(), KEY_PHONE_NUM));
+        profileModels.add(new ProfileModel(R.drawable.email, NewDataHolder.getInstance(getContext()).getCurrentNetworkUser().getEmail(), KEY_EMAIL));
+        profileModels.add(new ProfileModel(R.drawable.phone, NewDataHolder.getInstance(getContext()).getCurrentNetworkUser().getPhoneNum(), KEY_PHONE_NUM));
         profileModels.add(new ProfileModel(R.drawable.scholl, SharedPreferenceHelper.getSchoolName(), KEY_SCHOOL_NAME));
         return profileModels;
     }

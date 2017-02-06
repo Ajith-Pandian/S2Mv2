@@ -1,10 +1,8 @@
-package com.example.uilayer.signup;
+package com.example.uilayer.profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
@@ -15,37 +13,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
+import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.NewDataParser;
 import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.views.PromptSpinner;
-import com.example.uilayer.landing.LandingActivity;
-import com.example.uilayer.manage.ManageTeachersActivity;
-import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-
-public class SignUpActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.edit_text_signup_first_name)
     EditText textFirstName;
     @BindView(R.id.edit_text_signup_last_name)
@@ -62,8 +52,6 @@ public class SignUpActivity extends AppCompatActivity {
     PromptSpinner spinnerSchoolSelect;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.fab_signup_camera)
-    FloatingActionButton cameraButton;
     @BindView(R.id.layout_custom_school)
     LinearLayout customSchoolLayout;
     @BindView(R.id.layout_school_spinner)
@@ -76,8 +64,6 @@ public class SignUpActivity extends AppCompatActivity {
     Button registerButton;
     @BindView(R.id.button_next)
     Button nextButton;
-    @BindView(R.id.user_image)
-    ImageView imageUser;
 
     @BindView(R.id.collapse_toolbar_layout)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -101,8 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
         }
     };
-    boolean isSignUp;//true if signup -- false for modification
-    VolleyStringRequest updateRequest;
+    VolleyStringRequest registerUser;
     String title;
     DbUser user;
 
@@ -111,9 +96,6 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
-        if (getIntent() != null)
-            isSignUp = getIntent().getBooleanExtra("isSignUp", false);
-
         initViews();
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -121,15 +103,8 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         configureTitle();
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                // startActivity(new Intent(SignUpActivity.this,LandingActivity.class));
-            }
-        });
-        if (!isSignUp) {
+
+        /*if (!isSignUp) {
             loadData();
             schoolSpinnerLayout.setVisibility(View.GONE);
             commentLayout.setVisibility(View.GONE);
@@ -144,7 +119,7 @@ public class SignUpActivity extends AppCompatActivity {
             customSchoolLayout.setVisibility(View.GONE);
             title = "Update";
             registerButton.setText(title);
-        }
+        }*/
     }
 
     void configureTitle() {
@@ -170,66 +145,62 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     void loadData() {
-        user = NewDataHolder.getInstance(getApplicationContext()).getUser();
+        user = new DataBaseUtil(getApplicationContext()).getUser();
         textFirstName.setText(user.getFirstName());
         textLastName.setText(user.getLastName());
         textEmail.setText(user.getEmail());
         textPhone.setText(user.getPhoneNum());
         textComment.setText("");
-        Picasso.with(getApplicationContext())
-                .load(user.getAvatar())
-                .placeholder(R.drawable.ph_user_big)
-                .into(imageUser);
     }
+
+    ArrayList<Schools> schoolsArrayList;
 
     void initViews() {
 
         //Move cursor position
         textLastName.requestFocus();
         textLastName.setSelection(textLastName.getText().toString().length());
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this,
-                R.array.school_names, R.layout.spinner_text);
+        schoolsArrayList = new NewDataParser().getS2mConfiguration().getSchoolsArrayList();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                R.layout.spinner_text, getSchoolNames(schoolsArrayList));
+
         spinnerSchoolSelect.setAdapter(adapter);
         spinnerSchoolSelect.setOnItemSelectedListener(countrySelectedListener);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
-
-                updateUser();
+                registerUser();
             }
         });
     }
 
-    void updateUser() {
-        updateRequest = new VolleyStringRequest(Request.Method.POST, Constants.USER_DETAILS_URL
-                + String.valueOf(DataHolder.getInstance(this).getUserId()) + "/update"
-                ,
+
+    ArrayList<String> getSchoolNames(ArrayList<Schools> schoolsArrayList) {
+        ArrayList<String> schoolNames = new ArrayList<>();
+        for (int i = 0; i < schoolsArrayList.size(); i++)
+            schoolNames.add(schoolsArrayList.get(i).getName());
+        schoolNames.add(getString(R.string.others));
+        return schoolNames;
+    }
+
+    void registerUser() {
+        registerUser = new VolleyStringRequest(Request.Method.POST, Constants.REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("updateRequest", "onResponse: " + response);
-                        String suffix = "";
-                        suffix = title.substring(title.length() - 1).equals("e") ? "d" : "ed";
+                        Log.d("registerUser", "onResponse: " + response);
                         Snackbar.make(registerButton,
-                                title + suffix + " Successfully..!!",
+                                "Registered Successfully..!!",
                                 Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-
-                        if (DataHolder.getInstance(SignUpActivity.this).getUserType().equals(TYPE_TEACHER))
-                            launchLanding();
-                        else
-                            launchManageTeachersAndSections();
                         finish();
-
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("updateRequest-error", "onResponse: " + error);
+                        Log.d("registerUser", "onErrorResponse: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
             String TAG = "VolleyStringReq";
@@ -260,28 +231,29 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, String.valueOf(DataHolder.getInstance(SignUpActivity.this).getAccessToken()));
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
 
                 params.put(Constants.KEY_EMAIL, getStringFromEditText(textEmail));
-                params.put(Constants.KEY_PHONE_NUM, getStringFromEditText(textPhone));
+                params.put(Constants.KEY_MOBILE_NO, getStringFromEditText(textPhone));
                 params.put(Constants.KEY_FIRST_NAME, getStringFromEditText(textFirstName));
                 params.put(Constants.KEY_LAST_NAME, getStringFromEditText(textLastName));
-                params.put(Constants.KEY_AVATAR, "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Mark_Zuckerberg_em_setembro_de_2014.jpg/220px-Mark_Zuckerberg_em_setembro_de_2014.jpg");
+                params.put(Constants.KEY_MESSAGE, getStringFromEditText(textComment));
+                params.put(Constants.KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
+                if (spinnerSchoolSelect.getSelectedItem() != null) {
+                    params.put(Constants.KEY_SCHOOL_ID,
+                            String.valueOf(schoolsArrayList.get(spinnerSchoolSelect.getSelectedItemPosition()).getId()));
+                } else {
+                    params.put(Constants.KEY_SCHOOL_NAME, getStringFromEditText(textSchool));
+                }
+
+                Log.d("getParams", "getParams: " + params.toString());
                 return params;
             }
         };
 
 
-        VolleySingleton.getInstance(this).addToRequestQueue(updateRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(registerUser);
     }
 
 
@@ -289,22 +261,21 @@ public class SignUpActivity extends AppCompatActivity {
         return editText.getText().toString();
     }
 
-    void launchLanding() {
-        startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
-    }
-
-    void launchManageTeachersAndSections() {
-        startActivity(new Intent(SignUpActivity.this,
-                ManageTeachersActivity.class)
-                .putExtra("isTeachers", true)
-                .putExtra("isFirstTime", true));
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (updateRequest != null) {
-            updateRequest.removeStatusListener();
+        if (registerUser != null) {
+            registerUser.removeStatusListener();
         }
     }
+
+   /* void handleError(String error) {
+        try {
+            JSONObject errorJson = new JSONObject(error);
+            String message = errorJson.getString(KEY_MESSAGE);
+            JSONObject errorReasons = errorJson.getString("errors");
+        } catch (Exception e) {
+        }
+    }*/
 }

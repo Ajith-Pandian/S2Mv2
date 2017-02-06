@@ -37,13 +37,9 @@ import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
-import com.example.uilayer.SharedPreferenceHelper;
-import com.example.uilayer.signup.SignUpActivity;
+import com.example.uilayer.profile.RegisterActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -52,10 +48,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.example.domainlayer.Constants.COUNTRY_CODE;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 
 
 /**
@@ -135,7 +127,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     void launchSignUp() {
-        startActivity(new Intent(getActivity(), SignUpActivity.class).putExtra("isSignUp", true));
+        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     public void sendOTP(final boolean isMail, final String text) {

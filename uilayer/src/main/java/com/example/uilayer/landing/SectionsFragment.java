@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMileData;
@@ -35,6 +36,7 @@ import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
+import com.example.uilayer.manage.AddOrUpdateListener;
 import com.example.uilayer.manage.AddSectionsFragment;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.TeacherOrSectionListener;
@@ -96,7 +98,7 @@ public class SectionsFragment extends Fragment {
         sectionsGrid.setLayoutManager(layoutManager);
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
         getUserSections();
-        String userType = NewDataHolder.getInstance(getContext()).getUser().getType();
+        String userType = new DataBaseUtil(getContext()).getUser().getType();
         if ((!userType.equals(TYPE_SCL_ADMIN) && !userType.equals(TYPE_S2M_ADMIN))) {
             cardLayout.setVisibility(View.VISIBLE);
             cardLayout.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +113,6 @@ public class SectionsFragment extends Fragment {
         return view;
     }
 
-
-    int introTrainingId = -1;
 
     void getIntroTrainings() {
 
@@ -178,7 +178,7 @@ public class SectionsFragment extends Fragment {
 
     void getUserSections() {
         String sectionsUrl;
-        if (NewDataHolder.getInstance(getContext()).getUser().getType().equals(TYPE_TEACHER)) {
+        if (new DataBaseUtil(getContext()).getUser().getType().equals(TYPE_TEACHER)) {
             sectionsUrl = USER_SECTIONS_URL;
         } else
             sectionsUrl = SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_SECTIONS;
@@ -257,9 +257,8 @@ public class SectionsFragment extends Fragment {
 
     void updateSections() {
         //ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        DbUser user = NewDataHolder.getInstance(getActivity()).getUser();
-        if (user != null) {
-            sectionDetails = user.getSectionsList();
+        if (NewDataHolder.getInstance(getActivity()).getSectionsList() != null) {
+            sectionDetails = NewDataHolder.getInstance(getActivity()).getSectionsList();
         }
         //sectionDetails = new ArrayList<>();
         if (sectionDetails != null && sectionDetails.size() > 0) {
@@ -287,7 +286,12 @@ public class SectionsFragment extends Fragment {
     }
 
     final void openAddSectionsFragment(boolean isUpdate, int position) {
-        AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position);
+        AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position, new AddOrUpdateListener() {
+            @Override
+            public void onFinish(boolean isTeacher) {
+                sectionsGrid.getAdapter().notifyDataSetChanged();
+            }
+        });
         bottomSheetDialogFragment.show(getChildFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 }
