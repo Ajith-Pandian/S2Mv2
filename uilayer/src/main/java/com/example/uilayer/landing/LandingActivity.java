@@ -49,6 +49,7 @@ import butterknife.ButterKnife;
 import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
 import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
 import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
 
 public class LandingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -305,17 +306,21 @@ public class LandingActivity extends AppCompatActivity
                     hideMenu();
             }
         });
-        String userType = new DataBaseUtil(this).getUser().getType();
+        DbUser loggedInUser = new DataBaseUtil(this).getUser();
+        String userType = loggedInUser.getType();
+        ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
+
         switch (userType) {
-            case Constants.TYPE_TEACHER:
-                toolbar.setNavigationIcon(null);
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            case Constants.USER_TYPE_SCHOOL:
+                if (userRoles.contains(ROLE_SCL_ADMIN) || userRoles.contains(ROLE_COORDINATOR)) {
+                    navigationView.getMenu().clear();
+                    navigationView.inflateMenu(R.menu.activity_landing_drawer_school_admin);
+                } else {
+                    toolbar.setNavigationIcon(null);
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                }
                 break;
-            case Constants.TYPE_SCL_ADMIN:
-            case Constants.TYPE_T_SCL_ADMIN:
-                navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.activity_landing_drawer_school_admin);
-                break;
+
             case Constants.TYPE_S2M_ADMIN:
                 navigationView.getMenu().clear();
                 navigationView.inflateMenu(R.menu.activity_landing_drawer_s2m_admin);

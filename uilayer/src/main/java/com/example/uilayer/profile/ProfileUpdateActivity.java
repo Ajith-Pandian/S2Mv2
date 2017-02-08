@@ -19,12 +19,14 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +44,8 @@ import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.R;
 import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.adapters.GenderSpinnerAdapter;
+import com.example.uilayer.customUtils.views.PromptSpinner;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -49,6 +53,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -89,10 +94,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     TextInputLayout inputLayoutDob;
     @BindView(R.id.til_anniversary)
     TextInputLayout inputLayoutAnniversary;
-    /*@BindView(R.id.radio_button_male)
-    RadioButton radioButtonMale;
-    @BindView(R.id.radio_button_female)
-    RadioButton radioButtonFemale;*/
+/*    @BindView(R.id.gender_spinner)
+    PromptSpinner genderSpinner;*/
     @BindView(R.id.fab_camera)
     FloatingActionButton cameraButton;
     DbUser user;
@@ -136,27 +139,14 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
             }
         });
 
+       /* ArrayList<String> genderList = new ArrayList<>();
+        genderList.add("Male");
+        genderList.add("Female");
+        genderSpinner.setAdapter(new GenderSpinnerAdapter(this, R.layout.item_spinner,
+                R.id.text_spinner, genderList));*/
     }
 
     String gender;
-
- /*   public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.radio_button_male:
-                if (checked)
-                    gender = "Male";
-                break;
-            case R.id.radio_button_female:
-                if (checked)
-                    gender = "Female";
-                    break;
-        }
-    }*/
-
     boolean isDob;
 
     //TODO:Simple date format

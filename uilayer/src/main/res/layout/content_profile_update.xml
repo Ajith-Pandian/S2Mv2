@@ -217,7 +217,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
+       <!-- <LinearLayout
             style="@style/LayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -238,30 +238,17 @@
                 android:orientation="vertical"
                 android:theme="@style/TextLabel">
 
-              <!--  <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="fill_parent"
+                <com.example.uilayer.customUtils.views.PromptSpinner
+                    android:id="@+id/gender_spinner"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/radio_button_male"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="Male" />
-
-                    <RadioButton
-                        android:id="@+id/radio_button_female"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="Female" />
-                </RadioGroup>-->
+                    android:drawSelectorOnTop="true"
+                    />
 
 
             </LinearLayout>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 

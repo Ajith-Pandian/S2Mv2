@@ -6,34 +6,33 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.domainlayer.models.User;
 import com.example.uilayer.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by thoughtchimp on 12/27/2016.
  */
 
 
-public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
-    private ArrayList<User> usersList;
+public class GenderSpinnerAdapter extends SpinnerAdapter<String> {
+    private ArrayList<String> genderList;
 
-    public TeachersSpinnerAdapter(Context context, int resource,
-                                  int textViewResourceId, ArrayList<User> objects) {
+    private Context context;
+
+    public GenderSpinnerAdapter(Context context, int resource,
+                                int textViewResourceId, ArrayList<String> objects) {
         super(context, resource, textViewResourceId, objects);
-        this.usersList = objects;
+        this.genderList = objects;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView,
-                        ViewGroup parent) {
+                        @NonNull ViewGroup parent) {
         View itemView = convertView;
         if (itemView == null) {
             itemView
@@ -42,21 +41,20 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
         }
 
         TextView textView = (TextView) itemView.findViewById(R.id.text_spinner);
-        textView.setText(usersList.get(position).getName());
+        textView.setText(genderList.get(position));
         return itemView;
     }
 
     @Override
     public int getCount() {
-        return usersList.size();
+        return genderList.size();
     }
 
     @Nullable
     @Override
-    public User getItem(int position) {
-        return usersList.get(position);
+    public String getItem(int position) {
+        return genderList.get(position);
     }
-
 
     @Override
     public View getDropDownView(int position, View convertView,
@@ -69,7 +67,7 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
                     .inflate(R.layout.item_spinner, parent, false);
         }
         TextView textView = (TextView) dropDownView.findViewById(R.id.text_spinner);
-        textView.setText(usersList.get(position).getName());
+        textView.setText(genderList.get(position));
         return dropDownView;
 
     }

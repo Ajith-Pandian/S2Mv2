@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
@@ -152,7 +153,7 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
                 usersList.add(i, user);
             }
-            //new DataBaseUtil(this).setUser(usersList);
+            new DataBaseUtil(this).setNetworkUsers(usersList);
             networkRecycler.setAdapter(new NetworkAdapter(getApplicationContext(), usersList));
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
