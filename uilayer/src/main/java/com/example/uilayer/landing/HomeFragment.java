@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,11 +24,10 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
-import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.network.NetworkActivity;
 import com.squareup.picasso.Picasso;
@@ -40,25 +37,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.TEXT_COORDINATOR;
 import static com.example.domainlayer.Constants.TEXT_S2M_ADMIN;
 import static com.example.domainlayer.Constants.TEXT_SCL_ADMIN;
 import static com.example.domainlayer.Constants.TEXT_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_SCHOOL;
 
 
 /**
@@ -143,12 +137,17 @@ public class HomeFragment extends Fragment {
         String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
         String userType = user.getType();
-        if (userType.equals(TYPE_TEACHER))
-            designation.setText(TEXT_TEACHER);
-       else if (userType.equals(TYPE_SCL_ADMIN) || userType.equals(TYPE_T_SCL_ADMIN))
-            designation.setText(TEXT_SCL_ADMIN);
-        else if (userType.equals(TYPE_S2M_ADMIN))
+        if (userType.equals(USER_TYPE_S2M_ADMIN)) {
             designation.setText(TEXT_S2M_ADMIN);
+        } else if (userType.equals(USER_TYPE_SCHOOL)) {
+            ArrayList<String> roles = SharedPreferenceHelper.getUserRoles();
+            if (roles.contains(ROLE_COORDINATOR))
+                designation.setText(TEXT_COORDINATOR);
+            else if (roles.contains(ROLE_SCL_ADMIN))
+                designation.setText(TEXT_SCL_ADMIN);
+            else
+                designation.setText(TEXT_TEACHER);
+        }
 
 
         String avatar = user.getAvatar();
@@ -161,7 +160,7 @@ public class HomeFragment extends Fragment {
         if (NewDataHolder.getInstance(getContext()).getBulletin() != null) {
 
             String image = NewDataHolder.getInstance(getContext()).getBulletin().getMsg();
-           // String image = "";
+            // String image = "";
 
             if (image != null && !image.equals(""))
                 Picasso.with(getActivity())

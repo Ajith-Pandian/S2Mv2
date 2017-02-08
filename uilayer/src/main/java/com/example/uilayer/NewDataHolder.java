@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
-import com.example.domainlayer.models.BulletinMessage;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.models.SclActs;
@@ -20,31 +19,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static com.example.domainlayer.Constants.IS_LIKED;
 import static com.example.domainlayer.Constants.KEY_ACTIVITIES;
-import static com.example.domainlayer.Constants.KEY_BODY;
 import static com.example.domainlayer.Constants.KEY_BULLETIN_BOARD;
 import static com.example.domainlayer.Constants.KEY_ICON;
 import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IMAGE;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.KEY_SCHOOLS;
-import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.KEY_TEACHERS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
-import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
-import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.ROLE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
-import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.USER_TYPE_SCHOOL;
 
 /**
  * Created by thoughtchimp on 1/24/2017.
@@ -60,12 +47,15 @@ public class NewDataHolder {
     private int currentSectionId, currentMilestoneId, currentMileId;
     private ArrayList<TMiles> milesList;
     private ArrayList<TMiles> introTrainingsList;
+    private ArrayList<TMiles> archiveList;
     private ArrayList<TMileData> milesDataList, introDataList;
     private ArrayList<User> teachersList;
+    private ArrayList<DbUser> networkUsers;
     private ArrayList<Sections> sectionsList;
     private ArrayList<SclActs> sclActList;
     private SclActs bulletin;
     private String currentMileTitle;
+    private Map<String, String> resultsMap;
 
     private NewDataHolder(Context context) {
         this.context = context;
@@ -90,7 +80,8 @@ public class NewDataHolder {
             user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
             user.setEmail(userJson.getString(Constants.KEY_EMAIL));
             user.setAccessToken(userJson.getString(Constants.KEY_ACCESS_TOKEN));
-            user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
+           // user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
+            user.setFirstLogin(true);
 
             String userType = userJson.getString(Constants.KEY_TYPE);
 
@@ -114,7 +105,7 @@ public class NewDataHolder {
                     SharedPreferenceHelper.setUserRoles(getStringsFromArray(schoolJsonObj.getJSONArray(Constants.KEY_ROLES)));
                 schoolsArrayList.add(school);
             }
-            user.setType(getTypeByRoles(userType, roles));
+            user.setType(userType);
             user.setSchoolsList(schoolsArrayList);
             if (schoolsArrayList.size() > 0) {
                 user.setSchoolId(schoolsArrayList.get(0).getId());
@@ -199,29 +190,6 @@ public class NewDataHolder {
         ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
         //user.setSectionsList(sectionsArrayList);
         setSectionsList(sectionsArrayList);
-    }
-
-
-    private String getTypeByRoles(String userType, ArrayList<String> userRoles) {
-        String type = "";
-
-        switch (userType) {
-            case USER_TYPE_SCHOOL:
-                /*if(userRoles.contains(ROLE_COORDINATOR))
-                    type = TYPE_COORDINATOR;*/
-                if (userRoles.contains(ROLE_TEACHER) && userRoles.contains(ROLE_SCL_ADMIN))
-                    type = TYPE_T_SCL_ADMIN;
-                else if (userRoles.contains(ROLE_SCL_ADMIN))
-                    type = TYPE_SCL_ADMIN;
-                else if (userRoles.contains(ROLE_TEACHER))
-                    type = TYPE_TEACHER;
-                break;
-            case USER_TYPE_S2M_ADMIN:
-                type = TYPE_S2M_ADMIN;
-                break;
-        }
-
-        return type;
     }
 
     public DbUser getUser() {
@@ -351,5 +319,29 @@ public class NewDataHolder {
 
     public void setBulletin(SclActs bulletin) {
         this.bulletin = bulletin;
+    }
+
+    public Map<String, String> getResultsMap() {
+        return resultsMap;
+    }
+
+    public void setResultsMap(Map<String, String> resultsMap) {
+        this.resultsMap = resultsMap;
+    }
+
+    public ArrayList<TMiles> getArchiveList() {
+        return archiveList;
+    }
+
+    public void setArchiveList(ArrayList<TMiles> archiveList) {
+        this.archiveList = archiveList;
+    }
+
+    public ArrayList<DbUser> getNetworkUsers() {
+        return networkUsers;
+    }
+
+    public void setNetworkUsers(ArrayList<DbUser> networkUsers) {
+        this.networkUsers = networkUsers;
     }
 }

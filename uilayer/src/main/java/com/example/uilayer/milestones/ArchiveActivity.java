@@ -17,12 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.uilayer.DataHolder;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.milestones.adapters.MilesAdapter;
 import com.example.uilayer.milestones.betterAdapter.model.Mile;
 import com.example.uilayer.milestones.betterAdapter.model.Milestones;
@@ -71,7 +74,14 @@ public class ArchiveActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                new NetworkHelper(ArchiveActivity.this).getMilestoneContent(
+                        NewDataHolder.getInstance(ArchiveActivity.this).getCurrentSectionId(),
+                        new NetworkHelper.NetworkListener() {
+                            @Override
+                            public void onFinish() {
+                                finish();
+                            }
+                        });
             }
         });
         setSupportActionBar(toolbar);
@@ -100,10 +110,12 @@ public class ArchiveActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
         private static final String IS_MILE = "is_mile";
         @BindView(R.id.recycler_fragment_archive)
         RecyclerView archiveRecycler;
+        @BindView(R.id.layout_no_data)
+        RelativeLayout noDataLayout;
+
         MilesAdapter milestonesAdapter;
 
         public PlaceholderFragment() {
@@ -131,13 +143,39 @@ public class ArchiveActivity extends AppCompatActivity {
             archiveRecycler.setLayoutManager(mLayoutManager);
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(archiveRecycler.getContext(),
                     mLayoutManager.getOrientation());
+
+            archiveRecycler.addItemDecoration(mDividerItemDecoration);
             boolean isTraining;
             isTraining = getArguments().getBoolean(IS_MILE);
-            archiveRecycler.addItemDecoration(mDividerItemDecoration);
-            milestonesAdapter = new MilesAdapter(getContext(), getMilesOrTrainingsList(isTraining),
-                    DataHolder.getInstance(getActivity()).getUndoableId(),false);
-            archiveRecycler.setAdapter(milestonesAdapter);
+            initRecycler(isTraining);
+
             return rootView;
+        }
+
+
+        void initRecycler(final boolean isTraining) {
+            if (getMilesOrTrainingsList(isTraining).size() > 0) {
+                milestonesAdapter = new MilesAdapter(getContext(), getMilesOrTrainingsList(isTraining),
+                        true, false, new UndoDoneListener() {
+                    @Override
+                    public void onDone() {
+
+                        new NetworkHelper(getContext()).getArchiveContent(
+                                NewDataHolder.getInstance(getContext()).getCurrentSectionId(),
+                                new NetworkHelper.NetworkListener() {
+                                    @Override
+                                    public void onFinish() {
+                                        Utils.getInstance().showToast("Undo done");
+                                        initRecycler(isTraining);
+                                    }
+                                });
+                    }
+                });
+                archiveRecycler.setAdapter(milestonesAdapter);
+            } else {
+                archiveRecycler.setVisibility(View.GONE);
+                noDataLayout.setVisibility(View.VISIBLE);
+            }
         }
 
         ArrayList<TMiles> getMilesOrTrainingsList(boolean isMile) {
@@ -147,7 +185,7 @@ public class ArchiveActivity extends AppCompatActivity {
             else
                 type = TYPE_TRAINING;
 
-            ArrayList<TMiles> actualList = DataHolder.getInstance(getActivity()).getArchiveData();
+            ArrayList<TMiles> actualList = NewDataHolder.getInstance(getActivity()).getArchiveList();
             ArrayList<TMiles> filteredList = new ArrayList<>();
             for (int i = 0; i < actualList.size(); i++) {
                 if (actualList.get(i).getType().equals(type))
@@ -204,5 +242,11 @@ public class ArchiveActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

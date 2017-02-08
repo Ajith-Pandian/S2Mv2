@@ -25,21 +25,24 @@ import com.example.uilayer.customUtils.Utils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.SUFFIX_MILES;
 import static com.example.domainlayer.Constants.SUFFIX_WOWS;
+import static com.example.domainlayer.Constants.TEXT_COORDINATOR;
 import static com.example.domainlayer.Constants.TEXT_S2M_ADMIN;
 import static com.example.domainlayer.Constants.TEXT_SCL_ADMIN;
 import static com.example.domainlayer.Constants.TEXT_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_SCHOOL;
 
 /**
  * Created by thoughtchimp on 12/21/2016.
@@ -73,16 +76,22 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         holder.name.setText(user.getFirstName() + " " + user.getLastName());
         holder.wowText.setText(user.getWow() + SUFFIX_WOWS);
         holder.milesText.setText(user.getMiles() + SUFFIX_MILES);
-        String userType = user.getType();
 
-        if (userType.equals(TYPE_TEACHER))
-            holder.textDesignation.setText(TEXT_TEACHER);
-        else if (userType.equals(TYPE_SCL_ADMIN) || userType.equals(TYPE_T_SCL_ADMIN))
-            holder.textDesignation.setText(TEXT_SCL_ADMIN);
-        else if (userType.equals(TYPE_S2M_ADMIN)) {
+        String userType = user.getType();
+        if (userType.equals(USER_TYPE_S2M_ADMIN)) {
             holder.textDesignation.setText(TEXT_S2M_ADMIN);
             holder.wowLayout.setVisibility(View.GONE);
+
+        } else if (userType.equals(USER_TYPE_SCHOOL)) {
+            ArrayList<String> roles = user.getRoles();
+            if (roles.contains(ROLE_COORDINATOR))
+                holder.textDesignation.setText(TEXT_COORDINATOR);
+            else if (roles.contains(ROLE_SCL_ADMIN))
+                holder.textDesignation.setText(TEXT_SCL_ADMIN);
+            else if(roles.contains(ROLE_TEACHER))
+                holder.textDesignation.setText(TEXT_TEACHER);
         }
+
 
         holder.callButton.setOnClickListener(new View.OnClickListener() {
             @Override

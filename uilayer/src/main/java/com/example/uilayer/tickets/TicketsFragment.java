@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.FB_CHILD_TICKET_DETAILS;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 
 
 /**
@@ -88,16 +88,12 @@ public class TicketsFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isS2m = NewDataHolder.getInstance(getContext()).getUser().getType().equals(TYPE_TEACHER);
-                openBottomSheet(isS2m);
+                boolean isS2m = NewDataHolder.getInstance(getContext()).getUser().getType().equals(USER_TYPE_S2M_ADMIN);
+               // openBottomSheet(isS2m);
             }
         });
 
-        //ticketsRecycler.setAdapter(new TicketsAdapter(getActivity(), getTickets()));
-        //ticketsRecycler.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
-        //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_placeholder);
-        // imageViewIntroductory.setImageDrawable(Utils.getInstance().getCirclularImage(getActivity(), imageBitmap));
-        fetchTickets();
+      //  fetchTickets();
 
         return view;
     }

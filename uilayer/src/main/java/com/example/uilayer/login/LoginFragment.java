@@ -3,6 +3,7 @@ package com.example.uilayer.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
@@ -139,7 +140,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
                         Log.d("loginRequest", "onResponse: " + response);
-                       // storeResponse(response);
+                        // storeResponse(response);
                         if (mListener != null) {
                             mListener.onEnteredNumber(response);
                         }

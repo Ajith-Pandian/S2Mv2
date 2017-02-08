@@ -1,5 +1,6 @@
 package com.example.uilayer.milestones.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.util.ArrayMap;
@@ -22,10 +23,13 @@ import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.MilesActivity;
+import com.example.uilayer.milestones.UndoDoneListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +42,20 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
+import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTION;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_TRAINING;
+import static com.example.domainlayer.Constants.KEY_UNDO;
 import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
+import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TYPE_TRAINING;
@@ -60,12 +69,14 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<TMiles> milestonesList;
     private Context context;
     private int undoId;
-    private boolean isIntro;
+    private boolean isIntro, isArchive;
+    private UndoDoneListener listener;
 
-    public MilesAdapter(Context context, List<TMiles> milestonesList, int undoId, boolean isIntro) {
+    public MilesAdapter(Context context, List<TMiles> milestonesList, boolean isArchive, boolean isIntro, UndoDoneListener listener) {
         this.milestonesList = milestonesList;
+        this.listener = listener;
         this.context = context;
-        this.undoId = undoId;
+        this.isArchive = isArchive;
         this.isIntro = isIntro;
     }
 
@@ -105,18 +116,20 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(mile.getTitle());
                         holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
+                        holder.setCurrentMileId(mile.getId());
                         openActivity(MilesActivity.class, true, mile.isCompletable(), milestonesList.get(position).getId());
                     }
                 });
-                viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        undoThisMile(mile.getId());
-                    }
-                });
-                if (undoId != -1 && undoId == mile.getId())
+
+                if (isArchive && position == 0) {
                     viewHolder.undoButton.setVisibility(View.VISIBLE);
-                else
+                    viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            undoMile(mile.getId());
+                        }
+                    });
+                } else
                     viewHolder.undoButton.setVisibility(View.GONE);
 
 
@@ -138,6 +151,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             mileDataArrayList = holder.getMilesList().get(position).getMileData();
 
                         holder.setMilesDataList(mileDataArrayList);
+                        holder.setCurrentMileId(training.getId());
                         openActivity(MilesActivity.class, false, training.isCompletable(), milestonesList.get(position).getId());
 
 
@@ -148,6 +162,61 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    VolleyStringRequest undoRequest;
+
+    private void undoMile(int mileId) {
+        undoRequest = new VolleyStringRequest(Request.Method.POST,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
+                        KEY_SECTIONS + SEPERATOR + NewDataHolder.getInstance(context).getCurrentSectionId() + SEPERATOR +
+                        KEY_CONTENT + SEPERATOR + mileId + SEPERATOR + KEY_UNDO,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("undoRequest", "onResponse: " + response);
+                        if (listener != null) {
+                            listener.onDone();
+                        }
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("undoRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(undoRequest);
+    }
 
     void undoThisMile(final int undoId) {
         VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.POST, FEEDBACK_UNDO_URL,
@@ -218,7 +287,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void openActivity(Class<?> activityClass, boolean isMile, boolean isCompletable, int id) {
-        Intent intent = new Intent(context, activityClass);
+        Intent intent = new Intent(context, MilesActivity.class);
         intent.putExtra("isMile", isMile);
         intent.putExtra(KEY_ID, id);
         intent.putExtra("isCompletable", isCompletable);

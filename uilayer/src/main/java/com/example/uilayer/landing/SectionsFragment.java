@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +21,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.database.DataBaseUtil;
-import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
@@ -38,7 +36,6 @@ import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
 import com.example.uilayer.manage.AddOrUpdateListener;
 import com.example.uilayer.manage.AddSectionsFragment;
-import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.TeacherOrSectionListener;
 import com.example.uilayer.milestones.MilestonesActivity;
 
@@ -54,15 +51,10 @@ import butterknife.ButterKnife;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.example.domainlayer.Constants.INTRO_TRAININGS_URL;
 import static com.example.domainlayer.Constants.KEY_INTRO_TRAININGS;
-import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.SCHOOLS_URL;
-import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.SHARED_PREFERENCE;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
-import static com.example.domainlayer.Constants.USER_SECTIONS_URL;
 
 
 /**
@@ -99,7 +91,8 @@ public class SectionsFragment extends Fragment {
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
         getUserSections();
         String userType = new DataBaseUtil(getContext()).getUser().getType();
-        if ((!userType.equals(TYPE_SCL_ADMIN) && !userType.equals(TYPE_S2M_ADMIN))) {
+        if (!userType.equals(USER_TYPE_S2M_ADMIN) &&
+                SharedPreferenceHelper.getUserRoles().contains(ROLE_TEACHER)) {
             cardLayout.setVisibility(View.VISIBLE);
             cardLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,7 +118,7 @@ public class SectionsFragment extends Fragment {
                         try {
                             JSONObject introResponse = new JSONObject(response);
 
-                            ArrayList<TMiles> introTrainingsList = new NewDataParser().getMiles(introResponse.getString(KEY_INTRO_TRAININGS));
+                            ArrayList<TMiles> introTrainingsList = new NewDataParser().getMiles(introResponse.getString(KEY_INTRO_TRAININGS), false);
                             if (introTrainingsList.size() > 0)
                                 openMilestonesActivity(introTrainingsList);
                             else
@@ -176,67 +169,14 @@ public class SectionsFragment extends Fragment {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(introTrainingsRequest);
     }
 
+
     void getUserSections() {
-        String sectionsUrl;
-        if (new DataBaseUtil(getContext()).getUser().getType().equals(TYPE_TEACHER)) {
-            sectionsUrl = USER_SECTIONS_URL;
-        } else
-            sectionsUrl = SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_SECTIONS;
-
-        VolleyStringRequest userSectionsRequest = new VolleyStringRequest(Request.Method.GET,
-                sectionsUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("userSectionsRequest", "onResponse: " + response);
-
-                        try {
-                            JSONObject sectionsResponse = new JSONObject(response);
-                            NewDataHolder.getInstance(getContext()).saveUserSections(sectionsResponse.getJSONArray(KEY_SECTIONS));
-                            updateSections();
-                        } catch (JSONException ex) {
-                            Log.e("userSectionsRequest", "onResponse: ", ex);
-                        }
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("userSectionsRequest", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
+        new NetworkHelper(getContext()).getUserSections(new NetworkHelper.NetworkListener() {
             @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-                Utils.getInstance().showToast(getResources().getString(R.string.er_no_intro_trainings));
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
+            public void onFinish() {
+                updateSections();
             }
         });
-
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(userSectionsRequest);
     }
 
     private void openMilestonesActivity(ArrayList<TMiles> introTrainings) {

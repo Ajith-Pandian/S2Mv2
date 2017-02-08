@@ -75,9 +75,6 @@ import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.KEY_USER_TYPE;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 /**
  * Created by thoughtchimp on 1/4/2017.

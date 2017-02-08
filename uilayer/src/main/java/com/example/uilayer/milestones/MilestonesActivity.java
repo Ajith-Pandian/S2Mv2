@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
@@ -64,6 +67,8 @@ public class MilestonesActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_milestones)
     RecyclerView recyclerView;
+    @BindView(R.id.layout_no_data)
+    RelativeLayout noDataLayout;
     MilesAdapter milestonesAdapter;
     String sectionName = "", className = "";
     boolean isIntro;
@@ -94,18 +99,33 @@ public class MilestonesActivity extends AppCompatActivity {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
-        ArrayList<TMiles> milesArrayList;
 
+
+
+    }
+
+    void showNoDataLayout() {
+        recyclerView.setVisibility(View.GONE);
+        noDataLayout.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ArrayList<TMiles> milesArrayList;
         if (isIntro) {
             milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getIntroTrainingsList();
-            milestonesAdapter = new MilesAdapter(this, milesArrayList, -1, true);
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, true, null);
         } else {
             milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesList();
-            milestonesAdapter = new MilesAdapter(this, milesArrayList, -1, false);
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, false, null);
         }
 
-
-        recyclerView.setAdapter(milestonesAdapter);
+        if (milesArrayList != null && milesArrayList.size() > 0)
+            recyclerView.setAdapter(milestonesAdapter);
+        else
+            showNoDataLayout();
     }
 
     @Override
@@ -133,72 +153,18 @@ public class MilestonesActivity extends AppCompatActivity {
     }
 
     void getArchiveData() {
-        VolleyStringRequest archiveRequest = new VolleyStringRequest(Request.Method.GET,
-
-                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
-                        + KEY_SECTIONS + SEPERATOR
-                        + String.valueOf(NewDataHolder.getInstance(this).getCurrentSectionId()) + SEPERATOR
-                        + KEY_CONTENT + SEPERATOR + KEY_ARCHIVED,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("archiveRequest", "onResponse: " + response);
-
-                        try {
-                            JSONObject archiveResponse = new JSONObject(response);
-
-                            ArrayList<TMiles> archiveList = new NewDataParser().getMiles(archiveResponse.getString(KEY_MILES_TRAININGS));
-                            com.example.uilayer.DataHolder.getInstance(getApplicationContext()).
-                                    setArchiveData(archiveList);
-
-                            if (archiveList.size() > 0) {
-                                startActivity(new Intent(MilestonesActivity.this, ArchiveActivity.class));
-                            } else
-                                Toast.makeText(MilestonesActivity.this, "No Archives", Toast.LENGTH_SHORT).show();
-
-
-                        } catch (JSONException ex) {
-                            Log.e("archiveRequest", "onResponse: ", ex);
-                        }
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("introMileDetails", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
+        new NetworkHelper(this).getArchiveContent(NewDataHolder.getInstance(this).getCurrentSectionId(), new NetworkHelper.NetworkListener() {
             @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
+            public void onFinish() {
+                ArrayList<TMiles> archiveList = NewDataHolder.getInstance(MilestonesActivity.this).getArchiveList();
 
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
+                if (archiveList.size() > 0) {
+                    startActivity(new Intent(MilestonesActivity.this, ArchiveActivity.class));
+                } else
+                    Toast.makeText(MilestonesActivity.this, "No Archives", Toast.LENGTH_SHORT).show();
             }
         });
 
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(archiveRequest);
     }
 
 

@@ -3,7 +3,6 @@ package com.example.uilayer.milestones;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,13 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataHolder;
-import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.MCQAnswersAdapter;
@@ -31,29 +29,26 @@ import com.example.uilayer.models.MCQs;
 import com.example.uilayer.models.McqOptions;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ANSWER;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.KEY_ID;
+import static com.example.domainlayer.Constants.KEY_CHOICES;
+import static com.example.domainlayer.Constants.KEY_COMPLETE;
+import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_QUESTION;
+import static com.example.domainlayer.Constants.KEY_RESULT;
+import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TITLE;
-import static com.example.domainlayer.Constants.MCQ_RESULT_URL;
-import static com.example.domainlayer.Constants.MCQ_URL;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TRAININGS_SUFFIX;
-import static com.example.domainlayer.Constants.TRAININGS_URL;
+import static com.example.domainlayer.Constants.SCHOOLS_URL;
+import static com.example.domainlayer.Constants.SEPERATOR;
 
 public class MCQActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_activity_mcq)
@@ -74,6 +69,8 @@ public class MCQActivity extends AppCompatActivity {
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
     VolleyStringRequest choiceResultRequest;
+
+    private final String NEXT = "Next", SUBMIT = "Submit", FINISH = "Finish";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,38 +114,62 @@ public class MCQActivity extends AppCompatActivity {
         Log.d("MCQS", "loadQuestions: " + mcqsArrayList.toString());
         if (mcqsArrayList.size() > 0) {
             showQuestions(0);
-        } else {
+        } /*else {
             //setContentView(R.layout.layout_error);
             setContentView(Utils.getInstance().getErrorView(this, getResources().getDrawable(R.drawable.no_sections), getString(R.string.er_no_mcq)));
             // Utils.getInstance().showToast();
-        }
+        }*/
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (buttonSubmit.getText().equals("Next"))
+                String buttonText = buttonSubmit.getText().toString();
+                if (buttonText.equals(NEXT))
                     if (currentQuestion < mcqsArrayList.size() - 1)
                         showQuestions(currentQuestion + 1);
                     else {
-                        buttonSubmit.setText("Finish");
-                        //get feed back and go to next
+                        buttonSubmit.setText(FINISH);
                         selected_option = -1;
-                        sendResults();
-                        //finish();
                     }
-                else {
+                else if (buttonText.equals(SUBMIT)) {
                     if (selected_option != -1) {
-                        buttonSubmit.setText("Next");
+                        if (currentQuestion < mcqsArrayList.size() - 1)
+                            buttonSubmit.setText(NEXT);
+                        else
+                            buttonSubmit.setText(FINISH);
                         checkResult(selected_option);
                         setListViewState(false);
-
+                        //storeResult();
+                        storeInResult();
                     } else
                         showToast("Please select one option to submit");
+                } else if (buttonText.equals(FINISH)) {
+                    // sendResults();
+                    //finish();
+                    sendResultsBack();
                 }
-                storeResult();
-
             }
         });
     }
+
+    void sendResultsBack() {
+
+        Map<String, String> resultsMap = new HashMap<>();
+        resultsMap.put(KEY_CHOICES, resultArray.toString());
+        resultsMap.put(KEY_RESULT, String.valueOf(getPercentage()));
+        NewDataHolder.getInstance(this).setResultsMap(resultsMap);
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("isSuccess", true);
+        setResult(Activity.RESULT_OK, returnIntent);
+
+        finish();
+    }
+
+    int getPercentage() {
+        return (int) (((float) correctCount / (float) mcqsArrayList.size()) * 100);
+    }
+
+    Map<String, String> mcqResult;
 
     void storeResult() {
         choicesResult.put(String.valueOf(mcqsArrayList.get(currentQuestion).getId()), currentOptions.get(selectedOption).getText());
@@ -162,9 +183,34 @@ public class MCQActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+
+    JSONArray resultArray = new JSONArray();
+
+    void storeInResult() {
+        try {
+
+            JSONObject mcqResult = new JSONObject();
+            mcqResult.put(KEY_QUESTION, mcqsArrayList.get(currentQuestion).getQuestion());
+            JSONArray optionsArray = new JSONArray();
+            ArrayList<McqOptions> options = mcqsArrayList.get(currentQuestion).getOptions();
+
+            for (int i = 0; i < options.size(); i++) {
+                optionsArray.put(options.get(i).getText());
+            }
+
+            mcqResult.put(KEY_OPTIONS, optionsArray);
+            mcqResult.put(KEY_ANSWER, currentOptions.get(selectedOption).getText());
+            resultArray.put(mcqResult);
+            Log.d("storeInResult", resultArray.toString());
+
+        } catch (Exception e) {
+            Log.d("storeInResult", "Error: " + e);
+        }
+
+    }
+
     void sendResults() {
         final JSONArray array = new JSONArray();
-
         try {
 
             for (Map.Entry<String, String> entry : choicesResult.entrySet()) {   //print keys and values
@@ -177,18 +223,17 @@ public class MCQActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("sendResults", "sendResults: " + e);
         }
+
+
         choiceResultRequest = new VolleyStringRequest(Request.Method.POST,
-                TRAININGS_URL + NewDataHolder.getInstance(this).getCurrentMilestoneId() + TRAININGS_SUFFIX + "/" +
-                        NewDataHolder.getInstance(this).getCurrentMileId() + "/submitMcqResults",
-                // MCQ_RESULT_URL,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
+                        KEY_SECTIONS + SEPERATOR + NewDataHolder.getInstance(this).getCurrentSectionId() + SEPERATOR +
+                        KEY_CONTENT + NewDataHolder.getInstance(this).getCurrentMileId() + SEPERATOR + KEY_COMPLETE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("sendResults", "onResponse: " + response);
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("isSuccess", true);
-                        setResult(Activity.RESULT_OK, returnIntent);
-                        finish();
+
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
@@ -238,20 +283,6 @@ public class MCQActivity extends AppCompatActivity {
                 }
                 return params;
             }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
         };
 
         VolleySingleton.getInstance(this).addToRequestQueue(choiceResultRequest);
@@ -261,11 +292,14 @@ public class MCQActivity extends AppCompatActivity {
         listView.setEnabled(state);
     }
 
+    int correctCount;
+
     void checkResult(int selected) {
         selectedOption = selected;
         resetOptionStates(currentOptions);
-        if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(selected))) {
+        if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(selected).getText())) {
             currentOptions.get(selected).setRight(true);
+            correctCount++;
         } else {
             currentOptions.get(selected).setWrong(true);
             currentOptions.get(getCorrectOptionPosition()).setRight(true);
@@ -275,7 +309,7 @@ public class MCQActivity extends AppCompatActivity {
 
     int getCorrectOptionPosition() {
         for (int i = 0; i < currentOptions.size(); i++) {
-            if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(i))) {
+            if (mcqsArrayList.get(currentQuestion).getAnswer().equals(currentOptions.get(i).getText())) {
                 return i;
             }
         }
@@ -287,7 +321,7 @@ public class MCQActivity extends AppCompatActivity {
     }
 
     void showQuestions(int position) {
-        buttonSubmit.setText("Submit");
+        buttonSubmit.setText(SUBMIT);
         selected_option = -1;
         setListViewState(true);
         textQuestion.setText(mcqsArrayList.get(position).getQuestion());

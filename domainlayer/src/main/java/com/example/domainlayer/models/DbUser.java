@@ -49,6 +49,12 @@ public class DbUser {
     private String wow;
     @DatabaseField(columnName = Constants.KEY_AVATAR)
     private String avatar;
+    @DatabaseField(columnName = Constants.KEY_DOB)
+    private String dob;
+    @DatabaseField(columnName = Constants.KEY_ANNIVERSARY)
+    private String anniversary;
+    @DatabaseField(columnName = Constants.KEY_GENDER)
+    private String gender;
 
     @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
     private Sections sections;
@@ -220,6 +226,30 @@ public class DbUser {
 
     public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getAnniversary() {
+        return anniversary;
+    }
+
+    public void setAnniversary(String anniversary) {
+        this.anniversary = anniversary;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getDbId() {

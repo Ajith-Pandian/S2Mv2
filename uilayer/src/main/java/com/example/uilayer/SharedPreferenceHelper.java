@@ -2,6 +2,7 @@ package com.example.uilayer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.ArraySet;
 
 import com.example.domainlayer.Constants;
 
@@ -87,8 +88,7 @@ public class SharedPreferenceHelper {
     public static void setUserRoles(ArrayList<String> userRoles) {
         Set<String> set = new HashSet<String>();
         set.addAll(userRoles);
-        getEditor().putStringSet(ROLES, set);
-        getEditor().apply();
+        getEditor().putStringSet(ROLES, set).commit();
     }
 
     private static SharedPreferences getSharedPreference() {

@@ -1,6 +1,5 @@
 package com.example.uilayer.network;
 
-import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,17 +8,14 @@ import android.transition.Fade;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
-import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataParser;
-import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
@@ -32,28 +28,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_USERS;
-import static com.example.domainlayer.Constants.NETWORK_URL_SUFFIX;
-import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.ROLE_TEACHER;
-import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
-import static com.example.domainlayer.Constants.TYPE_T_SCL_ADMIN;
-import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.USER_TYPE_SCHOOL;
 
 public class NetworkActivity extends AppCompatActivity {
     @BindView(R.id.recycler_network)
@@ -140,45 +122,39 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setId(userJson.getInt(Constants.KEY_ID));
                 user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
                 if (!userJson.isNull(Constants.KEY_LAST_NAME))
-                user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
+                    user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
                 user.setEmail(userJson.getString(Constants.KEY_EMAIL));
                 user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
                 user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
                 user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
                 user.setMiles(userJson.getString(Constants.KEY_MILES_COMPLETION_COUNT));
                 user.setTrainings(userJson.getString(Constants.KEY_TRAININGS_COMPLETION_COUNT));
+
+                JSONObject optionsObject = userJson.getJSONObject(KEY_OPTIONS);
+                if(!optionsObject.isNull(Constants.KEY_ANNIVERSARY))
+                user.setAnniversary(optionsObject.getString(Constants.KEY_ANNIVERSARY));
+                if(!optionsObject.isNull(Constants.KEY_GENDER))
+                user.setGender(optionsObject.getString(Constants.KEY_GENDER));
+                if(!optionsObject.isNull(Constants.KEY_DOB))
+                user.setDob(optionsObject.getString(Constants.KEY_DOB));
+
+
+                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
                 ArrayList<String> roles = dataParser.getStringsFromArray(userJson.getJSONArray(Constants.KEY_ROLES));
                 user.setRoles(roles);
-                user.setType(getTypeByRoles(userJson.getString(Constants.KEY_USER_TYPE), roles));
+                user.setType(userJson.getString(Constants.KEY_USER_TYPE));
                 user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
+                user.setLoggedIn(false);
                 usersList.add(i, user);
             }
-            new DataBaseUtil(this).setNetworkUsers(usersList);
+            // new DataBaseUtil(this).setNetworkUsers(usersList);
+            NewDataHolder.getInstance(this).setNetworkUsers(usersList);
             networkRecycler.setAdapter(new NetworkAdapter(getApplicationContext(), usersList));
         } catch (JSONException exception) {
             Log.e("DataHolder", "saveUserDetails: ", exception);
         }
     }
 
-    private String getTypeByRoles(String userType, ArrayList<String> userRoles) {
-        String type = "";
-
-        switch (userType) {
-            case USER_TYPE_SCHOOL:
-                if (userRoles.contains(ROLE_TEACHER) && userRoles.contains(ROLE_SCL_ADMIN))
-                    type = TYPE_T_SCL_ADMIN;
-                else if (userRoles.contains(ROLE_SCL_ADMIN))
-                    type = TYPE_SCL_ADMIN;
-                else if (userRoles.contains(ROLE_TEACHER))
-                    type = TYPE_TEACHER;
-                break;
-            case USER_TYPE_S2M_ADMIN:
-                type = TYPE_S2M_ADMIN;
-                break;
-        }
-
-        return type;
-    }
 
     @SuppressWarnings("NewApi")
     private void setupWindowAnimations() {

@@ -69,11 +69,9 @@ import static com.example.domainlayer.Constants.KEY_SUBJECT;
 import static com.example.domainlayer.Constants.KEY_UPDATE;
 import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.KEY_USER_TYPE;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
 
 /**
  * Created by thoughtchimp on 1/4/2017.
@@ -311,7 +309,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
                 params.put(KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
                 params.put(KEY_MOBILE_NO, phoneNum);
                 params.put(KEY_USER_TYPE, KEY_SCHOOL);
-                params.put(KEY_ROLES_ARRAY, TYPE_TEACHER);
+                params.put(KEY_ROLES_ARRAY, ROLE_TEACHER);
                 return params;
             }
 

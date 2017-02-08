@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,9 +28,7 @@ import android.widget.TextView;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
-import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.S2MApplication;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.views.HeightWrapListView;
 import com.example.uilayer.tickets.TicketsFragment;
@@ -48,8 +45,7 @@ import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
 import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 
 public class LandingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -161,10 +157,10 @@ public class LandingActivity extends AppCompatActivity
         }
         //loading home fragment for first time
         switch (selectedTab) {
-            case 0:
+            case 1:
                 homeButton.performClick();
                 break;
-            case 1:
+            case 2:
                 sectionButton.performClick();
                 break;
             case 3:
@@ -188,7 +184,7 @@ public class LandingActivity extends AppCompatActivity
         int menuId = 0;
 
         ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
-        if (new DataBaseUtil(this).getUser().getType().equals(TYPE_S2M_ADMIN))
+        if (new DataBaseUtil(this).getUser().getType().equals(USER_TYPE_S2M_ADMIN))
             menuId = R.array.home_menu_s2m_admin;
         else if (userRoles.contains(ROLE_COORDINATOR))
             menuId = R.array.home_menu_coordinator;
@@ -321,7 +317,7 @@ public class LandingActivity extends AppCompatActivity
                 }
                 break;
 
-            case Constants.TYPE_S2M_ADMIN:
+            case Constants.USER_TYPE_S2M_ADMIN:
                 navigationView.getMenu().clear();
                 navigationView.inflateMenu(R.menu.activity_landing_drawer_s2m_admin);
                 break;
@@ -468,7 +464,8 @@ public class LandingActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_notification) {
-            startActivity(new Intent(this, NotificationActivity.class));
+            //startActivity(new Intent(this, NotificationActivity.class));
+            startActivity(new Intent(this, SchoolDetailActivity.class));
             return true;
         }
 

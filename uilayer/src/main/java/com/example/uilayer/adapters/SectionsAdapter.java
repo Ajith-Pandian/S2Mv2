@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -17,24 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.models.milestones.TMiles;
-import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
-import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
-import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
-import com.example.uilayer.S2MApplication;
 import com.example.uilayer.customUtils.views.CustomProgressBar;
-import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.TeacherOrSectionListener;
 import com.example.uilayer.milestones.MilestonesActivity;
 
@@ -45,16 +34,12 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.KEY_CONTENT;
-import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
 import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
 import static com.example.domainlayer.Constants.ROLE_TEACHER;
-import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
-import static com.example.domainlayer.Constants.TYPE_TEACHER;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 
 
 /**
@@ -119,7 +104,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
         Boolean canEdit, canSeeOwn;
         ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
-        if (new DataBaseUtil(context).getUser().getType().equals(TYPE_S2M_ADMIN)) {
+        if (new DataBaseUtil(context).getUser().getType().equals(USER_TYPE_S2M_ADMIN)) {
             canEdit = true;
             canSeeOwn = false;
         } else if (userRoles.contains(ROLE_COORDINATOR)) {
@@ -171,57 +156,17 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
 
 
     private void getMilestoneDetails(final int position) {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
-                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
-                        + KEY_SECTIONS + SEPERATOR
-                        + String.valueOf(sectionDetailsList.get(position).getId()) + SEPERATOR
-                        + KEY_CONTENT,
-                new Response.Listener<String>() {
+        new NetworkHelper(context).getMilestoneContent(sectionDetailsList.get(position).getId(),
+                new NetworkHelper.NetworkListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Miles", "onResponse: " + response);
-                        saveMiles(position, response);
+                    public void onFinish() {
+                        /*if (NewDataHolder.getInstance(context).getMilesList() != null
+                                && NewDataHolder.getInstance(context).getMilesList().size() > 0) {*/
+                        openMilestonesActivity(position);
+                       /* } else
+                            Utils.getInstance().showToast("No Content");*/
                     }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("Miles", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-                Utils.getInstance().showToast(context.getResources().getString(R.string.er_no_milestones_in_section));
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-
-
-        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
+                });
     }
 
     private void openMilestonesActivity(int position) {
@@ -237,17 +182,11 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         NewDataHolder.getInstance(context).setCurrentSectionName(PREFIX_SECTION + section);
         DataHolder.getInstance(context).setCurrentMileTitle(title);
         DataHolder.getInstance(context).setCurrentMilestoneID(milestoneId);
-        intent.putExtra("class_name", _class);
-        intent.putExtra("section_name", section);
+        intent.putExtra("class_name", PREFIX_CLASS + _class);
+        intent.putExtra("section_name", PREFIX_CLASS + section);
         intent.putExtra("is_intro", false);
         context.startActivity(intent);
 
-    }
-
-    private void saveMiles(int position, String milesResponse) {
-        ArrayList<TMiles> milesList = new NewDataParser().getMiles(milesResponse);
-        NewDataHolder.getInstance(context).setMilesList(milesList);
-        openMilestonesActivity(position);
     }
 
     @Override

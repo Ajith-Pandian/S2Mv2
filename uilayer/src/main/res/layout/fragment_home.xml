@@ -55,7 +55,9 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginTop="2dp"
                         android:gravity="center"
-                        android:text="Bill Gates"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        tools:text="Bill Gates"
                         android:textColor="@color/colorPrimary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -68,7 +70,7 @@
                         android:layout_alignStart="@+id/name"
                         android:layout_below="@id/name"
                         android:gravity="center"
-                        android:text="Teacher"
+                        tools:text="Teacher"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -185,7 +187,7 @@
                     android:layout_alignParentTop="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/ph_bulletin"
-                    tools:src="@drawable/ph_bulletin" />
+                    tools:src="@drawable/water" />
 
                 <ImageButton
                     android:id="@+id/image_btn_like"

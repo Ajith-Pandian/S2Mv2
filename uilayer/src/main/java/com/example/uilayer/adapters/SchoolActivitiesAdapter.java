@@ -52,7 +52,7 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         String time=timpeStamp.split(" ")[1];
         holder.textDate.setText(date);
         holder.textTime.setText(time);
-        holder.textLikes.setText(sclActs.getLikesCount());
+        holder.textLikes.setText(""+sclActs.getLikesCount());
         Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
         holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
     }

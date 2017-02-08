@@ -191,9 +191,10 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             @Override
             public void onClick(View view) {
                 if (nextButton.getText().toString().equals(DONE)) {
-                    if (isFirstTime)
+                    if (isFirstTime) {
                         launchLanding();
-                    else
+                        finish();
+                    } else
                         finish();
                 } else if (viewPager.getCurrentItem() == 0) {
                     viewPager.setCurrentItem(1);
@@ -250,8 +251,8 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
     }
 
-    final void openAddTeacherFragment(boolean isUpdate, int position,AddOrUpdateListener listener) {
-        AddTeachersFragment bottomSheetDialogFragment = AddTeachersFragment.getNewInstance(isUpdate, position,listener);
+    final void openAddTeacherFragment(boolean isUpdate, int position, AddOrUpdateListener listener) {
+        AddTeachersFragment bottomSheetDialogFragment = AddTeachersFragment.getNewInstance(isUpdate, position, listener);
         bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
@@ -263,7 +264,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     void launchLanding() {
         startActivity(new Intent(ManageTeachersActivity.this, LandingActivity.class));
     }
-
 
 
     void closeBottomSheet() {
@@ -442,7 +442,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
     }
 
 
-    public static class TeachersSectionsFragment extends Fragment  {
+    public static class TeachersSectionsFragment extends Fragment {
 
         private static final String IS_TEACHER = "is_teacher";
         static TeacherOrSectionListener teacherListener;
@@ -495,7 +495,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 loadTeachers();
                 titleString = "Teacher";
             } else {
-                /*adapter = new SectionsAdapter(getContext(), getSections(), 4);
+                /*adapter = new SectionsAdapter(getContext(), getUserSections(), 4);
                 recyclerView.setAdapter(adapter);*/
                 loadSections();
                 titleString = "Sections";
@@ -507,7 +507,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 public void onClick(View view) {
                     //teacherListener.onAddOptionSelected(isTeacher);
                     if (isTeacher)
-                        ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(false, -1,new AddOrUpdateListener() {
+                        ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(false, -1, new AddOrUpdateListener() {
                             @Override
                             public void onFinish(boolean isTeacher) {
                                 loadTeachers();

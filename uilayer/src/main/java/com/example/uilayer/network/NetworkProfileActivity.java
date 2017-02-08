@@ -33,7 +33,7 @@ import static com.example.domainlayer.Constants.KEY_MILES;
 import static com.example.domainlayer.Constants.KEY_TRAINING;
 import static com.example.domainlayer.Constants.KEY_WOW;
 import static com.example.domainlayer.Constants.SPACE;
-import static com.example.domainlayer.Constants.TYPE_S2M_ADMIN;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 
 public class NetworkProfileActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_profile)
@@ -79,7 +79,7 @@ public class NetworkProfileActivity extends AppCompatActivity {
         if (profilePagerAdapter.getCount() == 1)
             tabLayout.setSelectedTabIndicatorHeight(0);
 
-        if (user.getType().equals(TYPE_S2M_ADMIN))
+        if (user.getType().equals(USER_TYPE_S2M_ADMIN))
             teacherDetailsLayout.setVisibility(View.GONE);
 
         wowsText.setText(user.getWow() + SPACE + KEY_WOW);
@@ -141,7 +141,7 @@ public class NetworkProfileActivity extends AppCompatActivity {
         }
 
         int getValidTabsCount() {
-            return user.getType().equals(TYPE_S2M_ADMIN) ? 1 : 2;
+            return user.getType().equals(USER_TYPE_S2M_ADMIN) ? 1 : 2;
         }
 
         @Override

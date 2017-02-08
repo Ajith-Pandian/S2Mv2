@@ -19,18 +19,15 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -44,8 +41,10 @@ import com.example.domainlayer.network.VolleyMultipartRequest;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.R;
 import com.example.uilayer.SharedPreferenceHelper;
-import com.example.uilayer.adapters.GenderSpinnerAdapter;
-import com.example.uilayer.customUtils.views.PromptSpinner;
+import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.landing.LandingActivity;
+import com.example.uilayer.manage.ManageTeachersActivity;
+import com.example.uilayer.manage.SelectSchoolActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -69,9 +68,15 @@ import pl.tajchert.nammu.PermissionCallback;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
+import static com.example.domainlayer.Constants.KEY_IS_FIRST_LOGIN;
 import static com.example.domainlayer.Constants.KEY_LAST_NAME;
+import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
+import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.TYPE_IMAGE;
+import static com.example.domainlayer.Constants.USER_TYPE_S2M_ADMIN;
 import static com.example.domainlayer.Constants.UPDATE_PROFILE_URL;
+import static com.example.domainlayer.Constants.USER_TYPE_SCHOOL;
 
 public class ProfileUpdateActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     @BindView(R.id.toolbar)
@@ -94,11 +99,12 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     TextInputLayout inputLayoutDob;
     @BindView(R.id.til_anniversary)
     TextInputLayout inputLayoutAnniversary;
-/*    @BindView(R.id.gender_spinner)
-    PromptSpinner genderSpinner;*/
+    /*    @BindView(R.id.gender_spinner)
+        PromptSpinner genderSpinner;*/
     @BindView(R.id.fab_camera)
     FloatingActionButton cameraButton;
     DbUser user;
+    boolean isFirstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +114,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
         toolbar.setTitle("Update Profile");
         setSupportActionBar(toolbar);
         loadUserData();
+        if (getIntent() != null)
+            isFirstTime = getIntent().getBooleanExtra(KEY_IS_FIRST_LOGIN, false);
     }
 
     void loadUserData() {
@@ -346,13 +354,18 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     }
 
     private void uploadDetails() {
-
+        Utils.getInstance().showToast("Updated Successfully");
+        if (isFirstTime) {
+            doFirstTimeSetup();
+        }
+        finish();
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 UPDATE_PROFILE_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
                 Log.d("onResponse", resultResponse);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -464,5 +477,35 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void doFirstTimeSetup() {
+        if (user.getType().equals(USER_TYPE_S2M_ADMIN))
+            launchSelectSchool();
+        else if (user.getType().equals(USER_TYPE_SCHOOL)) {
+            ArrayList<String> roles = SharedPreferenceHelper.getUserRoles();
+            if (roles.contains(ROLE_SCL_ADMIN) ||
+                    roles.contains(ROLE_COORDINATOR))
+                launchManageTeachersAndSections();
+            else if (roles.contains(ROLE_TEACHER))
+                launchLanding();
+        }
+        else
+            launchLanding();
+
+    }
+
+    void launchSelectSchool() {
+        startActivity(new Intent(this, SelectSchoolActivity.class).putExtra("isFirstTime", true));
+    }
+
+    void launchManageTeachersAndSections() {
+        startActivity(new Intent(this, ManageTeachersActivity.class)
+                .putExtra("isFirstTime", true)
+                .putExtra("isTeachers", true));
+    }
+
+    void launchLanding() {
+        startActivity(new Intent(this, LandingActivity.class));
     }
 }

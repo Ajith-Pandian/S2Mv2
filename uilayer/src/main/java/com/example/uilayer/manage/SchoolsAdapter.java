@@ -38,10 +38,12 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
 
     private List<Schools> schoolsList;
     private Context context;
+    private boolean isFirstTime;
 
-    public SchoolsAdapter(Context context, List<Schools> schoolsList) {
+    public SchoolsAdapter(Context context, List<Schools> schoolsList, boolean isFirstTime) {
         this.schoolsList = schoolsList;
         this.context = context;
+        this.isFirstTime = isFirstTime;
     }
 
     Schools getItem(int position) {
@@ -69,13 +71,11 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
                 setActiveSchool(school);
                 updateActiveSchoolVisibility(position, holder);
                 notifyDataSetChanged();
-                new NetworkHelper(context).getDashBoardDetails(new NetworkHelper.NetworkListener() {
-                    @Override
-                    public void onFinish() {
-                        ((Activity) context).finish();
-                        context.startActivity(new Intent(context, LandingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    }
-                });
+                if (isFirstTime)
+                    launchManageTeachersAndSections();
+                else
+                    launchLandingActivity();
+                ((Activity) context).finish();
             }
         });
         Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_schools_small);
@@ -110,7 +110,8 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         school.setActive(true);
         SharedPreferenceHelper.setSchoolName(school.getName());
         SharedPreferenceHelper.setSchoolId(school.getId());
-        Utils.getInstance().showToast("School Changed");
+        if (!isFirstTime)
+            Utils.getInstance().showToast("School Changed");
     }
 
     private void removeOldActiveSchool() {
@@ -126,6 +127,23 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         holder.schoolName.setTextColor(color);
         holder.schoolAddress.setTextColor(color);
         holder.activeBadge.setVisibility(isActive ? View.VISIBLE : View.GONE);
+    }
+
+    private void launchLandingActivity() {
+        new NetworkHelper(context).getDashBoardDetails(new NetworkHelper.NetworkListener() {
+            @Override
+            public void onFinish() {
+                ((Activity) context).finish();
+                context.startActivity(new Intent(context, LandingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+        });
+    }
+
+    private void launchManageTeachersAndSections() {
+        context.startActivity(new Intent(context, ManageTeachersActivity.class)
+                .putExtra("isFirstTime", true)
+                .putExtra("isTeachers", true)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @Override

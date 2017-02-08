@@ -39,6 +39,7 @@ import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CLASS;
 import static com.example.domainlayer.Constants.KEY_COMPLETED_MILES;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_DOB;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE;
@@ -53,6 +54,12 @@ import static com.example.domainlayer.Constants.PREFIX_CLASS;
 import static com.example.domainlayer.Constants.PREFIX_SECTION;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.TEXT_ANNIVERSARY;
+import static com.example.domainlayer.Constants.TEXT_DOB;
+import static com.example.domainlayer.Constants.TEXT_EMAIL;
+import static com.example.domainlayer.Constants.TEXT_GENDER;
+import static com.example.domainlayer.Constants.TEXT_PHONE_NUMBER;
+import static com.example.domainlayer.Constants.TEXT_SCHOOL_NAME;
 
 /**
  * Created by thoughtchimp on 12/21/2016.
@@ -71,7 +78,6 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.layout_no_sections)
     RelativeLayout noSectionsLayout;
-    VolleyStringRequest getNetworkSectionsRequest;
 
     public ProfileFragment() {
     }
@@ -107,9 +113,10 @@ public class ProfileFragment extends Fragment {
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     DividerItemDecoration.VERTICAL);
             recyclerView.addItemDecoration(mDividerItemDecoration);
-            if (holder.getSectionsList() != null && holder.getSectionsList().size() > 0) {
+            DbUser currentProfile = NewDataHolder.getInstance(getContext()).getCurrentNetworkUser();
+            if (currentProfile.getSectionsList() != null && currentProfile.getSectionsList().size() > 0) {
                 noSectionsLayout.setVisibility(View.GONE);
-                ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(), holder.getSectionsList());
+                ProfileSectionsAdapter adapter = new ProfileSectionsAdapter(getActivity(), currentProfile.getSectionsList());
                 recyclerView.setAdapter(adapter);
             } else {
                 noSectionsLayout.setVisibility(View.VISIBLE);
@@ -122,9 +129,16 @@ public class ProfileFragment extends Fragment {
 
     ArrayList<ProfileModel> getProfileFromUser() {
         ArrayList<ProfileModel> profileModels = new ArrayList<>();
-        profileModels.add(new ProfileModel(R.drawable.email, NewDataHolder.getInstance(getContext()).getCurrentNetworkUser().getEmail(), KEY_EMAIL));
-        profileModels.add(new ProfileModel(R.drawable.phone, NewDataHolder.getInstance(getContext()).getCurrentNetworkUser().getPhoneNum(), KEY_PHONE_NUM));
-        profileModels.add(new ProfileModel(R.drawable.scholl, SharedPreferenceHelper.getSchoolName(), KEY_SCHOOL_NAME));
+        DbUser currentProfile = NewDataHolder.getInstance(getContext()).getCurrentNetworkUser();
+        profileModels.add(new ProfileModel(R.drawable.email, currentProfile.getEmail(), TEXT_EMAIL));
+        profileModels.add(new ProfileModel(R.drawable.phone, currentProfile.getPhoneNum(), TEXT_PHONE_NUMBER));
+        profileModels.add(new ProfileModel(R.drawable.scholl, SharedPreferenceHelper.getSchoolName(), TEXT_SCHOOL_NAME));
+        if (currentProfile.getGender() != null && !currentProfile.getGender().equals(""))
+            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getGender(), TEXT_GENDER));
+        if (currentProfile.getDob() != null && !currentProfile.getDob().equals(""))
+            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getDob(), TEXT_DOB));
+        if (currentProfile.getAnniversary() != null && !currentProfile.getAnniversary().equals(""))
+            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getAnniversary(), TEXT_ANNIVERSARY));
         return profileModels;
     }
 

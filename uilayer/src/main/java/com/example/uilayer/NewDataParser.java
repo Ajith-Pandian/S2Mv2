@@ -147,14 +147,16 @@ public class NewDataParser {
     }
 
 
-    public ArrayList<TMiles> getMiles(String milesResponse) {
+    public ArrayList<TMiles> getMiles(String milesResponse, boolean isArchive) {
         ArrayList<TMiles> milesList = new ArrayList<>();
         try {
             boolean completable = false;
             boolean isFirstMile = true;
+            int archiveIndex = 0;
             JSONArray milesArray = new JSONArray(milesResponse);
             for (int j = 0; j < milesArray.length(); j++) {
                 JSONObject milesJson = milesArray.getJSONObject(j);
+                TMiles miles = new TMiles();
                 String type = milesJson.getString(KEY_TYPE);
                 if (type.equals(KEY_MILE)) {
                     if (isFirstMile) {
@@ -163,19 +165,22 @@ public class NewDataParser {
                     } else {
                         completable = false;
                     }
-
+                    if (isArchive) {
+                       // archiveIndex++;
+                        miles.setMileIndex(++archiveIndex);
+                    }
+                    if (!milesJson.isNull(KEY_CONTENT_INDEX))
+                        miles.setMileIndex(milesJson.getInt(KEY_CONTENT_INDEX));
                 } else {
                     if (!milesJson.isNull(KEY_IS_COMPLETED))
-                    completable = !milesJson.getBoolean(KEY_IS_COMPLETED);
+                        completable = !milesJson.getBoolean(KEY_IS_COMPLETED);
                 }
                 Log.d("Completable", "getMiles: " + String.valueOf(completable));
-                TMiles miles = new TMiles();
                 miles.setId(milesJson.getInt(KEY_ID));
                 miles.setType(milesJson.getString(KEY_TYPE));
                 miles.setTitle(milesJson.getString(KEY_TITLE));
                 miles.setNote(milesJson.getString(KEY_DESCRIPTION));
-                if (!milesJson.isNull(KEY_CONTENT_INDEX))
-                    miles.setMileIndex(milesJson.getInt(KEY_CONTENT_INDEX));
+
                 miles.setCompletable(completable);
 
 

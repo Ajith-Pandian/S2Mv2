@@ -2,6 +2,7 @@ package com.example.uilayer.login;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
@@ -160,6 +161,9 @@ public class OtpFragment extends Fragment {
                 params.put(Constants.KEY_USER_NAME, NewDataHolder.getInstance(getContext()).getEnteredUserName());
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
                 params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
+                params.put(Constants.KEY_DEVICE_TOKEN,
+                        Settings.Secure.getString(S2MApplication.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+
                 Log.d(TAG, "getParams: " + params.toString());
                 return params;
             }

@@ -28,19 +28,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.milestones.adapters.OptionsAdapter;
 import com.example.uilayer.milestones.fragments.MilesAudioFragment;
@@ -52,52 +50,36 @@ import com.example.uilayer.models.ImageMiles;
 import com.example.uilayer.models.MCQs;
 import com.example.uilayer.models.McqOptions;
 import com.example.uilayer.models.VideoMiles;
-import com.example.uilayer.tickets.CreateTicketFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
-import static com.example.domainlayer.Constants.FEEDBACK_CREATE_URL;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ANSWER;
 import static com.example.domainlayer.Constants.KEY_COMPLETE;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_DOWN;
 import static com.example.domainlayer.Constants.KEY_ID;
-import static com.example.domainlayer.Constants.KEY_IS_TRAINING;
 import static com.example.domainlayer.Constants.KEY_MCQS;
-import static com.example.domainlayer.Constants.KEY_MILES_COUNT;
-import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_QUESTION;
 import static com.example.domainlayer.Constants.KEY_REASON;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.KEY_SECTION_ID;
 import static com.example.domainlayer.Constants.KEY_THUMBS;
-import static com.example.domainlayer.Constants.KEY_THUMBS_DOWN;
-import static com.example.domainlayer.Constants.KEY_THUMBS_UP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_UP;
 import static com.example.domainlayer.Constants.MCQS_SUFFIX;
-import static com.example.domainlayer.Constants.MCQ_URL;
 import static com.example.domainlayer.Constants.MILESTONES_URL;
-import static com.example.domainlayer.Constants.MILES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.TRAININGS_SUFFIX;
-import static com.example.domainlayer.Constants.TRAININGS_URL;
 import static com.example.domainlayer.Constants.TYPE_AUDIO;
 import static com.example.domainlayer.Constants.TYPE_IMAGE;
 import static com.example.domainlayer.Constants.TYPE_TEXT;
@@ -110,7 +92,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     @BindView(R.id.miles_fragment_container)
     LinearLayout milesFragmentContainer;
     @BindView(R.id.layout_background)
-    LinearLayout backgrounLayout;
+    LinearLayout backgroundLayout;
     @BindView(R.id.image_background)
     ImageView imageBackgroundActivity;
     @BindView(R.id.fragment_panel)
@@ -121,7 +103,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     @BindView(R.id.toolbar_activity_miles)
     Toolbar toolbar;
     @BindView(R.id.layout_frame_miles)
-    FrameLayout forgroundLayout;
+    FrameLayout foregroundLayout;
     BottomSheetBehavior bottomSheetBehavior;
     OptionsAdapter optionsAdapter;
     int selected_option = -1;
@@ -188,21 +170,30 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         RelativeLayout layoutCollapse;
 
         @Override
-        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+        public void onStateChanged(@NonNull final View bottomSheet, int newState) {
             switch (newState) {
                 case BottomSheetBehavior.STATE_HIDDEN:
-                    forgroundLayout.getForeground().setAlpha(0);
+                    foregroundLayout.getForeground().setAlpha(0);
+                    foregroundLayout.setVisibility(GONE);
                     selected_option = -1;
                     break;
                 case BottomSheetBehavior.STATE_COLLAPSED:
-                    forgroundLayout.getForeground().setAlpha(200);
+                    foregroundLayout.setVisibility(View.VISIBLE);
+                    foregroundLayout.getForeground().setAlpha(200);
+                    foregroundLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            foregroundLayout.setVisibility(GONE);
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        }
+                    });
                     loadOptions(true);
                     listOptions.setAlpha(0f);
                     // changeLayoutParams(16);
                     isUp = true;
                     break;
                 case BottomSheetBehavior.STATE_EXPANDED:
-                    // changeLayoutParams(48);
+                    //changeLayoutParams(48);
                     isUp = false;
                     break;
             }
@@ -219,10 +210,10 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             if (slideOffset < 0) {
                 float alpha = (1 + slideOffset) * 200;
-                forgroundLayout.getForeground().setAlpha((int) (alpha));
+                foregroundLayout.getForeground().setAlpha((int) (alpha));
             } else if (slideOffset > 0) {
                 float alpha = (55 * slideOffset) + 200;
-                forgroundLayout.getForeground().setAlpha((int) (alpha));
+                foregroundLayout.getForeground().setAlpha((int) (alpha));
                 listOptions.setAlpha(slideOffset);
 
                 if (isUp) {
@@ -259,6 +250,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     }
 
+    SubmitListener submitListener;
+
     void invalidateActivation() {
         imageThumsDown.setActivated(false);
         imageThumsUp.setActivated(false);
@@ -281,7 +274,6 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_miles);
         ButterKnife.bind(this);
@@ -315,7 +307,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         String title = holder.getCurrentClassName() + " " + holder.getCurrentSectionName();
         toolbarSubTitle.setText(title);
 
-        forgroundLayout.getForeground().setAlpha(0);
+        foregroundLayout.getForeground().setAlpha(0);
+        foregroundLayout.setVisibility(GONE);
         initTypeView();
         initBottomSheet();
         BottomSheetBehavior.from(bottomSheet)
@@ -323,8 +316,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
 
         textTiltle.setText(holder.getCurrentMileTitle());
-
-        addFragments();
+        if (!isFragmentsAdded)
+            addFragments();
 
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -344,8 +337,9 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             @Override
             public void onClick(View view) {
                 if (selected_option != -1) {
-                    sendFeedback();
-                    // finish();
+                    //sendFeedback();
+                    //finish();
+                    submitThis();
                 } else
                     showToast("Please select one option to submit");
 
@@ -354,88 +348,14 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
     }
 
-    void sendFeedback() {
-
-        VolleyStringRequest feedbackRequest = new VolleyStringRequest(Request.Method.POST,
-                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
-                        + KEY_SECTIONS + SEPERATOR
-                        + String.valueOf(NewDataHolder.getInstance(this).getCurrentSectionId()) + SEPERATOR
-                        + KEY_CONTENT + SEPERATOR + thisMileId + SEPERATOR + KEY_COMPLETE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("FeedBack", "onResponse: " + response);
-                        showToast("Submitted successfully ");
-                        BottomSheetBehavior.from(bottomSheet)
-                                .setState(BottomSheetBehavior.STATE_HIDDEN);
-                        finish();
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("FeedBack", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new ArrayMap<>();
-                String thumbs;
-                /*int isTraining;
-                if (isMile)
-                    isTraining = 0;
-                else
-                    isTraining = 1;
-                NewDataHolder holder = NewDataHolder.getInstance(MilesActivity.this);
-                params.put(KEY_IS_TRAINING, String.valueOf(isTraining));
-                params.put(KEY_MILE_ID, String.valueOf(holder.getCurrentMileId()));
-                params.put(KEY_SCHOOL_ID, String.valueOf(holder.getUser().getSchoolId()));
-                params.put(KEY_SECTION_ID, String.valueOf(holder.getCurrentSectionId()));*/
-
-                if (isThumbsUp)
-                    thumbs = KEY_UP;
-                else
-                    thumbs = KEY_DOWN;
-                params.put(KEY_THUMBS, thumbs);
-                params.put(KEY_REASON, options.get(selected_option));
-                Log.d("PARAMS", "getParams: " + params.toString());
-                return params;
-            }
-
-
-        };
-
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(feedbackRequest);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NewDataHolder.getInstance(this).getResultsMap() != null) {
+            Log.d("onResume", "result: " + NewDataHolder.getInstance(this).getResultsMap().toString());
+        }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -471,13 +391,13 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             titleTextColor = greenPrimary;
             if (isCompletable)
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getMcqs();
-                }
-            });
+                    @Override
+                    public void onClick(View view) {
+                        getMcqs();
+                    }
+                });
             else
-            buttonComplete.setVisibility(GONE);
+                buttonComplete.setVisibility(GONE);
         }
 
         // scrollView.setBackgroundDrawable(background);
@@ -607,7 +527,10 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         Toast.makeText(getApplicationContext(), "" + msg, Toast.LENGTH_SHORT).show();
     }
 
+    boolean isFragmentsAdded = false;
+
     void addFragments() {
+        isFragmentsAdded = true;
         mileDataArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesDataList();
         Fragment fragment = null;
         for (int i = 0; i < mileDataArrayList.size(); i++) {
@@ -662,12 +585,92 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    VolleyStringRequest submitRequest;
+
+    void submitThis() {
+        submitRequest = new VolleyStringRequest(Request.Method.POST,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
+                        KEY_SECTIONS + SEPERATOR + NewDataHolder.getInstance(this).getCurrentSectionId() + SEPERATOR +
+                        KEY_CONTENT + SEPERATOR + NewDataHolder.getInstance(this).getCurrentMileId() + SEPERATOR + KEY_COMPLETE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("sendResults", "onResponse: " + response);
+                        Utils.getInstance().showToast("Submitted successfully");
+                        new NetworkHelper(MilesActivity.this).getMilestoneContent(
+                                NewDataHolder.getInstance(MilesActivity.this).getCurrentSectionId(),
+                                new NetworkHelper.NetworkListener() {
+                                    @Override
+                                    public void onFinish() {
+                                        finish();
+                                    }
+                                });
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("sendResults", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                String thumbs;
+                if (isThumbsUp)
+                    thumbs = KEY_UP;
+                else
+                    thumbs = KEY_DOWN;
+                params.put(KEY_THUMBS, thumbs);
+                params.put(KEY_REASON, options.get(selected_option));
+                if (!isMile && NewDataHolder.getInstance(MilesActivity.this).getResultsMap() != null)
+                    params.putAll(NewDataHolder.getInstance(MilesActivity.this).getResultsMap());
+
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    System.out.println(entry.getKey() + " ::: " + entry.getValue());
+                }
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(submitRequest);
     }
 
 }

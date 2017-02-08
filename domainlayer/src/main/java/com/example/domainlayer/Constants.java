@@ -92,12 +92,14 @@ public class Constants {
     public static final String KEY_FIRST_NAME = "first_name";
     public static final String KEY_LAST_NAME = "last_name";
     public static final String KEY_EMAIL = "email";
+    public static final String TEXT_EMAIL = "Email";
     public static final String KEY_PHONE_NUM = "phone";
+    public static final String TEXT_PHONE_NUMBER = "Phone Number";
     public static final String KEY_MOBILE_NO = "mobile_no";
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_DEVICE_TYPE = "device_type";
-    public static final String KEY_DEVICE_TOKEN = "deviceToken";
+    public static final String KEY_DEVICE_TOKEN = "device_token";
     public static final String KEY_ACCESS_TOKEN = "access_token";
     public static final String KEY_CONFIGURATION = "configuration";
     public static final String KEY_FEEDBACK_QUESTIONS = "feedback_questions";
@@ -107,6 +109,12 @@ public class Constants {
     public static final String KEY_IS_COMPLETED = "is_completed";
     public static final String KEY_OTP = "otp";
     public static final String KEY_AVATAR = "avatar";
+    public static final String KEY_DOB = "dob";
+    public static final String TEXT_DOB = "D.O.B";
+    public static final String KEY_ANNIVERSARY = "anniversary";
+    public static final String TEXT_ANNIVERSARY = "Anniversary";
+    public static final String KEY_GENDER = "gender";
+    public static final String TEXT_GENDER = "Gender";
     public static final String KEY_PROFILE_PICTURE = "profile_picture";
     public static final String KEY_USER_TYPE = "user_type";
     public static final String KEY_ROLES = "roles";
@@ -141,12 +149,15 @@ public class Constants {
 
     public static final String KEY_ANSWER = "answer";
     public static final String KEY_QUESTION = "question";
+    public static final String KEY_RESULT = "result";
+    public static final String KEY_CHOICES = "choices";
     public static final String KEY_OPTIONS = "options";
     public static final String KEY_FEEDBACK_ID = "feedbackId";
 
 
     public static final String KEY_SCHOOL_ID = "school_id";
     public static final String KEY_SCHOOL_NAME = "school_name";
+    public static final String TEXT_SCHOOL_NAME = "School Name";
     public static final String KEY_SCHOOLS = "schools";
     public static final String KEY_SCHOOL = "school";
     public static final String KEY_SECTIONS = "sections";
@@ -158,7 +169,9 @@ public class Constants {
     public static final String KEY_CLASS_NAME = "class_name";
     public static final String KEY_INTRO_CONTENT = "contentMetaSequence";
     public static final String KEY_CONTENT = "content";
+    public static final String KEY_CONTENTS = "contents";
     public static final String KEY_COMPLETE = "complete";
+    public static final String KEY_UNDO= "undo";
     public static final String KEY_ARCHIVED = "archived";
     public static final String KEY_CONTENT_DATA = "content_data";
     public static final String KEY_ARCHIVE = "archive";
@@ -234,8 +247,6 @@ public class Constants {
     public static final String UNLIKED = "Unliked!";
 
     //User types based on roles
-    public static final String TYPE_TEACHER = "teacher";
-    public static final String TYPE_S2M_ADMIN = "s2m_admin";
     public static final String TYPE_SCL_ADMIN = "school_admin";
     public static final String TYPE_T_SCL_ADMIN = "t_school_admin";
 
@@ -243,6 +254,7 @@ public class Constants {
     public static final String TEXT_TEACHER = "Teacher";
     public static final String TEXT_S2M_ADMIN = "S2M Admin";
     public static final String TEXT_SCL_ADMIN = "School Admin";
+    public static final String TEXT_COORDINATOR = "Coordinator";
 
     //User types
     public static final String USER_TYPE_SCHOOL = "school";

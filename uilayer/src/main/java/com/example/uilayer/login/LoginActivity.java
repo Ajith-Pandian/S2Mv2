@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.profile.ProfileUpdateActivity;
 import com.example.uilayer.profile.RegisterActivity;
 import com.example.uilayer.landing.LandingActivity;
 
@@ -53,8 +57,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         super.onDestroy();
     }
 
-    void launchSignUp() {
-        startActivity(new Intent(LoginActivity.this, RegisterActivity.class).putExtra("isSignUp",false));
+    void launchProfileUpdate() {
+        startActivity(new Intent(LoginActivity.this, ProfileUpdateActivity.class).putExtra(Constants.KEY_IS_FIRST_LOGIN,true));
     }
 
     void launchLanding() {
@@ -76,9 +80,10 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onOtpEntered() {
-       /* if (NewDataHolder.getInstance(this).getUser().getLastLogin().equals("null"))
-            launchSignUp();
-        else*/
+
+        if (new DataBaseUtil(this).getUser().isFirstLogin())
+            launchProfileUpdate();
+        else
             launchLanding();
         finish();
     }
