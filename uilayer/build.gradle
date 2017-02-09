@@ -67,6 +67,8 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:10.0.1'
 
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'in.arjsna:swipecardlib:1.0.2'
+
 
 }
 apply plugin: 'com.google.gms.google-services'

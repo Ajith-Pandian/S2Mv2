@@ -1,17 +1,33 @@
 package com.example.domainlayer.models;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by thoughtchimp on 1/20/2017.
  */
 
 public class Notification {
-    private String title, content,date,type;
+    private String title, data, date, type;
+    private int id;
+    private boolean hasRead;
 
-    public Notification(String title, String content, String date, String type) {
+    public Notification(int id, String title, String data, String date, String type) {
+        this.id = id;
         this.title = title;
-        this.content = content;
+        this.data = data;
         this.date = date;
         this.type = type;
+    }
+
+    public Notification() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -22,12 +38,12 @@ public class Notification {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public String getData() {
+        return data;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getDate() {
@@ -44,5 +60,13 @@ public class Notification {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean hasRead() {
+        return hasRead;
+    }
+
+    public void setRead(boolean hasRead) {
+        this.hasRead = hasRead;
     }
 }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +24,12 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
+import com.example.domainlayer.models.SclActs;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.adapters.SchoolActivitiesSwipeAdapter;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
@@ -41,7 +45,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import in.arjsna.swipecardlib.SwipeCardView;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
@@ -75,6 +82,12 @@ public class HomeFragment extends Fragment {
     TextView name;
     @BindView(R.id.designation)
     TextView designation;
+    @BindView(R.id.swipe_cards)
+    SwipeCardView swipeCardView;
+    @BindView(R.id.text_see_all)
+    TextView seeAllText;
+    @BindView(R.id.layout_last_card)
+    RelativeLayout lastCardLayout;
 
     Target target = new Target() {
         @Override
@@ -95,7 +108,7 @@ public class HomeFragment extends Fragment {
     DbUser user;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,
                 container, false);
@@ -121,15 +134,81 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 if (NewDataHolder.getInstance(getContext()).getBulletin() != null) {
 
-                    likeBulletin();
+                    new NetworkHelper(getContext()).likeActivity(NewDataHolder.getInstance(getContext()).getBulletin().getId(), new NetworkHelper.LikeListener() {
+                        @Override
+                        public void onLiked() {
+                            buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
+                        }
+
+                        @Override
+                        public void onUnLiked() {
+                            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+
+                        }
+                    });
                 } else Utils.getInstance().showToast("No bulletin");
             }
         });
-/*        if (tempUser != null && tempUser.getBulletin().isLiked())
+
+        initSwipeCards();
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (NewDataHolder.getInstance(getContext()).getBulletin() != null && NewDataHolder.getInstance(getContext()).getBulletin().isLiked())
             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
         else
-            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));*/
-        return view;
+            buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+    }
+
+    void initSwipeCards() {
+        ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
+        ArrayList<SclActs> swipeList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            swipeList.add(schoolActivitiesList.get(i));
+        }
+        swipeCardView.setAdapter(new SchoolActivitiesSwipeAdapter(getActivity(), swipeList));
+        swipeCardView.setFlingListener(new SwipeCardView.OnCardFlingListener() {
+            @Override
+            public void onCardExitLeft(Object dataObject) {
+
+            }
+
+            @Override
+            public void onCardExitRight(Object dataObject) {
+
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                Log.d(TAG, "onAdapterAboutToEmpty: " + itemsInAdapter);
+                lastCardLayout.setVisibility(itemsInAdapter == 0 ? VISIBLE : GONE);
+            }
+
+            @Override
+            public void onScroll(float scrollProgressPercent) {
+
+            }
+
+            @Override
+            public void onCardExitTop(Object dataObject) {
+
+            }
+
+            @Override
+            public void onCardExitBottom(Object dataObject) {
+
+            }
+        });
+        seeAllText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSchoolDetails();
+            }
+        });
+        lastCardLayout.setVisibility(GONE);
     }
 
     void loadUserData() throws SQLException {
@@ -181,67 +260,10 @@ public class HomeFragment extends Fragment {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    void likeBulletin() {
-        VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
-                + String.valueOf(user.getSchoolId())
-                + ACTIVITIES_URL_SUFFIX
-                + String.valueOf(NewDataHolder.getInstance(getContext()).getBulletin().getId())
-                + ACTIVITY_LIKE_URL_SUFFIX,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
-                        Log.d("LikeRequest", "onResponse: " + response);
-                        try {
-                            JSONObject responseJson = new JSONObject(response);
-                            String msg = responseJson.getString(KEY_MESSAGE);
 
-                            if (msg.equals(Constants.LIKED))
-                                buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
-                            else if (msg.equals(Constants.UNLIKED))
-                                buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
-                            showToast(msg);
-                        } catch (JSONException e) {
-                        }
-                        //  showToast("Liked");
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("LikeRequest-error", "onResponse: " + error);
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-
-        VolleySingleton.getInstance(getActivity()).addToRequestQueue(likeRequest);
+    public void launchSchoolDetails() {
+        Intent intent = new Intent(getActivity(), SchoolDetailActivity.class);
+        startActivity(intent);
     }
 
     @Override

@@ -7,10 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.domainlayer.models.SclActs;
+import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.models.SchoolDetails;
@@ -43,18 +45,53 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        SclActs sclActs = sclActsList.get(position);
-        holder.schoolName.setText(sclActs.getTitle());
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final SclActs sclActs = sclActsList.get(position);
         holder.schoolActivityMessage.setText(sclActs.getMsg());
-        String timpeStamp=sclActs.getTimeStamp();
-        String date=timpeStamp.split(" ")[0];
-        String time=timpeStamp.split(" ")[1];
+        String timeStamp = sclActs.getTimeStamp();
+        String date = timeStamp.split(" ")[0];
+        String time = timeStamp.split(" ")[1];
         holder.textDate.setText(date);
         holder.textTime.setText(time);
-        holder.textLikes.setText(""+sclActs.getLikesCount());
+        holder.textLikes.setText("" + sclActs.getLikesCount());
+        if (sclActs.isLiked())
+            //changeColor(holder.likeButton, R.color.colorPrimary);
+            holder.likeButton.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+        else
+            //changeColor(holder.likeButton, R.color.mile_oolor8);
+            holder.likeButton.setColorFilter(context.getResources().getColor(R.color.mile_oolor8));
+
+
         Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
         holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
+        holder.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new NetworkHelper(context).likeActivity(sclActs.getId(), new NetworkHelper.LikeListener() {
+                    @Override
+                    public void onLiked() {
+                        changeColor(holder.likeButton, R.color.colorPrimary);
+                        holder.likeButton.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        sclActs.setLikesCount(sclActs.getLikesCount() + 1);
+                        sclActs.setLiked(true);
+                        notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onUnLiked() {
+                        changeColor(holder.likeButton, R.color.mile_oolor8);
+                        holder.likeButton.setColorFilter(context.getResources().getColor(R.color.mile_oolor8));
+                        sclActs.setLikesCount(sclActs.getLikesCount() - 1);
+                        sclActs.setLiked(false);
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    void changeColor(ImageButton button, int color) {
+        button.setColorFilter(context.getResources().getColor(color));
     }
 
     @Override
@@ -64,8 +101,6 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.text_school_name)
-        TextView schoolName;
         @BindView(R.id.text_message)
         TextView schoolActivityMessage;
         @BindView(R.id.text_time)
@@ -76,6 +111,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         TextView textLikes;
         @BindView(R.id.image_school_activity)
         ImageView imageView;
+        @BindView(R.id.button_like)
+        ImageButton likeButton;
 
         public ViewHolder(View view) {
             super(view);

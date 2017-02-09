@@ -13,6 +13,7 @@ import com.example.domainlayer.models.User;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.temp.DataParser;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +29,12 @@ import static com.example.domainlayer.Constants.KEY_ICON;
 import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_LIKES_COUNT;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
+import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 /**
  * Created by thoughtchimp on 1/24/2017.
@@ -80,14 +83,22 @@ public class NewDataHolder {
             user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
             user.setEmail(userJson.getString(Constants.KEY_EMAIL));
             user.setAccessToken(userJson.getString(Constants.KEY_ACCESS_TOKEN));
-           // user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
+            // user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
             user.setFirstLogin(true);
 
             String userType = userJson.getString(Constants.KEY_TYPE);
 
             user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
 
-
+            if (!userJson.isNull(Constants.KEY_OPTIONS)) {
+                JSONObject optionsObject = userJson.getJSONObject(KEY_OPTIONS);
+                if (!optionsObject.isNull(Constants.KEY_ANNIVERSARY))
+                    user.setAnniversary(optionsObject.getString(Constants.KEY_ANNIVERSARY));
+                if (!optionsObject.isNull(Constants.KEY_GENDER))
+                    user.setGender(optionsObject.getString(Constants.KEY_GENDER));
+                if (!optionsObject.isNull(Constants.KEY_DOB))
+                    user.setDob(optionsObject.getString(Constants.KEY_DOB));
+            }
             JSONArray schoolsJsonArray = userJson.getJSONArray(KEY_SCHOOLS);
             ArrayList<Schools> schoolsArrayList = new ArrayList<>();
             ArrayList<String> roles = new ArrayList<>();
@@ -112,6 +123,7 @@ public class NewDataHolder {
                 user.setSchoolName(schoolsArrayList.get(0).getName());
                 SharedPreferenceHelper.setSchoolId(user.getSchoolsList().get(0).getId());
                 SharedPreferenceHelper.setSchoolName(user.getSchoolsList().get(0).getName());
+                SharedPreferenceHelper.setSchoolIamge(user.getSchoolsList().get(0).getLogo());
             }
 
           /* */
@@ -121,6 +133,8 @@ public class NewDataHolder {
             SharedPreferenceHelper.setUserId(user.getId());
 
             user.setLoggedIn(true);
+            SharedPreferenceHelper.setLoginStatus(true);
+            new NetworkHelper(context).sendFirebaseTokenToServer(FirebaseInstanceId.getInstance().getToken());
             new DataBaseUtil(context).setUser(user);
         } catch (JSONException exception) {
             Log.e("NewDataHolder", "setLoginResult: ", exception);
@@ -165,7 +179,8 @@ public class NewDataHolder {
                             schoolActivity.getBoolean(IS_LIKED),
                             schoolActivity.getString(KEY_ICON)
                     );
-                    sclActList.add(sclActivity);
+                    if (!schoolActivity.getString(KEY_TYPE).equals(TYPE_BULLETIN))
+                        sclActList.add(sclActivity);
                 }
                 //user.setSclActs(sclActList);
                 setSclActList(sclActList);

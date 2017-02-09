@@ -53,7 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(final NotificationAdapter.ViewHolder holder, int position) {
         Notification notification = notificationsList.get(holder.getAdapterPosition());
         holder.title.setText(notification.getTitle());
-        holder.content.setText(notification.getContent());
+        holder.content.setText(notification.getData());
         holder.date.setText(notification.getDate());
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +64,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 context.startActivity(intent);*/
             }
         });
-        boolean schoolOrTeaccher = false;
-        if (schoolOrTeaccher) {
+        boolean schoolOrTeacher = false;
+        if (schoolOrTeacher) {
             Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
             holder.icon.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
             Target target = new Target() {

@@ -31,16 +31,15 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-       <provider
+    <!--   <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.uilayer.fileProvider"
             android:exported="false"
-            tools:replace="android:authorities"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
-        </provider>
+        </provider>-->
 
         <service android:name=".notification.S2mMessagingService">
             <intent-filter>

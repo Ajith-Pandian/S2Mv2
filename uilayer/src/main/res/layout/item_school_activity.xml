@@ -72,14 +72,14 @@
             android:layout_marginTop="16dp"
             android:orientation="vertical">
 
-            <TextView
+           <!-- <TextView
                 android:id="@+id/text_school_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="School Name"
                 android:textColor="#151414"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold" />-->
 
             <TextView
                 android:id="@+id/text_message"
@@ -106,9 +106,13 @@
             android:layout_marginRight="24dp"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:scaleType="fitXY"
+                style="?attr/buttonBarButtonStyle"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/button_like"
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/heart_green" />
 

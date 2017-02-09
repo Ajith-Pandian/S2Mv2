@@ -1,9 +1,23 @@
 package com.example.uilayer.notification;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.domainlayer.Constants;
+import com.example.domainlayer.network.VolleySingleton;
+import com.example.uilayer.NetworkHelper;
+import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.S2MApplication;
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+
+import java.util.Map;
 
 /**
  * Created by Ajit on 26-01-2017.
@@ -34,7 +48,8 @@ public class S2mInstanceIDService extends FirebaseInstanceIdService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
+        if (SharedPreferenceHelper.isLoggedIn())
+            new NetworkHelper(S2MApplication.getAppContext()).sendFirebaseTokenToServer(refreshedToken);
     }
     // [END refresh_token]
 
@@ -46,7 +61,4 @@ public class S2mInstanceIDService extends FirebaseInstanceIdService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-    }
 }

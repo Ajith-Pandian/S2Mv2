@@ -24,9 +24,12 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.S2MApplication;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -161,9 +164,9 @@ public class OtpFragment extends Fragment {
                 params.put(Constants.KEY_USER_NAME, NewDataHolder.getInstance(getContext()).getEnteredUserName());
                 params.put(Constants.KEY_OTP, Constants.TEMP_OTP);
                 params.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
-                params.put(Constants.KEY_DEVICE_TOKEN,
+               /* params.put(Constants.KEY_DEVICE_TOKEN,
                         Settings.Secure.getString(S2MApplication.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID));
-
+*/
                 Log.d(TAG, "getParams: " + params.toString());
                 return params;
             }
@@ -187,6 +190,7 @@ public class OtpFragment extends Fragment {
                     }
                 }
             });
+            FirebaseMessaging.getInstance().subscribeToTopic("School"+ SharedPreferenceHelper.getSchoolId());
 
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);

@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.SelectSchoolActivity;
 import com.example.uilayer.notification.NotificationActivity;
 import com.example.uilayer.tickets.attachments.AttachmentsAdapter;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -289,10 +291,11 @@ public class LandingActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isMenuShown)
+               if (!isMenuShown)
                     showMenu();
                 else
                     hideMenu();
+               // checkFirebase();
             }
         });
         dummyView.setOnClickListener(new View.OnClickListener() {
@@ -325,6 +328,25 @@ public class LandingActivity extends AppCompatActivity
 
     }
 
+    void checkFirebase() {
+        String iid = FirebaseInstanceId.getInstance().getId();
+        String authorizedEntity = "s2mv2-76810"; // Project id from Google Developer Console
+        String scope = "GCM"; // e.g. communicating using GCM, but you can use any
+        // URL-safe characters up to a maximum of 1000, or
+        // you can also leave it blank.
+        try {
+            String token = FirebaseInstanceId.getInstance().getToken();
+
+            String oldId = FirebaseInstanceId.getInstance().getId();
+           // FirebaseInstanceId.getInstance().deleteToken(authorizedEntity, scope);
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+            String newIID = FirebaseInstanceId.getInstance().getId();
+            String newToken = FirebaseInstanceId.getInstance().getToken();
+        } catch (Exception e) {
+            Log.d("token", "checkFirebase: "+e.toString());
+        }
+
+    }
 /*    void showFabs() {
         initAnimations();
         fab.startAnimation(rotate_forward);
@@ -464,8 +486,8 @@ public class LandingActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_notification) {
-            //startActivity(new Intent(this, NotificationActivity.class));
-            startActivity(new Intent(this, SchoolDetailActivity.class));
+            startActivity(new Intent(this, NotificationActivity.class));
+            //startActivity(new Intent(this, SchoolDetailActivity.class));
             return true;
         }
 

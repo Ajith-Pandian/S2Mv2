@@ -21,6 +21,7 @@ public class Constants {
     public static final String VALIDATE_URL = USER_URL + "validate";
     public static final String AUTHENTICATE_URL = USER_URL + "authenticate";
     public static final String RESEND_OTP_URL = USER_URL + "resend_otp";
+    public static final String UPDATE_DEVICE_TOKEN = USER_URL + "update_device_token";
 
 
     public static final String USER_DETAILS_URL = BASE_URL + "users/";
@@ -60,6 +61,7 @@ public class Constants {
 
     public static final String KEY_CREATOR_ID = "creatorId";
     public static final String KEY_CREATE = "create";
+    public static final String KEY_CREATED_AT = "created_at";
     public static final String KEY_UPDATE = "update";
     public static final String KEY_ASSIGN = "assign";
     public static final String KEY_CATEGORY = "category";
@@ -98,6 +100,8 @@ public class Constants {
     public static final String KEY_MOBILE_NO = "mobile_no";
 
     public static final String KEY_TYPE = "type";
+    public static final String KEY_DATA = "data";
+    public static final String KEY_HAS_READ = "has_read";
     public static final String KEY_DEVICE_TYPE = "device_type";
     public static final String KEY_DEVICE_TOKEN = "device_token";
     public static final String KEY_ACCESS_TOKEN = "access_token";
@@ -121,6 +125,7 @@ public class Constants {
     public static final String KEY_ROLES_ARRAY = "roles[]";
     public static final String KEY_LAST_LOGIN = "lastLogin";
     public static final String KEY_IS_FIRST_LOGIN = "is_first_time_login";
+    public static final String KEY_IS_LOGGED_IN = "is_logged_in";
     public static final String VALUE = "null";
 
     public static final String KEY_MILES = "miles";
@@ -133,6 +138,7 @@ public class Constants {
     public static final String TYPE_MILE = "mile";
     public static final String KEY_MILESTONE_NAME = "milestone_name";
     public static final String KEY_NUM_OF_STUDS = "student_count";
+    public static final String KEY_NOTIFICATIONS = "notifications";
     public static final String KEY_MILESTONE = "milestone";
     public static final String KEY_MILESTONES = "milestones";
     public static final String KEY_MILESTONE_PREFIX = "Milestone";

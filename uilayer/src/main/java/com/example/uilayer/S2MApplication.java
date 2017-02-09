@@ -21,7 +21,7 @@ public class S2MApplication extends Application {
         }
         LeakCanary.install(this);*/
         appContext = this;
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
     }
 
     public static Context getAppContext() {

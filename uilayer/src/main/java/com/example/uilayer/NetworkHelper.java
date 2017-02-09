@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
+import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
 import static com.example.domainlayer.Constants.DELETE_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ARCHIVED;
@@ -36,6 +38,7 @@ import static com.example.domainlayer.Constants.KEY_DASHBOARD;
 import static com.example.domainlayer.Constants.KEY_DELETE;
 import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
 import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
+import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.KEY_MILES_TRAININGS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TEACHERS;
@@ -53,13 +56,15 @@ import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 public class NetworkHelper {
     private final Context context;
     private NetworkListener networkListener;
+    private LikeListener likeListener;
 
     public NetworkHelper(Context context) {
         this.context = context;
     }
 
-    public void removeListener() {
-        this.networkListener = null;
+    public void removeNetworkListener() {
+        if (networkListener != null)
+            this.networkListener = null;
     }
 
     public void downloadConfiguration() {
@@ -532,8 +537,136 @@ public class NetworkHelper {
         VolleySingleton.getInstance(context).addToRequestQueue(archiveRequest);
     }
 
+
+    public void sendFirebaseTokenToServer(final String token) {
+        VolleyStringRequest tokenRefreshRequest = new VolleyStringRequest(Request.Method.POST, Constants.UPDATE_DEVICE_TOKEN,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("tokenRefreshRequest", "onResponse " + response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("tokenRefreshRequest", "onResponse: " + error);
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new ArrayMap<>();
+                params.put(Constants.KEY_DEVICE_TOKEN, token);
+                return params;
+            }
+
+        };
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(tokenRefreshRequest);
+    }
+
+    public void likeActivity(int activityId, LikeListener listener) {
+        likeListener = listener;
+        VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, Constants.SCHOOLS_URL
+                + SharedPreferenceHelper.getSchoolId()
+                + ACTIVITIES_URL_SUFFIX
+                + String.valueOf(activityId)
+                + ACTIVITY_LIKE_URL_SUFFIX,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
+                        Log.d("LikeRequest", "onResponse: " + response);
+                        try {
+                            JSONObject responseJson = new JSONObject(response);
+                            String msg = responseJson.getString(KEY_MESSAGE);
+                            if (responseJson.getBoolean(Constants.IS_LIKED))
+                                likeListener.onLiked();
+                            else
+                                likeListener.onUnLiked();
+                            Utils.getInstance().showToast(msg);
+                        } catch (JSONException e) {
+                        }
+                        //  showToast("Liked");
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("LikeRequest-error", "onResponse: " + error);
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(likeRequest);
+    }
+
+    public void removeLikeListener() {
+        if (likeListener != null)
+            this.likeListener = null;
+    }
+
     public interface NetworkListener {
         void onFinish();
+    }
+
+    public interface LikeListener {
+        void onLiked();
+
+        void onUnLiked();
     }
 
 }

@@ -19,15 +19,19 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -45,29 +49,36 @@ import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.landing.LandingActivity;
 import com.example.uilayer.manage.ManageTeachersActivity;
 import com.example.uilayer.manage.SelectSchoolActivity;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import pl.aprilapps.easyphotopicker.EasyImageConfig;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.domainlayer.Constants.KEY_ANNIVERSARY;
+import static com.example.domainlayer.Constants.KEY_DOB;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
+import static com.example.domainlayer.Constants.KEY_GENDER;
 import static com.example.domainlayer.Constants.KEY_IS_FIRST_LOGIN;
 import static com.example.domainlayer.Constants.KEY_LAST_NAME;
 import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
@@ -95,14 +106,14 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     EditText textDob;
     @BindView(R.id.edit_text_anniversary)
     EditText textAnniversary;
-    @BindView(R.id.til_dob)
-    TextInputLayout inputLayoutDob;
-    @BindView(R.id.til_anniversary)
-    TextInputLayout inputLayoutAnniversary;
-    /*    @BindView(R.id.gender_spinner)
-        PromptSpinner genderSpinner;*/
+    @BindView(R.id.radio_male)
+    AppCompatRadioButton maleButton;
+    @BindView(R.id.radio_female)
+    AppCompatRadioButton femaleButton;
     @BindView(R.id.fab_camera)
     FloatingActionButton cameraButton;
+    @BindView(R.id.til_first_name)
+    TextInputLayout tilFirstName;
     DbUser user;
     boolean isFirstTime;
 
@@ -124,38 +135,78 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
         textLastName.setText(user.getLastName());
         textEmail.setText(user.getEmail());
         textPhone.setText(user.getPhoneNum());
+        textDob.setText(user.getDob());
+        textAnniversary.setText(user.getAnniversary());
 
+        if (user.getGender() != null) {
+            if (user.getGender().equals("Male")) {
+                maleButton.setChecked(true);
+                gender = "Male";
+            } else
+                femaleButton.setChecked(true);
+            gender = "Female";
+        }
         if (user.getAvatar() != null && !user.getAvatar().equals("")) {
             Picasso.with(this).load(user.getAvatar()).into(profileImage);
         }
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                // dispatchTakePictureIntent();
+                getNewImage();
+                Log.d("Token", "Old token  " + FirebaseInstanceId.getInstance().getToken());
+
+
+                try {
+                    FirebaseInstanceId.getInstance().deleteToken("s2mv2-76810","");
+                    //FirebaseInstanceId.getInstance().deleteInstanceId();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                FirebaseInstanceId.getInstance().getId();
+                // Now manually call onTokenRefresh()
+                Log.d("Token", "New token  " + FirebaseInstanceId.getInstance().getToken());
+
             }
         });
-        inputLayoutDob.setOnClickListener(new View.OnClickListener() {
+
+        textDob.setKeyListener(null);
+        textDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePicker(isDob = true);
             }
         });
-        inputLayoutAnniversary.setOnClickListener(new View.OnClickListener() {
+        textAnniversary.setKeyListener(null);
+        textAnniversary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePicker(isDob = false);
             }
         });
 
-       /* ArrayList<String> genderList = new ArrayList<>();
-        genderList.add("Male");
-        genderList.add("Female");
-        genderSpinner.setAdapter(new GenderSpinnerAdapter(this, R.layout.item_spinner,
-                R.id.text_spinner, genderList));*/
     }
 
     String gender;
     boolean isDob;
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((AppCompatRadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.radio_male:
+                if (checked)
+                    gender = "Male";
+                break;
+            case R.id.radio_female:
+                if (checked)
+                    gender = "Female";
+                break;
+        }
+    }
 
     //TODO:Simple date format
     void showDatePicker(boolean isDob) {
@@ -304,8 +355,6 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
                 @Override
                 public void permissionGranted() {
                     //Nothing, this sample saves to Public gallery so it needs permission
-                    EasyImage.openChooserWithGallery(ProfileUpdateActivity.this, "Take image", EasyImageConfig.REQ_SOURCE_CHOOSER);
-
                 }
 
                 @Override
@@ -331,10 +380,34 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File file, EasyImage.ImageSource imageSource, int i) {
+                mCurrentFilePath = file.getAbsolutePath();
+                Log.d("Image", "onImagePicked: " + mCurrentFilePath);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                profileImage.setImageBitmap(myBitmap);
+              /*  Bitmap myBitmap;
+                try {
+                    myBitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+                    profileImage.setImageBitmap(myBitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }*/
+            }
+        });
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             // Uri imageUri = intent.getData();
             //Log.d("image", "onActivityResult: " + imageUri.toString());
-            showNewImage();
+            //showNewImage();
         } else {
             super.onActivityResult(requestCode,
                     resultCode, data);
@@ -354,22 +427,23 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     }
 
     private void uploadDetails() {
-        Utils.getInstance().showToast("Updated Successfully");
-        if (isFirstTime) {
-            doFirstTimeSetup();
-        }
-        finish();
+
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 UPDATE_PROFILE_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
                 Log.d("onResponse", resultResponse);
-
+                Utils.getInstance().showToast("Updated Successfully");
+                if (isFirstTime) {
+                    doFirstTimeSetup();
+                }
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d("onResponse", error.toString());
                 error.printStackTrace();
             }
         }, new VolleyMultipartRequest.MultipartProgressListener() {
@@ -384,8 +458,16 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
                 params.put(KEY_FIRST_NAME, getTextFromEditText(textFirstName));
-                params.put(KEY_LAST_NAME, getTextFromEditText(textFirstName));
-                params.put(KEY_EMAIL, getTextFromEditText(textFirstName));
+                if (!getTextFromEditText(textLastName).isEmpty())
+                    params.put(KEY_LAST_NAME, getTextFromEditText(textLastName));
+                if (!getTextFromEditText(textEmail).isEmpty())
+                    params.put(KEY_EMAIL, getTextFromEditText(textEmail));
+                if (!getTextFromEditText(textDob).isEmpty())
+                    params.put(KEY_DOB, getTextFromEditText(textDob));
+                if (!getTextFromEditText(textAnniversary).isEmpty())
+                    params.put(KEY_ANNIVERSARY, getTextFromEditText(textAnniversary));
+                if (gender != null && !gender.isEmpty())
+                    params.put(KEY_GENDER, gender);
                 return params;
             }
 
@@ -401,13 +483,15 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new ArrayMap<>();
-                try {
-                    File sourceFile = new File(mCurrentFilePath);
-                    params.put("profile_picture", new DataPart("avatar.jpg",
-                            fullyReadFileToBytes(sourceFile),
-                            "image/jpeg", sourceFile.length()));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (mCurrentFilePath != null && !mCurrentFilePath.isEmpty()) {
+                    try {
+                        File sourceFile = new File(mCurrentFilePath);
+                        params.put("profile_picture", new DataPart("avatar.jpg",
+                                fullyReadFileToBytes(sourceFile),
+                                "image/jpeg", sourceFile.length()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return params;
             }
@@ -473,10 +557,18 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
                 onBackPressed();
                 break;
             case R.id.action_save_profile:
-                uploadDetails();
+                validateInputsAndUpdate();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void validateInputsAndUpdate() {
+        if (!getTextFromEditText(textFirstName).isEmpty())
+            uploadDetails();
+        else Utils.getInstance().showToast("FirstName cannot be empty");
+
+
     }
 
     void doFirstTimeSetup() {
@@ -489,8 +581,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
                 launchManageTeachersAndSections();
             else if (roles.contains(ROLE_TEACHER))
                 launchLanding();
-        }
-        else
+        } else
             launchLanding();
 
     }

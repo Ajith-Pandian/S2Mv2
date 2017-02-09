@@ -66,9 +66,15 @@ public class SharedPreferenceHelper {
     public static void setSchoolName(String schoolName) {
         setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, schoolName);
     }
+    public static void setSchoolIamge(String schoolIcon) {
+        setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ICON, schoolIcon);
+    }
 
     public static String getSchoolName() {
         return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, "");
+    }
+    public static String getSchoolImage() {
+        return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ICON, "");
     }
 
     public static void setAccessToken(String accessToken) {
@@ -91,6 +97,10 @@ public class SharedPreferenceHelper {
         getEditor().putStringSet(ROLES, set).commit();
     }
 
+    public static ArrayList<String> getUserRoles() {
+        return new ArrayList<>(getSharedPreference().getStringSet(ROLES, new HashSet<String>()));
+    }
+
     private static SharedPreferences getSharedPreference() {
         return S2MApplication.getAppContext().getSharedPreferences(PREF_FILE, 0);
     }
@@ -99,9 +109,14 @@ public class SharedPreferenceHelper {
         return getSharedPreference().edit();
     }
 
-    public static ArrayList<String> getUserRoles() {
-        return new ArrayList<>(getSharedPreference().getStringSet(ROLES, new HashSet<String>()));
+    public static void setLoginStatus(boolean isLoggedIn) {
+        getEditor().putBoolean(Constants.KEY_IS_LOGGED_IN, isLoggedIn).commit();
     }
+
+    public static boolean isLoggedIn() {
+        return getSharedPreference().getBoolean(Constants.KEY_IS_LOGGED_IN, false);
+    }
+
 
     /**
      * Set a Boolean shared preference
