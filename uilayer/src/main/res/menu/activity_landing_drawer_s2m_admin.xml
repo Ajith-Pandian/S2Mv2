@@ -3,17 +3,34 @@
 
     <item
         android:id="@+id/nav_select_school"
+        android:icon="@drawable/ic_compare_arrows_black_24dp"
+
         android:title="Select school" />
-    
+
     <item android:title="Manage">
         <menu>
             <item
                 android:id="@+id/nav_manage_teachers"
+                android:icon="@drawable/ic_group_black_24dp"
                 android:title="Manage Teachers" />
             <item
                 android:id="@+id/nav_manage_sections"
+                android:icon="@drawable/ic_school_black_24dp"
                 android:title="Manage Sections" />
         </menu>
     </item>
+    <group
+        android:id="@+id/second_group"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="FAQ" />
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="SignOut" />
+    </group>
+
 
 </menu>

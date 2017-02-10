@@ -295,7 +295,7 @@ public class LandingActivity extends AppCompatActivity
                     showMenu();
                 else
                     hideMenu();
-               // checkFirebase();
+                checkFirebase();
             }
         });
         dummyView.setOnClickListener(new View.OnClickListener() {
@@ -329,19 +329,19 @@ public class LandingActivity extends AppCompatActivity
     }
 
     void checkFirebase() {
-        String iid = FirebaseInstanceId.getInstance().getId();
+       // String iid = FirebaseInstanceId.getInstance().getId();
         String authorizedEntity = "s2mv2-76810"; // Project id from Google Developer Console
         String scope = "GCM"; // e.g. communicating using GCM, but you can use any
         // URL-safe characters up to a maximum of 1000, or
         // you can also leave it blank.
         try {
-            String token = FirebaseInstanceId.getInstance().getToken();
+           // String token = FirebaseInstanceId.getInstance().getToken();
 
-            String oldId = FirebaseInstanceId.getInstance().getId();
+            //String oldId = FirebaseInstanceId.getInstance().getId();
            // FirebaseInstanceId.getInstance().deleteToken(authorizedEntity, scope);
             FirebaseInstanceId.getInstance().deleteInstanceId();
-            String newIID = FirebaseInstanceId.getInstance().getId();
-            String newToken = FirebaseInstanceId.getInstance().getToken();
+           // String newIID = FirebaseInstanceId.getInstance().getId();
+            //String newToken = FirebaseInstanceId.getInstance().getToken();
         } catch (Exception e) {
             Log.d("token", "checkFirebase: "+e.toString());
         }

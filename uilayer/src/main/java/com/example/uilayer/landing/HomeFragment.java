@@ -138,12 +138,13 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void onLiked() {
                             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
+                            NewDataHolder.getInstance(getContext()).getBulletin().setLiked(true);
                         }
 
                         @Override
                         public void onUnLiked() {
                             buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
-
+                            NewDataHolder.getInstance(getContext()).getBulletin().setLiked(false);
                         }
                     });
                 } else Utils.getInstance().showToast("No bulletin");
@@ -157,16 +158,17 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (NewDataHolder.getInstance(getContext()).getBulletin() != null && NewDataHolder.getInstance(getContext()).getBulletin().isLiked())
+        if (NewDataHolder.getInstance(getContext()).getBulletin() != null && NewDataHolder.getInstance(getContext()).getBulletin().isLiked()) {
             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
-        else
+        } else
             buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
     }
 
     void initSwipeCards() {
         ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
         ArrayList<SclActs> swipeList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        int cardsCount=schoolActivitiesList.size()<5?schoolActivitiesList.size():5;
+        for (int i = 0; i < cardsCount; i++) {
             swipeList.add(schoolActivitiesList.get(i));
         }
         swipeCardView.setAdapter(new SchoolActivitiesSwipeAdapter(getActivity(), swipeList));
@@ -184,7 +186,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 Log.d(TAG, "onAdapterAboutToEmpty: " + itemsInAdapter);
-                lastCardLayout.setVisibility(itemsInAdapter == 0 ? VISIBLE : GONE);
+                boolean visibility = itemsInAdapter == 0;
+                lastCardLayout.setVisibility(visibility ? VISIBLE : GONE);
+                swipeCardView.setVisibility(!visibility ? VISIBLE : GONE);
             }
 
             @Override
@@ -202,7 +206,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
-        seeAllText.setOnClickListener(new View.OnClickListener() {
+        lastCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchSchoolDetails();

@@ -105,7 +105,7 @@
 
                     <com.example.uilayer.customUtils.views.PromptSpinner
                         android:id="@+id/spinner_milestones"
-                        style="@style/SpinnerStyle"
+                        style="@style/SpinnerItemStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -140,7 +140,7 @@
 
             <com.example.uilayer.customUtils.views.PromptSpinner
                 android:id="@+id/spinner_select_teacher"
-                style="@style/SpinnerStyle"
+                style="@style/SpinnerItemStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_mob_and_mail"

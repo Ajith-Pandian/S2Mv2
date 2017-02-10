@@ -1,6 +1,7 @@
 package com.example.uilayer.customUtils.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.uilayer.R;
+import com.example.uilayer.customUtils.Utils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +24,7 @@ import java.lang.reflect.Method;
  */
 
 public class PromptSpinner extends Spinner {
+    android.view.ViewGroup.LayoutParams params;
 
     public PromptSpinner(Context context) {
         super(context);
@@ -34,6 +37,22 @@ public class PromptSpinner extends Spinner {
     public PromptSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
+   /* private int oldCount;
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (getCount() != oldCount) {
+            int height = getChildAt(0).getHeight();// + 1 ;
+            oldCount = getCount();
+            params = getLayoutParams();
+            params.height = getCount() * (height + Utils.getInstance().getPixelAsDp(getContext(), 1));
+            setLayoutParams(params);
+        }
+
+        super.onDraw(canvas);
+    }*/
+
 
     @Override
     public void setAdapter(SpinnerAdapter orig) {

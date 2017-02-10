@@ -41,7 +41,7 @@ public class SchoolDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        collapsingToolbarLayout.setTitle(SharedPreferenceHelper.getSchoolName());
+        collapsingToolbarLayout.setTitle(SharedPreferenceHelper.getSchoolName()+ "   ");
         Picasso.with(this).load(SharedPreferenceHelper.getSchoolImage()).into(schoolImage);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);

@@ -86,9 +86,9 @@ public class SectionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sections,
                 container, false);
         ButterKnife.bind(this, view);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
         sectionsGrid.setLayoutManager(layoutManager);
-        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 3));
+        sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 2));
         getUserSections();
         String userType = new DataBaseUtil(getContext()).getUser().getType();
         if (!userType.equals(USER_TYPE_S2M_ADMIN) &&
@@ -196,14 +196,12 @@ public class SectionsFragment extends Fragment {
 
 
     void updateSections() {
-        //ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (NewDataHolder.getInstance(getActivity()).getSectionsList() != null) {
             sectionDetails = NewDataHolder.getInstance(getActivity()).getSectionsList();
         }
-        //sectionDetails = new ArrayList<>();
         if (sectionDetails != null && sectionDetails.size() > 0) {
             noSectionsLayout.setVisibility(View.GONE);
-            sectionsGrid.setAdapter(new SectionsAdapter(getContext(), sectionDetails, 3, new TeacherOrSectionListener() {
+            sectionsGrid.setAdapter(new SectionsAdapter(getContext(), sectionDetails, 2, new TeacherOrSectionListener() {
                 @Override
                 public void onAddOptionSelected(boolean isTeacher) {
 

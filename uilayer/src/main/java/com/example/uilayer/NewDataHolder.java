@@ -83,8 +83,8 @@ public class NewDataHolder {
             user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
             user.setEmail(userJson.getString(Constants.KEY_EMAIL));
             user.setAccessToken(userJson.getString(Constants.KEY_ACCESS_TOKEN));
-            // user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
-            user.setFirstLogin(true);
+            user.setFirstLogin(userJson.getBoolean(Constants.KEY_IS_FIRST_LOGIN));
+            //user.setFirstLogin(true);
 
             String userType = userJson.getString(Constants.KEY_TYPE);
 

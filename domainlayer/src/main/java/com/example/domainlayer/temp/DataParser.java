@@ -51,7 +51,7 @@ public class DataParser {
                         (sectionJsonObject.getString(KEY_SECTION_NAME)),
                         getIntFromJson(sectionJsonObject, KEY_MILES_COMPLETION_COUNT),
                         getIntFromJson(sectionJsonObject, KEY_MILES_COUNT),
-                        (Constants.KEY_MILESTONE_PREFIX + SPACE + sectionJsonObject.getString(KEY_MILESTONE_NAME)),
+                        (sectionJsonObject.getString(KEY_MILESTONE_NAME)),
                         sectionJsonObject.getInt(KEY_MILESTONE_ID),
                         sectionJsonObject.getInt(KEY_STUDENT_COUNT));
 

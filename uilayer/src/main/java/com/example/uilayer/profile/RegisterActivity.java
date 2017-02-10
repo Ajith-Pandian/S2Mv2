@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,7 @@ import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NewDataParser;
+import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.views.PromptSpinner;
@@ -37,7 +40,7 @@ import butterknife.ButterKnife;
 
 public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.edit_text_signup_first_name)
-    EditText textFirstName;
+    TextInputEditText textFirstName;
     @BindView(R.id.edit_text_signup_last_name)
     EditText textLastName;
     @BindView(R.id.edit_text_signup_email)
@@ -101,57 +104,10 @@ public class RegisterActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        collapsingToolbarLayout.setTitle("Register");
 
-        configureTitle();
-
-        /*if (!isSignUp) {
-            loadData();
-            schoolSpinnerLayout.setVisibility(View.GONE);
-            commentLayout.setVisibility(View.GONE);
-            nextButtonLayout.setVisibility(View.VISIBLE);
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    launchLanding();
-                    finish();
-                }
-            });
-            customSchoolLayout.setVisibility(View.GONE);
-            title = "Update";
-            registerButton.setText(title);
-        }*/
     }
 
-    void configureTitle() {
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(title);
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
-                    isShow = false;
-                }
-                collapsingToolbarLayout.setTitleEnabled(isShow);
-            }
-        });
-    }
-
-    void loadData() {
-        user = new DataBaseUtil(getApplicationContext()).getUser();
-        textFirstName.setText(user.getFirstName());
-        textLastName.setText(user.getLastName());
-        textEmail.setText(user.getEmail());
-        textPhone.setText(user.getPhoneNum());
-        textComment.setText("");
-    }
 
     ArrayList<Schools> schoolsArrayList;
 
@@ -162,23 +118,62 @@ public class RegisterActivity extends AppCompatActivity {
         textLastName.setSelection(textLastName.getText().toString().length());
         schoolsArrayList = new NewDataParser().getS2mConfiguration().getSchoolsArrayList();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.spinner_text, getSchoolNames(schoolsArrayList));
+                R.layout.item_spinner, R.id.text_spinner, getSchoolNames(schoolsArrayList));
 
         spinnerSchoolSelect.setAdapter(adapter);
         spinnerSchoolSelect.setOnItemSelectedListener(countrySelectedListener);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registerUser();
+                validateAndRegister();
+                // registerUser();
             }
         });
     }
 
+    void validateAndRegister() {
+        if (getStringFromEditText(textFirstName).isEmpty()) {
+            Utils.getInstance().showToast("First Name cannot be empty");
+        } else if (getStringFromEditText(textPhone).isEmpty()) {
+            Utils.getInstance().showToast("Phone Number cannot be empty");
+        } else if (spinnerSchoolSelect.getSelectedItem() == null) {
+            Utils.getInstance().showToast("Please select a school");
+        } else if (spinnerSchoolSelect.getSelectedItem().toString().equals(getString(R.string.others))) {
+            if (getStringFromEditText(textSchool).isEmpty())
+                Utils.getInstance().showToast("School cannot be empty");
+            else
+                registerUser();
+        } else {
+            registerUser();
+        }
+    }
 
     ArrayList<String> getSchoolNames(ArrayList<Schools> schoolsArrayList) {
         ArrayList<String> schoolNames = new ArrayList<>();
         for (int i = 0; i < schoolsArrayList.size(); i++)
             schoolNames.add(schoolsArrayList.get(i).getName());
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
+        schoolNames.add(getString(R.string.others));
         schoolNames.add(getString(R.string.others));
         return schoolNames;
     }
@@ -190,9 +185,10 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
                         Log.d("registerUser", "onResponse: " + response);
-                        Snackbar.make(registerButton,
+                        /*Snackbar.make(registerButton,
                                 "Registered Successfully..!!",
-                                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+                        Utils.getInstance().showToast("Registered successfully...!!!");
                         finish();
                     }
                 },

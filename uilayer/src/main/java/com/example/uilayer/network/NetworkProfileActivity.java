@@ -76,8 +76,10 @@ public class NetworkProfileActivity extends AppCompatActivity {
         viewPager.setAdapter(profilePagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        if (profilePagerAdapter.getCount() == 1)
-            tabLayout.setSelectedTabIndicatorHeight(0);
+        if (profilePagerAdapter.getCount() == 1) {
+            //tabLayout.setSelectedTabIndicatorHeight(0);
+            tabLayout.setVisibility(View.GONE);
+        }
 
         if (user.getType().equals(USER_TYPE_S2M_ADMIN))
             teacherDetailsLayout.setVisibility(View.GONE);

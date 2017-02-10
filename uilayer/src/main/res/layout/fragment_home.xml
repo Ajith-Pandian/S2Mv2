@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:elevation="4dp"
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="4dp">
 
@@ -170,7 +169,6 @@
             android:layout_height="150dp"
             android:layout_below="@id/text_bulletin"
             android:layout_marginTop="8dp"
-            android:elevation="4dp"
             app:cardCornerRadius="4dp">
 
             <RelativeLayout
@@ -230,7 +228,34 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
-        <!-- activity view -->
+
+
+        <RelativeLayout
+            android:id="@+id/layout_last_card"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/text_school_updates"
+            android:layout_marginTop="8dp"
+            android:clickable="true">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_centerInParent="true"
+                android:layout_margin="1dp">
+
+                <TextView
+                    android:id="@+id/text_see_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="see all"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
 
         <in.arjsna.swipecardlib.SwipeCardView
             android:id="@+id/swipe_cards"
@@ -241,31 +266,7 @@
             app:bottom_swipe_detect="false"
             app:max_visible="5"
             app:min_adapter_stack="2"
-            app:rotation_degrees="15.5" />
-
-        <RelativeLayout
-            android:id="@+id/layout_last_card"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/text_school_updates">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_centerInParent="true"
-                android:layout_margin="1dp">
-
-                <TextView
-                    android:id="@+id/text_see_all"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:textStyle="bold"
-                    android:text="SEE ALL"
-                    android:textSize="25sp"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </android.support.v7.widget.CardView>
-        </RelativeLayout>
+            app:rotation_degrees="15.5"
+            app:top_swipe_detect="false" />
     </RelativeLayout>
 </RelativeLayout>

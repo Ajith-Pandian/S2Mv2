@@ -51,6 +51,8 @@ public class SelectSchoolActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_school);
         ButterKnife.bind(this);
 
+        if (getSupportActionBar()!=null)
+            getSupportActionBar().setTitle("Select School");
         if (getIntent() != null)
             isFirstTime = getIntent().getBooleanExtra("isFirstTime", false);
 

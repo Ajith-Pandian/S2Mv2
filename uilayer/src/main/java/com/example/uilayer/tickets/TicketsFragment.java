@@ -89,11 +89,11 @@ public class TicketsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean isS2m = NewDataHolder.getInstance(getContext()).getUser().getType().equals(USER_TYPE_S2M_ADMIN);
-               // openBottomSheet(isS2m);
+                // openBottomSheet(isS2m);
             }
         });
 
-      //  fetchTickets();
+        //  fetchTickets();
 
         return view;
     }
@@ -118,8 +118,10 @@ public class TicketsFragment extends Fragment {
         if (bottomSheetDialogFragment != null) {
             bottomSheetDialogFragment = null;
         }
+        if (ticketDatabaseReference != null) {
 
-        ticketDatabaseReference.removeEventListener(ticketsAddValueListener);
+            ticketDatabaseReference.removeEventListener(ticketsAddValueListener);
+        }
         super.onDestroy();
     }
 

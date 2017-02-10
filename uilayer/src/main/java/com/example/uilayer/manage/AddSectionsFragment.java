@@ -13,6 +13,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -281,6 +282,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 R.layout.item_spinner,
                 R.id.text_spinner,
                 teachersList);
+
         teachersSpinner.setAdapter(teacherAdapter);
 
         //Milestone spinner
@@ -319,10 +321,11 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
             // Get private mPopup member variable and try cast to ListPopupWindow
             android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(teachersSpinner);
             android.widget.ListPopupWindow popupWindow1 = (android.widget.ListPopupWindow) popup.get(milestoneSpinner);
+            if (teachersSpinner.getAdapter() != null && teachersSpinner.getAdapter().getCount() > 5)
+                popupWindow.setHeight(Utils.getInstance().getPixelAsDp(getContext(), 200));
 
-            // Set popupWindow height to 500px
-            popupWindow.setHeight(Utils.getInstance().getPixelAsDp(getContext(), 200));
-            popupWindow1.setHeight(Utils.getInstance().getPixelAsDp(getContext(), 200));
+            if (milestoneSpinner.getAdapter() != null && milestoneSpinner.getAdapter().getCount() > 5)
+                popupWindow1.setHeight(Utils.getInstance().getPixelAsDp(getContext(), 200));
         } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
 
         }

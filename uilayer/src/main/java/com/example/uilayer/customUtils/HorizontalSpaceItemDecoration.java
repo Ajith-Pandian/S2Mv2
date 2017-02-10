@@ -34,6 +34,8 @@ public class HorizontalSpaceItemDecoration extends RecyclerView.ItemDecoration {
         int itemCount = parent.getAdapter().getItemCount();
         int lastRow = itemCount - (itemCount % columsNum);
         if (!(position > (lastRow)))
-            outRect.bottom = Utils.getInstance().getPixelAsDp(context, verticalSpace);
+            outRect.bottom = Utils.getInstance().getPixelAsDp(context,   verticalSpace);
+        else
+            outRect.bottom = Utils.getInstance().getPixelAsDp(context, 6  *verticalSpace);
     }
 }

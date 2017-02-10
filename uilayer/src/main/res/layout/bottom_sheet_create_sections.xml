@@ -79,7 +79,7 @@
 
             <com.example.uilayer.customUtils.views.PromptSpinner
                 android:id="@+id/spinner_milestones"
-                style="@style/SpinnerStyle"
+                style="@style/SpinnerItemStyle"
                 android:layout_width="match_parent"
                 android:layout_centerInParent="true"
                 android:drawSelectorOnTop="true"
@@ -115,7 +115,7 @@
 
     <com.example.uilayer.customUtils.views.PromptSpinner
         android:id="@+id/spinner_select_teacher"
-        style="@style/SpinnerStyle"
+        style="@style/SpinnerItemStyle"
         android:layout_width="match_parent"
         android:drawSelectorOnTop="true"
         android:layout_height="wrap_content"
