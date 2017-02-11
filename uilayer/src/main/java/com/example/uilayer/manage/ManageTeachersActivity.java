@@ -269,21 +269,25 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             } else
                 backButton.setVisibility(View.GONE);
 
-            GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 5, 3, 2));
+
+            int spanCount;
             String titleString;
             if (isTeacher) {
                 //adapter = new TeachersAdapter(getContext(), getTeachers(), 5);
+                spanCount = 3;
                 loadTeachers();
                 titleString = "Teacher";
             } else {
                 /*adapter = new SectionsAdapter(getContext(), getUserSections(), 4);
                 recyclerView.setAdapter(adapter);*/
+                spanCount = 2;
                 loadSections();
                 titleString = "Sections";
             }
-
+            GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+            layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 5, 3, 2));
 
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -525,9 +529,9 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "MILES";
+                    return "Manage Teachers";
                 case 1:
-                    return "TRAININGS";
+                    return "Manage Sections";
             }
             return null;
         }

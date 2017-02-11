@@ -278,7 +278,7 @@ public class LandingActivity extends AppCompatActivity
 
     void initNavigationDrawer() {
         setSupportActionBar(toolbar);
-        setScrollableToolbarTitle();
+        //2setScrollableToolbarTitle();
 
 
         toggle = new ActionBarDrawerToggle(

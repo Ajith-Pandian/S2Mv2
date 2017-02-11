@@ -195,7 +195,6 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         if (milestoneSpinner.getSelectedItem() != null)
             return String.valueOf(((Milestones) milestoneSpinner.getSelectedItem()).getId());
         else {
-            Utils.getInstance().showToast("Pls select Milestone");
             return "";
         }
     }
@@ -223,11 +222,8 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                             getTextFromView(numOfStudents)
                     );
                 } else {
-                    addSection(getTextFromView(className),
-                            getTextFromView(sectionName),
-                            String.valueOf(getSpinnerMilestoneId()),
-                            String.valueOf(getSpinnerTeacherId()),
-                            getTextFromView(numOfStudents));
+                    validateAndAddSection();
+
                 }
             }
         });
@@ -241,6 +237,26 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
             numOfStudents.setText(String.valueOf(section.getNumOfStuds()));
             addButton.setText("Update");
             title.setText("Update Sections");
+        }
+    }
+
+    private void validateAndAddSection() {
+        if (getTextFromView(className).isEmpty()) {
+            Utils.getInstance().showToast("Please enter class name");
+            className.setError("Class name required");
+        } else if (getTextFromView(sectionName).isEmpty())
+            Utils.getInstance().showToast("Please enter section name");
+        else if (getSpinnerMilestoneId().equals(""))
+            Utils.getInstance().showToast("Please select milestone");
+        else {
+            String classNameString = getTextFromView(className);
+            String sectionNameString = getTextFromView(sectionName);
+            String numOfStudsString = getTextFromView(numOfStudents);
+            addSection(classNameString,
+                    sectionNameString,
+                    String.valueOf(getSpinnerMilestoneId()),
+                    String.valueOf(getSpinnerTeacherId()),
+                    numOfStudsString);
         }
     }
 
@@ -389,8 +405,11 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                 params.put(KEY_CLASS, className);
                 params.put(KEY_SECTION, sectionName);
                 params.put(KEY_MILESTONE_ID, milestoneId);
-                params.put(KEY_STUDENT_COUNT, studCOunt);
-                if (teacherId != null && !teacherId.isEmpty())
+                if (!studCOunt.isEmpty())
+                    params.put(KEY_STUDENT_COUNT, studCOunt);
+                else
+                    params.put(KEY_STUDENT_COUNT, "0");
+                if (!teacherId.isEmpty())
                     params.put(KEY_TEACHER_ID, teacherId);
                 return params;
             }

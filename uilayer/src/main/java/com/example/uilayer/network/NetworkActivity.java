@@ -144,10 +144,9 @@ public class NetworkActivity extends AppCompatActivity {
                 user.setRoles(roles);
                 user.setType(userJson.getString(Constants.KEY_USER_TYPE));
                 user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
-                user.setLoggedIn(false);
                 usersList.add(i, user);
             }
-            // new DataBaseUtil(this).setNetworkUsers(usersList);
+            new DataBaseUtil(this).setNetworkUsers(usersList);
             NewDataHolder.getInstance(this).setNetworkUsers(usersList);
             networkRecycler.setAdapter(new NetworkAdapter(getApplicationContext(), usersList));
         } catch (JSONException exception) {

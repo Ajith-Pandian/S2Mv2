@@ -10,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -102,6 +105,7 @@ public class SectionsFragment extends Fragment {
             });
         } else {
             cardLayout.setVisibility(View.GONE);
+            setHasOptionsMenu(true);
         }
         return view;
     }
@@ -214,7 +218,7 @@ public class SectionsFragment extends Fragment {
 
                 @Override
                 public void onDeleteOptionSelected(boolean isTeacher, int position) {
-
+                    deleteSection(position);
                 }
             }, false));
         } else {
@@ -227,9 +231,48 @@ public class SectionsFragment extends Fragment {
         AddSectionsFragment bottomSheetDialogFragment = AddSectionsFragment.getNewInstance(isUpdate, position, new AddOrUpdateListener() {
             @Override
             public void onFinish(boolean isTeacher) {
+                updateSections();
                 sectionsGrid.getAdapter().notifyDataSetChanged();
             }
         });
         bottomSheetDialogFragment.show(getChildFragmentManager(), bottomSheetDialogFragment.getTag());
     }
+
+    void deleteSection(final int position) {
+        new NetworkHelper(getContext()).deleteSection(
+                NewDataHolder.getInstance(getContext()).getSectionsList().get(position).getId(),
+                new NetworkHelper.NetworkListener() {
+                    @Override
+                    public void onFinish() {
+                        new NetworkHelper(getContext()).getUserSections(new NetworkHelper.NetworkListener() {
+                            @Override
+                            public void onFinish() {
+                                Utils.getInstance().showToast("Section Deleted");
+                                updateSections();
+                                sectionsGrid.getAdapter().notifyDataSetChanged();
+
+                            }
+                        });
+                    }
+                });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        inflater.inflate(R.menu.menu_add, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                openAddSectionsFragment(false, -1);
+                break;
+        }
+        return true;
+
+    }
+
 }

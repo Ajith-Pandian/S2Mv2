@@ -69,7 +69,7 @@
             android:layout_above="@+id/layout_bottom"
             android:background="@android:color/white"
             android:visibility="gone" />
-Sect
+
         <LinearLayout
             android:id="@+id/layout_bottom"
             android:layout_width="match_parent"

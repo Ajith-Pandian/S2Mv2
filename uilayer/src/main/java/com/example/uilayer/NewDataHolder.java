@@ -132,7 +132,6 @@ public class NewDataHolder {
             SharedPreferenceHelper.setAccessToken(user.getAccessToken());
             SharedPreferenceHelper.setUserId(user.getId());
 
-            user.setLoggedIn(true);
             SharedPreferenceHelper.setLoginStatus(true);
             new NetworkHelper(context).sendFirebaseTokenToServer(FirebaseInstanceId.getInstance().getToken());
             new DataBaseUtil(context).setUser(user);
@@ -204,6 +203,7 @@ public class NewDataHolder {
     public void saveUserSections(JSONArray sectionsArray) {
         ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
         //user.setSectionsList(sectionsArrayList);
+        new DataBaseUtil(context).setSections(sectionsArrayList);
         setSectionsList(sectionsArrayList);
     }
 

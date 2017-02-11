@@ -19,9 +19,7 @@ import static com.example.domainlayer.Constants.TABLE_NAME_USERS;
 
 public class DbUser {
     User user;
-    @DatabaseField(id = true, columnName = Constants.KEY_DB_ID, canBeNull = false, unique = true)
-    private int dbId;
-    @DatabaseField(columnName = Constants.KEY_ID)
+    @DatabaseField(id = true, columnName = Constants.KEY_ID, canBeNull = false, unique = true)
     private int id;
     @DatabaseField(columnName = Constants.KEY_FIRST_NAME)
     private String firstName;
@@ -252,24 +250,5 @@ public class DbUser {
         this.gender = gender;
     }
 
-    public int getDbId() {
 
-        return dbId;
-    }
-
-    public void setDbId(int dbId) {
-        this.dbId = dbId;
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        isLoggedIn = loggedIn;
-        if (isLoggedIn)
-            setDbId(0);
-        else
-            setDbId(getId());
-    }
 }

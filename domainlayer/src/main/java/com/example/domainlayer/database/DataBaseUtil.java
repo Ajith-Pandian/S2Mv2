@@ -44,6 +44,17 @@ public class DataBaseUtil {
             return null;
         }
     }
+    private Dao<Sections, Integer> getLocalSectionDao() {
+        try {
+            if (helper == null)
+                helper = new DataBaseHelper(context);
+            return helper.getSectionsDao();
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "getLocalUserDao: ", ex);
+            //throw new RuntimeException("Cannot get user Dao");
+            return null;
+        }
+    }
 
     public DbUser getUser() {
         try {
@@ -88,6 +99,23 @@ public class DataBaseUtil {
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "setNetworkUsers: ", ex);
             throw new RuntimeException("Cannot create user");
+        }
+    }
+
+
+    public void setSections(ArrayList<Sections> sectionsList) {
+
+        try {
+            for (Sections user : sectionsList) {
+                Dao<Sections, Integer> sectionDao = getLocalSectionDao();
+                if (sectionDao != null) {
+                    sectionDao.createOrUpdate(user);
+                }
+            }
+            Log.d(context.getClass().getSimpleName(), "setSections:");
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "setSections: ", ex);
+            throw new RuntimeException("Cannot create section");
         }
     }
 

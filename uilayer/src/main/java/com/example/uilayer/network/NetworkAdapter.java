@@ -21,6 +21,7 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.DbUser;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -88,17 +89,18 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
                 holder.textDesignation.setText(TEXT_COORDINATOR);
             else if (roles.contains(ROLE_SCL_ADMIN))
                 holder.textDesignation.setText(TEXT_SCL_ADMIN);
-            else if(roles.contains(ROLE_TEACHER))
+            else if (roles.contains(ROLE_TEACHER))
                 holder.textDesignation.setText(TEXT_TEACHER);
         }
 
 
-        holder.callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeCall(user.getPhoneNum());
-            }
-        });
+        if (user.getId() == SharedPreferenceHelper.getUserId())
+            holder.callButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    makeCall(user.getPhoneNum());
+                }
+            });
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
