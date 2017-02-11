@@ -1,13 +1,15 @@
 package com.example.uilayer;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.example.domainlayer.database.DataBaseUtil;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Milestones;
 import com.example.domainlayer.models.S2mConfiguration;
 import com.example.domainlayer.models.Schools;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
-import com.example.uilayer.customUtils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +30,6 @@ import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_IS_COMPLETED;
 import static com.example.domainlayer.Constants.KEY_MILE;
 import static com.example.domainlayer.Constants.KEY_MILES;
-import static com.example.domainlayer.Constants.KEY_MILESTONE;
 import static com.example.domainlayer.Constants.KEY_MILESTONES;
 import static com.example.domainlayer.Constants.KEY_NAME;
 import static com.example.domainlayer.Constants.KEY_OPTIONS;
@@ -166,7 +167,7 @@ public class NewDataParser {
                         completable = false;
                     }
                     if (isArchive) {
-                       // archiveIndex++;
+                        // archiveIndex++;
                         miles.setMileIndex(++archiveIndex);
                     }
                     if (!milesJson.isNull(KEY_CONTENT_INDEX))
@@ -256,5 +257,19 @@ public class NewDataParser {
             Log.e("NewDataParser", "getMiles: ", ex);
         }
         return milesList;
+    }
+
+    public ArrayList<String> getUserRoles(Context context, int userId) {
+        DbUser user = new DataBaseUtil(context).getUser(userId);
+        ArrayList<String> userRoles = new ArrayList<>();
+        try {
+            JSONArray userRolesArray = new JSONArray(user.getRoles());
+            for (int i = 0; i < userRolesArray.length(); i++) {
+                userRoles.add(userRolesArray.getString(i));
+            }
+        } catch (Exception e) {
+            Log.d("NewDataParser", "getUserRoles: " + e.toString());
+        }
+        return userRoles;
     }
 }

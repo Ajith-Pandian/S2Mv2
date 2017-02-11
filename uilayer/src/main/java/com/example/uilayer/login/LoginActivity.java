@@ -10,6 +10,7 @@ import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.profile.ProfileUpdateActivity;
 import com.example.uilayer.profile.RegisterActivity;
 import com.example.uilayer.landing.LandingActivity;
@@ -81,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     @Override
     public void onOtpEntered() {
 
-        if (new DataBaseUtil(this).getUser().isFirstLogin())
+        if (new DataBaseUtil(this).getUser(SharedPreferenceHelper.getUserId()).isFirstLogin())
             launchProfileUpdate();
         else
             launchLanding();

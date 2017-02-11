@@ -1,8 +1,6 @@
 package com.example.uilayer.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,7 @@ import android.widget.TextView;
 import com.example.domainlayer.models.SclActs;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.R;
-import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.models.SchoolDetails;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,11 +45,7 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final SclActs sclActs = sclActsList.get(position);
         holder.schoolActivityMessage.setText(sclActs.getMsg());
-        String timeStamp = sclActs.getTimeStamp();
-        String date = timeStamp.split(" ")[0];
-        String time = timeStamp.split(" ")[1];
-        holder.textDate.setText(date);
-        holder.textTime.setText(time);
+        holder.textTimestamp.setText(sclActs.getTimeStamp());
         holder.textLikes.setText("" + sclActs.getLikesCount());
         if (sclActs.isLiked())
             //changeColor(holder.likeButton, R.color.colorPrimary);
@@ -60,10 +53,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         else
             //changeColor(holder.likeButton, R.color.mile_oolor8);
             holder.likeButton.setColorFilter(context.getResources().getColor(R.color.mile_oolor8));
-
-
-        Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_image);
-        holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, imageBitmap));
+        if (sclActs.getIcon() != null && !sclActs.getIcon().isEmpty())
+            Picasso.with(context).load(sclActs.getIcon()).into(holder.imageView);
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +81,7 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         });
     }
 
-    void changeColor(ImageButton button, int color) {
+    private void changeColor(ImageButton button, int color) {
         button.setColorFilter(context.getResources().getColor(color));
     }
 
@@ -103,10 +94,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
 
         @BindView(R.id.text_message)
         TextView schoolActivityMessage;
-        @BindView(R.id.text_time)
-        TextView textTime;
-        @BindView(R.id.text_date)
-        TextView textDate;
+        @BindView(R.id.timestamp)
+        TextView textTimestamp;
         @BindView(R.id.text_likes)
         TextView textLikes;
         @BindView(R.id.image_school_activity)

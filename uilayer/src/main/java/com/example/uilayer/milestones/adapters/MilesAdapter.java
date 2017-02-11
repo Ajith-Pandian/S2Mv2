@@ -1,6 +1,5 @@
 package com.example.uilayer.milestones.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.util.ArrayMap;
@@ -21,13 +20,10 @@ import com.android.volley.VolleyError;
 import com.example.domainlayer.models.milestones.TMileData;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataParser;
 import com.example.uilayer.NewDataHolder;
-import com.example.uilayer.SharedPreferenceHelper;
-import com.example.uilayer.customUtils.Utils;
-import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.DataHolder;
 import com.example.uilayer.R;
+import com.example.uilayer.SharedPreferenceHelper;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.milestones.MilesActivity;
 import com.example.uilayer.milestones.UndoDoneListener;
 
@@ -39,7 +35,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.example.domainlayer.Constants.BASE_URL;
 import static com.example.domainlayer.Constants.FEEDBACK_UNDO_URL;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
@@ -48,12 +43,9 @@ import static com.example.domainlayer.Constants.KEY_ID;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
 import static com.example.domainlayer.Constants.KEY_MILE_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_SECTION_ID;
-import static com.example.domainlayer.Constants.KEY_TRAINING;
 import static com.example.domainlayer.Constants.KEY_UNDO;
-import static com.example.domainlayer.Constants.MILES_TRAININGS_URL;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
@@ -66,6 +58,7 @@ import static com.example.domainlayer.Constants.TYPE_TRAINING;
 
 public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    VolleyStringRequest undoRequest;
     private List<TMiles> milestonesList;
     private Context context;
     private int undoId;
@@ -161,8 +154,6 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
     }
-
-    VolleyStringRequest undoRequest;
 
     private void undoMile(int mileId) {
         undoRequest = new VolleyStringRequest(Request.Method.POST,

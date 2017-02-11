@@ -2,12 +2,10 @@ package com.example.domainlayer.models;
 
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.CustomDao;
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.example.domainlayer.Constants.TABLE_NAME_SECTIONS;
 import static com.example.domainlayer.Constants.TABLE_NAME_USERS;
@@ -53,15 +51,13 @@ public class DbUser {
     private String anniversary;
     @DatabaseField(columnName = Constants.KEY_GENDER)
     private String gender;
+    @DatabaseField(columnName = Constants.KEY_ROLES)
+    private String roles;
 
-    @DatabaseField(columnName = TABLE_NAME_SECTIONS, foreign = true)
-    private Sections sections;
     private ArrayList<Sections> sectionsList;
     private ArrayList<Schools> schoolsList;
     private ArrayList<SclActs> sclActs;
-    private ArrayList<String> roles;
     private SclActs bulletin;
-    boolean isLoggedIn;
 
     public DbUser() {
     }
@@ -210,19 +206,11 @@ public class DbUser {
         this.avatar = avatar;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
-    public void setSections(Sections sections) {
-        this.sections = sections;
-    }
-
-    public ArrayList<String> getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(ArrayList<String> roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
 

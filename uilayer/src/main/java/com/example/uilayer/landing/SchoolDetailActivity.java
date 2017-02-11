@@ -2,11 +2,13 @@ package com.example.uilayer.landing;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.example.uilayer.NewDataHolder;
@@ -38,8 +40,10 @@ public class SchoolDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            ActionBar actionBar=getSupportActionBar();
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDefaultDisplayHomeAsUpEnabled(true);
         }
         collapsingToolbarLayout.setTitle(SharedPreferenceHelper.getSchoolName()+ "   ");
         Picasso.with(this).load(SharedPreferenceHelper.getSchoolImage()).into(schoolImage);
@@ -52,6 +56,16 @@ public class SchoolDetailActivity extends AppCompatActivity {
         recyclerView.setAdapter(new
                 SchoolActivitiesAdapter(getApplicationContext(), NewDataHolder.getInstance(this).getSclActList()));
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

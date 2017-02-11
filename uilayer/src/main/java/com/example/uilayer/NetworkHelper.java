@@ -1,24 +1,21 @@
 package com.example.uilayer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
+import com.example.domainlayer.database.DataBaseUtil;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.models.milestones.TMiles;
 import com.example.domainlayer.network.VolleySingleton;
+import com.example.domainlayer.temp.DataParser;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.manage.ManageTeachersActivity;
-import com.example.uilayer.milestones.MilestonesActivity;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,25 +26,18 @@ import java.util.Map;
 
 import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
 import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
-import static com.example.domainlayer.Constants.DELETE_TEACHERS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ARCHIVED;
 import static com.example.domainlayer.Constants.KEY_CONTENT;
 import static com.example.domainlayer.Constants.KEY_CONTENTS;
 import static com.example.domainlayer.Constants.KEY_DASHBOARD;
 import static com.example.domainlayer.Constants.KEY_DELETE;
-import static com.example.domainlayer.Constants.KEY_DESCRIPTION;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_MESSAGE;
-import static com.example.domainlayer.Constants.KEY_MILES_TRAININGS;
+import static com.example.domainlayer.Constants.KEY_OPTIONS;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_TEACHERS;
-import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
 import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
-import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
 /**
  * Created by thoughtchimp on 12/20/2016.
@@ -57,15 +47,12 @@ public class NetworkHelper {
     private final Context context;
     private NetworkListener networkListener;
     private LikeListener likeListener;
+    private final String TAG = getClass().getSimpleName();
 
     public NetworkHelper(Context context) {
         this.context = context;
     }
 
-    public void removeNetworkListener() {
-        if (networkListener != null)
-            this.networkListener = null;
-    }
 
     public void downloadConfiguration() {
         VolleyStringRequest configurationRequest = new VolleyStringRequest(Request.Method.GET, Constants.CONFIGURATION_URL,
@@ -165,6 +152,99 @@ public class NetworkHelper {
         });
 
         VolleySingleton.getInstance(context).addToRequestQueue(getDashBoardRequest);
+    }
+
+    public void getNetworkUsers(NetworkListener networkListener) {
+        this.networkListener = networkListener;
+        VolleyStringRequest networkRequest = new VolleyStringRequest(Request.Method.GET, Constants.SCHOOLS_URL +
+                SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_USERS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("networkRequest", "onResponse: " + response);
+                        saveNetworkUsers(response);
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("networkRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
+
+    }
+
+    private void saveNetworkUsers(String profilesString) {
+
+        ArrayList<DbUser> usersList = new ArrayList<>();
+        try {
+            JSONObject usersObject = new JSONObject(profilesString);
+            JSONArray profilesArray = usersObject.getJSONArray(KEY_USERS);
+            for (int i = 0; i < profilesArray.length(); i++) {
+                JSONObject userJson = profilesArray.getJSONObject(i);
+                DbUser user = new DbUser();
+                user.setId(userJson.getInt(Constants.KEY_ID));
+                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
+                if (!userJson.isNull(Constants.KEY_LAST_NAME))
+                    user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
+                user.setEmail(userJson.getString(Constants.KEY_EMAIL));
+                user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
+                if (!userJson.isNull(Constants.KEY_PROFILE_PICTURE))
+                    user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
+                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
+                user.setMiles(userJson.getString(Constants.KEY_MILES_COMPLETION_COUNT));
+                user.setTrainings(userJson.getString(Constants.KEY_TRAININGS_COMPLETION_COUNT));
+
+                JSONObject optionsObject = userJson.getJSONObject(KEY_OPTIONS);
+                if (!optionsObject.isNull(Constants.KEY_ANNIVERSARY))
+                    user.setAnniversary(optionsObject.getString(Constants.KEY_ANNIVERSARY));
+                if (!optionsObject.isNull(Constants.KEY_GENDER))
+                    user.setGender(optionsObject.getString(Constants.KEY_GENDER));
+                if (!optionsObject.isNull(Constants.KEY_DOB))
+                    user.setDob(optionsObject.getString(Constants.KEY_DOB));
+
+
+                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
+                user.setRoles(userJson.getString(Constants.KEY_ROLES));
+                user.setType(userJson.getString(Constants.KEY_USER_TYPE));
+                user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
+                usersList.add(i, user);
+            }
+            NewDataHolder.getInstance(context).setNetworkUsers(usersList);
+            networkListener.onFinish();
+        } catch (JSONException exception) {
+            Log.e("NetworkHelper", "saveNetworkUsers: ", exception);
+        }
     }
 
     public void getTeachers(NetworkListener networkListener) {
@@ -537,7 +617,6 @@ public class NetworkHelper {
         VolleySingleton.getInstance(context).addToRequestQueue(archiveRequest);
     }
 
-
     public void sendFirebaseTokenToServer(final String token) {
         VolleyStringRequest tokenRefreshRequest = new VolleyStringRequest(Request.Method.POST, Constants.UPDATE_DEVICE_TOKEN,
                 new Response.Listener<String>() {
@@ -657,6 +736,11 @@ public class NetworkHelper {
     public void removeLikeListener() {
         if (likeListener != null)
             this.likeListener = null;
+    }
+
+    public void removeNetworkListener() {
+        if (networkListener != null)
+            this.networkListener = null;
     }
 
     public interface NetworkListener {

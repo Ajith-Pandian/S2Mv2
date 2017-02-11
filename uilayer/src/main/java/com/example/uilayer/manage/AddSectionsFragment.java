@@ -13,7 +13,6 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,12 +24,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Milestones;
 import com.example.domainlayer.models.Sections;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.NewDataParser;
@@ -42,8 +40,6 @@ import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.customUtils.views.PromptSpinner;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
@@ -51,29 +47,14 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.ADD_SECTIONS_URL;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_ASSIGN;
 import static com.example.domainlayer.Constants.KEY_CLASS;
-import static com.example.domainlayer.Constants.KEY_COUNTRY_CODE;
 import static com.example.domainlayer.Constants.KEY_CREATE;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
-import static com.example.domainlayer.Constants.KEY_EMAIL;
-import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
-import static com.example.domainlayer.Constants.KEY_LAST_NAME;
 import static com.example.domainlayer.Constants.KEY_MILESTONE_ID;
-import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
-import static com.example.domainlayer.Constants.KEY_ROLES;
-import static com.example.domainlayer.Constants.KEY_ROLES_ARRAY;
-import static com.example.domainlayer.Constants.KEY_SCHOOL;
-import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_SECTION;
 import static com.example.domainlayer.Constants.KEY_SECTIONS;
 import static com.example.domainlayer.Constants.KEY_STUDENT_COUNT;
 import static com.example.domainlayer.Constants.KEY_TEACHER_ID;
-import static com.example.domainlayer.Constants.KEY_UPDATE;
-import static com.example.domainlayer.Constants.KEY_USERS;
-import static com.example.domainlayer.Constants.KEY_USER_TYPE;
 import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.SEPERATOR;
 
@@ -212,19 +193,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (isUpdate) {
-                    updateSections(getSelectedSectionId(),
-                            getTextFromView(className),
-                            getTextFromView(sectionName),
-                            String.valueOf(getSpinnerMilestoneId()),
-                            String.valueOf(getSpinnerTeacherId()),
-                            getTextFromView(numOfStudents)
-                    );
-                } else {
-                    validateAndAddSection();
-
-                }
+                validateAndAddSection();
             }
         });
 
@@ -252,11 +221,22 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
             String classNameString = getTextFromView(className);
             String sectionNameString = getTextFromView(sectionName);
             String numOfStudsString = getTextFromView(numOfStudents);
-            addSection(classNameString,
-                    sectionNameString,
-                    String.valueOf(getSpinnerMilestoneId()),
-                    String.valueOf(getSpinnerTeacherId()),
-                    numOfStudsString);
+
+
+            if (isUpdate) {
+                updateSections(getSelectedSectionId(),
+                        classNameString,
+                        sectionNameString,
+                        String.valueOf(getSpinnerMilestoneId()),
+                        String.valueOf(getSpinnerTeacherId()),
+                        numOfStudsString);
+            } else {
+                addSection(classNameString,
+                        sectionNameString,
+                        String.valueOf(getSpinnerMilestoneId()),
+                        String.valueOf(getSpinnerTeacherId()),
+                        numOfStudsString);
+            }
         }
     }
 
@@ -270,7 +250,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
     }
 
     void selectTeacher(final int teacherId) {
-        ArrayList<User> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+        ArrayList<DbUser> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
         if (teachersList != null && teachersList.size() > 0) {
             for (int i = 0; i < teachersList.size(); i++) {
                 if (teacherId == teachersList.get(i).getId())
@@ -287,12 +267,20 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
     }
 
 
+         ArrayList<DbUser> teachersList = new ArrayList<>();
     void initSpinners() {
         //Teacher spinner
         teachersSpinner.setPrompt("Teacher");
-        ArrayList<User> teachersList = new ArrayList<>();
         if (NewDataHolder.getInstance(getContext()).getTeachersList() != null) {
             teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+        }
+        else {
+            new NetworkHelper(getContext()).getNetworkUsers(new NetworkHelper.NetworkListener() {
+                @Override
+                public void onFinish() {
+                    teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+                }
+            });
         }
         TeachersSpinnerAdapter teacherAdapter = new TeachersSpinnerAdapter(getContext(),
                 R.layout.item_spinner,

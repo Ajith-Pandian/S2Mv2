@@ -2,17 +2,16 @@ package com.example.uilayer.manage;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,34 +23,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.Sections;
-import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataParser;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
-import com.example.uilayer.SharedPreferenceHelper;
-import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.SectionsAdapter;
 import com.example.uilayer.customUtils.HorizontalSpaceItemDecoration;
 import com.example.uilayer.customUtils.Utils;
+import com.example.uilayer.customUtils.VolleyStringRequest;
 import com.example.uilayer.landing.LandingActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.example.domainlayer.Constants.KEY_SECTIONS;
-import static com.example.domainlayer.Constants.SCHOOLS_URL;
-import static com.example.domainlayer.Constants.SEPERATOR;
 
 
 public class ManageTeachersActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -318,39 +304,50 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
             return rootView;
         }
 
+        ArrayList<DbUser> teachersList = new ArrayList<>();
 
         void loadTeachers() {
-            new NetworkHelper(getContext()).getTeachers(new NetworkHelper.NetworkListener() {
+            teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+            if (teachersList.size() > 0) {
+                setAdapterToRecyclerView();
+            } else {
+                new NetworkHelper(getContext()).getNetworkUsers(new NetworkHelper.NetworkListener() {
+                    @Override
+                    public void onFinish() {
+                        teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+                        setAdapterToRecyclerView();
+                    }
+                });
+            }
+        }
+
+        void setAdapterToRecyclerView() {
+            adapter = new TeachersAdapter(getContext(), teachersList, new TeacherOrSectionListener() {
                 @Override
-                public void onFinish() {
-                    adapter = new TeachersAdapter(getContext(), NewDataHolder.getInstance(getContext()).getTeachersList(), 5, new TeacherOrSectionListener() {
-                        @Override
-                        public void onAddOptionSelected(boolean isTeacher) {
+                public void onAddOptionSelected(boolean isTeacher) {
 
-                        }
+                }
 
+                @Override
+                public void onEditOptionSelected(boolean isTeacher, int position) {
+                    ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(true, position, new AddOrUpdateListener() {
                         @Override
-                        public void onEditOptionSelected(boolean isTeacher, int position) {
-                            ((ManageTeachersActivity) getActivity()).openAddTeacherFragment(true, position, new AddOrUpdateListener() {
-                                @Override
-                                public void onFinish(boolean isTeacher) {
-                                    loadTeachers();
-                                    recyclerView.getAdapter().notifyDataSetChanged();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                            deleteTeacher(position);
+                        public void onFinish(boolean isTeacher) {
                             loadTeachers();
                             recyclerView.getAdapter().notifyDataSetChanged();
-
                         }
                     });
-                    recyclerView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onDeleteOptionSelected(boolean isTeacher, int position) {
+                    deleteTeacher(position);
+                    loadTeachers();
+                    recyclerView.getAdapter().notifyDataSetChanged();
+
                 }
             });
+            recyclerView.setAdapter(adapter);
         }
 
         public static RecyclerView.Adapter getAdapter() {
@@ -358,92 +355,45 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         }
 
         void loadSections() {
-            sectionsRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_SECTIONS,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("Sections", "onErrorResponse: " + response);
-                            updateSections(response);
-                        }
-                    },
-                    new VolleyStringRequest.VolleyErrListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            super.onErrorResponse(error);
-                            Log.d("Sections", "onErrorResponse: " + error);
-                        }
-                    }, new VolleyStringRequest.StatusCodeListener() {
-                String TAG = "VolleyStringReq";
-
+            new NetworkHelper(getActivity()).getUserSections(new NetworkHelper.NetworkListener() {
                 @Override
-                public void onBadRequest() {
-                    Log.d(TAG, "onBadRequest: ");
-                }
-
-                @Override
-                public void onUnauthorized() {
-                    Log.d(TAG, "onUnauthorized: ");
-                }
-
-                @Override
-                public void onNotFound() {
-                    Log.d(TAG, "onNotFound: ");
-                }
-
-
-                @Override
-                public void onConflict() {
-                    Log.d(TAG, "onConflict: ");
-                }
-
-                @Override
-                public void onTimeout() {
-                    Log.d(TAG, "onTimeout: ");
+                public void onFinish() {
+                    updateSections();
                 }
             });
-
-            VolleySingleton.getInstance(getContext()).addToRequestQueue(sectionsRequest);
         }
 
-        @SuppressWarnings("NewApi")
-        void updateSections(String teachersResponse) {
-            try {
-                JSONObject obj = new JSONObject(teachersResponse);
-                Log.d("ARRAY", "updateSections: " + obj.toString());
-                JSONArray sectionsArray = new JSONArray(obj.getString(KEY_SECTIONS));
-                ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
+        void updateSections() {
 
-                NewDataHolder.getInstance(getContext()).setSectionsList(sectionsArrayList);
-                adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, new TeacherOrSectionListener() {
-                    @Override
-                    public void onAddOptionSelected(boolean isTeacher) {
+            ArrayList<Sections> sectionsArrayList = NewDataHolder.getInstance(getContext()).getSectionsList();
+            adapter = new SectionsAdapter(getContext(), sectionsArrayList, 2, new TeacherOrSectionListener() {
+                @Override
+                public void onAddOptionSelected(boolean isTeacher) {
 
-                    }
+                }
 
-                    @Override
-                    public void onEditOptionSelected(boolean isTeacher, int position) {
-                        ((ManageTeachersActivity) getActivity()).openAddSectionsFragment(true, position, new AddOrUpdateListener() {
-                            @Override
-                            public void onFinish(boolean isTeacher) {
-                                loadSections();
-                                recyclerView.getAdapter().notifyDataSetChanged();
-                            }
-                        });
+                @Override
+                public void onEditOptionSelected(boolean isTeacher, int position) {
+                    ((ManageTeachersActivity) getActivity()).openAddSectionsFragment(true, position, new AddOrUpdateListener() {
+                        @Override
+                        public void onFinish(boolean isTeacher) {
+                            loadSections();
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
+                    });
 
-                    }
+                }
 
-                    @Override
-                    public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                        deleteSection(position);
-                        loadSections();
-                        recyclerView.getAdapter().notifyDataSetChanged();
+                @Override
+                public void onDeleteOptionSelected(boolean isTeacher, int position) {
+                    deleteSection(position);
+                    loadSections();
+                    recyclerView.getAdapter().notifyDataSetChanged();
 
-                    }
-                }, true);
-                recyclerView.setAdapter(adapter);
-            } catch (JSONException ex) {
-                Log.d("Error", "updateSections: " + ex);
-            }
+                }
+            }, true);
+            recyclerView.setAdapter(adapter);
+
         }
 
         void deleteTeacher(final int position) {
@@ -466,7 +416,6 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                             Utils.getInstance().showToast("Section Deleted");
                             loadSections();
                             recyclerView.getAdapter().notifyDataSetChanged();
-
                         }
                     });
         }
@@ -522,7 +471,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 2;
+            return isFirstTime ? 2 : 1;
         }
 
         @Override

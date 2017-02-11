@@ -130,7 +130,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     }
 
     void loadUserData() {
-        user = new DataBaseUtil(this).getUser();
+        user = new DataBaseUtil(this).getUser(SharedPreferenceHelper.getUserId());
         textFirstName.setText(user.getFirstName());
         textLastName.setText(user.getLastName());
         textEmail.setText(user.getEmail());

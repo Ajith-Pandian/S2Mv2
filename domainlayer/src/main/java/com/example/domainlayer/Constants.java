@@ -243,6 +243,7 @@ public class Constants {
     //Database Table Names
     public static final String TABLE_NAME_USERS = "users";
     public static final String TABLE_NAME_SECTIONS = "sections";
+    public static final String TABLE_NAME_SCHOOL_ACTIVITIES = "school_activities";
 
 
     //type constants

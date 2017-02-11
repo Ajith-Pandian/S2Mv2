@@ -186,7 +186,7 @@ public class LandingActivity extends AppCompatActivity
         int menuId = 0;
 
         ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
-        if (new DataBaseUtil(this).getUser().getType().equals(USER_TYPE_S2M_ADMIN))
+        if (new DataBaseUtil(this).getUser(SharedPreferenceHelper.getUserId()).getType().equals(USER_TYPE_S2M_ADMIN))
             menuId = R.array.home_menu_s2m_admin;
         else if (userRoles.contains(ROLE_COORDINATOR))
             menuId = R.array.home_menu_coordinator;
@@ -305,7 +305,7 @@ public class LandingActivity extends AppCompatActivity
                     hideMenu();
             }
         });
-        DbUser loggedInUser = new DataBaseUtil(this).getUser();
+        DbUser loggedInUser = new DataBaseUtil(this).getUser(SharedPreferenceHelper.getUserId());
         String userType = loggedInUser.getType();
         ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
 
@@ -507,9 +507,9 @@ public class LandingActivity extends AppCompatActivity
             case R.id.nav_manage_teachers:
                 startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers", true));
                 break;
-            case R.id.nav_manage_sections:
-                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers", false));
-                break;
+//            case R.id.nav_manage_sections:
+//                startActivity(new Intent(LandingActivity.this, ManageTeachersActivity.class).putExtra("isTeachers", false));
+//                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

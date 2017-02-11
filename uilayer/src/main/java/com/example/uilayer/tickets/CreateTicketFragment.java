@@ -21,22 +21,17 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.Category;
 import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
 import com.example.domainlayer.temp.DataHolder;
-import com.example.uilayer.customUtils.VolleyStringRequest;
+import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.CategorySpinnerAdapter;
 import com.example.uilayer.adapters.TeachersSpinnerAdapter;
-import com.example.uilayer.customUtils.views.PromptSpinner;
 import com.example.uilayer.customUtils.Utils;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.uilayer.customUtils.VolleyStringRequest;
+import com.example.uilayer.customUtils.views.PromptSpinner;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -45,7 +40,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.domainlayer.Constants.CREATE_TICKET_URL;
-import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
 import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.KEY_CATEGORY;
 import static com.example.domainlayer.Constants.KEY_CREATOR_ID;
@@ -53,7 +47,6 @@ import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_RECEIVER_ID;
 import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
 import static com.example.domainlayer.Constants.KEY_SUBJECT;
-import static com.example.domainlayer.Constants.SCHOOLS_URL;
 import static com.example.domainlayer.Constants.TEMP_ACCESS_TOKEN;
 import static com.example.domainlayer.Constants.TEMP_DEVICE_TYPE;
 
@@ -197,7 +190,11 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         if (isS2m) {
             userSpinner.setVisibility(View.VISIBLE);
             userSpinner.setPrompt("User");
-            loadTeachers();
+            userSpinner.setAdapter(
+                    new TeachersSpinnerAdapter(getActivity(),
+                            R.layout.item_spinner,
+                            R.id.text_spinner,
+                            NewDataHolder.getInstance(getActivity()).getTeachersList()));
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -222,96 +219,6 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
         categoryArrayList.add(new Category(1, "Training"));
         categoryArrayList.add(new Category(1, "Assessments"));
         return categoryArrayList;
-    }
-
-    public void loadTeachers() {
-        getUsersRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + "2" + GET_TEACHERS_URL_SUFFIX,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("teacherRequest", "onResponse: " + response);
-                        updateTeachers(response);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("teacherRequest", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(KEY_ACCESS_TOKEN, TEMP_ACCESS_TOKEN);
-                header.put(KEY_DEVICE_TYPE, TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
-            }
-
-        };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(getUsersRequest);
-
-    }
-
-    void updateTeachers(String teachersResponse) {
-        ArrayList<User> teachersList = new ArrayList<>();
-        try {
-            JSONArray profilesArray = new JSONArray(teachersResponse);
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject userJson = profilesArray.getJSONObject(i);
-                User user = new User();
-                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
-                user.setId(userJson.getInt(Constants.KEY_ID));
-                user.setLastName(userJson.getString(Constants.KEY_LAST_NAME));
-                user.setPhoneNum(userJson.getString(Constants.KEY_PHONE_NUM));
-                user.setAvatar(userJson.getString(Constants.KEY_AVATAR));
-                teachersList.add(i, user);
-            }
-
-            DataHolder.getInstance(getContext()).setTeachersList(teachersList);
-            if (getActivity() != null)
-                userSpinner.setAdapter(
-                        new TeachersSpinnerAdapter(getActivity(),
-                                R.layout.item_spinner,
-                                R.id.text_spinner,
-                                teachersList));
-        } catch (JSONException exception) {
-            Log.e("DataHolder", "saveUserDetails: ", exception);
-        }
     }
 
     void createTicket(final String subject, final String category, final int userId) {

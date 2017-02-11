@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 
 public class ImageMilesAdapter extends RecyclerView.Adapter<ImageMilesAdapter.ViewHolder> {
 
-    final float last_item_view_percentage = 0.5f;
     private List<ImageMiles> milesList;
     private Context context;
 
@@ -44,7 +43,7 @@ public class ImageMilesAdapter extends RecyclerView.Adapter<ImageMilesAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageMiles mile = milesList.get(position);
-        String url=mile.getUrl();
+        String url = mile.getUrl();
         Picasso.with(context)
                 .load(url)
                 .placeholder(R.drawable.ph_bulletin)
@@ -64,9 +63,10 @@ public class ImageMilesAdapter extends RecyclerView.Adapter<ImageMilesAdapter.Vi
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.mile_image_image_miles)
         ImageView mileImage;
+
         ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            ButterKnife.bind(this, view);
 
         }
     }

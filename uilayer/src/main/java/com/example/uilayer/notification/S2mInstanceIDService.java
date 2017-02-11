@@ -49,7 +49,7 @@ public class S2mInstanceIDService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         if (SharedPreferenceHelper.isLoggedIn())
-            new NetworkHelper(S2MApplication.getAppContext()).sendFirebaseTokenToServer(refreshedToken);
+            new NetworkHelper(this).sendFirebaseTokenToServer(refreshedToken);
     }
     // [END refresh_token]
 

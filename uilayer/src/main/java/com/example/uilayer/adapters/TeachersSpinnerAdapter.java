@@ -6,26 +6,25 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.domainlayer.models.User;
+import com.example.domainlayer.models.DbUser;
 import com.example.uilayer.R;
+
+import java.util.ArrayList;
+
+import static com.example.domainlayer.Constants.SPACE;
 
 /**
  * Created by thoughtchimp on 12/27/2016.
  */
 
 
-public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
-    private ArrayList<User> usersList;
+public class TeachersSpinnerAdapter extends SpinnerAdapter<DbUser> {
+    private ArrayList<DbUser> usersList;
 
     public TeachersSpinnerAdapter(Context context, int resource,
-                                  int textViewResourceId, ArrayList<User> objects) {
+                                  int textViewResourceId, ArrayList<DbUser> objects) {
         super(context, resource, textViewResourceId, objects);
         this.usersList = objects;
     }
@@ -42,7 +41,9 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
         }
 
         TextView textView = (TextView) itemView.findViewById(R.id.text_spinner);
-        textView.setText(usersList.get(position).getName());
+        DbUser user = usersList.get(position);
+        String name = user.getFirstName() + SPACE + user.getLastName();
+        textView.setText(name);
         return itemView;
     }
 
@@ -53,7 +54,7 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
 
     @Nullable
     @Override
-    public User getItem(int position) {
+    public DbUser getItem(int position) {
         return usersList.get(position);
     }
 
@@ -69,7 +70,9 @@ public class TeachersSpinnerAdapter extends SpinnerAdapter<User> {
                     .inflate(R.layout.item_spinner, parent, false);
         }
         TextView textView = (TextView) dropDownView.findViewById(R.id.text_spinner);
-        textView.setText(usersList.get(position).getName());
+        DbUser user = usersList.get(position);
+        String fullName = user.getFirstName() + SPACE + user.getLastName();
+        textView.setText(fullName);
         return dropDownView;
 
     }

@@ -18,27 +18,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.example.domainlayer.Constants;
 import com.example.domainlayer.database.DataBaseUtil;
 import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.SclActs;
-import com.example.domainlayer.network.VolleySingleton;
 import com.example.uilayer.NetworkHelper;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.R;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.adapters.SchoolActivitiesSwipeAdapter;
-import com.example.uilayer.customUtils.VolleyStringRequest;
-import com.example.uilayer.R;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.network.NetworkActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,9 +40,6 @@ import in.arjsna.swipecardlib.SwipeCardView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.example.domainlayer.Constants.ACTIVITIES_URL_SUFFIX;
-import static com.example.domainlayer.Constants.ACTIVITY_LIKE_URL_SUFFIX;
-import static com.example.domainlayer.Constants.KEY_MESSAGE;
 import static com.example.domainlayer.Constants.ROLE_COORDINATOR;
 import static com.example.domainlayer.Constants.ROLE_SCL_ADMIN;
 import static com.example.domainlayer.Constants.TEXT_COORDINATOR;
@@ -167,7 +155,7 @@ public class HomeFragment extends Fragment {
     void initSwipeCards() {
         ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
         ArrayList<SclActs> swipeList = new ArrayList<>();
-        int cardsCount=schoolActivitiesList.size()<5?schoolActivitiesList.size():5;
+        int cardsCount = schoolActivitiesList.size() < 5 ? schoolActivitiesList.size() : 5;
         for (int i = 0; i < cardsCount; i++) {
             swipeList.add(schoolActivitiesList.get(i));
         }
@@ -216,7 +204,7 @@ public class HomeFragment extends Fragment {
     }
 
     void loadUserData() throws SQLException {
-        user = new DataBaseUtil(getContext()).getUser();
+        user = new DataBaseUtil(getContext()).getUser(SharedPreferenceHelper.getUserId());
         String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
         String userType = user.getType();

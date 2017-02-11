@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -357,6 +359,19 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     }
 
 
+    public void addFragmentOnlyOnce(FragmentManager fragmentManager, int containerId, Fragment fragment, String tag) {
+        // Make sure the current transaction finishes first
+        fragmentManager.executePendingTransactions();
+        Log.d("addFragmentOnlyOnce", "addFragmentOnlyOnce: " + tag);
+        // If there is no fragment yet with this tag...
+        if (fragmentManager.findFragmentByTag(tag) == null) {
+            // Add it
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(containerId, fragment, tag);
+            transaction.commit();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -440,7 +455,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             @Override
             public void onNotFound() {
                 Log.d(TAG, "onNotFound: ");
-                Utils.getInstance().showToast(getString(R.string.er_no_mcq));
+                allowTrainingToComplete();
             }
 
             @Override
@@ -457,6 +472,12 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(mcqsRequest);
     }
 
+
+    void allowTrainingToComplete() {
+        Utils.getInstance().showToast(getString(R.string.er_no_mcq));
+        buttonComplete.setOnClickListener(sheetShowListener);
+        buttonComplete.performClick();
+    }
 
     void loadQuestions(String mcqString) {
         ArrayList<MCQs> mcqsArrayList = new ArrayList<>();
@@ -487,7 +508,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class)
                         .putExtra(KEY_TITLE, holder.getCurrentMileTitle())
                         .putExtra(KEY_QUESTION, mcqsArrayList), REQUEST_CODE);
-            } else Utils.getInstance().showToast("No Quiz found");
+            } else allowTrainingToComplete();
 
         } catch (JSONException ex) {
             Log.e("MCQ", "loadQuestions: ", ex);
@@ -534,6 +555,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         mileDataArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesDataList();
         Fragment fragment = null;
         for (int i = 0; i < mileDataArrayList.size(); i++) {
+            String fragmentTag = "fragment";
             TMileData mileData = mileDataArrayList.get(i);
             String type = mileData.getType();
             switch (type) {
@@ -571,12 +593,12 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     break;
 
             }
-            if (fragment != null)
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(milesFragmentContainer.getId(), fragment)
-                        .commit();
 
+            if (fragment != null)
+                addFragmentOnlyOnce(getSupportFragmentManager(),
+                        milesFragmentContainer.getId(),
+                        fragment,
+                        "fragment" + i);
         }
 
 

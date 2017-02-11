@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VideoMilesDecoration;
@@ -66,10 +67,16 @@ public class MilesAudioFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_miles_audio,
                 container, false);
         RecyclerView recyclerView;
+        TextView titleText;
         AudioMilesAdapter adapter;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        titleText = (TextView) view.findViewById(R.id.text_title_fragment_mile_text);
 
+        if (!title.isEmpty())
+            titleText.setText(title);
+        else
+            titleText.setText("Audio");
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);

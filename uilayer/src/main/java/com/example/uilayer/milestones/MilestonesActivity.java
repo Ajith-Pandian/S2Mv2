@@ -101,7 +101,6 @@ public class MilestonesActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
 
-
     }
 
     void showNoDataLayout() {
@@ -116,23 +115,25 @@ public class MilestonesActivity extends AppCompatActivity {
         ArrayList<TMiles> milesArrayList;
         if (isIntro) {
             milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getIntroTrainingsList();
-            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, true, null);
         } else {
             milesArrayList = NewDataHolder.getInstance(getApplicationContext()).getMilesList();
-            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, false, null);
         }
 
-        if (milesArrayList != null && milesArrayList.size() > 0)
+        if (milesArrayList != null && milesArrayList.size() > 0) {
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, false, null);
             recyclerView.setAdapter(milestonesAdapter);
-        else
+        } else
             showNoDataLayout();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_milestones, menu);
-        return true;
+        if (!isIntro) {
+            getMenuInflater().inflate(R.menu.menu_milestones, menu);
+            return true;
+        } else
+            return super.onCreateOptionsMenu(menu);
     }
 
 

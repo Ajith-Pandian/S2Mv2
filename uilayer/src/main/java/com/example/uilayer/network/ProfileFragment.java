@@ -134,11 +134,11 @@ public class ProfileFragment extends Fragment {
         profileModels.add(new ProfileModel(R.drawable.phone, currentProfile.getPhoneNum(), TEXT_PHONE_NUMBER));
         profileModels.add(new ProfileModel(R.drawable.scholl, SharedPreferenceHelper.getSchoolName(), TEXT_SCHOOL_NAME));
         if (currentProfile.getGender() != null && !currentProfile.getGender().equals(""))
-            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getGender(), TEXT_GENDER));
+            profileModels.add(new ProfileModel(R.drawable.gender, currentProfile.getGender(), TEXT_GENDER));
         if (currentProfile.getDob() != null && !currentProfile.getDob().equals(""))
-            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getDob(), TEXT_DOB));
+            profileModels.add(new ProfileModel(R.drawable.birthday, currentProfile.getDob(), TEXT_DOB));
         if (currentProfile.getAnniversary() != null && !currentProfile.getAnniversary().equals(""))
-            profileModels.add(new ProfileModel(R.drawable.scholl, currentProfile.getAnniversary(), TEXT_ANNIVERSARY));
+            profileModels.add(new ProfileModel(R.drawable.anniversary, currentProfile.getAnniversary(), TEXT_ANNIVERSARY));
         return profileModels;
     }
 

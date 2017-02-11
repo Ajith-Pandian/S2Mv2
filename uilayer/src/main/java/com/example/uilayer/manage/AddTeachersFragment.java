@@ -24,48 +24,28 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.domainlayer.Constants;
-import com.example.domainlayer.models.Category;
 import com.example.domainlayer.models.DbUser;
-import com.example.domainlayer.models.User;
 import com.example.domainlayer.network.VolleySingleton;
-import com.example.domainlayer.temp.DataHolder;
 import com.example.uilayer.NewDataHolder;
 import com.example.uilayer.R;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
 import com.example.uilayer.customUtils.VolleyStringRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.domainlayer.Constants.ADD_TEACHERS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.CREATE_TICKET_URL;
-import static com.example.domainlayer.Constants.GET_TEACHERS_URL_SUFFIX;
-import static com.example.domainlayer.Constants.KEY_ACCESS_TOKEN;
-import static com.example.domainlayer.Constants.KEY_CATEGORY;
 import static com.example.domainlayer.Constants.KEY_COUNTRY_CODE;
-import static com.example.domainlayer.Constants.KEY_COUNTRY_CODES;
 import static com.example.domainlayer.Constants.KEY_CREATE;
-import static com.example.domainlayer.Constants.KEY_CREATOR_ID;
-import static com.example.domainlayer.Constants.KEY_DEVICE_TYPE;
 import static com.example.domainlayer.Constants.KEY_EMAIL;
 import static com.example.domainlayer.Constants.KEY_FIRST_NAME;
 import static com.example.domainlayer.Constants.KEY_LAST_NAME;
 import static com.example.domainlayer.Constants.KEY_MOBILE_NO;
 import static com.example.domainlayer.Constants.KEY_PHONE_NUM;
-import static com.example.domainlayer.Constants.KEY_RECEIVER_ID;
-import static com.example.domainlayer.Constants.KEY_ROLES;
 import static com.example.domainlayer.Constants.KEY_ROLES_ARRAY;
 import static com.example.domainlayer.Constants.KEY_SCHOOL;
-import static com.example.domainlayer.Constants.KEY_SCHOOL_ID;
-import static com.example.domainlayer.Constants.KEY_SUBJECT;
 import static com.example.domainlayer.Constants.KEY_UPDATE;
 import static com.example.domainlayer.Constants.KEY_USERS;
 import static com.example.domainlayer.Constants.KEY_USER_TYPE;
@@ -99,10 +79,8 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
 
     boolean isUpdate;
     int position;
-    VolleyStringRequest getUsersRequest;
     BottomSheetBehavior bottomSheetBehavior;
     Dialog thisDialog;
-    VolleyStringRequest createTicketRequest;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
@@ -139,9 +117,11 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
         super.onStart();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            getDialog().getWindow().setAttributes(params);
+            if (getDialog() != null && getDialog().getWindow() != null) {
+                final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                getDialog().getWindow().setAttributes(params);
+            }
         }
     }
 
@@ -212,7 +192,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
         });
 
         if (isUpdate) {
-            User teacher = NewDataHolder.getInstance(getContext()).getTeachersList().get(position);
+            DbUser teacher = NewDataHolder.getInstance(getContext()).getTeachersList().get(position);
             firstName.setText(teacher.getFirstName());
             lastName.setText(teacher.getLastName());
             email.setText(teacher.getEmail());
@@ -221,35 +201,14 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
             addButton.setText("Update");
 
         }
-        /*categorySpinner.setPrompt("Category");
-        categorySpinner.setAdapter(new CategorySpinnerAdapter(getActivity(), R.layout.item_spinner, R.id.text_spinner, getCategories()));
-
-        if (isUpdate) {
-            userSpinner.setVisibility(View.VISIBLE);
-            userSpinner.setPrompt("User");
-            getTeachers();
-        }
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        createButton.requestLayout();
-        createButton.requestFocus();
-*/
     }
 
-   /* String getCategory() {
-        return ((Category) categorySpinner.getSelectedItem()).getName();
-    }
 
-    int getUserID() {
-        return ((User) userSpinner.getSelectedItem()).getId();
-    }*/
+    void addTeacher(final String firstName,
+                    final boolean hasLastName, final String lastName,
+                    final boolean hasEmail, final String email, final String phoneNum) {
 
-
-    VolleyStringRequest teacherAddRequest;
-
-    void addTeacher(final String firstName, final boolean hasLastName, final String lastName, final boolean hasEmail, final String email, final String phoneNum) {
-
-        teacherAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
+        teachersUpdateRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
                 + SEPERATOR + KEY_USERS + SEPERATOR + KEY_CREATE,
                 new Response.Listener<String>() {
                     @Override
@@ -314,12 +273,14 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
             }
 
         };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherAddRequest);
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(teachersUpdateRequest);
     }
+
+    VolleyStringRequest teachersUpdateRequest;
 
     void updateTeacher(final int teacherId, final String firstName, final boolean hasLastName, final String lastName, final boolean hasEmail, final String email, final String phoneNum) {
 
-        teacherAddRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
+        teachersUpdateRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId()
                 + SEPERATOR + KEY_USERS + SEPERATOR + teacherId + SEPERATOR + KEY_UPDATE,
                 new Response.Listener<String>() {
                     @Override
@@ -384,7 +345,7 @@ public class AddTeachersFragment extends BottomSheetDialogFragment {
             }
 
         };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(teacherAddRequest);
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(teachersUpdateRequest);
     }
 
 }

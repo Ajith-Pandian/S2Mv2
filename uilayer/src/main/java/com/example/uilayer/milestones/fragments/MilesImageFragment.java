@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.uilayer.R;
 import com.example.uilayer.adapters.ImageRecyclerTouchListener;
@@ -68,10 +69,14 @@ public class MilesImageFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_miles_images,
                 container, false);
         final RecyclerView recyclerView;
+        final TextView titleText;
         ImageMilesAdapter adapter;
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_mile_images);
-
+        titleText = (TextView) view.findViewById(R.id.text_title_fragment_mile_text);
+        if (!title.isEmpty())
+            titleText.setText(title);
+        else
+            titleText.setText("Images");
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -85,7 +90,7 @@ public class MilesImageFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new ImageRecyclerTouchListener(getActivity(), recyclerView, new ImageMilesAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                 ImageSliderDialogFragment newFragment = ImageSliderDialogFragment.newInstance(imageList, position);
                 newFragment.show(ft, "slideshow");
 

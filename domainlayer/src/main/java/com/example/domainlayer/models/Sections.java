@@ -10,6 +10,8 @@ import static com.example.domainlayer.Constants.TABLE_NAME_SECTIONS;
 /**
  * Created by thoughtchimp on 12/6/2016.
  */
+
+
 @DatabaseTable(tableName = TABLE_NAME_SECTIONS, daoClass = CustomDao.class)
 
 public class Sections {

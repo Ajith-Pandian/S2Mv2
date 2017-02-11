@@ -23,8 +23,8 @@ public class S2MApplication extends Application {
         appContext = this;
         //FirebaseApp.initializeApp(this);
     }
-
     public static Context getAppContext() {
         return appContext;
     }
+
 }

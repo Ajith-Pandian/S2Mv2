@@ -93,7 +93,7 @@ public class SectionsFragment extends Fragment {
         sectionsGrid.setLayoutManager(layoutManager);
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 2));
         getUserSections();
-        String userType = new DataBaseUtil(getContext()).getUser().getType();
+        String userType = new DataBaseUtil(getContext()).getUser(SharedPreferenceHelper.getUserId()).getType();
         if (!userType.equals(USER_TYPE_S2M_ADMIN) &&
                 SharedPreferenceHelper.getUserRoles().contains(ROLE_TEACHER)) {
             cardLayout.setVisibility(View.VISIBLE);
@@ -250,7 +250,6 @@ public class SectionsFragment extends Fragment {
                                 Utils.getInstance().showToast("Section Deleted");
                                 updateSections();
                                 sectionsGrid.getAdapter().notifyDataSetChanged();
-
                             }
                         });
                     }

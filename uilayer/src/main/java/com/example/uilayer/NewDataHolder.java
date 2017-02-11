@@ -34,6 +34,7 @@ import static com.example.domainlayer.Constants.KEY_SCHOOLS;
 import static com.example.domainlayer.Constants.KEY_TIMESTAMP;
 import static com.example.domainlayer.Constants.KEY_TITLE;
 import static com.example.domainlayer.Constants.KEY_TYPE;
+import static com.example.domainlayer.Constants.ROLE_TEACHER;
 import static com.example.domainlayer.Constants.TYPE_BULLETIN;
 
 /**
@@ -101,7 +102,6 @@ public class NewDataHolder {
             }
             JSONArray schoolsJsonArray = userJson.getJSONArray(KEY_SCHOOLS);
             ArrayList<Schools> schoolsArrayList = new ArrayList<>();
-            ArrayList<String> roles = new ArrayList<>();
             for (int i = 0; i < schoolsJsonArray.length(); i++) {
                 Schools school = new Schools();
                 JSONObject schoolJsonObj = schoolsJsonArray.getJSONObject(i);
@@ -110,8 +110,10 @@ public class NewDataHolder {
                 school.setLogo(schoolJsonObj.getString(Constants.KEY_LOGO));
                 school.setLocality(schoolJsonObj.getString(Constants.KEY_LOCALITY));
                 school.setCity(schoolJsonObj.getString(Constants.KEY_CITY));
-                //roles = ;
-                //user.setRoles(roles);
+                String userRoles = schoolJsonObj.getString(Constants.KEY_ROLES);
+                Log.d("USER roles", "setLoginResult: " + userRoles);
+                user.setRoles(userRoles);
+
                 if (i == 0)
                     SharedPreferenceHelper.setUserRoles(getStringsFromArray(schoolJsonObj.getJSONArray(Constants.KEY_ROLES)));
                 schoolsArrayList.add(school);
@@ -203,7 +205,6 @@ public class NewDataHolder {
     public void saveUserSections(JSONArray sectionsArray) {
         ArrayList<Sections> sectionsArrayList = new DataParser().getSectionsListFromJson(sectionsArray, false);
         //user.setSectionsList(sectionsArrayList);
-        new DataBaseUtil(context).setSections(sectionsArrayList);
         setSectionsList(sectionsArrayList);
     }
 
@@ -296,20 +297,17 @@ public class NewDataHolder {
         this.currentSectionName = currentSectionName;
     }
 
-    public ArrayList<User> getTeachersList() {
-        return teachersList;
-    }
 
     public void setTeachersList(ArrayList<User> teachersList) {
         this.teachersList = teachersList;
     }
 
     public ArrayList<Sections> getSectionsList() {
-        return sectionsList;
+        return new DataBaseUtil(context).getUserSections();
     }
 
     public void setSectionsList(ArrayList<Sections> sectionsList) {
-        this.sectionsList = sectionsList;
+        new DataBaseUtil(context).setUserSections(sectionsList);
     }
 
     public ArrayList<TMiles> getIntroTrainingsList() {
@@ -353,10 +351,20 @@ public class NewDataHolder {
     }
 
     public ArrayList<DbUser> getNetworkUsers() {
-        return networkUsers;
+        return new DataBaseUtil(context).getNetworkUsers();
     }
 
     public void setNetworkUsers(ArrayList<DbUser> networkUsers) {
-        this.networkUsers = networkUsers;
+        new DataBaseUtil(context).setNetworkUsers(networkUsers);
+    }
+
+    public ArrayList<DbUser> getTeachersList() {
+        ArrayList<DbUser> teachersList = new ArrayList<>();
+        ArrayList<DbUser> usersList = new DataBaseUtil(context).getNetworkUsers();
+        for (int i = 0; i < usersList.size(); i++) {
+            if (new NewDataParser().getUserRoles(context, usersList.get(i).getId()).contains(ROLE_TEACHER))
+                teachersList.add(usersList.get(i));
+        }
+        return teachersList;
     }
 }

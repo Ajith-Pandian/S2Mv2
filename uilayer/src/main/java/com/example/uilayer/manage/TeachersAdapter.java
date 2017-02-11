@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.example.domainlayer.models.DbUser;
 import com.example.domainlayer.models.User;
 
 import com.example.uilayer.R;
@@ -40,14 +41,12 @@ import butterknife.ButterKnife;
 final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     TeacherOrSectionListener listener;
-    private int rowsCount;
-    private List<User> teachersList;
+    private List<DbUser> teachersList;
     private Context context;
 
-    TeachersAdapter(Context context, List<User> teachersList, int rowsCount, TeacherOrSectionListener teacherListener) {
+    TeachersAdapter(Context context, List<DbUser> teachersList, TeacherOrSectionListener teacherListener) {
         this.teachersList = teachersList;
         this.context = context;
-        this.rowsCount = rowsCount;
         this.listener = teacherListener;
     }
 
@@ -68,7 +67,7 @@ final class TeachersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         final TeachersViewHolder viewHolder = (TeachersViewHolder) holder;
-        final User user = teachersList.get(position);
+        final DbUser user = teachersList.get(position);
         viewHolder.name.setText(user.getFirstName() + " " + user.getLastName());
         viewHolder.phoneNum.setText(user.getPhoneNum());
         viewHolder.threeDots.setOnClickListener(new View.OnClickListener() {

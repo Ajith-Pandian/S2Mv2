@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.domainlayer.Constants;
 import com.example.domainlayer.models.DbUser;
 import com.example.uilayer.NewDataHolder;
+import com.example.uilayer.NewDataParser;
 import com.example.uilayer.R;
 import com.example.uilayer.SharedPreferenceHelper;
 import com.example.uilayer.customUtils.Utils;
@@ -84,7 +85,9 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
             holder.wowLayout.setVisibility(View.GONE);
 
         } else if (userType.equals(USER_TYPE_SCHOOL)) {
-            ArrayList<String> roles = user.getRoles();
+            //ArrayList<String> roles = user.getRoles();
+            ArrayList<String> roles = new NewDataParser().getUserRoles(context, user.getId());
+
             if (roles.contains(ROLE_COORDINATOR))
                 holder.textDesignation.setText(TEXT_COORDINATOR);
             else if (roles.contains(ROLE_SCL_ADMIN))
@@ -95,12 +98,17 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
 
 
         if (user.getId() == SharedPreferenceHelper.getUserId())
+            holder.callButton.setVisibility(View.GONE);
+        else {
+            holder.callButton.setVisibility(View.VISIBLE);
             holder.callButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     makeCall(user.getPhoneNum());
                 }
             });
+        }
+
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

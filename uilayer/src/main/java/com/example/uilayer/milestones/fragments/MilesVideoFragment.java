@@ -9,17 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.uilayer.R;
 import com.example.uilayer.customUtils.VideoMilesDecoration;
-import com.example.uilayer.login.LoginFragment;
 import com.example.uilayer.milestones.adapters.VideoMilesAdapter;
 import com.example.uilayer.models.VideoMiles;
 import com.google.android.youtube.player.YouTubeIntents;
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
-
-
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -74,15 +72,17 @@ public class MilesVideoFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_miles_video_single,
                     container, false);
             final ImageView imageView = (ImageView) view.findViewById(R.id.singleMileImageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final String DEVELOPER_KEY = "AIzaSyD9lGPATA3aXGnl0GWMICk1Y883TArl30Y";
-                    startActivity(YouTubeIntents.createPlayVideoIntentWithOptions(getActivity(),
-                             videoList.get(0).getVideoId(),true,true));
-                }
-            });
-            String url="https://img.youtube.com/vi/"+videoList.get(0).getVideoId()+"/0.jpg";
+            TextView titleText = (TextView) view.findViewById(R.id.text_title_fragment_mile_text);
+            ImageButton playButton = (ImageButton) view.findViewById(R.id.button_play);
+
+
+            if (!title.isEmpty())
+                titleText.setText(title);
+            else
+                titleText.setText("Video");
+            playButton.setOnClickListener(playClickListener);
+            imageView.setOnClickListener(playClickListener);
+            String url = "https://img.youtube.com/vi/" + videoList.get(0).getVideoId() + "/0.jpg";
             Picasso.with(getActivity())
                     .load(url)
                     .placeholder(R.drawable.ph_video_large)
@@ -95,6 +95,15 @@ public class MilesVideoFragment extends Fragment {
             VideoMilesAdapter adapter;
 
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+            TextView titleText;
+
+            titleText = (TextView) view.findViewById(R.id.text_title_fragment_mile_text);
+
+            if (!title.isEmpty())
+                titleText.setText(title);
+            else
+                titleText.setText("Videos");
 
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -115,6 +124,15 @@ public class MilesVideoFragment extends Fragment {
             mListener.onVideoFragmentInteraction(uri);
         }
     }
+
+    View.OnClickListener playClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final String DEVELOPER_KEY = "AIzaSyD9lGPATA3aXGnl0GWMICk1Y883TArl30Y";
+            startActivity(YouTubeIntents.createPlayVideoIntentWithOptions(getActivity(),
+                    videoList.get(0).getVideoId(), true, true));
+        }
+    };
 
     @Override
     public void onAttach(Context context) {

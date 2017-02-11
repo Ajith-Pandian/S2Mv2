@@ -104,7 +104,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
         Boolean canEdit, canSeeOwn;
         ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
-        if (new DataBaseUtil(context).getUser().getType().equals(USER_TYPE_S2M_ADMIN)) {
+        if (new DataBaseUtil(context).getUser(SharedPreferenceHelper.getUserId()).getType().equals(USER_TYPE_S2M_ADMIN)) {
             canEdit = true;
             canSeeOwn = false;
         } else if (userRoles.contains(ROLE_COORDINATOR)) {
@@ -140,7 +140,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
                         }
                     });
         }
-        if (canSeeOwn && sectionDetails.getTeacherId() == new DataBaseUtil(context).getUser().getId()) {
+        if (canSeeOwn && sectionDetails.getTeacherId() == new DataBaseUtil(context).getUser(SharedPreferenceHelper.getUserId()).getId()) {
             holder.ownBadge.setVisibility(View.VISIBLE);
             holder.rootLayout.setOnClickListener(
                     new View.OnClickListener() {
