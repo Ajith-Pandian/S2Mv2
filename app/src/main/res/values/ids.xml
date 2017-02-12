@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="top_card_id" userType="id">111</item>
-    <item name="middle_card_id" userType="id">112</item>
-    <item name="last_card_id" userType="id">113</item>
-    <item name="backgrounds" userType="id">114</item>
-</resources>
