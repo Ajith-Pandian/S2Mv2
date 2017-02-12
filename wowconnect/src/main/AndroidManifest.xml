@@ -41,12 +41,12 @@
                 android:resource="@xml/filepaths" />
         </provider>-->
 
-        <service android:name="com.example.wowconnect.ui.notification.S2mMessagingService">
+        <service android:name="com.example.wowconnect.firebase.S2mMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.example.wowconnect.ui.notification.S2mInstanceIDService">
+        <service android:name="com.example.wowconnect.firebase.S2mInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

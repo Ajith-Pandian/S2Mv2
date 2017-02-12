@@ -13,9 +13,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.example.wowconnect.NetworkHelper;
 import com.example.wowconnect.R;
+import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.models.SclActs;
 import com.example.wowconnect.ui.customUtils.Utils;
 import com.squareup.picasso.Picasso;
@@ -89,10 +89,10 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
                 new NetworkHelper(getContext()).likeActivity(sclActs.getId(), new NetworkHelper.LikeListener() {
                     @Override
                     public void onLiked() {
-                        ((ImageButton) v).setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                         sclActs.setLikesCount(sclActs.getLikesCount() + 1);
                         sclActs.setLiked(true);
-                        notifyDataSetInvalidated();
+                        saveActivityInDb(sclActs);
                         notifyDataSetChanged();
 
                     }
@@ -102,11 +102,17 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.mile_oolor8));
                         sclActs.setLikesCount(sclActs.getLikesCount() - 1);
                         sclActs.setLiked(false);
+                        saveActivityInDb(sclActs);
                         notifyDataSetChanged();
                     }
                 });
             }
         });
         return convertView;
+    }
+
+
+    private void saveActivityInDb(SclActs schoolActivity) {
+        new DataBaseUtil(getContext()).updateSchoolActivity(schoolActivity);
     }
 }

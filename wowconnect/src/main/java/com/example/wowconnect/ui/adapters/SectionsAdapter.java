@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.wowconnect.NetworkHelper;
 import com.example.wowconnect.NewDataHolder;
+import com.example.wowconnect.NewDataParser;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
 
@@ -97,7 +98,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         //TODO:color coressponding milestone
         holder.backgroundLayout.setBackgroundColor(context.getResources().getColor(colorsArray[new Random().nextInt(colorsArray.length)]));
         Boolean canEdit, canSeeOwn;
-        ArrayList<String> userRoles = SharedPreferenceHelper.getUserRoles();
+        ArrayList<String> userRoles = new NewDataParser().getUserRoles(context,SharedPreferenceHelper.getUserId());
         if (new DataBaseUtil(context).getUser(SharedPreferenceHelper.getUserId()).getType().equals(Constants.USER_TYPE_S2M_ADMIN)) {
             canEdit = true;
             canSeeOwn = false;

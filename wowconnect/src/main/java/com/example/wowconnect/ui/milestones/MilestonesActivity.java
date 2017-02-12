@@ -81,7 +81,7 @@ public class MilestonesActivity extends AppCompatActivity {
         }
 
         if (milesArrayList != null && milesArrayList.size() > 0) {
-            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, false, null);
+            milestonesAdapter = new MilesAdapter(this, milesArrayList, false, isIntro, null);
             recyclerView.setAdapter(milestonesAdapter);
         } else
             showNoDataLayout();

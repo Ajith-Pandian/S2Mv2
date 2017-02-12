@@ -63,19 +63,7 @@ public class SharedPreferenceHelper {
         return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ACCESS_TOKEN, "");
     }
 
-    public static void setSchoolName(String schoolName) {
-        setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, schoolName);
-    }
-    public static void setSchoolIamge(String schoolIcon) {
-        setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ICON, schoolIcon);
-    }
 
-    public static String getSchoolName() {
-        return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_SCHOOL_NAME, "");
-    }
-    public static String getSchoolImage() {
-        return getSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ICON, "");
-    }
 
     public static void setAccessToken(String accessToken) {
         setSharedPreferenceString(S2MApplication.getAppContext(), Constants.KEY_ACCESS_TOKEN, accessToken);

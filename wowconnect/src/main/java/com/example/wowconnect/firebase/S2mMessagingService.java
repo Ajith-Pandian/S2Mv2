@@ -1,4 +1,4 @@
-package com.example.wowconnect.ui.notification;
+package com.example.wowconnect.firebase;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,16 +9,24 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.wowconnect.NetworkHelper;
+import com.example.wowconnect.SharedPreferenceHelper;
+import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.ui.landing.LandingActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONObject;
+
+import java.util.Map;
 
 /**
  * Created by Ajit on 26-01-2017.
  */
 
 public class S2mMessagingService extends FirebaseMessagingService {
-    String TAG="S2mMessagingService";
+    String TAG = "S2mMessagingService";
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // [START_EXCLUDE]
@@ -39,6 +47,7 @@ public class S2mMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            validateDataMessage(remoteMessage.getData());
         }
 
         // Check if message contains a notification payload.
@@ -62,7 +71,7 @@ public class S2mMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
                 .setContentTitle("FCM Message")
@@ -75,5 +84,25 @@ public class S2mMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+
+    private void validateDataMessage(Map<String, String> dataMessage) {
+        try {
+            JSONObject dataObject = new JSONObject(dataMessage.get("notification"));
+            String type = dataObject.getString("type");
+            if (!type.equals(Constants.FB_DATA_SCHOOL_UPDATED))
+                new DataMessageHandler().validateAndUpdateDb(this, type);
+            else {
+                JSONObject dataObj = new JSONObject(dataMessage.get("data"));
+                if (dataObj.has(Constants.KEY_SCHOOL_ID) && !dataObj.isNull(Constants.KEY_SCHOOL_ID)) {
+                    int schoolId = dataObj.getInt(Constants.KEY_SCHOOL_ID);
+                    if (schoolId == SharedPreferenceHelper.getSchoolId())
+                        new NetworkHelper(this).refreshSchoolInformation();
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "validateDataMessage: " + e.toString());
+        }
     }
 }

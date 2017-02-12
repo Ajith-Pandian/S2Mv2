@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.wowconnect.NetworkHelper;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
+import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.models.Schools;
 import com.example.wowconnect.ui.customUtils.Utils;
 import com.example.wowconnect.ui.landing.LandingActivity;
@@ -71,8 +72,10 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
                 notifyDataSetChanged();
                 if (isFirstTime)
                     launchManageTeachersAndSections();
-                else
+                else {
+                    refreshAllData();
                     launchLandingActivity();
+                }
                 ((Activity) context).finish();
             }
         });
@@ -102,11 +105,9 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
                     .into(target);
     }
 
-
     private void setActiveSchool(Schools school) {
         removeOldActiveSchool();
         school.setActive(true);
-        SharedPreferenceHelper.setSchoolName(school.getName());
         SharedPreferenceHelper.setSchoolId(school.getId());
         if (!isFirstTime)
             Utils.getInstance().showToast("School Changed");
@@ -116,6 +117,29 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         for (Schools school : schoolsList) {
             school.setActive(false);
         }
+    }
+
+    private void refreshAllData() {
+        new DataBaseUtil(context).refreshDb();
+        NetworkHelper helper = new NetworkHelper(context);
+        helper.getDashBoardDetails(new NetworkHelper.NetworkListener() {
+            @Override
+            public void onFinish() {
+
+            }
+        });
+        helper.getNetworkUsers(new NetworkHelper.NetworkListener() {
+            @Override
+            public void onFinish() {
+
+            }
+        });
+        helper.getUserSections(new NetworkHelper.NetworkListener() {
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 
     private void updateActiveSchoolVisibility(int position, ViewHolder holder) {

@@ -388,7 +388,14 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        getMcqs();
+                        if (NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs() != null &&
+                                        NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs().size() > 0) {
+                            NewDataHolder.getInstance(MilesActivity.this).setCurrentMileId(thisMileId);
+                            startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class)
+                                    .putExtra(Constants.KEY_TITLE, holder.getCurrentMileTitle())
+                                    .putExtra(Constants.KEY_QUESTION,
+                                            NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs()), REQUEST_CODE);
+                        } else allowTrainingToComplete();
                     }
                 });
             else
@@ -484,11 +491,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     mcq.setOptions(optionsList);
                     mcqsArrayList.add(i, mcq);
                 }
-                NewDataHolder.getInstance(this).setCurrentMileId(thisMileId);
-                startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class)
-                        .putExtra(Constants.KEY_TITLE, holder.getCurrentMileTitle())
-                        .putExtra(Constants.KEY_QUESTION, mcqsArrayList), REQUEST_CODE);
-            } else allowTrainingToComplete();
+            }
+
 
         } catch (JSONException ex) {
             Log.e("MCQ", "loadQuestions: ", ex);

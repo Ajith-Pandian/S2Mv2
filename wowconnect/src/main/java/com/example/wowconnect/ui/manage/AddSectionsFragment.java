@@ -249,7 +249,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                     teachersSpinner.setSelection(i);
             }
         } else {
-            new NetworkHelper(getContext()).getTeachers(new NetworkHelper.NetworkListener() {
+            new NetworkHelper(getContext()).getNetworkUsers(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
                     selectTeacher(teacherId);

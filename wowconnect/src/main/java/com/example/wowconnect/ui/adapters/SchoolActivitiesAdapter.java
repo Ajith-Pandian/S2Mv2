@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.wowconnect.NetworkHelper;
 import com.example.wowconnect.R;
+import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.models.SclActs;
 import com.squareup.picasso.Picasso;
 
@@ -61,19 +62,21 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
                 new NetworkHelper(context).likeActivity(sclActs.getId(), new NetworkHelper.LikeListener() {
                     @Override
                     public void onLiked() {
-                        changeColor(holder.likeButton, R.color.colorPrimary);
+                       // changeColor(holder.likeButton, R.color.colorPrimary);
                         holder.likeButton.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
                         sclActs.setLikesCount(sclActs.getLikesCount() + 1);
                         sclActs.setLiked(true);
+                        saveActivityInDb(sclActs);
                         notifyDataSetChanged();
                     }
 
                     @Override
                     public void onUnLiked() {
-                        changeColor(holder.likeButton, R.color.mile_oolor8);
+                        //changeColor(holder.likeButton, R.color.mile_oolor8);
                         holder.likeButton.setColorFilter(context.getResources().getColor(R.color.mile_oolor8));
                         sclActs.setLikesCount(sclActs.getLikesCount() - 1);
                         sclActs.setLiked(false);
+                        saveActivityInDb(sclActs);
                         notifyDataSetChanged();
                     }
                 });
@@ -83,6 +86,10 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
 
     private void changeColor(ImageButton button, int color) {
         button.setColorFilter(context.getResources().getColor(color));
+    }
+
+    private void saveActivityInDb(SclActs schoolActivity) {
+        new DataBaseUtil(context).updateSchoolActivity(schoolActivity);
     }
 
     @Override

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.wowconnect.NewDataHolder;
-import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.R;
+import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.models.DbUser;
 
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 
 /**
@@ -94,7 +93,8 @@ public class ProfileFragment extends Fragment {
         DbUser currentProfile = NewDataHolder.getInstance(getContext()).getCurrentNetworkUser();
         profileModels.add(new ProfileModel(R.drawable.email, currentProfile.getEmail(), Constants.TEXT_EMAIL));
         profileModels.add(new ProfileModel(R.drawable.phone, currentProfile.getPhoneNum(), Constants.TEXT_PHONE_NUMBER));
-        profileModels.add(new ProfileModel(R.drawable.scholl, SharedPreferenceHelper.getSchoolName(), Constants.TEXT_SCHOOL_NAME));
+        String schoolName = NewDataHolder.getInstance(getContext()).getSchoolById(SharedPreferenceHelper.getSchoolId()).getName();
+        profileModels.add(new ProfileModel(R.drawable.scholl, schoolName, Constants.TEXT_SCHOOL_NAME));
         if (currentProfile.getGender() != null && !currentProfile.getGender().equals(""))
             profileModels.add(new ProfileModel(R.drawable.gender, currentProfile.getGender(), Constants.TEXT_GENDER));
         if (currentProfile.getDob() != null && !currentProfile.getDob().equals(""))

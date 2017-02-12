@@ -3,7 +3,6 @@ package com.example.wowconnect;
 import android.content.Context;
 import android.util.Log;
 
-
 import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.domain.temp.DataParser;
@@ -11,7 +10,7 @@ import com.example.wowconnect.models.DbUser;
 import com.example.wowconnect.models.Schools;
 import com.example.wowconnect.models.SclActs;
 import com.example.wowconnect.models.Sections;
-import com.example.wowconnect.models.User;
+import com.example.wowconnect.models.mcq.MCQs;
 import com.example.wowconnect.models.milestones.TMileData;
 import com.example.wowconnect.models.milestones.TMiles;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -55,9 +54,9 @@ public class NewDataHolder {
     private ArrayList<TMiles> introTrainingsList;
     private ArrayList<TMiles> archiveList;
     private ArrayList<TMileData> milesDataList, introDataList;
-    private ArrayList<User> teachersList;
-    private ArrayList<DbUser> networkUsers;
+    private ArrayList<MCQs> currentMileMcqs;
     private ArrayList<Sections> sectionsList;
+    private ArrayList<DbUser> networkUsers;
     private ArrayList<SclActs> sclActList;
     private SclActs bulletin;
     private String currentMileTitle;
@@ -120,14 +119,13 @@ public class NewDataHolder {
                     SharedPreferenceHelper.setUserRoles(getStringsFromArray(schoolJsonObj.getJSONArray(Constants.KEY_ROLES)));
                 schoolsArrayList.add(school);
             }
+            setSchools(schoolsArrayList);
             user.setType(userType);
             user.setSchoolsList(schoolsArrayList);
             if (schoolsArrayList.size() > 0) {
                 user.setSchoolId(schoolsArrayList.get(0).getId());
                 user.setSchoolName(schoolsArrayList.get(0).getName());
                 SharedPreferenceHelper.setSchoolId(user.getSchoolsList().get(0).getId());
-                SharedPreferenceHelper.setSchoolName(user.getSchoolsList().get(0).getName());
-                SharedPreferenceHelper.setSchoolIamge(user.getSchoolsList().get(0).getLogo());
             }
 
           /* */
@@ -186,6 +184,7 @@ public class NewDataHolder {
                         sclActList.add(sclActivity);
                 }
                 //user.setSclActs(sclActList);
+
                 setSclActList(sclActList);
             }
         } catch (JSONException ex) {
@@ -300,10 +299,6 @@ public class NewDataHolder {
     }
 
 
-    public void setTeachersList(ArrayList<User> teachersList) {
-        this.teachersList = teachersList;
-    }
-
     public ArrayList<Sections> getSectionsList() {
         return new DataBaseUtil(context).getUserSections();
     }
@@ -321,11 +316,11 @@ public class NewDataHolder {
     }
 
     public ArrayList<SclActs> getSclActList() {
-        return sclActList;
+        return new DataBaseUtil(context).getSchoolActivities();
     }
 
     public void setSclActList(ArrayList<SclActs> sclActList) {
-        this.sclActList = sclActList;
+        new DataBaseUtil(context).setSchoolActivities(sclActList);
     }
 
     public SclActs getBulletin() {
@@ -353,11 +348,20 @@ public class NewDataHolder {
     }
 
     public ArrayList<DbUser> getNetworkUsers() {
-        return new DataBaseUtil(context).getNetworkUsers();
+       return this.networkUsers;
     }
 
     public void setNetworkUsers(ArrayList<DbUser> networkUsers) {
         new DataBaseUtil(context).setNetworkUsers(networkUsers);
+        this.networkUsers = networkUsers;
+    }
+
+    public Schools getSchoolById(int SchoolId) {
+        return new DataBaseUtil(context).getSchoolById(SchoolId);
+    }
+
+    public void setSchools(ArrayList<Schools> schoolsArrayListsers) {
+        new DataBaseUtil(context).setSchools(schoolsArrayListsers);
     }
 
     public ArrayList<DbUser> getTeachersList() {
@@ -369,4 +373,14 @@ public class NewDataHolder {
         }
         return teachersList;
     }
+
+    public ArrayList<MCQs> getCurrentMileMcqs() {
+        return currentMileMcqs;
+    }
+
+    public void setCurrentMileMcqs(ArrayList<MCQs> currentMileMcqs) {
+        this.currentMileMcqs = currentMileMcqs;
+    }
+
+
 }

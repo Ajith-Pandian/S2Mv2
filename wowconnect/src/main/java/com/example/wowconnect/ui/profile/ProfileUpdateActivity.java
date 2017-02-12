@@ -36,6 +36,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import com.example.wowconnect.NewDataParser;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.domain.Constants;
@@ -558,7 +559,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
         if (user.getType().equals(Constants.USER_TYPE_S2M_ADMIN))
             launchSelectSchool();
         else if (user.getType().equals(Constants.USER_TYPE_SCHOOL)) {
-            ArrayList<String> roles = SharedPreferenceHelper.getUserRoles();
+            ArrayList<String> roles =  new NewDataParser().getUserRoles(this, SharedPreferenceHelper.getUserId());
             if (roles.contains(Constants.ROLE_SCL_ADMIN) ||
                     roles.contains(Constants.ROLE_COORDINATOR))
                 launchManageTeachersAndSections();

@@ -3,10 +3,13 @@ package com.example.wowconnect.domain.database;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.models.DbUser;
+import com.example.wowconnect.models.Schools;
 import com.example.wowconnect.models.SclActs;
 import com.example.wowconnect.models.Sections;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -57,6 +60,19 @@ public class DataBaseUtil {
             return helper.getSclActsDao();
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "getLocalSclActsDao: ", ex);
+            //throw new RuntimeException("Cannot get user Dao");
+            return null;
+        }
+    }
+
+
+    private Dao<Schools, Integer> getLocalSchoolsDao() {
+        try {
+            if (helper == null)
+                helper = new DataBaseHelper(context);
+            return helper.getSchoolsDao();
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "getLocalSchoolsDao: ", ex);
             //throw new RuntimeException("Cannot get user Dao");
             return null;
         }
@@ -180,15 +196,89 @@ public class DataBaseUtil {
     public void setSchoolActivities(ArrayList<SclActs> sclActsList) {
         try {
             for (SclActs sclAct : sclActsList) {
-                Dao<SclActs, Integer> userDao = getLocalSclActsDao();
-                if (userDao != null) {
-                    userDao.createOrUpdate(sclAct);
+                Dao<SclActs, Integer> sclActsDao = getLocalSclActsDao();
+                if (sclActsDao != null) {
+                    sclActsDao.createOrUpdate(sclAct);
                 }
             }
             Log.d(context.getClass().getSimpleName(), "setSchoolActivities:");
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "setSchoolActivities: ", ex);
             throw new RuntimeException("Cannot create school activities");
+        }
+    }
+
+
+    public void setSchools(ArrayList<Schools> schoolsList) {
+        try {
+            for (Schools school : schoolsList) {
+                Dao<Schools, Integer> schoolsDao = getLocalSchoolsDao();
+                if (schoolsDao != null) {
+                    schoolsDao.createOrUpdate(school);
+                }
+            }
+            Log.d(context.getClass().getSimpleName(), "setSchools:");
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "setSchools: ", ex);
+            throw new RuntimeException("Cannot create schools");
+        }
+    }
+
+    public Schools getSchoolById(int schoolId) {
+        try {
+            Dao<Schools, Integer> sclActsDao = getLocalSchoolsDao();
+            if (sclActsDao != null) {
+                return sclActsDao.queryForId(schoolId);
+            } else throw new RuntimeException("No schools in table");
+
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "getSchoolById: ", ex);
+            throw new RuntimeException("No schools in table");
+        }
+    }
+
+    public void updateSchool(Schools school) {
+        try {
+            Dao<Schools, Integer> schoolsDao = getLocalSchoolsDao();
+            if (schoolsDao != null) {
+                schoolsDao.update(school);
+            }
+            Log.d(context.getClass().getSimpleName(), "updateSchool:");
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "updateSchool: ", ex);
+            throw new RuntimeException("Cannot update schools");
+        }
+    }
+
+    public void updateSchoolActivity(SclActs schoolActivity) {
+        try {
+            Dao<SclActs, Integer> sclActsDao = getLocalSclActsDao();
+            if (sclActsDao != null) {
+                sclActsDao.update(schoolActivity);
+            }
+            Log.d(context.getClass().getSimpleName(), "updateSchoolActivity:");
+        } catch (SQLException ex) {
+            Log.e(context.getClass().getSimpleName(), "updateSchoolActivity: ", ex);
+            throw new RuntimeException("Cannot update school activity");
+        }
+    }
+
+    public void refreshDb() {
+        deleteOtherUsersInDb();
+        new DataBaseHelper(context).refreshAllTables();
+    }
+
+    private void deleteOtherUsersInDb() {
+        try {
+            if (getLocalUserDao() != null) {
+                DbUser ownUser = getLocalUserDao().queryForId(SharedPreferenceHelper.getUserId());
+                TableUtils.dropTable(getLocalUserDao(), false);
+                TableUtils.createTable(getLocalUserDao());
+                getLocalUserDao().createOrUpdate(ownUser);
+            }
+        } catch (SQLException e) {
+            Log.e(context.getClass().getSimpleName(), "deleteOtherUsersInDb: ", e);
+
         }
     }
 }

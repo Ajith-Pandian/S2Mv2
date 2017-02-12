@@ -14,8 +14,13 @@ import android.widget.ImageView;
 import com.example.wowconnect.NewDataHolder;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
+import com.example.wowconnect.models.Schools;
+import com.example.wowconnect.models.SclActs;
 import com.example.wowconnect.ui.adapters.SchoolActivitiesAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,22 +42,29 @@ public class SchoolDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            ActionBar actionBar=getSupportActionBar();
+            ActionBar actionBar = getSupportActionBar();
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDefaultDisplayHomeAsUpEnabled(true);
         }
-        collapsingToolbarLayout.setTitle(SharedPreferenceHelper.getSchoolName()+ "   ");
-        Picasso.with(this).load(SharedPreferenceHelper.getSchoolImage()).into(schoolImage);
+        Schools school = NewDataHolder
+                .getInstance(this)
+                .getSchoolById(SharedPreferenceHelper.getSchoolId());
+        collapsingToolbarLayout.setTitle(school.getName() + " ");
+        if (school.getLogo() != null && !school.getLogo().isEmpty())
+            Picasso.with(this).load(school.getLogo()).into(schoolImage);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 mLayoutManager.getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setNestedScrollingEnabled(false);
+        ArrayList<SclActs> sclActsArrayList = NewDataHolder.getInstance(this).getSclActList();
+        Collections.reverse(sclActsArrayList);
         recyclerView.setAdapter(new
-                SchoolActivitiesAdapter(getApplicationContext(), NewDataHolder.getInstance(this).getSclActList()));
+                SchoolActivitiesAdapter(getApplicationContext(), sclActsArrayList));
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

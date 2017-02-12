@@ -7,12 +7,12 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
 import com.example.wowconnect.domain.Constants;
+import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.domain.network.VolleySingleton;
 import com.example.wowconnect.domain.temp.DataParser;
 import com.example.wowconnect.models.DbUser;
-import com.example.wowconnect.models.User;
+import com.example.wowconnect.models.Schools;
 import com.example.wowconnect.models.milestones.TMiles;
 import com.example.wowconnect.ui.customUtils.Utils;
 import com.example.wowconnect.ui.customUtils.VolleyStringRequest;
@@ -33,7 +33,6 @@ import static com.example.wowconnect.domain.Constants.KEY_DELETE;
 import static com.example.wowconnect.domain.Constants.KEY_MESSAGE;
 import static com.example.wowconnect.domain.Constants.KEY_OPTIONS;
 import static com.example.wowconnect.domain.Constants.KEY_SECTIONS;
-import static com.example.wowconnect.domain.Constants.KEY_TEACHERS;
 import static com.example.wowconnect.domain.Constants.KEY_USERS;
 import static com.example.wowconnect.domain.Constants.SCHOOLS_URL;
 import static com.example.wowconnect.domain.Constants.SEPERATOR;
@@ -244,86 +243,6 @@ public class NetworkHelper {
             networkListener.onFinish();
         } catch (JSONException exception) {
             Log.e("NetworkHelper", "saveNetworkUsers: ", exception);
-        }
-    }
-
-    public void getTeachers(NetworkListener networkListener) {
-        this.networkListener = networkListener;
-        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_TEACHERS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("teacherRequest", "onResponse: " + response);
-                        saveTeachers(response);
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("teacherRequest", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
-
-    }
-
-    private void saveTeachers(String teachersResponse) {
-        ArrayList<User> teachersList = new ArrayList<>();
-        try {
-            JSONObject profileObj = new JSONObject(teachersResponse);
-            JSONArray profilesArray = profileObj.getJSONArray(KEY_TEACHERS);
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject userJson = profilesArray.getJSONObject(i);
-                User user = new User();
-                user.setFirstName(userJson.getString(Constants.KEY_FIRST_NAME));
-                user.setId(userJson.getInt(Constants.KEY_ID));
-                String lastName = userJson.getString(Constants.KEY_LAST_NAME);
-                if (lastName != null && !lastName.equals("null"))
-                    user.setLastName(lastName);
-                String email = userJson.getString(Constants.KEY_EMAIL);
-                if (email != null && !email.equals("null"))
-                    user.setEmail(email);
-                user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
-                user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
-
-                teachersList.add(i, user);
-            }
-
-            //DataHolder.getInstance(getContext()).setTeachersList(teachersList);
-            NewDataHolder.getInstance(context).setTeachersList(teachersList);
-            this.networkListener.onFinish();
-
-        } catch (JSONException exception) {
-            Log.e("DataHolder", "saveUserDetails: ", exception);
         }
     }
 
@@ -582,7 +501,7 @@ public class NetworkHelper {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("introMileDetails", "onErrorResponse: " + error);
+                        Log.d("archiveRequest", "onErrorResponse: " + error);
 
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
@@ -731,6 +650,67 @@ public class NetworkHelper {
         });
 
         VolleySingleton.getInstance(context).addToRequestQueue(likeRequest);
+    }
+
+    public void refreshSchoolInformation() {
+        VolleyStringRequest getSchoolInfoRequest = new VolleyStringRequest(Request.Method.GET,
+                SCHOOLS_URL + SharedPreferenceHelper.getSchoolId(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("getSchoolInfoRequest", "onResponse: " + response);
+
+                        try {
+                            JSONObject schoolResponse = new JSONObject(response);
+                            Schools school = new Schools();
+                            school.setId(schoolResponse.getInt(Constants.KEY_ID));
+                            school.setName(schoolResponse.getString(Constants.KEY_NAME));
+                            school.setLogo(schoolResponse.getString(Constants.KEY_LOGO));
+                            school.setLocality(schoolResponse.getString(Constants.KEY_LOCALITY));
+                            school.setCity(schoolResponse.getString(Constants.KEY_CITY));
+                            new DataBaseUtil(context).updateSchool(school);
+                        } catch (JSONException ex) {
+                            Log.e("getSchoolInfoRequest", "onResponse: ", ex);
+                        }
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("getSchoolInfoRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(getSchoolInfoRequest);
     }
 
     public void removeLikeListener() {

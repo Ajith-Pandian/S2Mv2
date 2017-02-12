@@ -18,9 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.example.wowconnect.NetworkHelper;
 import com.example.wowconnect.NewDataHolder;
+import com.example.wowconnect.NewDataParser;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.domain.Constants;
@@ -35,6 +35,7 @@ import com.squareup.picasso.Target;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +43,6 @@ import in.arjsna.swipecardlib.SwipeCardView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-
 
 
 /**
@@ -134,7 +134,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        initSwipeCards();
         return view;
     }
 
@@ -145,57 +144,70 @@ public class HomeFragment extends Fragment {
             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
         } else
             buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
+        initSwipeCards();
+
     }
 
     void initSwipeCards() {
         ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
         ArrayList<SclActs> swipeList = new ArrayList<>();
-        int cardsCount = schoolActivitiesList.size() < 5 ? schoolActivitiesList.size() : 5;
-        for (int i = 0; i < cardsCount; i++) {
-            swipeList.add(schoolActivitiesList.get(i));
+        if (schoolActivitiesList != null && schoolActivitiesList.size() > 0) {
+            Collections.reverse(schoolActivitiesList);
+            seeAllText.setText("see all");
+            seeAllText.setClickable(true);
+            lastCardLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchSchoolDetails();
+                }
+            });
+
+            int cardsCount = schoolActivitiesList.size() < 5 ? schoolActivitiesList.size() : 5;
+            for (int i = 0; i < cardsCount; i++) {
+                swipeList.add(schoolActivitiesList.get(i));
+            }
+            swipeCardView.setAdapter(new SchoolActivitiesSwipeAdapter(getActivity(), swipeList));
+            swipeCardView.setFlingListener(new SwipeCardView.OnCardFlingListener() {
+                @Override
+                public void onCardExitLeft(Object dataObject) {
+
+                }
+
+                @Override
+                public void onCardExitRight(Object dataObject) {
+
+                }
+
+                @Override
+                public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: " + itemsInAdapter);
+                    boolean visibility = itemsInAdapter == 0;
+                    lastCardLayout.setVisibility(visibility ? VISIBLE : GONE);
+                    swipeCardView.setVisibility(!visibility ? VISIBLE : GONE);
+                }
+
+                @Override
+                public void onScroll(float scrollProgressPercent) {
+
+                }
+
+                @Override
+                public void onCardExitTop(Object dataObject) {
+
+                }
+
+                @Override
+                public void onCardExitBottom(Object dataObject) {
+
+                }
+            });
+        } else {
+            lastCardLayout.setVisibility(VISIBLE);
+            swipeCardView.setVisibility(GONE);
+            seeAllText.setText("No Activities");
+            seeAllText.setClickable(false);
+            lastCardLayout.setOnClickListener(null);
         }
-        swipeCardView.setAdapter(new SchoolActivitiesSwipeAdapter(getActivity(), swipeList));
-        swipeCardView.setFlingListener(new SwipeCardView.OnCardFlingListener() {
-            @Override
-            public void onCardExitLeft(Object dataObject) {
-
-            }
-
-            @Override
-            public void onCardExitRight(Object dataObject) {
-
-            }
-
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                Log.d(TAG, "onAdapterAboutToEmpty: " + itemsInAdapter);
-                boolean visibility = itemsInAdapter == 0;
-                lastCardLayout.setVisibility(visibility ? VISIBLE : GONE);
-                swipeCardView.setVisibility(!visibility ? VISIBLE : GONE);
-            }
-
-            @Override
-            public void onScroll(float scrollProgressPercent) {
-
-            }
-
-            @Override
-            public void onCardExitTop(Object dataObject) {
-
-            }
-
-            @Override
-            public void onCardExitBottom(Object dataObject) {
-
-            }
-        });
-        lastCardLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSchoolDetails();
-            }
-        });
-        lastCardLayout.setVisibility(GONE);
     }
 
     void loadUserData() throws SQLException {
@@ -206,7 +218,7 @@ public class HomeFragment extends Fragment {
         if (userType.equals(Constants.USER_TYPE_S2M_ADMIN)) {
             designation.setText(Constants.TEXT_S2M_ADMIN);
         } else if (userType.equals(Constants.USER_TYPE_SCHOOL)) {
-            ArrayList<String> roles = SharedPreferenceHelper.getUserRoles();
+            ArrayList<String> roles = new NewDataParser().getUserRoles(getContext(), SharedPreferenceHelper.getUserId());
             if (roles.contains(Constants.ROLE_COORDINATOR))
                 designation.setText(Constants.TEXT_COORDINATOR);
             else if (roles.contains(Constants.ROLE_SCL_ADMIN))

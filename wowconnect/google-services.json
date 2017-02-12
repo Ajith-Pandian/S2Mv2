@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:689640945895:android:880b8bbebae727fd",
+        "mobilesdk_app_id": "1:689640945895:android:2b8f5f0b9f23a60c",
         "android_client_info": {
-          "package_name": "com.wowconnect"
+          "package_name": "com.example.wowconnect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "689640945895-7onjuo6ahpcfl39donn6ov0qq771vpts.apps.googleusercontent.com",
+          "client_id": "689640945895-90khdepilt3vj1s004vjf513g7kluh59.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.wowconnect",
-            "certificate_hash": "35AAD09A7BBAF7F24FD2E426397F17D740E7F78A"
+            "package_name": "com.example.wowconnect",
+            "certificate_hash": "B77D60B9642635A8E8F08FF1175727F8A8384419"
           }
         },
         {
@@ -27,8 +27,12 @@
           "client_type": 3
         }
       ],
-     "api_key": [{"current_key":""}],
-	 "services": {
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMrs_Y2rM4txL5s-aI96uRAl5FiraBKoY"
+        }
+      ],
+      "services": {
         "analytics_service": {
           "status": 1
         },

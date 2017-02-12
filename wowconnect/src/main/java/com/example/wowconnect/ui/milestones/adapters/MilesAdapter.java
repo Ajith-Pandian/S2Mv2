@@ -17,12 +17,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
 import com.example.wowconnect.NewDataHolder;
 import com.example.wowconnect.R;
 import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.domain.network.VolleySingleton;
+import com.example.wowconnect.models.mcq.MCQs;
 import com.example.wowconnect.models.milestones.TMileData;
 import com.example.wowconnect.models.milestones.TMiles;
 import com.example.wowconnect.ui.customUtils.VolleyStringRequest;
@@ -124,16 +124,18 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(training.getTitle());
                         ArrayList<TMileData> mileDataArrayList;
-                        if (isIntro)
+                        ArrayList<MCQs> trainingMCQsList;
+                        if (isIntro) {
                             mileDataArrayList = holder.getIntroTrainingsList().get(position).getMileData();
-                        else
+                            trainingMCQsList = holder.getIntroTrainingsList().get(position).getMcqs();
+                        } else {
                             mileDataArrayList = holder.getMilesList().get(position).getMileData();
-
+                            trainingMCQsList = holder.getMilesList().get(position).getMcqs();
+                        }
                         holder.setMilesDataList(mileDataArrayList);
+                        holder.setCurrentMileMcqs(trainingMCQsList);
                         holder.setCurrentMileId(training.getId());
                         openActivity(MilesActivity.class, false, training.isCompletable(), milestonesList.get(position).getId());
-
-
                     }
                 });
                 break;

@@ -11,7 +11,7 @@ android {
     buildToolsVersion "$rootProject.buildToolsVersion"
 
     defaultConfig {
-        applicationId "com.wowconnect"
+        applicationId "com.example.wowconnect"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1

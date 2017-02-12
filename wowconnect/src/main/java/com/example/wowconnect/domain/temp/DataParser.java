@@ -48,7 +48,7 @@ public class DataParser {
                         getIntFromJson(sectionJsonObject, KEY_MILES_COMPLETION_COUNT),
                         getIntFromJson(sectionJsonObject, KEY_MILES_COUNT),
                         (sectionJsonObject.getString(KEY_MILESTONE_NAME)),
-                        sectionJsonObject.getInt(KEY_MILESTONE_ID),
++                        sectionJsonObject.getInt(KEY_MILESTONE_ID),
                         sectionJsonObject.getInt(KEY_STUDENT_COUNT));
 
                 if (sectionJsonObject.has(KEY_TEACHER_NAME) && !sectionJsonObject.isNull(KEY_TEACHER_NAME))

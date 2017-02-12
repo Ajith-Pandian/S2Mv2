@@ -1,5 +1,7 @@
 package com.example.wowconnect.models.milestones;
 
+import com.example.wowconnect.models.mcq.MCQs;
+
 import java.util.ArrayList;
 
 /**
@@ -10,6 +12,7 @@ public class TMiles {
     private int id, milestoneId, mileIndex;
     private String title, note, type;
     private ArrayList<TMileData> mileData;
+    private ArrayList<MCQs> mcqs;
     private boolean isCompletable;
 
     public TMiles() {
@@ -86,5 +89,13 @@ public class TMiles {
 
     public void setCompletable(boolean completable) {
         isCompletable = completable;
+    }
+
+    public ArrayList<MCQs> getMcqs() {
+        return mcqs;
+    }
+
+    public void setMcqs(ArrayList<MCQs> mcqs) {
+        this.mcqs = mcqs;
     }
 }

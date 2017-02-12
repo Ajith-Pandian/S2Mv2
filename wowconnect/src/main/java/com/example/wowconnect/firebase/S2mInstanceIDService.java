@@ -1,4 +1,4 @@
-package com.example.wowconnect.ui.notification;
+package com.example.wowconnect.firebase;
 
 import android.util.Log;
 

@@ -3,13 +3,14 @@ package com.example.wowconnect;
 import android.content.Context;
 import android.util.Log;
 
-
 import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.domain.database.DataBaseUtil;
 import com.example.wowconnect.models.DbUser;
 import com.example.wowconnect.models.Milestones;
 import com.example.wowconnect.models.S2mConfiguration;
 import com.example.wowconnect.models.Schools;
+import com.example.wowconnect.models.mcq.MCQs;
+import com.example.wowconnect.models.mcq.McqOptions;
 import com.example.wowconnect.models.milestones.TMileData;
 import com.example.wowconnect.models.milestones.TMiles;
 
@@ -147,10 +148,12 @@ public class NewDataParser {
                     if (!milesJson.isNull(Constants.KEY_CONTENT_INDEX))
                         miles.setMileIndex(milesJson.getInt(Constants.KEY_CONTENT_INDEX));
                 } else {
+                    if (!milesJson.isNull(Constants.KEY_MCQS) && milesJson.getJSONArray(Constants.KEY_MCQS).length() > 0)
+                        miles.setMcqs(getMcqs(milesJson.getJSONArray(Constants.KEY_MCQS)));
+                    Log.d("MCQs", "getMiles: " + getMcqs(milesJson.getJSONArray(Constants.KEY_MCQS)).toString());
                     if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
                         completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
                 }
-                Log.d("Completable", "getMiles: " + String.valueOf(completable));
                 miles.setId(milesJson.getInt(Constants.KEY_ID));
                 miles.setType(milesJson.getString(Constants.KEY_TYPE));
                 miles.setTitle(milesJson.getString(Constants.KEY_TITLE));
@@ -245,5 +248,36 @@ public class NewDataParser {
             Log.d("NewDataParser", "getUserRoles: " + e.toString());
         }
         return userRoles;
+    }
+
+    private ArrayList<MCQs> getMcqs(JSONArray mcqsJsonArray) {
+        ArrayList<MCQs> mcqsArrayList = new ArrayList<>();
+
+        try {
+            if (mcqsJsonArray != null && mcqsJsonArray.length() > 0) {
+                for (int i = 0; i < mcqsJsonArray.length(); i++) {
+                    JSONObject mcqsJson = mcqsJsonArray.getJSONObject(i);
+                    MCQs mcq = new MCQs();
+                    mcq.setId(mcqsJson.getInt(Constants.KEY_ID));
+                    mcq.setAnswer(mcqsJson.getString(Constants.KEY_ANSWER));
+                    mcq.setQuestion(mcqsJson.getString(Constants.KEY_QUESTION));
+                    ArrayList<McqOptions> optionsList = new ArrayList<>();
+
+                    JSONArray optionsArray = new JSONArray(mcqsJson.getString(Constants.KEY_OPTIONS));
+                    for (int ii = 0; ii < optionsArray.length(); ii++) {
+                        String optionText = optionsArray.getString(ii);
+                        McqOptions options = new McqOptions();
+                        options.setText(optionText);
+                        optionsList.add(options);
+                    }
+
+                    mcq.setOptions(optionsList);
+                    mcqsArrayList.add(i, mcq);
+                }
+            }
+        } catch (Exception e) {
+            Log.d("NewDataParser", "getMcqs: " + e.toString());
+        }
+        return mcqsArrayList;
     }
 }

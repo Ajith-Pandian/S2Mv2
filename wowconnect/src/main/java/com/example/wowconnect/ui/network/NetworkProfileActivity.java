@@ -1,26 +1,24 @@
 package com.example.wowconnect.ui.network;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.example.wowconnect.NewDataHolder;
+import com.example.wowconnect.NewDataParser;
 import com.example.wowconnect.R;
-
 import com.example.wowconnect.SharedPreferenceHelper;
 import com.example.wowconnect.domain.Constants;
 import com.example.wowconnect.models.DbUser;
@@ -29,7 +27,6 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 
 public class NetworkProfileActivity extends AppCompatActivity {
@@ -78,7 +75,9 @@ public class NetworkProfileActivity extends AppCompatActivity {
             tabLayout.setVisibility(View.GONE);
         }
 
-        if (user.getType().equals(Constants.USER_TYPE_S2M_ADMIN))
+        if (new NewDataParser()
+                .getUserRoles(getApplicationContext(), user.getId())
+                .contains(Constants.ROLE_TEACHER))
             teacherDetailsLayout.setVisibility(View.GONE);
 
         wowsText.setText(user.getWow() + Constants.SPACE + Constants.KEY_WOW);
@@ -140,7 +139,12 @@ public class NetworkProfileActivity extends AppCompatActivity {
         }
 
         int getValidTabsCount() {
-            return user.getType().equals(Constants.USER_TYPE_S2M_ADMIN) ? 1 : 2;
+            if (new NewDataParser()
+                    .getUserRoles(getApplicationContext(), user.getId())
+                    .contains(Constants.ROLE_TEACHER))
+                return 2;
+            else return 1;
+
         }
 
         @Override

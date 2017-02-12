@@ -243,6 +243,7 @@ public class Constants {
     //Database Table Names
     public static final String TABLE_NAME_USERS = "users";
     public static final String TABLE_NAME_SECTIONS = "sections";
+    public static final String TABLE_NAME_SCHOOLS = "schools";
     public static final String TABLE_NAME_SCHOOL_ACTIVITIES = "school_activities";
 
 
@@ -300,5 +301,24 @@ public class Constants {
     public static final String KEY_ACCEPT = "Accept";
     public static final String KEY_AUTHORIZATION = "Authorization";
 
+
+
+    public static final String FB_DATA_TYPE_USER_JOINED_SCHOOL = "user_joined_school";
+    public static final String FB_DATA_TYPE_USER_UPDATED = "user_updated";
+    public static final String FB_DATA_TYPE_USER_LEFT_SCHOOL = "user_left_school";
+    public static final String FB_DATA_SECTION_ADDED = "section_added";
+    public static final String FB_DATA_SECTION_DELETED = "section_deleted";
+    public static final String FB_DATA_BULLETIN_BOARD= "bulletin_board";
+    public static final String FB_DATA_SCHOOL_UPDATED= "school_updated";
+    public static final String FB_DATA_WOW_GIVEN= "wow_given";
+    public static final String FB_DATA_GOT_WOW= "got_wow";
+    public static final String FB_DATA_MILES_COMPLETED= "miles_completed";
+    public static final String FB_DATA_INTRO_TRAININGS_COMPLETED= "intro_trainings_completed";
+    public static final String FB_DATA_TRAININGS_COMPLETED= "training_completed";
+    public static final String FB_DATA_USER_JOINED_SCHOOL= "user_joined_school";
+    public static final String FB_DATA_SECTION_ASSIGNED= "section_assigned";
+    public static final String FB_DATA_BIRTHDAY= "birthday";
+    public static final String FB_DATA_ANNIVERSARY= "anniversary";
+    public static final String FB_NOTIFICATION_BROADCAST= "broadcast";
 
 }

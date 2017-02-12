@@ -89,9 +89,17 @@ public class SectionsFragment extends Fragment {
         sectionsGrid.setLayoutManager(layoutManager);
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 2));
         getUserSections();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         String userType = new DataBaseUtil(getContext()).getUser(SharedPreferenceHelper.getUserId()).getType();
         if (!userType.equals(Constants.USER_TYPE_S2M_ADMIN) &&
-                SharedPreferenceHelper.getUserRoles().contains(Constants.ROLE_TEACHER)) {
+                new NewDataParser().getUserRoles(getContext(),
+                        SharedPreferenceHelper.getUserId()).contains(Constants.ROLE_TEACHER)) {
             cardLayout.setVisibility(View.VISIBLE);
             cardLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,9 +111,7 @@ public class SectionsFragment extends Fragment {
             cardLayout.setVisibility(View.GONE);
             setHasOptionsMenu(true);
         }
-        return view;
     }
-
 
     void getIntroTrainings() {
 
