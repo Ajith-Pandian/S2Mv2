@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root_miles"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingRight="@dimen/mcq_right_padding"
+    android:paddingEnd="@dimen/mcq_right_padding"
+    android:paddingLeft="@dimen/mcq_left_padding"
+    android:paddingStart="@dimen/mcq_left_padding"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/image_button_mcq"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/mcq_answer_selector"
+        android:gravity="center"
+        android:text="8"
+        android:textColor="@android:color/white"
+        android:textSize="25sp" />
+
+
+    <TextView
+        android:id="@+id/text_answer"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/image_button_mcq"
+        android:gravity="left"
+        android:text="@string/school_msg_one"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp" />
+
+
+</RelativeLayout>

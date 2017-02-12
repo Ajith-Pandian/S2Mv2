@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_miles"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.wowconnect.ui.milestones.MilesActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar_layout_miles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <!--  <android.support.v7.widget.Toolbar
+                  android:id="@+id/toolbar_activity_miles"
+                  android:layout_width="match_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  android:background="?attr/colorPrimary"
+                      app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+                <include
+                    android:id="@+id/toolbar_activity_miles"
+                    layout="@layout/toolbar_subtitle" />
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/app_bar_layout_miles"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/image_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_training"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="beforeDescendants"
+                    android:focusableInTouchMode="true">
+
+                    <ScrollView
+                        android:id="@+id/fragment_panel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/text_title_mile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="@dimen/activity_vertical_margin"
+                                android:textAlignment="center"
+                                android:textSize="24sp"
+                                tools:text="This is the title od training and mile this test is to check"
+                                tools:textColor="@color/colorPrimary" />
+
+                            <LinearLayout
+                                android:id="@+id/miles_fragment_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@+id/text_title_mile"
+                                android:layout_marginTop="@dimen/activity_vertical_margin"
+                                android:orientation="vertical"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+
+                            <Button
+                                android:id="@+id/button_complete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/miles_fragment_container"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                                android:background="@android:color/white"
+                                android:minHeight="0dp"
+                                android:minWidth="0dp"
+                                android:paddingBottom="5dp"
+                                android:paddingLeft="48dp"
+                                android:paddingRight="48dp"
+                                android:paddingTop="5dp"
+                                android:text="Mark It Complete"
+                                android:textAllCaps="false"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="14sp" />
+                        </RelativeLayout>
+                    </ScrollView>
+                </FrameLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_frame_miles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:foreground="@drawable/dim_foreground" />
+
+        <FrameLayout
+            android:id="@+id/bottom_sheet_mile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:clickable="true"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="200dp"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/layout_collapse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/close_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:padding="6dp"
+                        app:srcCompat="@drawable/ic_close_black_24dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/layout_collapse_in_mile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/close_icon">
+
+                        <TextView
+                            android:id="@+id/text_title_mile_bottom_sheet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:text="Mile 2:Who am I as a Teacher"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/text_title_mile_bottom_sheet"
+                            android:layout_centerHorizontal="true"
+                            android:text="Did you enjoy this Mile?"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/layout_thumbs_bottomsheet"
+                            android:layout_width="100dp"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="16dp">
+
+                            <ImageView
+                                android:id="@+id/button_thumbs_down"
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_thumbs_up"
+                                android:clickable="true"
+                                android:padding="10dp"
+                                android:src="@drawable/ic_thums_down" />
+
+                            <ImageView
+                                android:id="@+id/button_thumbs_up"
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="20dp"
+                                android:background="@drawable/bg_thumbs_down"
+                                android:clickable="true"
+                                android:padding="10dp"
+                                android:src="@drawable/ic_thums_up" />
+
+                        </LinearLayout>
+
+                        <com.example.wowconnect.ui.customUtils.views.HeightWrapListView
+                            android:id="@+id/list_view_options_bottom_sheet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_alignLeft="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_alignRight="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_alignStart="@+id/text_qus_mile_bottom_sheet"
+                            android:layout_below="@+id/layout_thumbs_bottomsheet"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginTop="16dp"
+                            android:divider="@null"
+                            android:dividerHeight="10dp"
+                            app:hasExtraSpace="true">
+
+                        </com.example.wowconnect.ui.customUtils.views.HeightWrapListView>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/button_submit_bottom_sheet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/layout_collapse"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="48dp"
+                    android:layout_marginLeft="36dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_rounded_button_green"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="48dp"
+                    android:paddingRight="48dp"
+                    android:paddingTop="5dp"
+                    android:text="Submit"
+                    android:textAllCaps="false"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+        </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</RelativeLayout>

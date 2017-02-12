@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/miles_item_height"
+    android:layout_margin="1dp"
+    app:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/miles_item_height">
+
+        <ImageView
+            android:id="@+id/mile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:clickable="true"
+            android:src="@drawable/ph_video_small"
+            tools:src="@drawable/ph_video_small" />
+
+        <ImageButton
+            android:id="@+id/button_play"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_video_play_dr"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_play_white_16dp" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
