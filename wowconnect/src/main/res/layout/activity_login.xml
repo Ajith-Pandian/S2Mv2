@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backgroud_login"
-    tools:context="com.example.wowconnect.ui.login.LoginActivity">
+    tools:context="com.wowconnect.ui.login.LoginActivity">
 
     <FrameLayout
         android:id="@+id/fragment_container"

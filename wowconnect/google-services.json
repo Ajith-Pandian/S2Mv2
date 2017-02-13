@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:689640945895:android:2b8f5f0b9f23a60c",
         "android_client_info": {
-          "package_name": "com.example.wowconnect"
+          "package_name": "com.wowconnect"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "689640945895-90khdepilt3vj1s004vjf513g7kluh59.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.wowconnect",
+            "package_name": "com.wowconnect",
             "certificate_hash": "B77D60B9642635A8E8F08FF1175727F8A8384419"
           }
         },

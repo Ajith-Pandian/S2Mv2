@@ -103,7 +103,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <com.example.wowconnect.ui.customUtils.views.PromptSpinner
+                    <com.wowconnect.ui.customUtils.views.PromptSpinner
                         android:id="@+id/spinner_milestones"
                         style="@style/SpinnerItemStyle"
                         android:layout_width="match_parent"
@@ -138,7 +138,7 @@
 
             </LinearLayout>
 
-            <com.example.wowconnect.ui.customUtils.views.PromptSpinner
+            <com.wowconnect.ui.customUtils.views.PromptSpinner
                 android:id="@+id/spinner_select_teacher"
                 style="@style/SpinnerItemStyle"
                 android:layout_width="match_parent"

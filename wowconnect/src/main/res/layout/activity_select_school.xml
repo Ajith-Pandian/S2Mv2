@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/splash_bg"
     android:layout_height="match_parent"
-    tools:context="com.example.wowconnect.ui.manage.SelectSchoolActivity">
+    tools:context="com.wowconnect.ui.manage.SelectSchoolActivity">
     <android.support.v7.widget.RecyclerView
         android:paddingLeft="16dp"
         android:paddingStart="16dp"

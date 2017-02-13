@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/splash_bg"
-    tools:context="com.example.wowconnect.ui.manage.ManageTeachersActivity">
+    tools:context="com.wowconnect.ui.manage.ManageTeachersActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

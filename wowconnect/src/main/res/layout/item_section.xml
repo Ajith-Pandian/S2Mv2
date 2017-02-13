@@ -84,7 +84,7 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="10sp" />
 
-                    <com.example.wowconnect.ui.customUtils.views.CustomProgressBar
+                    <com.wowconnect.ui.customUtils.views.CustomProgressBar
                         android:id="@+id/progress_miles"
                         progressBarValue="25"
                         android:layout_width="wrap_content"

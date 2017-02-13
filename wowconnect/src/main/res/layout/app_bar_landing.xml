@@ -62,7 +62,7 @@
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add_black_24dp" />
 
-        <com.example.wowconnect.ui.customUtils.views.HeightWrapListView
+        <com.wowconnect.ui.customUtils.views.HeightWrapListView
             android:id="@+id/list_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

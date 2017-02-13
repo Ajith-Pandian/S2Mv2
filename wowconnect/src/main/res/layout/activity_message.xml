@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.wowconnect.ui.tickets.message.MessageActivity">
+    tools:context="com.wowconnect.ui.tickets.message.MessageActivity">
 
     <include
         android:id="@+id/toolbar_message"
@@ -19,7 +19,7 @@
         android:layout_above="@+id/layout_bottom_message"
         android:layout_below="@+id/toolbar_message" />
 
-    <com.example.wowconnect.ui.customUtils.views.HeightWrapListView
+    <com.wowconnect.ui.customUtils.views.HeightWrapListView
         android:id="@+id/list_attachments"
         android:scrollbars="none"
         hasExtraSpace="false"

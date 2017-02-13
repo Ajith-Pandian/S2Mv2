@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/backgroud_login"
-    tools:context="com.example.wowconnect.ui.login.OtpFragment">
+    tools:context="com.wowconnect.ui.login.OtpFragment">
 
     <TextView
         android:layout_width="wrap_content"

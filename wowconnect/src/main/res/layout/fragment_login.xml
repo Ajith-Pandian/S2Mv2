@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_login"
-    tools:context="com.example.wowconnect.ui.login.LoginFragment">
+    tools:context="com.wowconnect.ui.login.LoginFragment">
 
     <ImageView
         android:layout_width="200dp"
