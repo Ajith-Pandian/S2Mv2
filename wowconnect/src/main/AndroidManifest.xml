@@ -53,8 +53,7 @@
         </service>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="77c2aae8f0e7c3ff99d1f497567be4378ce78865"
-            />
+            android:value="2881b38dc5ba49b964249e105305483242a94b4a" />
 
         <activity
             android:name="com.wowconnect.ui.login.LoginActivity"
