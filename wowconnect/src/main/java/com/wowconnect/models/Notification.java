@@ -5,7 +5,7 @@ package com.wowconnect.models;
  */
 
 public class Notification {
-    private String title, data, date, type;
+    private String title, data, date, type,icon;
     private int id;
     private boolean hasRead;
 
@@ -42,6 +42,14 @@ public class Notification {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public String getDate() {

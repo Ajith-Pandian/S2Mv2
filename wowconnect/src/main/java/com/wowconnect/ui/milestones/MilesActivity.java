@@ -40,6 +40,7 @@ import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.network.VolleySingleton;
+import com.wowconnect.models.S2mConfiguration;
 import com.wowconnect.models.mcq.MCQs;
 import com.wowconnect.models.mcq.McqOptions;
 import com.wowconnect.models.miles.AudioMiles;
@@ -67,8 +68,8 @@ import butterknife.ButterKnife;
 import static android.view.View.GONE;
 
 
-public class MilesActivity extends AppCompatActivity implements MilesTextFragment.OnFragmentInteractionListener
-        , MilesVideoFragment.OnFragmentInteractionListener,
+public class MilesActivity extends AppCompatActivity implements
+        MilesTextFragment.OnFragmentInteractionListener, MilesVideoFragment.OnFragmentInteractionListener,
         MilesAudioFragment.OnFragmentInteractionListener, MilesImageFragment.OnFragmentInteractionListener {
     final int REQUEST_CODE = 111;
     @BindView(R.id.miles_fragment_container)
@@ -80,7 +81,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     @BindView(R.id.fragment_panel)
     ScrollView scrollView;
     @BindView(R.id.text_title_mile)
-    TextView textTiltle;
+    TextView textTitle;
     ArrayList<TMileData> mileDataArrayList;
     @BindView(R.id.toolbar_activity_miles)
     Toolbar toolbar;
@@ -90,9 +91,9 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     OptionsAdapter optionsAdapter;
     int selected_option = -1;
     @BindView(R.id.button_thumbs_up)
-    ImageView imageThumsUp;
+    ImageView imageThumbsUp;
     @BindView(R.id.button_thumbs_down)
-    ImageView imageThumsDown;
+    ImageView imageThumbsDown;
     @BindView(R.id.bottom_sheet_mile)
     FrameLayout bottomSheet;
     View.OnClickListener sheetShowListener = new View.OnClickListener() {
@@ -106,7 +107,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 case R.id.button_complete:
                     state = BottomSheetBehavior.STATE_COLLAPSED;
                     invalidateActivation();
-                    imageThumsUp.setActivated(true);
+                    imageThumbsUp.setActivated(true);
                     break;
             }
             BottomSheetBehavior.from(bottomSheet)
@@ -122,7 +123,14 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     Button buttonSubmit;
     @BindView(R.id.close_icon)
     ImageView imageIconClose;
-
+    @BindView(R.id.layout_collapse_in_mile)
+    RelativeLayout layoutCollapse;
+    @BindView(R.id.text_qus_mile_bottom_sheet)
+    TextView textMileQuestion;
+    @BindView(R.id.text_title_mile_bottom_sheet)
+    TextView textMileTitleBottomSheet;
+    @BindView(R.id.text_qus_feedback_bottom_sheet)
+    TextView textFeedbackQuestion;
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
     ArrayList<String> options;
@@ -144,12 +152,11 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     .setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     };
-    boolean isMile, isCompletable;
+    boolean isMile, isCompletable, isIntro;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         boolean isUp = false;
-        @BindView(R.id.layout_collapse_in_mile)
-        RelativeLayout layoutCollapse;
+
 
         @Override
         public void onStateChanged(@NonNull final View bottomSheet, int newState) {
@@ -171,6 +178,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     });
                     loadOptions(true);
                     listOptions.setAlpha(0f);
+                    textFeedbackQuestion.setAlpha(0f);
                     // changeLayoutParams(16);
                     isUp = true;
                     break;
@@ -183,9 +191,9 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         }
 
         void changeLayoutParams(int pixel) {
-          /* RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutCollapse.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutCollapse.getLayoutParams();
             layoutParams.topMargin = Utils.getInstance().getPixelAsDp(getApplicationContext(), pixel);
-            layoutCollapse.setLayoutParams(layoutParams);*/
+            layoutCollapse.setLayoutParams(layoutParams);
         }
 
         @Override
@@ -197,6 +205,8 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 float alpha = (55 * slideOffset) + 200;
                 foregroundLayout.getForeground().setAlpha((int) (alpha));
                 listOptions.setAlpha(slideOffset);
+                textFeedbackQuestion.setAlpha(slideOffset);
+
 
                 if (isUp) {
                     Log.d("Slide", "onSlide: UP");
@@ -235,16 +245,23 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
     SubmitListener submitListener;
 
     void invalidateActivation() {
-        imageThumsDown.setActivated(false);
-        imageThumsUp.setActivated(false);
+        imageThumbsDown.setActivated(false);
+        imageThumbsUp.setActivated(false);
     }
 
     void loadOptions(boolean isUp) {
         options = new ArrayList<>();
+        S2mConfiguration configuration = new NewDataParser().getS2mConfiguration();
         if (isUp) {
-            options = new NewDataParser().getS2mConfiguration().getMileFeedbackUpOptions();
+            options = configuration.getMileFeedbackUpOptions();
+            textFeedbackQuestion.setText(isMile ?
+                    configuration.getMileFeedbackUpQuestion()
+                    : configuration.getTrainingFeedbackUpQuestion());
         } else {
-            options = new NewDataParser().getS2mConfiguration().getMileFeedbackDownOptions();
+            options = configuration.getMileFeedbackDownOptions();
+            textFeedbackQuestion.setText(isMile ?
+                    configuration.getMileFeedbackDownQuestion()
+                    : configuration.getTrainingFeedbackDownQuestion());
         }
         optionsAdapter = new OptionsAdapter(getApplicationContext(), options);
         listOptions.setAdapter(optionsAdapter);
@@ -275,13 +292,10 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
 
 
         holder = NewDataHolder.getInstance(this);
-        if (getIntent().getBooleanExtra("isMile", false)) {
-            toolbarTitle.setText("Miles");
-            isMile = true;
-        } else {
-            toolbarTitle.setText("Training");
-            isMile = false;
-        }
+        isMile = getIntent().getBooleanExtra("isMile", false);
+        isIntro = getIntent().getBooleanExtra("isIntro", false);
+        toolbarTitle.setText(isMile ? "Miles" : "Training");
+
 
         thisMileId = getIntent().getIntExtra(Constants.KEY_ID, -1);
         isCompletable = getIntent().getBooleanExtra("isCompletable", false);
@@ -297,7 +311,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 .setState(BottomSheetBehavior.STATE_HIDDEN);
 
 
-        textTiltle.setText(holder.getCurrentMileTitle());
+        textTitle.setText(holder.getCurrentMileTitle());
         if (!isFragmentsAdded)
             addFragments();
 
@@ -321,7 +335,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                 if (selected_option != -1) {
                     //sendFeedback();
                     //finish();
-                    submitThis();
+                    completeThis();
                 } else
                     showToast("Please select one option to submit");
 
@@ -389,7 +403,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     @Override
                     public void onClick(View view) {
                         if (NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs() != null &&
-                                        NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs().size() > 0) {
+                                NewDataHolder.getInstance(MilesActivity.this).getCurrentMileMcqs().size() > 0) {
                             NewDataHolder.getInstance(MilesActivity.this).setCurrentMileId(thisMileId);
                             startActivityForResult(new Intent(MilesActivity.this, MCQActivity.class)
                                     .putExtra(Constants.KEY_TITLE, holder.getCurrentMileTitle())
@@ -406,7 +420,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         scrollView.setBackgroundDrawable(background);
         buttonComplete.setBackgroundColor(buttonBackgroundColor);
         buttonComplete.setTextColor(buttonTextColor);
-        textTiltle.setTextColor(titleTextColor);
+        textTitle.setTextColor(titleTextColor);
     }
 
     void getMcqs() {
@@ -509,7 +523,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_COLLAPSED);
                     invalidateActivation();
-                    imageThumsUp.setActivated(true);
+                    imageThumbsUp.setActivated(true);
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -522,9 +536,13 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
 
-        imageThumsUp.setOnClickListener(thumbsClickListener);
-        imageThumsDown.setOnClickListener(thumbsClickListener);
+        imageThumbsUp.setOnClickListener(thumbsClickListener);
+        imageThumbsDown.setOnClickListener(thumbsClickListener);
 
+        textMileTitleBottomSheet.setText(holder.getCurrentMileTitle());
+        textMileQuestion.setText(isMile ?
+                new NewDataParser().getS2mConfiguration().getMileQuestion()
+                : new NewDataParser().getS2mConfiguration().getTrainingQuestion());
         imageIconClose.setOnClickListener(sheetShowListener);
     }
 
@@ -598,34 +616,47 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
         super.onBackPressed();
     }
 
-    VolleyStringRequest submitRequest;
+    VolleyStringRequest completeContentRequest;
 
-    void submitThis() {
-        submitRequest = new VolleyStringRequest(Request.Method.POST,
-                Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + Constants.SEPERATOR +
-                        Constants.KEY_SECTIONS + Constants.SEPERATOR + NewDataHolder.getInstance(this).getCurrentSectionId() + Constants.SEPERATOR +
-                        Constants.KEY_CONTENT + Constants.SEPERATOR
-                        + NewDataHolder.getInstance(this).getCurrentMileId() + Constants.SEPERATOR + Constants.KEY_COMPLETE,
+    void completeThis() {
+        String mileTrainingCompleteUrl = Constants.SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + Constants.SEPERATOR +
+                Constants.KEY_SECTIONS + Constants.SEPERATOR + NewDataHolder.getInstance(this).getCurrentSectionId()
+                + Constants.SEPERATOR + Constants.KEY_CONTENT + Constants.SEPERATOR
+                + NewDataHolder.getInstance(this).getCurrentMileId() + Constants.SEPERATOR + Constants.KEY_COMPLETE;
+        String introTrainingCompleteUrl = Constants.INTRO_TRAININGS_URL + Constants.SEPERATOR + NewDataHolder.getInstance(this).getCurrentMileId()
+                + Constants.SEPERATOR + Constants.KEY_COMPLETE;
+        String completeUrl = isIntro ? introTrainingCompleteUrl : mileTrainingCompleteUrl;
+        completeContentRequest = new VolleyStringRequest(Request.Method.POST, completeUrl
+                ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("sendResults", "onResponse: " + response);
+                        Log.d("completeContentRequest", "onResponse: " + response);
                         Utils.getInstance().showToast("Submitted successfully");
-                        new NetworkHelper(MilesActivity.this).getMilestoneContent(
-                                NewDataHolder.getInstance(MilesActivity.this).getCurrentSectionId(),
-                                new NetworkHelper.NetworkListener() {
-                                    @Override
-                                    public void onFinish() {
-                                        finish();
-                                    }
-                                });
+                        if (isIntro)
+                            new NetworkHelper(MilesActivity.this).getMilestoneContent(
+                                    NewDataHolder.getInstance(MilesActivity.this).getCurrentSectionId(),
+                                    new NetworkHelper.NetworkListener() {
+                                        @Override
+                                        public void onFinish() {
+                                            finish();
+                                        }
+                                    });
+                        else
+                            new NetworkHelper(MilesActivity.this).getIntroTrainings(
+                                    new NetworkHelper.NetworkListener() {
+                                        @Override
+                                        public void onFinish() {
+                                            finish();
+                                        }
+                                    });
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         super.onErrorResponse(error);
-                        Log.d("sendResults", "onErrorResponse: " + error);
+                        Log.d("completeContentRequest", "onErrorResponse: " + error);
 
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
@@ -677,7 +708,7 @@ public class MilesActivity extends AppCompatActivity implements MilesTextFragmen
             }
         };
 
-        VolleySingleton.getInstance(this).addToRequestQueue(submitRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(completeContentRequest);
     }
 
 }

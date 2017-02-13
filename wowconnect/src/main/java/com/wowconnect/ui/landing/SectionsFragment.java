@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,10 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
 import com.wowconnect.NewDataParser;
@@ -30,21 +25,18 @@ import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.database.DataBaseUtil;
-import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.models.Sections;
 import com.wowconnect.models.milestones.TMileData;
 import com.wowconnect.models.milestones.TMiles;
 import com.wowconnect.ui.adapters.SectionsAdapter;
 import com.wowconnect.ui.customUtils.HorizontalSpaceItemDecoration;
 import com.wowconnect.ui.customUtils.Utils;
-import com.wowconnect.ui.customUtils.VolleyStringRequest;
+import com.wowconnect.ui.helpers.DialogHelper;
+import com.wowconnect.ui.helpers.S2mAlertDialog;
 import com.wowconnect.ui.manage.AddOrUpdateListener;
 import com.wowconnect.ui.manage.AddSectionsFragment;
 import com.wowconnect.ui.manage.TeacherOrSectionListener;
 import com.wowconnect.ui.milestones.MilestonesActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +45,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
 
 
 /**
@@ -114,66 +105,12 @@ public class SectionsFragment extends Fragment {
     }
 
     void getIntroTrainings() {
-
-        VolleyStringRequest introTrainingsRequest = new VolleyStringRequest(Request.Method.GET, Constants.INTRO_TRAININGS_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("introMileDetails", "onResponse: " + response);
-
-                        try {
-                            JSONObject introResponse = new JSONObject(response);
-
-                            ArrayList<TMiles> introTrainingsList =
-                                    new NewDataParser().getMiles(introResponse.getString(Constants.KEY_INTRO_TRAININGS), false);
-                            if (introTrainingsList.size() > 0)
-                                openMilestonesActivity(introTrainingsList);
-                            else
-                                Utils.getInstance().showToast("No Intro Trainings");
-
-                        } catch (JSONException ex) {
-                            Log.e("introMileDetails", "onResponse: ", ex);
-                        }
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("introMileDetails", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-                Utils.getInstance().showToast(getResources().getString(R.string.er_no_intro_trainings));
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        });
-
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(introTrainingsRequest);
+        NewDataHolder holder = NewDataHolder.getInstance(getContext());
+        ArrayList<TMiles> introTrainingsList = holder.getIntroTrainingsList();
+        if (introTrainingsList != null && introTrainingsList.size() > 0)
+            openMilestonesActivity();
+        else
+            Utils.getInstance().showToast("No Intro Trainings");
     }
 
 
@@ -190,10 +127,9 @@ public class SectionsFragment extends Fragment {
             });
     }
 
-    private void openMilestonesActivity(ArrayList<TMiles> introTrainings) {
+    private void openMilestonesActivity() {
         NewDataHolder holder = NewDataHolder.getInstance(getContext());
         final Intent intent = new Intent(getActivity(), MilestonesActivity.class);
-        holder.setIntroTrainingsList(introTrainings);
         holder.setMilesDataList(new ArrayList<TMileData>());
         holder.setCurrentClassName("Intro");
         holder.setCurrentSectionName("Trainings");
@@ -224,8 +160,25 @@ public class SectionsFragment extends Fragment {
                 }
 
                 @Override
-                public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                    deleteSection(position);
+                public void onDeleteOptionSelected(boolean isTeacher, final int position) {
+                    DialogHelper.createAlertDialog(getActivity(),
+                            getString(R.string.alert_delete_section),
+                            getString(R.string.yes),
+                            getString(R.string.no),
+                            new S2mAlertDialog.AlertListener() {
+                                @Override
+                                public void onPositive() {
+                                    deleteSection(position);
+
+                                }
+
+                                @Override
+                                public void onNegative() {
+                                    DialogHelper.getCurrentDialog().dismiss();
+                                }
+                            }
+                    );
+
                 }
             }, false));
         } else {
@@ -265,7 +218,6 @@ public class SectionsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_add, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

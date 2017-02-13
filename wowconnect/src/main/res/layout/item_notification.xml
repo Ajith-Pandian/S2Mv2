@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/backround_circle_green"
+        tools:background="@drawable/backround_circle_green"
         android:gravity="center"
         android:padding="3dp" />
 

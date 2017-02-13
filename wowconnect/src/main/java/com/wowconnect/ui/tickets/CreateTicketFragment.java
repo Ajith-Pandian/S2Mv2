@@ -27,7 +27,7 @@ import com.wowconnect.NewDataHolder;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.models.Category;
-import com.wowconnect.models.User;
+import com.wowconnect.models.DbUser;
 import com.wowconnect.ui.adapters.CategorySpinnerAdapter;
 import com.wowconnect.ui.adapters.TeachersSpinnerAdapter;
 import com.wowconnect.ui.customUtils.Utils;
@@ -209,7 +209,7 @@ public class CreateTicketFragment extends BottomSheetDialogFragment {
     }
 
     int getUserID() {
-        return ((User) userSpinner.getSelectedItem()).getId();
+        return ((DbUser) userSpinner.getSelectedItem()).getId();
     }
 
     ArrayList<Category> getCategories() {

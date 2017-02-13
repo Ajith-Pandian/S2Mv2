@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
 import com.wowconnect.NewDataParser;
@@ -30,9 +33,9 @@ import com.wowconnect.models.SclActs;
 import com.wowconnect.ui.adapters.SchoolActivitiesSwipeAdapter;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.network.NetworkActivity;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +75,7 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.layout_last_card)
     RelativeLayout lastCardLayout;
 
-    Target target = new Target() {
+    Target profileTarget = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             profileImage.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(getActivity(), bitmap, 20, 1));
@@ -105,11 +108,11 @@ public class HomeFragment extends Fragment {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                if (NewDataHolder.getInstance(getContext()).getBulletin() != null
+                        && bulletinBitmap != null) {
+                   // shareBulletin();
+                    shareBitmap(bulletinBitmap,"Bulletin Board");
+                } else Utils.getInstance().showToast("No bulletin");
             }
         });
         buttonlike.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +140,53 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    Target bulletinTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            bulletinBitmap = bitmap;
+            bulletinImage.setImageBitmap(bitmap);
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
+    Bitmap bulletinBitmap;
+
+    private void shareBitmap(Bitmap bitmap, String fileName) {
+        try {
+            File file = new File(getContext().getCacheDir(), fileName + ".png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            /*file.setReadable(true, false);*/
+            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+            intent.setType("image/*");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+ /*   private void shareBulletin() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "WoW Connect Bulletin");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bulletinBitmap);
+        shareIntent.setType("image*//*");
+        startActivity();
+    }*/
+
     @Override
     public void onResume() {
         super.onResume();
@@ -154,7 +204,6 @@ public class HomeFragment extends Fragment {
         if (schoolActivitiesList != null && schoolActivitiesList.size() > 0) {
             Collections.reverse(schoolActivitiesList);
             seeAllText.setText("see all");
-            seeAllText.setClickable(true);
             lastCardLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -205,7 +254,6 @@ public class HomeFragment extends Fragment {
             lastCardLayout.setVisibility(VISIBLE);
             swipeCardView.setVisibility(GONE);
             seeAllText.setText("No Activities");
-            seeAllText.setClickable(false);
             lastCardLayout.setOnClickListener(null);
         }
     }
@@ -234,7 +282,7 @@ public class HomeFragment extends Fragment {
         Picasso.with(getActivity())
                 .load(avatar) //http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg
                 .resize(100, 100)
-                .into(target);
+                .into(profileTarget);
         if (NewDataHolder.getInstance(getContext()).getBulletin() != null) {
 
             String image = NewDataHolder.getInstance(getContext()).getBulletin().getMsg();
@@ -244,7 +292,7 @@ public class HomeFragment extends Fragment {
                 Picasso.with(getActivity())
                         .load(image)
                         .placeholder(R.drawable.ph_bulletin)
-                        .into(bulletinImage);
+                        .into(bulletinTarget);
         }
         layoutNetwork.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,13 +3,13 @@ package com.wowconnect.domain.database;
 import android.content.Context;
 import android.util.Log;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.models.DbUser;
 import com.wowconnect.models.Schools;
 import com.wowconnect.models.SclActs;
 import com.wowconnect.models.Sections;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class DataBaseUtil {
     private DataBaseHelper helper;
 
     public DataBaseUtil(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     private Dao<DbUser, Integer> getLocalUserDao() {
@@ -105,6 +105,18 @@ public class DataBaseUtil {
             }
     }
 
+    public void updateUser(DbUser user) {
+        Dao<DbUser, Integer> userDao = getLocalUserDao();
+        if (userDao != null)
+            try {
+                userDao.update(user);
+                Log.d(context.getClass().getSimpleName(), "updateUser:");
+            } catch (SQLException ex) {
+                Log.e(context.getClass().getSimpleName(), "updateUser: ", ex);
+                throw new RuntimeException("Cannot update user");
+            }
+    }
+
     public ArrayList<Sections> getUserSections() {
         try {
             Dao<Sections, Integer> userDao = getLocalSectionDao();
@@ -126,7 +138,7 @@ public class DataBaseUtil {
     }
 
     public void setUserSections(ArrayList<Sections> sectionsList) {
-
+        updateSectionsDb();
         try {
             for (Sections user : sectionsList) {
                 Dao<Sections, Integer> sectionDao = getLocalSectionDao();
@@ -278,6 +290,18 @@ public class DataBaseUtil {
             }
         } catch (SQLException e) {
             Log.e(context.getClass().getSimpleName(), "deleteOtherUsersInDb: ", e);
+
+        }
+    }
+
+    private void updateSectionsDb() {
+        try {
+            if (getLocalSectionDao() != null) {
+                TableUtils.dropTable(getLocalSectionDao(), false);
+                TableUtils.createTable(getLocalSectionDao());
+            }
+        } catch (SQLException e) {
+            Log.e(context.getClass().getSimpleName(), "updateSectionsDb: ", e);
 
         }
     }

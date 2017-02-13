@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/appbar"
     android:background="@color/yellowishGreen"
-    android:padding="@dimen/mcq_right_padding"
+    android:padding="@dimen/mcq_padding"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 

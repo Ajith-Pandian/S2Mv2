@@ -10,6 +10,7 @@ public class Constants {
     public static final String BASE_URL = SERVER_ADDRESS + "api/";
     public static final String CONFIGURATION_URL = BASE_URL + "configuration";
     public static final String USER_URL = BASE_URL + "user/";
+    public static final String USERS_URL = BASE_URL + "users/";
     public static final String UPDATE_PROFILE_URL = BASE_URL + "user/update_profile";
     public static final String USER_SECTIONS_URL = BASE_URL + "user/sections";
     public static final String SCHOOLS_URL = BASE_URL + "schools/";
@@ -131,7 +132,7 @@ public class Constants {
     public static final String KEY_MILES = "miles";
     public static final String KEY_MILE = "mile";
     public static final String KEY_MILES_TRAININGS = "miles_trainings";
-    public static final String KEY_WOW = "wows";
+    public static final String KEY_WOWS = "wows";
     public static final String KEY_WOW_COUNT = "wow_count";
     public static final String KEY_TRAINING = "trainings";
     public static final String TYPE_TRAINING = "training";

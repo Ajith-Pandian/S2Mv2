@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/appbar"
         android:background="@color/yellowishGreen"
-        android:padding="@dimen/mcq_right_padding">
+        android:padding="@dimen/mcq_padding">
 
         <ImageButton
             android:id="@+id/image_button_qus"
@@ -52,34 +52,37 @@
         <TextView
             android:id="@+id/text_question"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_height="wrap_content"
-            tools:text="@string/school_msg_one"
-            android:layout_toRightOf="@+id/image_button_qus"
             android:layout_toEndOf="@+id/image_button_qus"
+            android:layout_toRightOf="@+id/image_button_qus"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
-            />
+            tools:text="@string/school_msg_one" />
     </RelativeLayout>
 
-    <ListView
+    <com.wowconnect.ui.customUtils.views.HeightWrapListView
         android:id="@+id/list_answers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button_submit"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_text_question"
+        android:layout_marginLeft="@dimen/mcq_padding"
+        android:layout_marginRight="@dimen/mcq_padding"
+        android:layout_marginTop="@dimen/mcq_padding"
         android:clickable="true"
         android:divider="@null"
-        android:dividerHeight="10dp">
+        android:dividerHeight="10dp"
+        android:scrollbars="none"
+        app:hasExtraSpace="true">
 
-    </ListView>
+    </com.wowconnect.ui.customUtils.views.HeightWrapListView>
 
     <Button
         android:id="@+id/button_submit"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/list_answers"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
@@ -93,6 +96,7 @@
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
         android:paddingTop="5dp"
+        style="?attr/borderlessButtonStyle"
         android:text="Submit"
         android:textAllCaps="false"
         android:textSize="14sp" />

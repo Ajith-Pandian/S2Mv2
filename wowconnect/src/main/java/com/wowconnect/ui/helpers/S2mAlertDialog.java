@@ -19,7 +19,8 @@ public class S2mAlertDialog extends S2MDialogFragment {
     String positiveText, negativeText;
     int alertIcon;
     private static boolean isCancelableDialog;
-    // S2mAlertDialog.build(activity, "Do you want to delete that?", 
+
+    // S2mAlertDialog.build(activity, "Do you want to delete that?",
     //  "OK", "Cancel", ...).show();
     public static S2mAlertDialog build(FragmentActivity activity, String alertMessage,
                                        String positiveText, String negativeText,
@@ -32,7 +33,7 @@ public class S2mAlertDialog extends S2MDialogFragment {
                                 .getResources()
                                 .getColor(R.color.colorPrimaryDark)
                                 + "\'>" + alertMessage + "</font>"));
-        dialogAlert.setAlertIcon(android.R.drawable.ic_dialog_alert);
+        dialogAlert.setAlertIcon(R.mipmap.ic_launcher);
         dialogAlert.setAlertListener(listener);
         dialogAlert.setAlertActivity(activity);
         dialogAlert.setAlertButtonText(positiveText, negativeText);
@@ -43,11 +44,12 @@ public class S2mAlertDialog extends S2MDialogFragment {
     // S2mAlertDialog.build(manager, "Do you want to delete that?");
     public static S2mAlertDialog build(FragmentActivity activity, String body,
                                        AlertListener listener) {
-        return build(activity, body, "OK", "Cancel",false, listener);
+        return build(activity, body, "OK", "Cancel", false, listener);
     }
-    public static S2mAlertDialog build(FragmentActivity activity, String body,boolean isCancelable,
+
+    public static S2mAlertDialog build(FragmentActivity activity, String body, boolean isCancelable,
                                        AlertListener listener) {
-        return build(activity, body, "OK", "Cancel",isCancelable, listener);
+        return build(activity, body, "OK", "Cancel", isCancelable, listener);
     }
 
     public void setAlertIcon(int drawable) {

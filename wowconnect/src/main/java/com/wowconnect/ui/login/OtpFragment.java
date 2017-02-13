@@ -19,17 +19,17 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.wowconnect.domain.Constants;
-import com.wowconnect.domain.network.VolleySingleton;
-import com.wowconnect.NetworkHelper;
-import com.wowconnect.NewDataHolder;
-import com.wowconnect.SharedPreferenceHelper;
-import com.wowconnect.ui.customUtils.VolleyStringRequest;
-import com.wowconnect.R;
-import com.wowconnect.S2MApplication;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.wowconnect.NetworkHelper;
+import com.wowconnect.NewDataHolder;
+import com.wowconnect.R;
+import com.wowconnect.S2MApplication;
+import com.wowconnect.SharedPreferenceHelper;
+import com.wowconnect.domain.Constants;
+import com.wowconnect.domain.network.VolleySingleton;
+import com.wowconnect.ui.customUtils.VolleyStringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,34 +66,21 @@ public class OtpFragment extends Fragment {
     TextView requestOtpText;
     CompositeSubscription subscriptions;
     String enteredOtp;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
     private OtpListener mListener;
 
     public OtpFragment() {
         // Required empty public constructor
+        subscriptions = new CompositeSubscription();
     }
 
-    // TODO: Rename and change types and number of parameters
     public static OtpFragment newInstance() {
-        OtpFragment fragment = new OtpFragment();
-      /*  Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);*/
-        return fragment;
+        return new OtpFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        subscriptions = new CompositeSubscription();
-
     }
 
     @Override
@@ -102,17 +89,19 @@ public class OtpFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
         ButterKnife.bind(this, view);
         edtTextOtp.requestFocus();
+
         //open keyboard
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-
         return view;
     }
 
+    VolleyStringRequest otpRequest;
+
     public void verifyOtp() {
-        VolleyStringRequest otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.AUTHENTICATE_URL,
+        otpRequest = new VolleyStringRequest(Request.Method.POST, Constants.AUTHENTICATE_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -188,16 +177,17 @@ public class OtpFragment extends Fragment {
                     }
                 }
             });
-            FirebaseMessaging.getInstance().subscribeToTopic("School"+ SharedPreferenceHelper.getSchoolId());
+            FirebaseMessaging.getInstance().subscribeToTopic("School" + SharedPreferenceHelper.getSchoolId());
 
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);
         }
     }
 
+    VolleyStringRequest resendOtpRequest;
 
     public void resendOtp() {
-        VolleyStringRequest resendOtpRequest = new VolleyStringRequest(Request.Method.POST, Constants.RESEND_OTP_URL,
+        resendOtpRequest = new VolleyStringRequest(Request.Method.POST, Constants.RESEND_OTP_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -268,6 +258,8 @@ public class OtpFragment extends Fragment {
         mListener = null;
     }
 
+    private final int OTP_LENGTH = 6;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -278,7 +270,7 @@ public class OtpFragment extends Fragment {
                 enteredOtp = textViewTextChangeEvent.text().toString();
 
                 int length = textViewTextChangeEvent.text().length();
-                if (length == 4) {
+                if (length == OTP_LENGTH) {
                     View view = getActivity().getCurrentFocus();
                     if (view != null) {
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -312,10 +304,14 @@ public class OtpFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         subscriptions.unsubscribe();
+        if (otpRequest != null)
+            otpRequest.removeStatusListener();
+        if (resendOtpRequest != null)
+            resendOtpRequest.removeStatusListener();
     }
 
     boolean validateOtp(String otp) {
-        return otp.length() == 4;
+        return otp.length() == OTP_LENGTH;
     }
 
     public interface OtpListener {

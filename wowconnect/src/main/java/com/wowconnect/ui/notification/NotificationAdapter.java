@@ -1,9 +1,6 @@
 package com.wowconnect.ui.notification;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +9,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.wowconnect.R;
 import com.wowconnect.models.Notification;
-import com.wowconnect.ui.customUtils.Utils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -64,30 +59,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 context.startActivity(intent);*/
             }
         });
-        boolean schoolOrTeacher = false;
-        if (schoolOrTeacher) {
-            Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
-            holder.icon.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
-            Target target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    holder.icon.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 0));
-                }
+        if (!notification.getIcon().isEmpty())
+            Picasso.with(context).load(notification.getIcon()).into(holder.icon);
+     /*   Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+        holder.icon.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                holder.icon.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 0));
+            }
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
 
-                }
+            }
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                }
-            };
-            /*if (!notification.getAvatar().equals(""))
-                Picasso.with(context).load(notification.getAvatar()).placeholder(R.drawable.profile).into(target);*/
-        } else
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.section_selected));
+            }
+        };
+            *//*if (!notification.getAvatar().equals(""))
+                Picasso.with(context).load(notification.getAvatar()).placeholder(R.drawable.profile).into(target);*//*
+        holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.section_selected));*/
     }
 
 

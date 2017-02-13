@@ -220,7 +220,7 @@ public class NetworkHelper {
                 user.setPhoneNum(userJson.getString(Constants.KEY_MOBILE_NO));
                 if (!userJson.isNull(Constants.KEY_PROFILE_PICTURE))
                     user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
-                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
+                user.setWow(userJson.getInt(Constants.KEY_WOW_COUNT));
                 user.setMiles(userJson.getString(Constants.KEY_MILES_COMPLETION_COUNT));
                 user.setTrainings(userJson.getString(Constants.KEY_TRAININGS_COMPLETION_COUNT));
 
@@ -233,7 +233,6 @@ public class NetworkHelper {
                     user.setDob(optionsObject.getString(Constants.KEY_DOB));
 
 
-                user.setWow(userJson.getString(Constants.KEY_WOW_COUNT));
                 user.setRoles(userJson.getString(Constants.KEY_ROLES));
                 user.setType(userJson.getString(Constants.KEY_USER_TYPE));
                 user.setSectionsList(new DataParser().getSectionsListFromJson(userJson.getJSONArray(KEY_SECTIONS), true));
@@ -244,6 +243,66 @@ public class NetworkHelper {
         } catch (JSONException exception) {
             Log.e("NetworkHelper", "saveNetworkUsers: ", exception);
         }
+    }
+
+    public void getIntroTrainings(final NetworkListener networkListener) {
+        this.networkListener = networkListener;
+        VolleyStringRequest introTrainingsRequest = new VolleyStringRequest(Request.Method.GET, Constants.INTRO_TRAININGS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("introTrainingsRequest", "onResponse: " + response);
+
+                        try {
+                            JSONObject introResponse = new JSONObject(response);
+                            ArrayList<TMiles> introTrainingsList =
+                                    new NewDataParser().getMiles(introResponse.getString(Constants.KEY_INTRO_TRAININGS), false);
+                            if (introTrainingsList != null)
+                                NewDataHolder.getInstance(context).setIntroTrainingsList(introTrainingsList);
+                            NetworkHelper.this.networkListener.onFinish();
+                        } catch (JSONException ex) {
+                            Log.e("introTrainingsRequest", "onResponse: ", ex);
+                        }
+                    }
+                },
+                new VolleyStringRequest.VolleyErrListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        super.onErrorResponse(error);
+                        Log.d("introTrainingsRequest", "onErrorResponse: " + error);
+
+                    }
+                }, new VolleyStringRequest.StatusCodeListener() {
+            String TAG = "VolleyStringReq";
+
+            @Override
+            public void onBadRequest() {
+                Log.d(TAG, "onBadRequest: ");
+            }
+
+            @Override
+            public void onUnauthorized() {
+                Log.d(TAG, "onUnauthorized: ");
+            }
+
+            @Override
+            public void onNotFound() {
+                Log.d(TAG, "onNotFound: ");
+                Utils.getInstance().showToast(context.getResources().getString(R.string.er_no_intro_trainings));
+            }
+
+            @Override
+            public void onConflict() {
+                Log.d(TAG, "onConflict: ");
+            }
+
+            @Override
+            public void onTimeout() {
+                Log.d(TAG, "onTimeout: ");
+            }
+        });
+
+        VolleySingleton.getInstance(context).addToRequestQueue(introTrainingsRequest);
     }
 
     public void deleteTeacher(int teacherId, NetworkListener networkListener) {

@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 
 import static com.wowconnect.domain.Constants.KEY_CREATED_AT;
 import static com.wowconnect.domain.Constants.KEY_HAS_READ;
+import static com.wowconnect.domain.Constants.KEY_ICON;
 import static com.wowconnect.domain.Constants.KEY_ID;
 import static com.wowconnect.domain.Constants.KEY_MESSAGE;
 import static com.wowconnect.domain.Constants.KEY_NOTIFICATIONS;
@@ -89,6 +90,8 @@ public class NotificationActivity extends AppCompatActivity {
                                     notification.setTitle(notificationJson.getString(KEY_TITLE));
                                     notification.setData(notificationJson.getString(KEY_MESSAGE));
                                     notification.setType(notificationJson.getString(KEY_TYPE));
+                                    if (!notificationJson.isNull(KEY_ICON))
+                                    notification.setIcon(notificationJson.getString(KEY_ICON));
                                     if (!notificationJson.isNull(KEY_HAS_READ))
                                         notification.setRead(notificationJson.getBoolean(KEY_HAS_READ));
                                     notification.setDate(notificationJson.getString(KEY_CREATED_AT));

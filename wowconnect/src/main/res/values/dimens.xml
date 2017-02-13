@@ -19,8 +19,7 @@
     <dimen name="miles_item_h_space">8dp</dimen>
     <dimen name="miles_item_v_space">8dp</dimen>
 
-    <dimen name="mcq_right_padding">32dp</dimen>
-    <dimen name="mcq_left_padding">32dp</dimen>
+    <dimen name="mcq_padding">32dp</dimen>
     <!--Section Item-->
     <dimen name="section_item_height">173dp</dimen><!--123-->
     <dimen name="section_item_width">113dp</dimen><!--113-->

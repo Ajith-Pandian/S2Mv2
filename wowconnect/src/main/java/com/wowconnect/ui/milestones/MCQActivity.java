@@ -25,6 +25,7 @@ import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.ui.customUtils.VolleyStringRequest;
 import com.wowconnect.R;
+import com.wowconnect.ui.customUtils.views.HeightWrapListView;
 import com.wowconnect.ui.milestones.adapters.MCQAnswersAdapter;
 import com.wowconnect.models.mcq.MCQs;
 import com.wowconnect.models.mcq.McqOptions;
@@ -45,7 +46,7 @@ public class MCQActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_activity_mcq)
     Toolbar toolbar;
     @BindView(R.id.list_answers)
-    ListView listView;
+    HeightWrapListView listView;
     @BindView(R.id.text_question)
     TextView textQuestion;
     @BindView(R.id.button_submit)

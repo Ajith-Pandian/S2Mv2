@@ -89,6 +89,7 @@
                             <Button
                                 android:id="@+id/button_complete"
                                 android:layout_width="wrap_content"
+                                style="?attr/borderlessButtonStyle"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/miles_fragment_container"
                                 android:layout_centerHorizontal="true"
@@ -126,7 +127,7 @@
             android:background="@android:color/white"
             android:clickable="true"
             app:behavior_hideable="true"
-            app:behavior_peekHeight="200dp"
+            app:behavior_peekHeight="230dp"
             app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
             <RelativeLayout
@@ -157,9 +158,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:text="Mile 2:Who am I as a Teacher"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:text="Mile 2:Who am I as a Teacher" />
 
                         <TextView
                             android:id="@+id/text_qus_mile_bottom_sheet"
@@ -167,10 +168,14 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/text_title_mile_bottom_sheet"
                             android:layout_centerHorizontal="true"
-                            android:text="Did you enjoy this Mile?"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            tools:text="Did you enjoy this Mile?" />
 
                         <LinearLayout
                             android:id="@+id/layout_thumbs_bottomsheet"
@@ -201,17 +206,27 @@
 
                         </LinearLayout>
 
+                        <TextView
+                            android:id="@+id/text_qus_feedback_bottom_sheet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/layout_thumbs_bottomsheet"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="16dp"
+                            android:gravity="center"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            tools:text="This is the question for feedback?" />
+
                         <com.wowconnect.ui.customUtils.views.HeightWrapListView
                             android:id="@+id/list_view_options_bottom_sheet"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/text_qus_mile_bottom_sheet"
-                            android:layout_alignLeft="@+id/text_qus_mile_bottom_sheet"
-                            android:layout_alignRight="@+id/text_qus_mile_bottom_sheet"
-                            android:layout_alignStart="@+id/text_qus_mile_bottom_sheet"
-                            android:layout_below="@+id/layout_thumbs_bottomsheet"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_below="@+id/text_qus_feedback_bottom_sheet"
+                            android:layout_centerHorizontal="true"
                             android:layout_marginBottom="16dp"
-                            android:layout_marginTop="16dp"
                             android:divider="@null"
                             android:dividerHeight="10dp"
                             app:hasExtraSpace="true">
@@ -227,6 +242,7 @@
                     android:layout_below="@+id/layout_collapse"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
+                    style="?attr/borderlessButtonStyle"
                     android:layout_marginBottom="48dp"
                     android:layout_marginLeft="36dp"
                     android:layout_marginRight="36dp"

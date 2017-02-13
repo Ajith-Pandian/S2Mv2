@@ -10,8 +10,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wowconnect.R;
-import com.wowconnect.ui.milestones.MCQActivity;
 import com.wowconnect.models.mcq.McqOptions;
+import com.wowconnect.ui.milestones.MCQActivity;
 
 import java.util.ArrayList;
 
@@ -61,6 +61,7 @@ public class MCQAnswersAdapter extends BaseAdapter {
         McqOptions options = optionsList.get(i);
         holder.textAnswer.setText(options.getText());
         resetStates();
+        holder.imageButton.setEnabled(false);
         if (options.isSelected()) {
             holder.imageButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.backround_circle_green_primary));
             holder.imageButton.setImageDrawable(null);
@@ -79,7 +80,7 @@ public class MCQAnswersAdapter extends BaseAdapter {
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MCQActivity)context).onClickRow(i);
+                ((MCQActivity) context).onClickRow(i);
             }
         });
         return convertView;

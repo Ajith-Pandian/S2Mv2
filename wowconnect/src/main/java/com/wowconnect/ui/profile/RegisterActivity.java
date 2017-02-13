@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -23,13 +24,13 @@ import com.wowconnect.domain.Constants;
 
 import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.NewDataParser;
-import com.wowconnect.models.DbUser;
 import com.wowconnect.models.Schools;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.customUtils.VolleyStringRequest;
 import com.wowconnect.R;
 import com.wowconnect.ui.customUtils.views.PromptSpinner;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -59,12 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
     LinearLayout schoolSpinnerLayout;
     @BindView(R.id.layout_comment)
     LinearLayout commentLayout;
-    @BindView(R.id.layout_next_button)
-    LinearLayout nextButtonLayout;
     @BindView(R.id.button_register)
     Button registerButton;
-    @BindView(R.id.button_next)
-    Button nextButton;
+
 
     @BindView(R.id.collapse_toolbar_layout)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -89,8 +87,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
     VolleyStringRequest registerUser;
-    String title;
-    DbUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                 R.layout.item_spinner, R.id.text_spinner, getSchoolNames(schoolsArrayList));
 
         spinnerSchoolSelect.setAdapter(adapter);
+        setupSchoolsSpinnerHeight();
         spinnerSchoolSelect.setOnItemSelectedListener(countrySelectedListener);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +126,33 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    void setupSchoolsSpinnerHeight()
+    {
+        {
+            android.util.TypedValue value = new android.util.TypedValue();
+            getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, value, true);
+            android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            float ret = value.getDimension(metrics);
+            spinnerSchoolSelect.setMinimumHeight((int) (ret - 1 * metrics.density));
+        }
+        // Set popupWindow height
+
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            // Get private mPopup member variable and try cast to ListPopupWindow
+            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinnerSchoolSelect);
+            if (spinnerSchoolSelect.getAdapter() != null && spinnerSchoolSelect.getAdapter().getCount() > 5)
+                popupWindow.setHeight(Utils.getInstance().getPixelAsDp(this, 200));
+
+        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+            Log.d(TAG, "setSpinnerPopupHeight: " + e.toString());
+        }
+    }
+
+    private static final String TAG = "RegisterActivity";
     void validateAndRegister() {
         if (getStringFromEditText(textFirstName).isEmpty()) {
             Utils.getInstance().showToast("First Name cannot be empty");
@@ -150,29 +174,7 @@ public class RegisterActivity extends AppCompatActivity {
         ArrayList<String> schoolNames = new ArrayList<>();
         for (int i = 0; i < schoolsArrayList.size(); i++)
             schoolNames.add(schoolsArrayList.get(i).getName());
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
-        schoolNames.add(getString(R.string.others));
+
         return schoolNames;
     }
 
@@ -183,9 +185,6 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Toast.makeText(getActivity(), response, Toast.LENGTH_LONG).show();
                         Log.d("registerUser", "onResponse: " + response);
-                        /*Snackbar.make(registerButton,
-                                "Registered Successfully..!!",
-                                Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
                         Utils.getInstance().showToast("Registered successfully...!!!");
                         finish();
                     }

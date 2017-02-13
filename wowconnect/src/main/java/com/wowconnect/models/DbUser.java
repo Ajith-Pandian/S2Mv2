@@ -16,7 +16,6 @@ import static com.wowconnect.domain.Constants.TABLE_NAME_USERS;
 @DatabaseTable(tableName = TABLE_NAME_USERS, daoClass = CustomDao.class)
 
 public class DbUser {
-    User user;
     @DatabaseField(id = true, columnName = Constants.KEY_ID, canBeNull = false, unique = true)
     private int id;
     @DatabaseField(columnName = Constants.KEY_FIRST_NAME)
@@ -41,8 +40,8 @@ public class DbUser {
     private String trainings;
     @DatabaseField(columnName = Constants.KEY_SCHOOL_NAME)
     private String schoolName;
-    @DatabaseField(columnName = Constants.KEY_WOW)
-    private String wow;
+    @DatabaseField(columnName = Constants.KEY_WOWS)
+    private int wow;
     @DatabaseField(columnName = Constants.KEY_AVATAR)
     private String avatar;
     @DatabaseField(columnName = Constants.KEY_DOB)
@@ -190,11 +189,11 @@ public class DbUser {
         this.trainings = trainings;
     }
 
-    public String getWow() {
+    public int getWow() {
         return wow;
     }
 
-    public void setWow(String wow) {
+    public void setWow(int wow) {
         this.wow = wow;
     }
 

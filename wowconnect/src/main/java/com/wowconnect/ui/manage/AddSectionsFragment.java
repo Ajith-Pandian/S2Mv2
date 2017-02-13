@@ -24,7 +24,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
 import com.wowconnect.NewDataParser;
@@ -35,7 +34,6 @@ import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.models.DbUser;
 import com.wowconnect.models.Milestones;
 import com.wowconnect.models.Sections;
-import com.wowconnect.models.User;
 import com.wowconnect.ui.adapters.MilestonesSpinnerAdapter;
 import com.wowconnect.ui.adapters.TeachersSpinnerAdapter;
 import com.wowconnect.ui.customUtils.Utils;
@@ -114,9 +112,11 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         super.onStart();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            getDialog().getWindow().setAttributes(params);
+            if (getDialog() != null && getDialog().getWindow() != null) {
+                final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                getDialog().getWindow().setAttributes(params);
+            }
         }
     }
 
@@ -158,7 +158,7 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
 
     String getSpinnerTeacherId() {
         if (teachersSpinner.getSelectedItem() != null)
-            return String.valueOf(((User) teachersSpinner.getSelectedItem()).getId());
+            return String.valueOf(((DbUser) teachersSpinner.getSelectedItem()).getId());
         else {
             return "";
         }
@@ -190,25 +190,31 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         });
 
         if (isUpdate) {
-            Sections section = NewDataHolder.getInstance(getContext()).getSectionsList().get(position);
-            className.setText(section.get_Class());
-            sectionName.setText(section.getSection());
-            selectMilestone(section.getMilestoneId());
-            selectTeacher(section.getTeacherId());
-            numOfStudents.setText(String.valueOf(section.getNumOfStuds()));
+            currentSection = NewDataHolder.getInstance(getContext()).getSectionsList().get(position);
+            className.setText(currentSection.get_Class());
+            sectionName.setText(currentSection.getSection());
+            selectMilestone(currentSection.getMilestoneId());
+            selectTeacher(currentSection.getTeacherId());
+            numOfStudents.setText(String.valueOf(currentSection.getNumOfStuds()));
             addButton.setText("Update");
             title.setText("Update Sections");
         }
     }
 
+    Sections currentSection;
+
     private void validateAndAddSection() {
-        if (getTextFromView(className).isEmpty()) {
-            Utils.getInstance().showToast("Please enter class name");
-            className.setError("Class name required");
-        } else if (getTextFromView(sectionName).isEmpty())
-            Utils.getInstance().showToast("Please enter section name");
+        Utils utils = Utils.getInstance();
+        if (getTextFromView(className).isEmpty())
+            utils.showToast("Please enter class name");
+        else if (getTextFromView(sectionName).isEmpty())
+            utils.showToast("Please enter section name");
         else if (getSpinnerMilestoneId().equals(""))
-            Utils.getInstance().showToast("Please select milestone");
+            utils.showToast("Please select milestone");
+        else if (getTextFromView(numOfStudents).isEmpty())
+            utils.showToast("Please enter number of students");
+        else if (isUpdate && Integer.parseInt(getTextFromView(numOfStudents).trim()) < currentSection.getNumOfStuds())
+            utils.showToast("Cannot reduce student count. Please increase it");
         else {
             String classNameString = getTextFromView(className);
             String sectionNameString = getTextFromView(sectionName);
@@ -259,14 +265,14 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
     }
 
 
-         ArrayList<DbUser> teachersList = new ArrayList<>();
+    ArrayList<DbUser> teachersList = new ArrayList<>();
+
     void initSpinners() {
         //Teacher spinner
         teachersSpinner.setPrompt("Teacher");
         if (NewDataHolder.getInstance(getContext()).getTeachersList() != null) {
             teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
-        }
-        else {
+        } else {
             new NetworkHelper(getContext()).getNetworkUsers(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
@@ -323,11 +329,12 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
             if (milestoneSpinner.getAdapter() != null && milestoneSpinner.getAdapter().getCount() > 5)
                 popupWindow1.setHeight(Utils.getInstance().getPixelAsDp(getContext(), 200));
         } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-
+            Log.d(TAG, "setSpinnerPopupHeight: " + e.toString());
         }
 
     }
 
+    private static final String TAG = "AddSectionsFragment";
     VolleyStringRequest sectionAddRequest;
 
     void addSection(final String className, final String sectionName, final String milestoneId, final String teacherId, final String studCOunt) {

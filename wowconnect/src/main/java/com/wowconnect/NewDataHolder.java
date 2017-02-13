@@ -3,6 +3,7 @@ package com.wowconnect;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.domain.temp.DataParser;
@@ -13,7 +14,6 @@ import com.wowconnect.models.Sections;
 import com.wowconnect.models.mcq.MCQs;
 import com.wowconnect.models.milestones.TMileData;
 import com.wowconnect.models.milestones.TMiles;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +63,7 @@ public class NewDataHolder {
     private Map<String, String> resultsMap;
 
     private NewDataHolder(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public static synchronized NewDataHolder getInstance(Context context) {
@@ -210,7 +210,7 @@ public class NewDataHolder {
     }
 
     public DbUser getUser() {
-        return user;
+        return new DataBaseUtil(context).getUser(SharedPreferenceHelper.getUserId());
     }
 
     public void setUser(DbUser user) {
@@ -348,7 +348,7 @@ public class NewDataHolder {
     }
 
     public ArrayList<DbUser> getNetworkUsers() {
-       return this.networkUsers;
+        return this.networkUsers;
     }
 
     public void setNetworkUsers(ArrayList<DbUser> networkUsers) {

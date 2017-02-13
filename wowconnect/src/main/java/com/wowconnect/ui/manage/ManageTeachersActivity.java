@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
 import com.wowconnect.R;
@@ -33,6 +32,8 @@ import com.wowconnect.ui.adapters.SectionsAdapter;
 import com.wowconnect.ui.customUtils.HorizontalSpaceItemDecoration;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.customUtils.VolleyStringRequest;
+import com.wowconnect.ui.helpers.DialogHelper;
+import com.wowconnect.ui.helpers.S2mAlertDialog;
 import com.wowconnect.ui.landing.LandingActivity;
 
 import java.util.ArrayList;
@@ -341,10 +342,26 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 }
 
                 @Override
-                public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                    deleteTeacher(position);
-                    loadTeachers();
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                public void onDeleteOptionSelected(boolean isTeacher, final int position) {
+                    DialogHelper.createAlertDialog(getActivity(),
+                            getString(R.string.alert_delete_teacher),
+                            getString(R.string.yes),
+                            getString(R.string.no),
+                            new S2mAlertDialog.AlertListener() {
+                                @Override
+                                public void onPositive() {
+                                    deleteTeacher(position);
+                                    loadTeachers();
+                                    recyclerView.getAdapter().notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onNegative() {
+                                    DialogHelper.getCurrentDialog().dismiss();
+                                }
+                            }
+                    );
+
 
                 }
             });
@@ -386,10 +403,26 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                 }
 
                 @Override
-                public void onDeleteOptionSelected(boolean isTeacher, int position) {
-                    deleteSection(position);
-                    loadSections();
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                public void onDeleteOptionSelected(boolean isTeacher, final int position) {
+                    DialogHelper.createAlertDialog(getActivity(),
+                            getString(R.string.alert_delete_section),
+                            getString(R.string.yes),
+                            getString(R.string.no),
+                            new S2mAlertDialog.AlertListener() {
+                                @Override
+                                public void onPositive() {
+                                    deleteSection(position);
+                                    loadSections();
+                                    recyclerView.getAdapter().notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onNegative() {
+                                    DialogHelper.getCurrentDialog().dismiss();
+                                }
+                            }
+                    );
+
 
                 }
             }, true);
