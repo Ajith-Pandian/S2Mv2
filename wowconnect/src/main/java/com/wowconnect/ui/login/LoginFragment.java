@@ -31,15 +31,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.wowconnect.domain.Constants;
-import com.wowconnect.domain.network.VolleySingleton;
-import com.wowconnect.NewDataHolder;
-import com.wowconnect.ui.customUtils.VolleyStringRequest;
-import com.wowconnect.R;
-import com.wowconnect.S2MApplication;
-import com.wowconnect.ui.profile.RegisterActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.wowconnect.NewDataHolder;
+import com.wowconnect.R;
+import com.wowconnect.S2MApplication;
+import com.wowconnect.domain.Constants;
+import com.wowconnect.domain.network.VolleySingleton;
+import com.wowconnect.ui.customUtils.Utils;
+import com.wowconnect.ui.customUtils.VolleyStringRequest;
+import com.wowconnect.ui.profile.RegisterActivity;
 
 import java.util.Map;
 
@@ -58,7 +59,8 @@ import rx.subscriptions.CompositeSubscription;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class
+LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -98,13 +100,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
-    public static boolean isValidEmail(CharSequence target) {
 
-        if (target == null) {
-            return false;
-        } else
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -277,7 +273,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String text = loginText.getText().toString();
         if (text.length() > 0)
             if (isMail)
-                if (isValidEmail(text))
+                if (Utils.isValidEmail(text))
                     //makeToast(" " + text + " is a valid mail id. You can enter ");
                     sendOTP(true, text);
                 else

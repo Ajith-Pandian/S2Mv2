@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.wowconnect.domain.Constants.ACTIVITIES_URL_SUFFIX;
@@ -52,9 +53,8 @@ public class NetworkHelper {
         this.context = context;
     }
 
-
     public void downloadConfiguration() {
-        VolleyStringRequest configurationRequest = new VolleyStringRequest(Request.Method.GET, Constants.CONFIGURATION_URL,
+        networkRequest = new VolleyStringRequest(Request.Method.GET, Constants.CONFIGURATION_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -98,12 +98,12 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(configurationRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
 
     public void getDashBoardDetails(NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest getDashBoardRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL
+        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL
                 + SharedPreferenceHelper.getSchoolId() + SEPERATOR + Constants.KEY_DASHBOARD,
                 new Response.Listener<String>() {
                     @Override
@@ -150,12 +150,14 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(getDashBoardRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
+
+    private VolleyStringRequest networkRequest;
 
     public void getNetworkUsers(NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL +
+        networkRequest = new VolleyStringRequest(Request.Method.GET, SCHOOLS_URL +
                 SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_USERS,
                 new Response.Listener<String>() {
                     @Override
@@ -247,7 +249,7 @@ public class NetworkHelper {
 
     public void getIntroTrainings(final NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest introTrainingsRequest = new VolleyStringRequest(Request.Method.GET, Constants.INTRO_TRAININGS_URL,
+        networkRequest = new VolleyStringRequest(Request.Method.GET, Constants.INTRO_TRAININGS_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -302,12 +304,12 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(introTrainingsRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
 
     public void deleteTeacher(int teacherId, NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.POST,
+        networkRequest = new VolleyStringRequest(Request.Method.POST,
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
                         KEY_USERS + SEPERATOR + teacherId + SEPERATOR + KEY_DELETE,
                 new Response.Listener<String>() {
@@ -352,13 +354,13 @@ public class NetworkHelper {
                 Log.d(TAG, "onTimeout: ");
             }
         });
-        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
 
     }
 
     public void deleteSection(int sectionId, NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest teacherRequest = new VolleyStringRequest(Request.Method.POST,
+        networkRequest = new VolleyStringRequest(Request.Method.POST,
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR +
                         KEY_SECTIONS + SEPERATOR + sectionId + SEPERATOR + KEY_DELETE,
                 new Response.Listener<String>() {
@@ -403,13 +405,13 @@ public class NetworkHelper {
                 Log.d(TAG, "onTimeout: ");
             }
         });
-        VolleySingleton.getInstance(context).addToRequestQueue(teacherRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
 
     }
 
     public void getUserSections(final NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest userSectionsRequest = new VolleyStringRequest(Request.Method.GET,
+        networkRequest = new VolleyStringRequest(Request.Method.GET,
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR + KEY_SECTIONS,
                 new Response.Listener<String>() {
                     @Override
@@ -462,13 +464,13 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(userSectionsRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
 
     }
 
     public void getMilestoneContent(int sectionId, final NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.GET,
+        networkRequest = new VolleyStringRequest(Request.Method.GET,
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
                         + KEY_SECTIONS + SEPERATOR
                         + String.valueOf(sectionId) + SEPERATOR
@@ -527,12 +529,12 @@ public class NetworkHelper {
         });
 
 
-        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(milesRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(networkRequest);
     }
 
     public void getArchiveContent(int sectionId, final NetworkListener networkListener) {
         this.networkListener = networkListener;
-        VolleyStringRequest archiveRequest = new VolleyStringRequest(Request.Method.GET,
+        networkRequest = new VolleyStringRequest(Request.Method.GET,
 
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId() + SEPERATOR
                         + KEY_SECTIONS + SEPERATOR
@@ -542,12 +544,12 @@ public class NetworkHelper {
                     @Override
                     public void onResponse(String response) {
                         Log.d("archiveRequest", "onResponse: " + response);
-
                         try {
                             JSONObject archiveResponse = new JSONObject(response);
 
                             ArrayList<TMiles> archiveList =
                                     new NewDataParser().getMiles(archiveResponse.getString(KEY_CONTENTS), true);
+                            Collections.reverse(archiveList);
                             NewDataHolder.getInstance(context).setArchiveList(archiveList);
 
                             networkListener.onFinish();
@@ -592,11 +594,11 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(archiveRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
 
     public void sendFirebaseTokenToServer(final String token) {
-        VolleyStringRequest tokenRefreshRequest = new VolleyStringRequest(Request.Method.POST, Constants.UPDATE_DEVICE_TOKEN,
+        networkRequest = new VolleyStringRequest(Request.Method.POST, Constants.UPDATE_DEVICE_TOKEN,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -645,12 +647,12 @@ public class NetworkHelper {
             }
 
         };
-        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(tokenRefreshRequest);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(networkRequest);
     }
 
     public void likeActivity(int activityId, LikeListener listener) {
         likeListener = listener;
-        VolleyStringRequest likeRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL
+        networkRequest = new VolleyStringRequest(Request.Method.POST, SCHOOLS_URL
                 + SharedPreferenceHelper.getSchoolId()
                 + ACTIVITIES_URL_SUFFIX
                 + String.valueOf(activityId)
@@ -708,11 +710,11 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(likeRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
 
     public void refreshSchoolInformation() {
-        VolleyStringRequest getSchoolInfoRequest = new VolleyStringRequest(Request.Method.GET,
+        networkRequest = new VolleyStringRequest(Request.Method.GET,
                 SCHOOLS_URL + SharedPreferenceHelper.getSchoolId(),
                 new Response.Listener<String>() {
                     @Override
@@ -769,17 +771,25 @@ public class NetworkHelper {
             }
         });
 
-        VolleySingleton.getInstance(context).addToRequestQueue(getSchoolInfoRequest);
+        VolleySingleton.getInstance(context).addToRequestQueue(networkRequest);
     }
 
     public void removeLikeListener() {
         if (likeListener != null)
             this.likeListener = null;
+        if (networkRequest != null) {
+            networkRequest.removeStatusListener();
+            networkRequest = null;
+        }
     }
 
     public void removeNetworkListener() {
         if (networkListener != null)
             this.networkListener = null;
+        if (networkRequest != null) {
+            networkRequest.removeStatusListener();
+            networkRequest = null;
+        }
     }
 
     public interface NetworkListener {

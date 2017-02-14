@@ -32,8 +32,8 @@ import com.wowconnect.ui.adapters.SectionsAdapter;
 import com.wowconnect.ui.customUtils.HorizontalSpaceItemDecoration;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.customUtils.VolleyStringRequest;
+import com.wowconnect.ui.helpers.AlertDialogListener;
 import com.wowconnect.ui.helpers.DialogHelper;
-import com.wowconnect.ui.helpers.S2mAlertDialog;
 import com.wowconnect.ui.landing.LandingActivity;
 
 import java.util.ArrayList;
@@ -347,7 +347,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                             getString(R.string.alert_delete_teacher),
                             getString(R.string.yes),
                             getString(R.string.no),
-                            new S2mAlertDialog.AlertListener() {
+                            new AlertDialogListener() {
                                 @Override
                                 public void onPositive() {
                                     deleteTeacher(position);
@@ -408,7 +408,7 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
                             getString(R.string.alert_delete_section),
                             getString(R.string.yes),
                             getString(R.string.no),
-                            new S2mAlertDialog.AlertListener() {
+                            new AlertDialogListener() {
                                 @Override
                                 public void onPositive() {
                                     deleteSection(position);
@@ -456,6 +456,9 @@ public class ManageTeachersActivity extends AppCompatActivity implements ViewPag
 
         @Override
         public void onDestroy() {
+            if (DialogHelper.getCurrentDialog() != null) {
+                DialogHelper.removeAlertListener();
+            }
             super.onDestroy();
         }
 

@@ -31,8 +31,8 @@ import com.wowconnect.models.milestones.TMiles;
 import com.wowconnect.ui.adapters.SectionsAdapter;
 import com.wowconnect.ui.customUtils.HorizontalSpaceItemDecoration;
 import com.wowconnect.ui.customUtils.Utils;
+import com.wowconnect.ui.helpers.AlertDialogListener;
 import com.wowconnect.ui.helpers.DialogHelper;
-import com.wowconnect.ui.helpers.S2mAlertDialog;
 import com.wowconnect.ui.manage.AddOrUpdateListener;
 import com.wowconnect.ui.manage.AddSectionsFragment;
 import com.wowconnect.ui.manage.TeacherOrSectionListener;
@@ -79,6 +79,8 @@ public class SectionsFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
         sectionsGrid.setLayoutManager(layoutManager);
         sectionsGrid.addItemDecoration(new HorizontalSpaceItemDecoration(getActivity(), 3, 3, 2));
+        sectionsGrid.setNestedScrollingEnabled(false);
+
         getUserSections();
 
         return view;
@@ -165,7 +167,7 @@ public class SectionsFragment extends Fragment {
                             getString(R.string.alert_delete_section),
                             getString(R.string.yes),
                             getString(R.string.no),
-                            new S2mAlertDialog.AlertListener() {
+                            new AlertDialogListener() {
                                 @Override
                                 public void onPositive() {
                                     deleteSection(position);

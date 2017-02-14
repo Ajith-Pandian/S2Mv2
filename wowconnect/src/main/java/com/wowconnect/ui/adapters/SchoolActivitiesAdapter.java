@@ -9,11 +9,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.SclActs;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -28,6 +28,7 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
 
     private List<SclActs> sclActsList;
     private Context context;
+    private NetworkHelper networkHelper;
 
     public SchoolActivitiesAdapter(Context context, List<SclActs> sclActsList) {
         this.sclActsList = sclActsList;
@@ -40,6 +41,14 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
                 .inflate(R.layout.item_school_activity, parent, false);
 
         return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        if (networkHelper != null) {
+            networkHelper.removeNetworkListener();
+        }
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 
     @Override
@@ -59,10 +68,11 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new NetworkHelper(context).likeActivity(sclActs.getId(), new NetworkHelper.LikeListener() {
+                networkHelper = new NetworkHelper(context);
+                networkHelper.likeActivity(sclActs.getId(), new NetworkHelper.LikeListener() {
                     @Override
                     public void onLiked() {
-                       // changeColor(holder.likeButton, R.color.colorPrimary);
+                        // changeColor(holder.likeButton, R.color.colorPrimary);
                         holder.likeButton.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
                         sclActs.setLikesCount(sclActs.getLikesCount() + 1);
                         sclActs.setLiked(true);

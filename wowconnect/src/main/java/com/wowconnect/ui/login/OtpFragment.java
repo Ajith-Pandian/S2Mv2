@@ -89,12 +89,6 @@ public class OtpFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
         ButterKnife.bind(this, view);
         edtTextOtp.requestFocus();
-
-        //open keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
         return view;
     }
 
@@ -308,6 +302,8 @@ public class OtpFragment extends Fragment {
             otpRequest.removeStatusListener();
         if (resendOtpRequest != null)
             resendOtpRequest.removeStatusListener();
+        buttonOtpOk.setOnClickListener(null);
+        requestOtpText.setOnClickListener(null);
     }
 
     boolean validateOtp(String otp) {
@@ -318,4 +314,5 @@ public class OtpFragment extends Fragment {
         // TODO: Update argument type and name
         void onOtpEntered();
     }
+
 }

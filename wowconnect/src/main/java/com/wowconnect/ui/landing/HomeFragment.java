@@ -110,8 +110,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 if (NewDataHolder.getInstance(getContext()).getBulletin() != null
                         && bulletinBitmap != null) {
-                   // shareBulletin();
-                    shareBitmap(bulletinBitmap,"Bulletin Board");
+                    // shareBulletin();
+                    shareBitmap(bulletinBitmap, "Bulletin Board");
                 } else Utils.getInstance().showToast("No bulletin");
             }
         });
@@ -288,10 +288,10 @@ public class HomeFragment extends Fragment {
             String image = NewDataHolder.getInstance(getContext()).getBulletin().getMsg();
             // String image = "";
 
-            if (image != null && !image.equals(""))
+            if (image != null && !image.isEmpty())
                 Picasso.with(getActivity())
                         .load(image)
-                        .placeholder(R.drawable.ph_bulletin)
+                        .placeholder(R.drawable.ph_bulletin_board)
                         .into(bulletinTarget);
         }
         layoutNetwork.setOnClickListener(new View.OnClickListener() {

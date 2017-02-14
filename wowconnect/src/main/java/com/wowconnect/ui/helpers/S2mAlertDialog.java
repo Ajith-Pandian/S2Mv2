@@ -15,7 +15,7 @@ import com.wowconnect.R;
  */
 
 public class S2mAlertDialog extends S2MDialogFragment {
-    AlertListener listener;
+    AlertDialogListener listener;
     String positiveText, negativeText;
     int alertIcon;
     private static boolean isCancelableDialog;
@@ -25,7 +25,7 @@ public class S2mAlertDialog extends S2MDialogFragment {
     public static S2mAlertDialog build(FragmentActivity activity, String alertMessage,
                                        String positiveText, String negativeText,
                                        boolean isCancelable,
-                                       AlertListener listener) {
+                                       AlertDialogListener listener) {
         S2mAlertDialog dialogAlert = new S2mAlertDialog();
         dialogAlert.setAlertMessage(
                 Html.fromHtml(
@@ -43,12 +43,12 @@ public class S2mAlertDialog extends S2MDialogFragment {
 
     // S2mAlertDialog.build(manager, "Do you want to delete that?");
     public static S2mAlertDialog build(FragmentActivity activity, String body,
-                                       AlertListener listener) {
+                                       AlertDialogListener listener) {
         return build(activity, body, "OK", "Cancel", false, listener);
     }
 
     public static S2mAlertDialog build(FragmentActivity activity, String body, boolean isCancelable,
-                                       AlertListener listener) {
+                                       AlertDialogListener listener) {
         return build(activity, body, "OK", "Cancel", isCancelable, listener);
     }
 
@@ -61,8 +61,13 @@ public class S2mAlertDialog extends S2MDialogFragment {
         this.negativeText = negativeText;
     }
 
-    protected void setAlertListener(AlertListener listener) {
+    protected void setAlertListener(AlertDialogListener listener) {
         this.listener = listener;
+    }
+
+    void removeAlertListener() {
+        if (listener != null)
+            listener = null;
     }
 
     @NonNull
@@ -94,11 +99,5 @@ public class S2mAlertDialog extends S2MDialogFragment {
         builder.setCancelable(isCancelableDialog);
 
         return builder.create();
-    }
-
-    public interface AlertListener {
-        public void onPositive();
-
-        public void onNegative();
     }
 }

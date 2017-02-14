@@ -31,15 +31,15 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-    <!--   <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.uilayer.fileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
-        </provider>-->
+        <!--   <provider
+                android:name="android.support.v4.content.FileProvider"
+                android:authorities="com.example.uilayer.fileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+                <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/filepaths" />
+            </provider>-->
 
         <service android:name="com.wowconnect.firebase.S2mMessagingService">
             <intent-filter>
@@ -51,10 +51,10 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="2881b38dc5ba49b964249e105305483242a94b4a"
-            />
+            android:value="2881b38dc5ba49b964249e105305483242a94b4a" />
 
         <activity
             android:name="com.wowconnect.ui.login.LoginActivity"
@@ -64,13 +64,14 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.wowconnect.ui.profile.RegisterActivity"
+            android:isScrollContainer="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.wowconnect.ui.landing.SchoolDetailActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- android:label="@string/title_activity_school_detail" -->

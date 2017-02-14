@@ -94,7 +94,12 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     public void onClick(View view) {
                         NewDataHolder holder = NewDataHolder.getInstance(context);
                         holder.setCurrentMileTitle(mile.getTitle());
-                        holder.setMilesDataList(holder.getMilesList().get(position).getMileData());
+                        ArrayList<TMileData> miledataList;
+                        if (isArchive)
+                            miledataList = holder.getArchiveList().get(position).getMileData();
+                        else
+                            miledataList = holder.getMilesList().get(position).getMileData();
+                        holder.setMilesDataList(miledataList);
                         holder.setCurrentMileId(mile.getId());
                         openActivity(MilesActivity.class, isIntro, true, mile.isCompletable(), milestonesList.get(position).getId());
                     }

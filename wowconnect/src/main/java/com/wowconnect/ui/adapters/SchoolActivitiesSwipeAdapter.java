@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.SclActs;
 import com.wowconnect.ui.customUtils.Utils;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,13 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
         //this.context = context;
     }
 
+
+    @Nullable
+    @Override
+    public SclActs getItem(int position) {
+        return sclActsArrayList.get(position);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);
@@ -64,7 +72,7 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_swipe_school_activity, parent, false);
         }
         ButterKnife.bind(this, convertView);
-        final SclActs sclActs = sclActsArrayList.get(position);
+        final SclActs sclActs = getItem(position);
         schoolActivityMessage.setText(sclActs.getMsg());
         String timeStamp = sclActs.getTimeStamp();
         String date = timeStamp.split(" ")[0];

@@ -20,14 +20,14 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.wowconnect.domain.Constants;
-
-import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.NewDataParser;
+import com.wowconnect.R;
+import com.wowconnect.S2MApplication;
+import com.wowconnect.domain.Constants;
+import com.wowconnect.domain.network.VolleySingleton;
 import com.wowconnect.models.Schools;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.customUtils.VolleyStringRequest;
-import com.wowconnect.R;
 import com.wowconnect.ui.customUtils.views.PromptSpinner;
 
 import java.lang.reflect.Field;
@@ -126,8 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    void setupSchoolsSpinnerHeight()
-    {
+    void setupSchoolsSpinnerHeight() {
         {
             android.util.TypedValue value = new android.util.TypedValue();
             getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, value, true);
@@ -153,11 +152,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private static final String TAG = "RegisterActivity";
+
     void validateAndRegister() {
         if (getStringFromEditText(textFirstName).isEmpty()) {
             Utils.getInstance().showToast("First Name cannot be empty");
         } else if (getStringFromEditText(textPhone).isEmpty()) {
             Utils.getInstance().showToast("Phone Number cannot be empty");
+        } else if (!getStringFromEditText(textEmail).isEmpty() && !Utils.isValidEmail(getStringFromEditText(textEmail))) {
+            Utils.getInstance().showToast("Please enter valid email");
         } else if (spinnerSchoolSelect.getSelectedItem() == null) {
             Utils.getInstance().showToast("Please select a school");
         } else if (spinnerSchoolSelect.getSelectedItem().toString().equals(getString(R.string.others))) {
@@ -174,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
         ArrayList<String> schoolNames = new ArrayList<>();
         for (int i = 0; i < schoolsArrayList.size(); i++)
             schoolNames.add(schoolsArrayList.get(i).getName());
-
+        schoolNames.add(getString(R.string.others));
         return schoolNames;
     }
 
@@ -227,13 +229,18 @@ public class RegisterActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new ArrayMap<>();
 
-                params.put(Constants.KEY_EMAIL, getStringFromEditText(textEmail));
-                params.put(Constants.KEY_MOBILE_NO, getStringFromEditText(textPhone));
                 params.put(Constants.KEY_FIRST_NAME, getStringFromEditText(textFirstName));
-                params.put(Constants.KEY_LAST_NAME, getStringFromEditText(textLastName));
-                params.put(Constants.KEY_MESSAGE, getStringFromEditText(textComment));
+                params.put(Constants.KEY_MOBILE_NO, getStringFromEditText(textPhone));
                 params.put(Constants.KEY_COUNTRY_CODE, Constants.COUNTRY_CODE);
-                if (spinnerSchoolSelect.getSelectedItem() != null) {
+
+                if (!getStringFromEditText(textLastName).isEmpty())
+                    params.put(Constants.KEY_EMAIL, getStringFromEditText(textEmail));
+                if (!getStringFromEditText(textLastName).isEmpty())
+                    params.put(Constants.KEY_LAST_NAME, getStringFromEditText(textLastName));
+                if (!getStringFromEditText(textComment).isEmpty())
+                    params.put(Constants.KEY_MESSAGE, getStringFromEditText(textComment));
+                if (spinnerSchoolSelect.getSelectedItem() != null &&
+                        !spinnerSchoolSelect.getSelectedItem().toString().equals(getString(R.string.others))) {
                     params.put(Constants.KEY_SCHOOL_ID,
                             String.valueOf(schoolsArrayList.get(spinnerSchoolSelect.getSelectedItemPosition()).getId()));
                 } else {
@@ -246,7 +253,7 @@ public class RegisterActivity extends AppCompatActivity {
         };
 
 
-        VolleySingleton.getInstance(this).addToRequestQueue(registerUser);
+        VolleySingleton.getInstance(S2MApplication.getAppContext()).addToRequestQueue(registerUser);
     }
 
 

@@ -19,9 +19,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
-<!--
-        <item name="android:dropDownListViewStyle">@style/SpinnerStyle</item>
--->
+        <!--
+                <item name="android:dropDownListViewStyle">@style/SpinnerStyle</item>
+        -->
         <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge
         </item>
         <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
@@ -37,6 +37,30 @@
         <item name="android:divider">#d1d1d1</item>
         <item name="android:dividerHeight">0.5dp</item>
     </style>
+
+    <style name="SpinnerStyleUnderlined" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:divider">#d1d1d1</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:lineSpacingExtra">1dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:listPreferredItemPaddingLeft">0dp</item>
+        <item name="android:listPreferredItemPaddingRight">0dp</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+    <style name="ThemeSpinner">
+        <!-- Color when pressed -->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!-- Default color for the dropdown arrow and line -->
+        <item name="colorControlNormal">@color/colorPrimary</item>
+    </style>
+
     <style name="SpinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
         <item name="android:minHeight">0dp</item>
 
@@ -88,6 +112,7 @@
     <style name="CustomTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">@color/green5</item>
     </style>
+
     <style name="MyActionButtonStyle" parent="AppTheme">
         <item name="android:padding">5dip</item>
     </style>
@@ -95,8 +120,8 @@
     <style name="buttonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/button_text_color</item>
     </style>
-<!--Text Input Layout -->
-      <style name="SpinnerTHeme" parent="Widget.AppCompat.Spinner.Underlined">
+    <!--Text Input Layout -->
+    <style name="SpinnerTHeme" parent="Widget.AppCompat.Spinner.Underlined">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@color/text_input_layer_color</item>
         <item name="android:textSize">20sp</item>

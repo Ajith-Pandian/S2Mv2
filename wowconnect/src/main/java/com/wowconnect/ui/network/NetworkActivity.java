@@ -21,6 +21,7 @@ public class NetworkActivity extends AppCompatActivity {
     RecyclerView networkRecycler;
     @BindView(R.id.layout_no_users)
     RelativeLayout noUsersLayout;
+    private NetworkHelper networkHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +36,14 @@ public class NetworkActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         networkRecycler.setLayoutManager(layoutManager);
         networkRecycler.addItemDecoration(new VerticalSpaceItemDecoration(5, 1, true));
-
+        networkHelper = new NetworkHelper(this);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        new NetworkHelper(this).getNetworkUsers(new NetworkHelper.NetworkListener() {
+        networkHelper.getNetworkUsers(new NetworkHelper.NetworkListener() {
             @Override
             public void onFinish() {
                 if (NewDataHolder.getInstance(NetworkActivity.this).getNetworkUsers() != null &&

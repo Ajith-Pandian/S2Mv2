@@ -229,8 +229,8 @@ public class Utils {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         // draw border
-        if (context!=null) {
-        paint.setColor(context.getResources().getColor(R.color.text_color2));
+        if (context != null) {
+            paint.setColor(context.getResources().getColor(R.color.text_color2));
         }
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth((float) borderSizePx);
@@ -253,5 +253,9 @@ public class Utils {
     public boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }

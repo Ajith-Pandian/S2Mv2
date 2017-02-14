@@ -1,21 +1,21 @@
 package com.wowconnect.ui.splash;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.S2MApplication;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.ui.customUtils.Utils;
+import com.wowconnect.ui.helpers.AlertDialogListener;
 import com.wowconnect.ui.helpers.DialogHelper;
-import com.wowconnect.ui.helpers.S2mAlertDialog;
 import com.wowconnect.ui.landing.LandingActivity;
 import com.wowconnect.ui.login.LoginActivity;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 public class SplashActivity extends AppCompatActivity {
     final int TIME_IN_SECS = 2;
@@ -56,7 +56,7 @@ public class SplashActivity extends AppCompatActivity {
                     getString(R.string.er_no_internet),
                     getString(R.string.retry),
                     getString(R.string.cancel),
-                    new S2mAlertDialog.AlertListener() {
+                    new AlertDialogListener() {
                         @Override
                         public void onPositive() {
                             getLoginDetails();
@@ -87,6 +87,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (networkHelper != null)
             networkHelper.removeNetworkListener();
+        if (DialogHelper.getCurrentDialog() != null)
+            DialogHelper.removeAlertListener();
         super.onDestroy();
     }
 }

@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentActivity;
  */
 
 public class DialogHelper {
-    static S2MDialogFragment currentDialog;
+    static S2mAlertDialog currentDialog;
 
     public static void createAlertDialog(FragmentActivity context,
                                          String message,
                                          String positiveBtnTxt,
                                          String negativeeBtnTxt,
-                                         S2mAlertDialog.AlertListener alertListener) {
+                                         AlertDialogListener alertListener) {
         currentDialog = S2mAlertDialog
                 .build(context, message, positiveBtnTxt, negativeeBtnTxt, false, alertListener);
         currentDialog.show();
@@ -21,25 +21,30 @@ public class DialogHelper {
 
     public static void createCancelableAlertDialog(FragmentActivity context,
                                                    String message,
-                                                   S2mAlertDialog.AlertListener alertListener) {
+                                                   AlertDialogListener alertListener) {
         currentDialog = S2mAlertDialog
                 .build(context, message, true, alertListener);
         currentDialog.show();
     }
 
     public static void createProgressDialog(FragmentActivity context) {
-        currentDialog = S2mProgressDialog
-                .build(context);
-        currentDialog.show();
+        S2mProgressDialog
+                .build(context).show();
 
     }
 
-    public static void setCurrentDialog(S2MDialogFragment currentDialog) {
+    public static void setCurrentDialog(S2mAlertDialog currentDialog) {
         DialogHelper.currentDialog = currentDialog;
     }
 
-    public static S2MDialogFragment getCurrentDialog() {
+    public static S2mAlertDialog getCurrentDialog() {
         return currentDialog;
+    }
+
+    public static void removeAlertListener() {
+        if (currentDialog != null) {
+            currentDialog.removeAlertListener();
+        }
     }
 
 }

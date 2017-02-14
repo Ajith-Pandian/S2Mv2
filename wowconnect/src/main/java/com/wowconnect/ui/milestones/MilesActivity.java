@@ -608,6 +608,9 @@ public class MilesActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+        if (completeContentRequest != null) {
+            completeContentRequest.removeStatusListener();
+        }
         super.onDestroy();
     }
 
@@ -710,5 +713,6 @@ public class MilesActivity extends AppCompatActivity implements
 
         VolleySingleton.getInstance(this).addToRequestQueue(completeContentRequest);
     }
+
 
 }

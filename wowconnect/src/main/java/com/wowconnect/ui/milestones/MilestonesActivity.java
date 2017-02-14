@@ -114,8 +114,11 @@ public class MilestonesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    NetworkHelper networkHelper;
+
     void getArchiveData() {
-        new NetworkHelper(this).getArchiveContent(NewDataHolder.getInstance(this).getCurrentSectionId(), new NetworkHelper.NetworkListener() {
+        networkHelper = new NetworkHelper(this);
+        networkHelper.getArchiveContent(NewDataHolder.getInstance(this).getCurrentSectionId(), new NetworkHelper.NetworkListener() {
             @Override
             public void onFinish() {
                 ArrayList<TMiles> archiveList = NewDataHolder.getInstance(MilestonesActivity.this).getArchiveList();
@@ -129,5 +132,11 @@ public class MilestonesActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if (networkHelper != null) {
+            networkHelper.removeNetworkListener();
+        }
+        super.onDestroy();
+    }
 }

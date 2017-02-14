@@ -135,22 +135,25 @@ public class NewDataParser {
                 TMiles miles = new TMiles();
                 String type = milesJson.getString(Constants.KEY_TYPE);
                 if (type.equals(Constants.KEY_MILE)) {
-                    if (isFirstMile) {
+                   /* if (isFirstMile) {
                         isFirstMile = false;
                         completable = true;
                     } else {
                         completable = false;
-                    }
-                    if (isArchive) {
+                    }*/
+                    /*if (isArchive) {
                         // archiveIndex++;
                         miles.setMileIndex(++archiveIndex);
-                    }
+                    }*/
                     if (!milesJson.isNull(Constants.KEY_CONTENT_INDEX))
                         miles.setMileIndex(milesJson.getInt(Constants.KEY_CONTENT_INDEX));
+                    if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
+                        completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
                 } else {
-                    if (!milesJson.isNull(Constants.KEY_MCQS) && milesJson.getJSONArray(Constants.KEY_MCQS).length() > 0)
+                    if (milesJson.has(Constants.KEY_MCQS) &&
+                            !milesJson.isNull(Constants.KEY_MCQS) &&
+                            milesJson.getJSONArray(Constants.KEY_MCQS).length() > 0)
                         miles.setMcqs(getMcqs(milesJson.getJSONArray(Constants.KEY_MCQS)));
-                    Log.d("MCQs", "getMiles: " + getMcqs(milesJson.getJSONArray(Constants.KEY_MCQS)).toString());
                     if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
                         completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
                 }
@@ -226,8 +229,8 @@ public class NewDataParser {
                         break;
                     }
                     milesDataList.add(data);
-                    miles.setMileData(milesDataList);
                 }
+                miles.setMileData(milesDataList);
                 milesList.add(j, miles);
             }
         } catch (JSONException ex) {
