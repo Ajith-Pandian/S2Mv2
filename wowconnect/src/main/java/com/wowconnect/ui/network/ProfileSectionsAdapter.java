@@ -67,7 +67,7 @@ public class ProfileSectionsAdapter extends RecyclerView.Adapter<ProfileSections
 
     Drawable getDrawable(int milestoneId) {
         Resources res = context.getResources();
-        Drawable mDrawable = res.getDrawable(R.drawable.backround_circle_green);
+        Drawable mDrawable = res.getDrawable(R.drawable.background_circle_green);
         ColorFilter filter = new LightingColorFilter( res.getColor(colorsArray[new Random().nextInt(colorsArray.length)]),
                 Color.BLACK);
      //   ColorFilterGenerator.from(drawable).to(Color.RED);

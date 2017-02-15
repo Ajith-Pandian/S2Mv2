@@ -1,19 +1,25 @@
 package com.wowconnect.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.SclActs;
+import com.wowconnect.ui.customUtils.Utils;
 
 import java.util.List;
 
@@ -63,9 +69,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         else
             //changeColor(holder.likeButton, R.color.mile_oolor8);
             holder.likeButton.setColorFilter(context.getResources().getColor(R.color.mile_oolor8));
-        if (sclActs.getIcon() != null && !sclActs.getIcon().isEmpty())
-            Picasso.with(context).load(sclActs.getIcon()).into(holder.imageView);
-        holder.likeButton.setOnClickListener(new View.OnClickListener() {
+
+        holder.likeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 networkHelper = new NetworkHelper(context);
@@ -92,6 +97,31 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
                 });
             }
         });
+        Target iconTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                holder.imageView.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 1));
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+        if (sclActs.getIcon() != null && !sclActs.getIcon().isEmpty())
+            Picasso.with(context)
+                    .load(sclActs.getIcon())
+                    .placeholder(R.drawable.ph_profile)
+                    .into(iconTarget);
+        else {
+            Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+            holder.imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+        }
     }
 
     private void changeColor(ImageButton button, int color) {
@@ -119,6 +149,8 @@ public class SchoolActivitiesAdapter extends RecyclerView.Adapter<SchoolActiviti
         ImageView imageView;
         @BindView(R.id.button_like)
         ImageButton likeButton;
+        @BindView(R.id.layout_like)
+        LinearLayout likeLayout;
 
         public ViewHolder(View view) {
             super(view);

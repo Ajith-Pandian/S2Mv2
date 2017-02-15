@@ -108,7 +108,6 @@ public class OtpFragment extends Fragment {
                 new VolleyStringRequest.VolleyErrListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
                         Log.d("otpRequest", "onResponse: " + error);
                     }
                 }, new VolleyStringRequest.StatusCodeListener() {
@@ -296,7 +295,6 @@ public class OtpFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         subscriptions.unsubscribe();
         if (otpRequest != null)
             otpRequest.removeStatusListener();
@@ -304,6 +302,7 @@ public class OtpFragment extends Fragment {
             resendOtpRequest.removeStatusListener();
         buttonOtpOk.setOnClickListener(null);
         requestOtpText.setOnClickListener(null);
+        super.onDestroy();
     }
 
     boolean validateOtp(String otp) {

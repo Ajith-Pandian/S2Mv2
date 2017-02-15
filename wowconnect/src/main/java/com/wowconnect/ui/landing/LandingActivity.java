@@ -13,37 +13,43 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wowconnect.NewDataHolder;
 import com.wowconnect.NewDataParser;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
+import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.database.DataBaseUtil;
-import com.wowconnect.models.DbUser;
 import com.wowconnect.ui.customUtils.views.HeightWrapListView;
 import com.wowconnect.ui.manage.ManageTeachersActivity;
 import com.wowconnect.ui.manage.SelectSchoolActivity;
 import com.wowconnect.ui.notification.NotificationActivity;
 import com.wowconnect.ui.tickets.TicketsFragment;
 import com.wowconnect.ui.tickets.attachments.AttachmentsAdapter;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static java.security.AccessController.getContext;
 
 
 public class LandingActivity extends AppCompatActivity
@@ -66,10 +72,8 @@ public class LandingActivity extends AppCompatActivity
     ImageButton videoButton;
     @BindView(R.id.list_menu)
     HeightWrapListView menuList;
-    /*Animation show_fab_1, show_fab_2, show_fab_3, hide_fab_1, hide_fab_2, hide_fab_3, rotate_forward, rotate_backward;
-    FloatingActionButton fab1, fab2, fab3;
-    LinearLayout fabLayout1, fabLayout2, fabLayout3;
-    boolean isFabsShown;*/
+    Animation rotate_forward, rotate_backward;
+    boolean isFabsShown;
     @BindView(R.id.layout_frame)
     FrameLayout frameLayout;
     @BindView(R.id.dummy_view)
@@ -144,43 +148,36 @@ public class LandingActivity extends AppCompatActivity
         sectionButton.setOnClickListener(buttonsClickListener);
         messagesButton.setOnClickListener(buttonsClickListener);
         videoButton.setOnClickListener(buttonsClickListener);
-
+        initAnimations();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        DbUser loggedInUser = new DataBaseUtil(this).getUser(SharedPreferenceHelper.getUserId());
-        String userType = loggedInUser.getType();
-        ArrayList<String> userRoles = new NewDataParser().getUserRoles(this, SharedPreferenceHelper.getUserId());
+        UserAccessController userAccessController = new UserAccessController(SharedPreferenceHelper.getUserId());
 
-        switch (userType) {
-            case Constants.USER_TYPE_SCHOOL:
-                if (userRoles.contains(Constants.ROLE_SCL_ADMIN) || userRoles.contains(Constants.ROLE_COORDINATOR)) {
-                    navigationView.getMenu().clear();
-                    navigationView.inflateMenu(R.menu.activity_landing_drawer_school_admin);
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                    toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-                } else {
-                    toolbar.setNavigationIcon(null);
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                }
-                break;
-
-            case Constants.USER_TYPE_S2M_ADMIN:
-                navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.activity_landing_drawer_s2m_admin);
-                break;
+        if (userAccessController.hasNavigationMenu()) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(userAccessController.getNavigationMenu());
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        } else {
+            toolbar.setNavigationIcon(null);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
+
+
         if (getSupportActionBar() != null) {
             String schoolName = NewDataHolder
                     .getInstance(this)
                     .getSchoolById(SharedPreferenceHelper.getSchoolId()).getName();
             getSupportActionBar().setTitle(schoolName != null &&
-                    !schoolName.isEmpty() ? schoolName: getResources().getString(R.string.app_name));
+                    !schoolName.isEmpty() ? schoolName : getResources().getString(R.string.app_name));
         }
         //loading home fragment for first time
-        switch (selectedTab) {
+        switch (selectedTab)
+
+        {
             case 1:
                 homeButton.performClick();
                 break;
@@ -201,7 +198,14 @@ public class LandingActivity extends AppCompatActivity
 
     boolean isMenuShown;
 
+    void initAnimations() {
+        rotate_forward = AnimationUtils.loadAnimation(getApplication(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplication(), R.anim.rotate_backward);
+    }
+
     void showMenu() {
+
+        fab.startAnimation(rotate_forward);
         int[] iconIds = {R.drawable.ic_intro_training,
                 R.drawable.ic_intro_training,
                 R.drawable.ic_intro_training};
@@ -244,6 +248,7 @@ public class LandingActivity extends AppCompatActivity
     }
 
     void hideMenu() {
+        fab.startAnimation(rotate_backward);
         menuList.setVisibility(View.GONE);
         dummyView.setVisibility(View.GONE);
         frameLayout.getForeground().setAlpha(0);
@@ -317,7 +322,7 @@ public class LandingActivity extends AppCompatActivity
                     showMenu();
                 else
                     hideMenu();
-                checkFirebase();
+                //checkFirebase();
             }
         });
         dummyView.setOnClickListener(new View.OnClickListener() {

@@ -20,10 +20,9 @@ import android.widget.RelativeLayout;
 
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
-import com.wowconnect.NewDataParser;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
-import com.wowconnect.domain.Constants;
+import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.Sections;
 import com.wowconnect.models.milestones.TMileData;
@@ -89,10 +88,9 @@ public class SectionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String userType = new DataBaseUtil(getContext()).getUser(SharedPreferenceHelper.getUserId()).getType();
-        if (!userType.equals(Constants.USER_TYPE_S2M_ADMIN) &&
-                new NewDataParser().getUserRoles(getContext(),
-                        SharedPreferenceHelper.getUserId()).contains(Constants.ROLE_TEACHER)) {
+        UserAccessController userAccessController = new UserAccessController(SharedPreferenceHelper.getUserId());
+        setHasOptionsMenu(userAccessController.hasAddSectionMenu());
+        if (userAccessController.hasIntroTrainings()) {
             cardLayout.setVisibility(View.VISIBLE);
             cardLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +100,6 @@ public class SectionsFragment extends Fragment {
             });
         } else {
             cardLayout.setVisibility(View.GONE);
-            setHasOptionsMenu(true);
         }
     }
 

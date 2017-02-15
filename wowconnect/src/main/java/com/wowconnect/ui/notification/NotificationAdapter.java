@@ -1,6 +1,9 @@
 package com.wowconnect.ui.notification;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.R;
 import com.wowconnect.models.Notification;
+import com.wowconnect.ui.customUtils.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +58,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         Notification notification = notificationsList.get(holder.getAdapterPosition());
         holder.title.setText(notification.getTitle());
         holder.content.setText(notification.getData());
-        holder.date.setText(notification.getDate());
+        String readableDate = "";
+        try {
+            String oldDateFormat = notification.getDate().split(" ")[0];
+            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(oldDateFormat);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+            sdf.setTimeZone(TimeZone.getDefault());
+            readableDate = sdf.format(date);
+
+        } catch (Exception e) {
+            readableDate = notification.getDate().split(" ")[0];
+        }
+        holder.date.setText(readableDate);
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,10 +80,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 context.startActivity(intent);*/
             }
         });
-        if (!notification.getIcon().isEmpty())
-            Picasso.with(context).load(notification.getIcon()).into(holder.icon);
-     /*   Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
-        holder.icon.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -79,9 +97,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             }
         };
-            *//*if (!notification.getAvatar().equals(""))
-                Picasso.with(context).load(notification.getAvatar()).placeholder(R.drawable.profile).into(target);*//*
-        holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.section_selected));*/
+        if (notification.getIcon() != null && !notification.getIcon().isEmpty())
+            Picasso.with(context).load(notification.getIcon()).placeholder(R.drawable.profile).into(target);
+        else {
+            Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+            holder.icon.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+        }
+
     }
 
 

@@ -123,7 +123,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
         textAnniversary.setText(user.getAnniversary());
 
         if (user.getGender() != null) {
-            if (user.getGender().equals("Male")) {
+            if (user.getGender().equalsIgnoreCase("male")) {
                 maleButton.setChecked(true);
                 gender = "Male";
             } else
@@ -556,17 +556,22 @@ public class ProfileUpdateActivity extends AppCompatActivity implements DatePick
     }
 
     void doFirstTimeSetup() {
-        if (user.getType().equals(Constants.USER_TYPE_S2M_ADMIN))
-            launchSelectSchool();
-        else if (user.getType().equals(Constants.USER_TYPE_SCHOOL)) {
-            ArrayList<String> roles =  new NewDataParser().getUserRoles(this, SharedPreferenceHelper.getUserId());
-            if (roles.contains(Constants.ROLE_SCL_ADMIN) ||
-                    roles.contains(Constants.ROLE_COORDINATOR))
-                launchManageTeachersAndSections();
-            else if (roles.contains(Constants.ROLE_TEACHER))
+        switch (user.getType()) {
+            case Constants.USER_TYPE_S2M_ADMIN:
+                launchSelectSchool();
+                break;
+            case Constants.USER_TYPE_SCHOOL:
+                ArrayList<String> roles = new NewDataParser().getUserRoles(this, SharedPreferenceHelper.getUserId());
+                if (roles.contains(Constants.ROLE_SCL_ADMIN) ||
+                        roles.contains(Constants.ROLE_COORDINATOR))
+                    launchManageTeachersAndSections();
+                else
+                    launchLanding();
+                break;
+            default:
                 launchLanding();
-        } else
-            launchLanding();
+                break;
+        }
 
     }
 

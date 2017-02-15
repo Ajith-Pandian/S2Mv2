@@ -59,6 +59,14 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        if (networkHelper != null) {
+            networkHelper.removeNetworkListener();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:

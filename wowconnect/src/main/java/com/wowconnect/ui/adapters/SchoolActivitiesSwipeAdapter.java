@@ -3,6 +3,7 @@ package com.wowconnect.ui.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.domain.database.DataBaseUtil;
@@ -85,12 +87,7 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
         else
             likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.mile_oolor8));
 
-        if (sclActs.getIcon() != null && !sclActs.getIcon().isEmpty())
-            Picasso.with(getContext()).load(sclActs.getIcon()).into(imageView);
-        else {
-            Bitmap imageBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.user_image);
-            imageView.setImageDrawable(Utils.getInstance().getCirclularImage(getContext(), imageBitmap));
-        }
+
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -116,6 +113,31 @@ public class SchoolActivitiesSwipeAdapter extends ArrayAdapter<SclActs> {
                 });
             }
         });
+        Target iconTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                imageView.setImageBitmap(Utils.getInstance().getRoundedCornerBitmap(context, bitmap, 20, 1));
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+        if (sclActs.getIcon() != null && !sclActs.getIcon().isEmpty())
+            Picasso.with(context)
+                    .load(sclActs.getIcon())
+                    .placeholder(R.drawable.ph_profile)
+                    .into(iconTarget);
+        else {
+            Bitmap placeHolder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ph_profile);
+            imageView.setImageDrawable(Utils.getInstance().getCirclularImage(context, placeHolder));
+        }
         return convertView;
     }
 

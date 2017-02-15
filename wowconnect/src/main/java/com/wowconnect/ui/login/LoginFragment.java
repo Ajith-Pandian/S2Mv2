@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -101,7 +102,6 @@ LoginFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +163,7 @@ LoginFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onNotFound() {
                 Log.d(TAG, "onNotFound: ");
+                Utils.getInstance().showToast("Number not registered. Please register first.");
             }
 
             @Override
@@ -306,14 +307,14 @@ LoginFragment extends Fragment implements View.OnClickListener {
         if (inputLayout.getVisibility() != View.VISIBLE)
             //animateView(inputLayout, View.VISIBLE);
             inputLayout.setVisibility(View.VISIBLE);
-        // loginText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        //loginText.setInputType(InputType.TYPE_CLASS_TEXT);
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         loginText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
     }
 
     void changeToMail() {
         loginText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(256)});
-        //  loginText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+        loginText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         if (inputLayout.getVisibility() == View.VISIBLE)
             // animateView(inputLayout, View.GONE);
             inputLayout.setVisibility(View.GONE);

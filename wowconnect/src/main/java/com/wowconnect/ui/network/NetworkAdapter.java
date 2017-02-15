@@ -17,18 +17,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.NewDataHolder;
-import com.wowconnect.NewDataParser;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
+import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.models.DbUser;
 import com.wowconnect.ui.customUtils.Utils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,23 +68,8 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.ViewHold
         holder.wowText.setText(user.getWow() + Constants.SUFFIX_WOWS);
         holder.milesText.setText(user.getMiles() + Constants.SUFFIX_MILES);
 
-        String userType = user.getType();
-        if (userType.equals(Constants.USER_TYPE_S2M_ADMIN)) {
-            holder.textDesignation.setText(Constants.TEXT_S2M_ADMIN);
-            holder.wowLayout.setVisibility(View.GONE);
-
-        } else if (userType.equals(Constants.USER_TYPE_SCHOOL)) {
-            //ArrayList<String> roles = user.getRoles();
-            ArrayList<String> roles = new NewDataParser().getUserRoles(context, user.getId());
-
-            if (roles.contains(Constants.ROLE_COORDINATOR))
-                holder.textDesignation.setText(Constants.TEXT_COORDINATOR);
-            else if (roles.contains(Constants.ROLE_SCL_ADMIN))
-                holder.textDesignation.setText(Constants.TEXT_SCL_ADMIN);
-            else if (roles.contains(Constants.ROLE_TEACHER))
-                holder.textDesignation.setText(Constants.TEXT_TEACHER);
-        }
-
+        UserAccessController accessController = new UserAccessController(user.getId());
+        holder.textDesignation.setText(accessController.getDesignation());
 
         if (user.getId() == SharedPreferenceHelper.getUserId())
             holder.callButton.setVisibility(View.GONE);

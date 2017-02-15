@@ -2,7 +2,6 @@ package com.wowconnect.ui.milestones.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,9 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -31,7 +28,6 @@ import com.wowconnect.ui.milestones.UndoDoneListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,6 +112,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else
                     viewHolder.undoButton.setVisibility(View.GONE);
 
+                viewHolder.type.setVisibility(isArchive ? View.GONE : View.VISIBLE);
 
                 break;
             case 1:
@@ -143,6 +140,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         openActivity(MilesActivity.class, isIntro, false, training.isCompletable(), milestonesList.get(position).getId());
                     }
                 });
+                tViewHolder.type.setVisibility(isArchive ? View.GONE : View.VISIBLE);
                 break;
         }
 
@@ -202,73 +200,6 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VolleySingleton.getInstance(context).addToRequestQueue(undoRequest);
     }
 
-    void undoThisMile(final int undoId) {
-        VolleyStringRequest milesRequest = new VolleyStringRequest(Request.Method.POST, Constants.FEEDBACK_UNDO_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("UndoFeedBack", "onResponse: " + response);
-                        Toast.makeText(context, "undo done", Toast.LENGTH_SHORT).show();
-
-                    }
-                },
-                new VolleyStringRequest.VolleyErrListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        super.onErrorResponse(error);
-                        Log.d("UndoFeedBack", "onErrorResponse: " + error);
-
-                    }
-                }, new VolleyStringRequest.StatusCodeListener() {
-            String TAG = "VolleyStringReq";
-
-            @Override
-            public void onBadRequest() {
-                Log.d(TAG, "onBadRequest: ");
-            }
-
-            @Override
-            public void onUnauthorized() {
-                Log.d(TAG, "onUnauthorized: ");
-            }
-
-            @Override
-            public void onNotFound() {
-                Log.d(TAG, "onNotFound: ");
-            }
-
-            @Override
-            public void onConflict() {
-                Log.d(TAG, "onConflict: ");
-            }
-
-            @Override
-            public void onTimeout() {
-                Log.d(TAG, "onTimeout: ");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new ArrayMap<>();
-                params.put(Constants.KEY_MILE_ID, String.valueOf(undoId));
-                params.put(Constants.KEY_MILESTONE_ID, "1");
-                params.put(Constants.KEY_SECTION_ID, "4");
-                params.put(Constants.KEY_SCHOOL_ID, "2");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new ArrayMap<>();
-                header.put(Constants.KEY_ACCESS_TOKEN, Constants.TEMP_ACCESS_TOKEN);
-                header.put(Constants.KEY_DEVICE_TYPE, Constants.TEMP_DEVICE_TYPE);
-                return header;
-            }
-
-        };
-
-        VolleySingleton.getInstance(context).addToRequestQueue(milesRequest);
-    }
 
     private void openActivity(Class<?> activityClass, boolean isIntro, boolean isMile, boolean isCompletable, int id) {
         Intent intent = new Intent(context, MilesActivity.class);

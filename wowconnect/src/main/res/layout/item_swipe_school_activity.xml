@@ -114,7 +114,7 @@
                         tools:text="Time" />
 
                     <LinearLayout
-                        android:id="@+id/linearLayout"
+                        android:id="@+id/layout_like"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/text_time"

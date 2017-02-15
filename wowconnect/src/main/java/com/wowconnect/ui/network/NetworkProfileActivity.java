@@ -26,6 +26,7 @@ import com.wowconnect.NewDataParser;
 import com.wowconnect.R;
 import com.wowconnect.S2MApplication;
 import com.wowconnect.SharedPreferenceHelper;
+import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.Constants;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.domain.network.VolleySingleton;
@@ -66,8 +67,7 @@ public class NetworkProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-        Bundle bundle = getIntent().getExtras();
-        //user = (User) bundle.getSerializable("com.wowconnect.domain.models.User");
+
         user = NewDataHolder.getInstance(this).getCurrentNetworkUser();
         toolbar.setTitle(user.getFirstName() + " " + user.getLastName());
         setSupportActionBar(toolbar);
@@ -75,7 +75,7 @@ public class NetworkProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        if (NewDataHolder.getInstance(this).getUser().getType().equals(Constants.USER_TYPE_S2M_ADMIN)) {
+        if (new UserAccessController(SharedPreferenceHelper.getUserId()).isS2mAdmin()) {
             wowLayout.setClickable(true);
             wowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +89,6 @@ public class NetworkProfileActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         if (profilePagerAdapter.getCount() == 1) {
-            //tabLayout.setSelectedTabIndicatorHeight(0);
             tabLayout.setVisibility(View.GONE);
         }
 
@@ -210,12 +209,7 @@ public class NetworkProfileActivity extends AppCompatActivity {
         }
 
         int getValidTabsCount() {
-            if (new NewDataParser()
-                    .getUserRoles(getApplicationContext(), user.getId())
-                    .contains(Constants.ROLE_TEACHER))
-                return 2;
-            else return 1;
-
+            return new UserAccessController(user.getId()).hasProfileSections() ? 2 : 1;
         }
 
         @Override

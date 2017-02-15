@@ -23,10 +23,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.NewDataHolder;
-import com.wowconnect.NewDataParser;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
-import com.wowconnect.domain.Constants;
+import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.DbUser;
 import com.wowconnect.models.SclActs;
@@ -262,19 +261,8 @@ public class HomeFragment extends Fragment {
         user = new DataBaseUtil(getContext()).getUser(SharedPreferenceHelper.getUserId());
         String nameString = user.getLastName() != null && !user.getLastName().equals("null") ? user.getFirstName() + " " + user.getLastName() : user.getFirstName();
         name.setText(nameString);
-        String userType = user.getType();
-        if (userType.equals(Constants.USER_TYPE_S2M_ADMIN)) {
-            designation.setText(Constants.TEXT_S2M_ADMIN);
-        } else if (userType.equals(Constants.USER_TYPE_SCHOOL)) {
-            ArrayList<String> roles = new NewDataParser().getUserRoles(getContext(), SharedPreferenceHelper.getUserId());
-            if (roles.contains(Constants.ROLE_COORDINATOR))
-                designation.setText(Constants.TEXT_COORDINATOR);
-            else if (roles.contains(Constants.ROLE_SCL_ADMIN))
-                designation.setText(Constants.TEXT_SCL_ADMIN);
-            else
-                designation.setText(Constants.TEXT_TEACHER);
-        }
-
+        UserAccessController accessController = new UserAccessController(user.getId());
+        designation.setText(accessController.getDesignation());
 
         String avatar = user.getAvatar();
         Bitmap placeHolder = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ph_profile);

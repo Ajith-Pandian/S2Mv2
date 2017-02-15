@@ -46,6 +46,7 @@
 
         <TextView
             android:id="@+id/timestamp"
+            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -61,12 +62,14 @@
             tools:text="Timestamp" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/layout_like"
             android:layout_width="wrap_content"
+            android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/timestamp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:padding="8dp"
             android:layout_alignTop="@+id/timestamp"
             android:layout_marginEnd="24dp"
             android:layout_marginRight="24dp"
@@ -76,6 +79,7 @@
                 android:id="@+id/button_like"
                 style="?attr/buttonBarButtonStyle"
                 android:layout_width="20dp"
+                android:clickable="false"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -87,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="123"
+                tools:text="123"
                 android:textColor="@color/greenFade"
                 android:textSize="10sp"
                 android:textStyle="bold" />

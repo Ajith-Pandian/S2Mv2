@@ -12,6 +12,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -134,7 +135,7 @@ public class MilesActivity extends AppCompatActivity implements
     TextView toolbarTitle, toolbarSubTitle;
     ImageButton backButton;
     ArrayList<String> options;
-    boolean isThumbsUp;
+    boolean isThumbsUp = true;
     View.OnClickListener thumbsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -315,14 +316,19 @@ public class MilesActivity extends AppCompatActivity implements
         if (!isFragmentsAdded)
             addFragments();
 
+
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i != selected_option) {//  optionsAdapter.notifyDataSetChanged();
                     for (int j = 0; j < adapterView.getChildCount(); j++) {
-                        adapterView.getChildAt(j).setActivated(false);
+                        adapterView.getChildAt(j).setBackgroundDrawable(ContextCompat.getDrawable(MilesActivity.this, R.drawable.background_options));
                     }
-                    view.setActivated(true);
+                    if (isThumbsUp)
+                        view.setBackgroundDrawable(ContextCompat.getDrawable(MilesActivity.this, R.drawable.bg_options_selected_green));
+                    else {
+                        view.setBackgroundDrawable(ContextCompat.getDrawable(MilesActivity.this, R.drawable.bg_options_selected_red));
+                    }
                     selected_option = i;
                 }
 
@@ -422,6 +428,7 @@ public class MilesActivity extends AppCompatActivity implements
         buttonComplete.setTextColor(buttonTextColor);
         textTitle.setTextColor(titleTextColor);
     }
+
 
     void getMcqs() {
         VolleyStringRequest mcqsRequest = new VolleyStringRequest(Request.Method.GET,
@@ -616,7 +623,10 @@ public class MilesActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN)
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        else
+            super.onBackPressed();
     }
 
     VolleyStringRequest completeContentRequest;

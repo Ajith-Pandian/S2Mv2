@@ -247,6 +247,8 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         }
     }
 
+    NetworkHelper networkHelper;
+
     void selectTeacher(final int teacherId) {
         ArrayList<DbUser> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
         if (teachersList != null && teachersList.size() > 0) {
@@ -255,10 +257,17 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
                     teachersSpinner.setSelection(i);
             }
         } else {
-            new NetworkHelper(getContext()).getNetworkUsers(new NetworkHelper.NetworkListener() {
+            networkHelper = new NetworkHelper(getContext());
+            networkHelper.getNetworkUsers(new NetworkHelper.NetworkListener() {
                 @Override
                 public void onFinish() {
-                    selectTeacher(teacherId);
+                    ArrayList<DbUser> teachersList = NewDataHolder.getInstance(getContext()).getTeachersList();
+                    if (teachersList != null && teachersList.size() > 0) {
+                        for (int i = 0; i < teachersList.size(); i++) {
+                            if (teacherId == teachersList.get(i).getId())
+                                teachersSpinner.setSelection(i);
+                        }
+                    }
                 }
             });
         }
@@ -471,5 +480,15 @@ public class AddSectionsFragment extends BottomSheetDialogFragment {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(sectionAddRequest);
     }
 
+    @Override
+    public void onDestroy() {
+        if (sectionAddRequest != null) {
+            sectionAddRequest.removeStatusListener();
+        }
+        if (networkHelper != null) {
+            networkHelper.removeNetworkListener();
+        }
+        super.onDestroy();
+    }
 }
 

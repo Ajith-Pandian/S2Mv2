@@ -131,7 +131,7 @@ public class DataBaseUtil {
 
         } catch (SQLException ex) {
             Log.e(context.getClass().getSimpleName(), "getNetworkUsers: ", ex);
-            throw new RuntimeException("No users in table");
+            throw new RuntimeException("No sections in table");
         }
 
 

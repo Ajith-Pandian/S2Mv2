@@ -129,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:focusable="false"
+                    android:longClickable="false"
                     android:focusableInTouchMode="false"
                     android:hint="Phone"
                     android:maxLength="10"
