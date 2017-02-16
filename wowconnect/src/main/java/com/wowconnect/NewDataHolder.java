@@ -315,12 +315,15 @@ public class NewDataHolder {
         this.introTrainingsList = introTrainingsList;
     }
 
+    private ArrayList<SclActs> sclActsArrayList;
+
     public ArrayList<SclActs> getSclActList() {
-        return new DataBaseUtil(context).getSchoolActivities();
+        return sclActsArrayList != null ? sclActsArrayList : new DataBaseUtil(context).getSchoolActivities();
     }
 
     public void setSclActList(ArrayList<SclActs> sclActList) {
-        new DataBaseUtil(context).setSchoolActivities(sclActList);
+        this.sclActsArrayList = sclActList;
+        new DataBaseUtil(context).setSchoolActivities(sclActsArrayList);
     }
 
     public SclActs getBulletin() {

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wowconnect">
 
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -16,7 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.wowconnect.S2MApplication"
+        android:name=".S2MApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,12 +25,12 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <!--   <provider
+        <!--
+               <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="com.example.uilayer.fileProvider"
                 android:exported="false"
@@ -39,14 +38,15 @@
                 <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/filepaths" />
-            </provider>-->
+            </provider>
+        -->
 
-        <service android:name="com.wowconnect.firebase.S2mMessagingService">
+        <service android:name=".firebase.S2mMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.wowconnect.firebase.S2mInstanceIDService">
+        <service android:name=".firebase.S2mInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -57,19 +57,19 @@
             android:value="2881b38dc5ba49b964249e105305483242a94b4a" />
 
         <activity
-            android:name="com.wowconnect.ui.login.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name="com.wowconnect.ui.profile.RegisterActivity"
+            android:name=".ui.profile.RegisterActivity"
             android:isScrollContainer="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.wowconnect.ui.landing.SchoolDetailActivity"
+            android:name=".ui.landing.SchoolDetailActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -77,32 +77,32 @@
             <!-- android:label="@string/title_activity_school_detail" -->
         </activity>
         <activity
-            android:name="com.wowconnect.ui.landing.LandingActivity"
+            android:name=".ui.landing.LandingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.milestones.MilestonesActivity"
+            android:name=".ui.milestones.MilestonesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.wowconnect.ui.milestones.TrainingActivity"
+            android:name=".ui.milestones.TrainingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.milestones.MilesActivity"
+            android:name=".ui.milestones.MilesActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.milestones.ArchiveActivity"
+            android:name=".ui.milestones.ArchiveActivity"
             android:label="@string/title_activity_archive"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.milestones.MCQActivity"
+            android:name=".ui.milestones.MCQActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.splash.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -112,38 +112,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wowconnect.ui.network.NetworkActivity"
+            android:name=".ui.network.NetworkActivity"
             android:label="Network"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.wowconnect.ui.network.NetworkProfileActivity"
+            android:name=".ui.network.NetworkProfileActivity"
             android:label="Profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.manage.ManageTeachersActivity"
+            android:name=".ui.manage.ManageTeachersActivity"
             android:label="Manage Teachers"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.tickets.message.MessageActivity"
+            android:name=".ui.tickets.message.MessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity android:name="com.wowconnect.ui.manage.SelectSchoolActivity" />
+        <activity android:name=".ui.manage.SelectSchoolActivity" />
         <activity
-            android:name="com.wowconnect.ui.tickets.attachments.RecordAudioActivity"
+            android:name=".ui.tickets.attachments.RecordAudioActivity"
             android:screenOrientation="portrait"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wowconnect.ui.tickets.attachments.AddDocumentActivity"
+            android:name=".ui.tickets.attachments.AddDocumentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.wowconnect.ui.notification.NotificationActivity"
+            android:name=".ui.notification.NotificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.wowconnect.ui.profile.ProfileUpdateActivity"
+            android:name=".ui.profile.ProfileUpdateActivity"
             android:label="@string/update_profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

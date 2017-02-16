@@ -7,7 +7,7 @@
 
     <android.support.v7.widget.CardView
         android:layout_margin="1dp"
-        android:id="@+id/card_teacher"
+        android:id="@+id/card_profile"
         android:layout_width="match_parent"
 
         android:layout_height="wrap_content"

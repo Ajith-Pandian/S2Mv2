@@ -9,12 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wowconnect.R;
-import com.wowconnect.ui.customUtils.views.PinchZoomImageView;
-import com.wowconnect.models.miles.ImageMiles;
 import com.squareup.picasso.Picasso;
+import com.wowconnect.R;
+import com.wowconnect.models.miles.ImageMiles;
+import com.wowconnect.ui.customUtils.views.PinchZoomImageView;
 
 import java.util.ArrayList;
 
@@ -26,15 +27,16 @@ public class ImageSliderDialogFragment extends DialogFragment {
     private String TAG = ImageSliderDialogFragment.class.getSimpleName();
     private ArrayList<ImageMiles> images;
     private ViewPager viewPager;
-    private MyViewPagerAdapter myViewPagerAdapter;
-    private TextView lblCount, lblTitle, lblDate;
+    MyViewPagerAdapter myViewPagerAdapter;
+    private TextView lblTitle;
+    private ImageView closeIcon;
     private int selectedPosition = 0;
 
-    static ImageSliderDialogFragment newInstance(ArrayList<ImageMiles> imagesList,int selectedPosition) {
+    static ImageSliderDialogFragment newInstance(ArrayList<ImageMiles> imagesList, int selectedPosition) {
         ImageSliderDialogFragment f = new ImageSliderDialogFragment();
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("images_list",imagesList);
-        bundle.putInt("position",selectedPosition);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("images_list", imagesList);
+        bundle.putInt("position", selectedPosition);
         f.setArguments(bundle);
         return f;
     }
@@ -42,20 +44,29 @@ public class ImageSliderDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-      //  View v=null; /*
-        View v= inflater.inflate(R.layout.fragment_image_slider_dialog, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager_images);
-      //  lblCount = (TextView) v.findViewById(R.id.lbl_count);
-        lblTitle = (TextView) v.findViewById(R.id.text_title_full_screen_slider);
-       // lblDate = (TextView) v.findViewById(R.id.date);*/
+        View v;
+        v = inflater.inflate(R.layout.fragment_image_slider_dialog, container, false);
 
-        images = (ArrayList<ImageMiles>) getArguments().getSerializable("images_list");
-        selectedPosition = getArguments().getInt("position");
+
+        viewPager = (ViewPager) v.findViewById(R.id.viewpager_images);
+        lblTitle = (TextView) v.findViewById(R.id.text_title_full_screen_slider);
+        closeIcon = (ImageView) v.findViewById(R.id.close_icon);
+
+        images = (ArrayList<ImageMiles>)
+                getArguments()
+                        .getSerializable("images_list");
+
+        selectedPosition =
+                getArguments().
+                        getInt("position");
 
         Log.e(TAG, "position: " + selectedPosition);
-      //  Log.e(TAG, "images size: " + images.size());
+        //  Log.e(TAG, "images size: " + images.size());
 
-        myViewPagerAdapter = new MyViewPagerAdapter();
+        myViewPagerAdapter = new
+
+                MyViewPagerAdapter();
+
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
@@ -93,7 +104,7 @@ public class ImageSliderDialogFragment extends DialogFragment {
 
         ImageMiles image = images.get(position);
         lblTitle.setText(image.getTitle());
-       // lblDate.setText(image.getTimestamp());
+        // lblDate.setText(image.getTimestamp());
     }
 
     @Override

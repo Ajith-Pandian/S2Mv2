@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +31,9 @@ import com.wowconnect.UserAccessController;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.DbUser;
 import com.wowconnect.models.SclActs;
-import com.wowconnect.ui.adapters.SchoolActivitiesSwipeAdapter;
 import com.wowconnect.ui.customUtils.Utils;
 import com.wowconnect.ui.network.NetworkActivity;
+import com.wowconnect.ui.network.NetworkProfileActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,7 +43,6 @@ import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import in.arjsna.swipecardlib.SwipeCardView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -67,12 +68,14 @@ public class HomeFragment extends Fragment {
     TextView name;
     @BindView(R.id.designation)
     TextView designation;
-    @BindView(R.id.swipe_cards)
-    SwipeCardView swipeCardView;
+    @BindView(R.id.view_pager_school_acts)
+    ViewPager cardsViewPager;
     @BindView(R.id.text_see_all)
     TextView seeAllText;
     @BindView(R.id.layout_last_card)
     RelativeLayout lastCardLayout;
+    @BindView(R.id.card_profile)
+    CardView profileCard;
 
     Target profileTarget = new Target() {
         @Override
@@ -189,15 +192,15 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (NewDataHolder.getInstance(getContext()).getBulletin() != null && NewDataHolder.getInstance(getContext()).getBulletin().isLiked()) {
+        if (NewDataHolder.getInstance(getContext()).getBulletin() != null &&
+                NewDataHolder.getInstance(getContext()).getBulletin().isLiked()) {
             buttonlike.setColorFilter(getResources().getColor(R.color.colorPrimary));
         } else
             buttonlike.setColorFilter(getResources().getColor(android.R.color.white));
-        initSwipeCards();
-
+        initCardsPager();
     }
 
-    void initSwipeCards() {
+    void initCardsPager() {
         ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
         ArrayList<SclActs> swipeList = new ArrayList<>();
         if (schoolActivitiesList != null && schoolActivitiesList.size() > 0) {
@@ -214,44 +217,14 @@ public class HomeFragment extends Fragment {
             for (int i = 0; i < cardsCount; i++) {
                 swipeList.add(schoolActivitiesList.get(i));
             }
-            swipeCardView.setAdapter(new SchoolActivitiesSwipeAdapter(getActivity(), swipeList));
-            swipeCardView.setFlingListener(new SwipeCardView.OnCardFlingListener() {
-                @Override
-                public void onCardExitLeft(Object dataObject) {
-
-                }
-
-                @Override
-                public void onCardExitRight(Object dataObject) {
-
-                }
-
-                @Override
-                public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: " + itemsInAdapter);
-                    boolean visibility = itemsInAdapter == 0;
-                    lastCardLayout.setVisibility(visibility ? VISIBLE : GONE);
-                    swipeCardView.setVisibility(!visibility ? VISIBLE : GONE);
-                }
-
-                @Override
-                public void onScroll(float scrollProgressPercent) {
-
-                }
-
-                @Override
-                public void onCardExitTop(Object dataObject) {
-
-                }
-
-                @Override
-                public void onCardExitBottom(Object dataObject) {
-
-                }
-            });
+            cardsViewPager.setClipToPadding(false);
+            cardsViewPager.setPadding(50, 0, 50, 0);
+            cardsViewPager.setPageMargin(20);
+            cardsViewPager.setAdapter(new
+                    SchoolPagerAdapter(getContext(), swipeList));
         } else {
             lastCardLayout.setVisibility(VISIBLE);
-            swipeCardView.setVisibility(GONE);
+            cardsViewPager.setVisibility(GONE);
             seeAllText.setText("No Activities");
             lastCardLayout.setOnClickListener(null);
         }
@@ -286,6 +259,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), NetworkActivity.class));
+            }
+        });
+        profileCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewDataHolder.getInstance(getContext()).setCurrentNetworkUser(user);
+                startActivity(new Intent(getActivity(), NetworkProfileActivity.class));
             }
         });
 

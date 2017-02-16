@@ -207,6 +207,7 @@ public class DataBaseUtil {
 
     public void setSchoolActivities(ArrayList<SclActs> sclActsList) {
         try {
+            updateSclActsDb();
             for (SclActs sclAct : sclActsList) {
                 Dao<SclActs, Integer> sclActsDao = getLocalSclActsDao();
                 if (sclActsDao != null) {
@@ -302,6 +303,16 @@ public class DataBaseUtil {
             }
         } catch (SQLException e) {
             Log.e(context.getClass().getSimpleName(), "updateSectionsDb: ", e);
+
+        }
+    }  private void updateSclActsDb() {
+        try {
+            if (getLocalSclActsDao() != null) {
+                TableUtils.dropTable(getLocalSclActsDao(), false);
+                TableUtils.createTable(getLocalSclActsDao());
+            }
+        } catch (SQLException e) {
+            Log.e(context.getClass().getSimpleName(), "updateSclActsDb: ", e);
 
         }
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +15,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.wowconnect.NetworkHelper;
 import com.wowconnect.R;
 import com.wowconnect.SharedPreferenceHelper;
 import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.models.Schools;
 import com.wowconnect.ui.customUtils.Utils;
-import com.wowconnect.ui.landing.LandingActivity;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.wowconnect.ui.helpers.DialogHelper;
+import com.wowconnect.ui.helpers.S2mProgressDialog;
 
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
     private List<Schools> schoolsList;
     private Context context;
     private boolean isFirstTime;
+    private S2mProgressDialog progressdialog;
 
     public SchoolsAdapter(Context context, List<Schools> schoolsList, boolean isFirstTime) {
         this.schoolsList = schoolsList;
@@ -73,8 +76,8 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
                 if (isFirstTime)
                     launchManageTeachersAndSections();
                 else {
+                    DialogHelper.createProgressDialog((FragmentActivity) context, false);
                     refreshAllData();
-                    launchLandingActivity();
                 }
                 ((Activity) context).finish();
             }
@@ -109,8 +112,6 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         removeOldActiveSchool();
         school.setActive(true);
         SharedPreferenceHelper.setSchoolId(school.getId());
-        if (!isFirstTime)
-            Utils.getInstance().showToast("School Changed");
     }
 
     private void removeOldActiveSchool() {
@@ -137,9 +138,15 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         helper.getUserSections(new NetworkHelper.NetworkListener() {
             @Override
             public void onFinish() {
+                if (DialogHelper.getCurrentDialog() != null) {
+                    DialogHelper.getCurrentDialog().dismiss();
+                }
 
+                if (!isFirstTime)
+                    Utils.getInstance().showToast("School Changed");
             }
         });
+
     }
 
     private void updateActiveSchoolVisibility(int position, ViewHolder holder) {
@@ -151,15 +158,6 @@ public class SchoolsAdapter extends RecyclerView.Adapter<SchoolsAdapter.ViewHold
         holder.activeBadge.setVisibility(isActive ? View.VISIBLE : View.GONE);
     }
 
-    private void launchLandingActivity() {
-        new NetworkHelper(context).getDashBoardDetails(new NetworkHelper.NetworkListener() {
-            @Override
-            public void onFinish() {
-                ((Activity) context).finish();
-                context.startActivity(new Intent(context, LandingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
-        });
-    }
 
     private void launchManageTeachersAndSections() {
         context.startActivity(new Intent(context, ManageTeachersActivity.class)

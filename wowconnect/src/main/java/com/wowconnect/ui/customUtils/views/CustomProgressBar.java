@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
@@ -69,7 +70,7 @@ public class CustomProgressBar extends View {
         // Draw the progress bar.
         canvas.drawRect(barRect, barPaint);
 
-       /* // Draw progress text in the middle.
+      /*  // Draw progress text in the middle.
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(34);

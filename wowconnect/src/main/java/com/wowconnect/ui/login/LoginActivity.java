@@ -14,7 +14,9 @@ import com.wowconnect.domain.database.DataBaseUtil;
 import com.wowconnect.ui.profile.ProfileUpdateActivity;
 import com.wowconnect.ui.landing.LandingActivity;
 
-public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, OtpFragment.OtpListener {
+public class LoginActivity extends AppCompatActivity implements
+        LoginFragment.OnFragmentInteractionListener,
+        OtpFragment.OtpListener {
 
 
     boolean isOTP = false;

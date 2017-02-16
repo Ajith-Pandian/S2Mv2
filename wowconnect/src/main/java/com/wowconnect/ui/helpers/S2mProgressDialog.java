@@ -16,12 +16,11 @@ import com.wowconnect.R;
 
 public class S2mProgressDialog extends S2MDialogFragment {
     private static boolean isCancelableDialog;
+
     public static S2mProgressDialog build(FragmentActivity activity,
                                           String message, boolean isCancelable) {
         S2mProgressDialog dialogProgress = new S2mProgressDialog();
-        dialogProgress.setAlertMessage("<font color=\'" + activity
-                .getResources().getColor(R.color.colorPrimaryDark)
-                + "\'>" + message + "</font>");
+        dialogProgress.setAlertMessage(message);
         dialogProgress.setAlertActivity(activity);
         isCancelableDialog = isCancelable;
         return dialogProgress;
@@ -29,8 +28,9 @@ public class S2mProgressDialog extends S2MDialogFragment {
 
     // S2mProgressDialog.build(activity).show();
     public static S2mProgressDialog build(FragmentActivity activity, boolean isCancelable) {
-        return build(activity, "Please wait...", isCancelable);
+        return build(activity, "Loading...", isCancelable);
     }
+
     public static S2mProgressDialog build(FragmentActivity activity) {
         return build(activity, false);
     }

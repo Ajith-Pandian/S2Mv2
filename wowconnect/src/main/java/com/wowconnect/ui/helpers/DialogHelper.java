@@ -27,9 +27,9 @@ public class DialogHelper {
         currentDialog.show();
     }
 
-    public static void createProgressDialog(FragmentActivity context) {
+    public static void createProgressDialog(FragmentActivity context,boolean isCancelable) {
         S2mProgressDialog
-                .build(context).show();
+                .build(context,isCancelable).show();
 
     }
 

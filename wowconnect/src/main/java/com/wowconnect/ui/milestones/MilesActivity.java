@@ -320,7 +320,7 @@ public class MilesActivity extends AppCompatActivity implements
         listOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i != selected_option) {//  optionsAdapter.notifyDataSetChanged();
+                if (i != selected_option) {// optionsAdapter.notifyDataSetChanged();
                     for (int j = 0; j < adapterView.getChildCount(); j++) {
                         adapterView.getChildAt(j).setBackgroundDrawable(ContextCompat.getDrawable(MilesActivity.this, R.drawable.background_options));
                     }
@@ -626,6 +626,7 @@ public class MilesActivity extends AppCompatActivity implements
         if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN)
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         else
+
             super.onBackPressed();
     }
 

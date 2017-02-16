@@ -13,12 +13,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -48,8 +46,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static java.security.AccessController.getContext;
 
 
 public class LandingActivity extends AppCompatActivity
@@ -153,7 +149,7 @@ public class LandingActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        super.onResume();
+
         UserAccessController userAccessController = new UserAccessController(SharedPreferenceHelper.getUserId());
 
         if (userAccessController.hasNavigationMenu()) {
@@ -193,7 +189,7 @@ public class LandingActivity extends AppCompatActivity
             default:
                 homeButton.performClick();
         }
-
+        super.onResume();
     }
 
     boolean isMenuShown;
@@ -380,7 +376,7 @@ public class LandingActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.action_notification) {
             startActivity(new Intent(this, NotificationActivity.class));
-            //startActivity(new Intent(this, SchoolDetailActivity.class));
+            //startActivity(new Intent(this, SchoolPagerActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
