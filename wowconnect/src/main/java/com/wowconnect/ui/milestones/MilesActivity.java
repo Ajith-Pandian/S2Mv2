@@ -153,7 +153,7 @@ public class MilesActivity extends AppCompatActivity implements
                     .setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     };
-    boolean isMile, isCompletable, isIntro;
+    boolean isMile, canComplete, isIntro;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         boolean isUp = false;
@@ -210,13 +210,9 @@ public class MilesActivity extends AppCompatActivity implements
 
 
                 if (isUp) {
-                    Log.d("Slide", "onSlide: UP");
                     changeLayoutParams((int) (48 * slideOffset));
                 } else {
-                    Log.d("Slide", "onSlide: DOWN");
-
                     changeLayoutParams((int) (48 - 48 * (1 - slideOffset)));
-
                 }
             }
 
@@ -299,7 +295,7 @@ public class MilesActivity extends AppCompatActivity implements
 
 
         thisMileId = getIntent().getIntExtra(Constants.KEY_ID, -1);
-        isCompletable = getIntent().getBooleanExtra("isCompletable", false);
+        canComplete = getIntent().getBooleanExtra("canComplete", false);
 
         String title = holder.getCurrentClassName() + " " + holder.getCurrentSectionName();
         toolbarSubTitle.setText(title);
@@ -395,7 +391,7 @@ public class MilesActivity extends AppCompatActivity implements
             buttonBackgroundColor = white;
             buttonTextColor = greenPrimary;
             titleTextColor = white;
-            if (isCompletable)
+            if (canComplete)
                 buttonComplete.setOnClickListener(sheetShowListener);
             else
                 buttonComplete.setVisibility(GONE);
@@ -404,7 +400,7 @@ public class MilesActivity extends AppCompatActivity implements
             buttonBackgroundColor = greenPrimary;
             buttonTextColor = white;
             titleTextColor = greenPrimary;
-            if (isCompletable)
+            if (canComplete)
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -648,6 +644,20 @@ public class MilesActivity extends AppCompatActivity implements
                         Log.d("completeContentRequest", "onResponse: " + response);
                         Utils.getInstance().showToast("Submitted successfully");
                         if (isIntro)
+                            new NetworkHelper(MilesActivity.this).getIntroTrainings(
+                                    new NetworkHelper.NetworkListener() {
+                                        @Override
+                                        public void onFinish() {
+                                            finish();
+                                        }
+                                    });
+                        else {
+                            new NetworkHelper(MilesActivity.this).getUserSections(new NetworkHelper.NetworkListener() {
+                                @Override
+                                public void onFinish() {
+
+                                }
+                            });
                             new NetworkHelper(MilesActivity.this).getMilestoneContent(
                                     NewDataHolder.getInstance(MilesActivity.this).getCurrentSectionId(),
                                     new NetworkHelper.NetworkListener() {
@@ -656,14 +666,7 @@ public class MilesActivity extends AppCompatActivity implements
                                             finish();
                                         }
                                     });
-                        else
-                            new NetworkHelper(MilesActivity.this).getIntroTrainings(
-                                    new NetworkHelper.NetworkListener() {
-                                        @Override
-                                        public void onFinish() {
-                                            finish();
-                                        }
-                                    });
+                        }
                     }
                 },
                 new VolleyStringRequest.VolleyErrListener() {

@@ -9,13 +9,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.wowconnect.ui.tickets.attachments.AddDocumentActivity">
-<ListView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/list_docs"/>
+
+    <ListView
+        android:id="@+id/list_docs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:id="@+id/layout"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
 </RelativeLayout>

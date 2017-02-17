@@ -32,7 +32,7 @@
         android:layout_toRightOf="@+id/image_button_mcq"
         android:gravity="left"
         android:text="@string/school_msg_one"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/text_color2"
         android:textSize="12sp" />
 
 

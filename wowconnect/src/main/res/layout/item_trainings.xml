@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/layout_root_trainings"
-    android:layout_height="wrap_content">
+    android:layout_height="100dp">
 
 
     <LinearLayout
@@ -27,6 +27,7 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:text="New Material Requirement"
             android:textStyle="bold"
             android:textColor="@color/text_color2"
@@ -36,8 +37,9 @@
             android:id="@+id/text_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="2"
             android:layout_marginTop="2dp"
-            android:text="@string/school_msg_one"
+            android:text="@string/school_msg_two"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
     </LinearLayout>
@@ -46,7 +48,7 @@
         android:orientation="horizontal"
         android:layout_width="5dp"
         android:id="@+id/layer_dummy_green"
-        android:layout_height="100dp"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="@color/greenFade"/>

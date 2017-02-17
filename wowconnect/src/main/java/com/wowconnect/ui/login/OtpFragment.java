@@ -170,7 +170,7 @@ public class OtpFragment extends Fragment {
                     }
                 }
             });
-            FirebaseMessaging.getInstance().subscribeToTopic("School" + SharedPreferenceHelper.getSchoolId());
+           // FirebaseMessaging.getInstance().subscribeToTopic("School" + SharedPreferenceHelper.getSchoolId());
 
         } catch (JSONException ex) {
             Log.e(TAG, "storeResponse: ", ex);

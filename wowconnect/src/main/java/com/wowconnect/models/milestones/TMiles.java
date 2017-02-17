@@ -13,7 +13,7 @@ public class TMiles {
     private String title, note, type;
     private ArrayList<TMileData> mileData;
     private ArrayList<MCQs> mcqs;
-    private boolean isCompletable;
+    private boolean isCompletable,canComplete;
 
     public TMiles() {
     }
@@ -97,5 +97,13 @@ public class TMiles {
 
     public void setMcqs(ArrayList<MCQs> mcqs) {
         this.mcqs = mcqs;
+    }
+
+    public boolean canComplete() {
+        return canComplete;
+    }
+
+    public void setCanComplete(boolean canComplete) {
+        this.canComplete = canComplete;
     }
 }

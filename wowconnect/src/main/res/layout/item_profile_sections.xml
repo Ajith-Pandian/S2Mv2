@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:maxHeight="50dp"
+            android:textColor="@android:color/white"
             android:maxWidth="50dp"
             tools:text="M3"
             tools:textSize="20sp" />
@@ -64,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="20 miles completed"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_color3"
             android:textSize="8sp" />
     </LinearLayout>
 

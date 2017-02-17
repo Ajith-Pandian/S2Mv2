@@ -35,7 +35,7 @@
                 android:layout_toLeftOf="@+id/text_status"
                 android:layout_toRightOf="@+id/image_user_ticket"
                 android:layout_toStartOf="@+id/text_status"
-                android:textColor="@color/text_color1"
+                android:textColor="@color/text_color2"
                 android:textSize="12sp"
                 tools:text="Michael Jackson" />
 
@@ -126,7 +126,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/image_user_ticket"
                 android:layout_toRightOf="@+id/image_user_ticket"
-                android:textColor="@color/text_color2"
+                android:textColor="@color/text_color3"
                 android:textSize="12sp"
                 tools:text="@string/school_msg_two" />
         </RelativeLayout>

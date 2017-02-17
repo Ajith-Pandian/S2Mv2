@@ -50,7 +50,7 @@
                     android:gravity="start"
                     tools:text="Bill Gates"
                     android:maxLines="1"
-                    android:textColor="@color/text_color1"
+                    android:textColor="@color/text_color2"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -83,7 +83,7 @@
                         android:layout_marginBottom="2dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:background="@color/text_color1"
+                        android:background="@color/text_color2"
                         android:layout_height="match_parent"/>
                     <TextView
                         android:id="@+id/text_wows"
@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         tools:text="105 Wow"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_color3"
                         android:textSize="10sp" />
                     <View
                         android:layout_width="1dp"
@@ -99,7 +99,7 @@
                         android:layout_marginBottom="2dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:background="@color/text_color1"
+                        android:background="@color/text_color2"
                         android:layout_height="match_parent"/>
                     <TextView
                         android:id="@+id/text_miles"
@@ -107,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         tools:text="28 Miles"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_color3"
                         android:textSize="10sp" />
                 </LinearLayout>
                 </LinearLayout>

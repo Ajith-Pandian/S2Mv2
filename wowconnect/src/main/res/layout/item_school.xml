@@ -49,7 +49,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="start"
                     android:maxLines="1"
-                    android:textColor="@color/text_color1"
+                    android:textColor="@color/text_color2"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     tools:text="Indian Academy" />
@@ -67,7 +67,7 @@
                     android:layout_toStartOf="@+id/text_active_badge"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/text_color2"
+                    android:textColor="@color/text_color3"
                     android:textSize="12sp"
                     tools:text="Sector 8 Sector SectorSectorSectorSector" />
 

@@ -89,7 +89,6 @@ public class NewDataHolder {
             //user.setFirstLogin(true);
 
             String userType = userJson.getString(KEY_TYPE);
-
             user.setAvatar(userJson.getString(Constants.KEY_PROFILE_PICTURE));
 
             if (!userJson.isNull(KEY_OPTIONS)) {

@@ -74,11 +74,12 @@ public class MilesTextFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_miles_text, container, false);
         ButterKnife.bind(this, view);
         textTitle.setText(title);
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            textContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+            CharSequence trimmed = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString().trim();
+            textContent.setText(trimmed);
         } else {
-            textContent.setText(Html.fromHtml(content));
+            CharSequence trimmed = Html.fromHtml(content).toString().trim();
+            textContent.setText(trimmed);
 
             /*textContent.setText(Html.fromHtml("<p>Lorem Ipsum is simply dummy text" +
                     " of the printing and typesetting industry. " +
@@ -93,6 +94,18 @@ public class MilesTextFragment extends Fragment {
         }
 
         return view;
+    }
+
+    public static CharSequence trim(CharSequence s, int start, int end) {
+        while (start < end && Character.isWhitespace(s.charAt(start))) {
+            start++;
+        }
+
+        while (end > start && Character.isWhitespace(s.charAt(end - 1))) {
+            end--;
+        }
+
+        return s.subSequence(start, end);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

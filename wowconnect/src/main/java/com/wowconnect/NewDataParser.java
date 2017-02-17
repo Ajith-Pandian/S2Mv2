@@ -127,7 +127,7 @@ public class NewDataParser {
         ArrayList<TMiles> milesList = new ArrayList<>();
         try {
             boolean completable = false;
-            boolean isFirstMile = true;
+            boolean canComplete = false;
             int archiveIndex = 0;
             JSONArray milesArray = new JSONArray(milesResponse);
             for (int j = 0; j < milesArray.length(); j++) {
@@ -135,35 +135,25 @@ public class NewDataParser {
                 TMiles miles = new TMiles();
                 String type = milesJson.getString(Constants.KEY_TYPE);
                 if (type.equals(Constants.KEY_MILE)) {
-                   /* if (isFirstMile) {
-                        isFirstMile = false;
-                        completable = true;
-                    } else {
-                        completable = false;
-                    }*/
-                    /*if (isArchive) {
-                        // archiveIndex++;
-                        miles.setMileIndex(++archiveIndex);
-                    }*/
                     if (!milesJson.isNull(Constants.KEY_CONTENT_INDEX))
                         miles.setMileIndex(milesJson.getInt(Constants.KEY_CONTENT_INDEX));
-                    if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
-                        completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
                 } else {
                     if (milesJson.has(Constants.KEY_MCQS) &&
                             !milesJson.isNull(Constants.KEY_MCQS) &&
                             milesJson.getJSONArray(Constants.KEY_MCQS).length() > 0)
                         miles.setMcqs(getMcqs(milesJson.getJSONArray(Constants.KEY_MCQS)));
-                    if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
-                        completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
                 }
+                if (!milesJson.isNull(Constants.KEY_IS_COMPLETED))
+                    completable = !milesJson.getBoolean(Constants.KEY_IS_COMPLETED);
+                if (!milesJson.isNull(Constants.KEY_CAN_COMPLETE))
+                    canComplete = milesJson.getBoolean(Constants.KEY_CAN_COMPLETE);
                 miles.setId(milesJson.getInt(Constants.KEY_ID));
                 miles.setType(milesJson.getString(Constants.KEY_TYPE));
                 miles.setTitle(milesJson.getString(Constants.KEY_TITLE));
                 miles.setNote(milesJson.getString(Constants.KEY_DESCRIPTION));
 
                 miles.setCompletable(completable);
-
+                miles.setCanComplete(canComplete);
 
                 JSONArray milesDataJsonArray = milesJson.getJSONArray(Constants.KEY_CONTENT_DATA);
                 ArrayList<TMileData> milesDataList = new ArrayList<>();

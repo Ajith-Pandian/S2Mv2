@@ -8,7 +8,7 @@
     android:gravity="center"
     android:id="@+id/text_spinner"
     android:text="asdasd"
-    android:textColor="#000"
+    android:textColor="@color/text_color2"
     android:padding="5dp"
     android:layout_margin="2dp"
     />

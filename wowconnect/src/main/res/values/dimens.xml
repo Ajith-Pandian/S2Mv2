@@ -27,4 +27,7 @@
     <dimen name="teacher_item_height">105dp</dimen>
     <dimen name="teacher_item_width">162dp</dimen>
     <!--    <dimen name="design_fab_image_size" tools:override="true">15dp</dimen>-->
+
+    <dimen name="design_navigation_icon_size" tools:override="true">32dp</dimen>
+
 </resources>

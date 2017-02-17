@@ -97,7 +97,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             miledataList = holder.getMilesList().get(position).getMileData();
                         holder.setMilesDataList(miledataList);
                         holder.setCurrentMileId(mile.getId());
-                        openActivity(MilesActivity.class, isIntro, true, mile.isCompletable(), milestonesList.get(position).getId());
+                        openActivity(isIntro, true, mile.canComplete(), milestonesList.get(position).getId());
                     }
                 });
 
@@ -137,7 +137,7 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         holder.setMilesDataList(mileDataArrayList);
                         holder.setCurrentMileMcqs(trainingMCQsList);
                         holder.setCurrentMileId(training.getId());
-                        openActivity(MilesActivity.class, isIntro, false, training.isCompletable(), milestonesList.get(position).getId());
+                        openActivity(isIntro, false, training.canComplete(), milestonesList.get(position).getId());
                     }
                 });
                 tViewHolder.type.setVisibility(isArchive ? View.GONE : View.VISIBLE);
@@ -201,11 +201,11 @@ public class MilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    private void openActivity(Class<?> activityClass, boolean isIntro, boolean isMile, boolean isCompletable, int id) {
+    private void openActivity(boolean isIntro, boolean isMile, boolean canComplete, int id) {
         Intent intent = new Intent(context, MilesActivity.class);
         intent.putExtra("isMile", isMile);
         intent.putExtra(Constants.KEY_ID, id);
-        intent.putExtra("isCompletable", isCompletable);
+        intent.putExtra("canComplete", canComplete);
         intent.putExtra("isIntro", isIntro);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

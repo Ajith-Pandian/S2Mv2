@@ -46,7 +46,7 @@
                     android:layout_marginRight="15dp"
                     android:maxEms="41"
                     android:maxLines="4"
-                    android:textColor="#252525"
+                    android:textColor="@color/text_color2"
                     android:textSize="16sp"
                     tools:text="@string/school_msg_two" />
             </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:padding="8dp"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_color3"
                 android:textSize="10sp"
                 tools:text="Timestamp" />
 

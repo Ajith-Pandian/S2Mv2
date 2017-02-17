@@ -116,6 +116,7 @@
             android:paddingLeft="48dp"
             android:paddingRight="48dp"
             android:paddingTop="5dp"
+            android:textColor="@android:color/white"
             android:text="Submit"
             android:textAllCaps="false"
             android:textSize="14sp" />

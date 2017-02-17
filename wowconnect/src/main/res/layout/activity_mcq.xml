@@ -98,6 +98,7 @@
         android:paddingTop="5dp"
         style="?attr/borderlessButtonStyle"
         android:text="Submit"
+        android:textColor="@android:color/white"
         android:textAllCaps="false"
         android:textSize="14sp" />
 </RelativeLayout>

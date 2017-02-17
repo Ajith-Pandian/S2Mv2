@@ -112,6 +112,7 @@ public class Constants {
     public static final String KEY_IS_ACTIVE = "isActive";
     public static final String KEY_IS_TRAINING = "isTraining";
     public static final String KEY_IS_COMPLETED = "is_completed";
+    public static final String KEY_CAN_COMPLETE = "can_complete";
     public static final String KEY_OTP = "otp";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_DOB = "dob";
@@ -170,7 +171,7 @@ public class Constants {
     public static final String KEY_SECTIONS = "sections";
     public static final String KEY_SECTION = "section";
     public static final String KEY_SECTION_NAME = "section_name";
-    public static final String KEY_BULLETIN_BOARD= "bulletin_board";
+    public static final String KEY_BULLETIN_BOARD = "bulletin_board";
     public static final String KEY_SECTION_ID = "sectionId";
     public static final String KEY_CLASS = "class";
     public static final String KEY_CLASS_NAME = "class_name";
@@ -178,7 +179,7 @@ public class Constants {
     public static final String KEY_CONTENT = "content";
     public static final String KEY_CONTENTS = "contents";
     public static final String KEY_COMPLETE = "complete";
-    public static final String KEY_UNDO= "undo";
+    public static final String KEY_UNDO = "undo";
     public static final String KEY_ARCHIVED = "archived";
     public static final String KEY_CONTENT_DATA = "content_data";
     public static final String KEY_ARCHIVE = "archive";
@@ -268,16 +269,17 @@ public class Constants {
     //User types
     public static final String USER_TYPE_SCHOOL = "school";
     public static final String USER_TYPE_S2M_ADMIN = "s2m_admin";
+    public static final String USER_TYPE_SUPER_ADMIN = "super_admin";
 
     //User roles
 
     public static final String ROLE_TEACHER = "teacher";
-    public static final String ROLE_SCL_ADMIN  = "school_admin";
-    public static final String ROLE_COORDINATOR  = "coordinator";
+    public static final String ROLE_SCL_ADMIN = "school_admin";
+    public static final String ROLE_COORDINATOR = "coordinator";
 
     public static final String ROLE_S2M_CONTENT = "s2m_content";
     public static final String ROLE_S2M_HEAD = "s2m_head";
-    public static final String ROLE_S2M_RELATION  = "s2m_relation";
+    public static final String ROLE_S2M_RELATION = "s2m_relation";
 
     public static final String SHARED_PREFERENCE = "s2mSharedPreference";
 
@@ -303,23 +305,22 @@ public class Constants {
     public static final String KEY_AUTHORIZATION = "Authorization";
 
 
-
     public static final String FB_DATA_TYPE_USER_JOINED_SCHOOL = "user_joined_school";
     public static final String FB_DATA_TYPE_USER_UPDATED = "user_updated";
     public static final String FB_DATA_TYPE_USER_LEFT_SCHOOL = "user_left_school";
     public static final String FB_DATA_SECTION_ADDED = "section_added";
     public static final String FB_DATA_SECTION_DELETED = "section_deleted";
-    public static final String FB_DATA_BULLETIN_BOARD= "bulletin_board";
-    public static final String FB_DATA_SCHOOL_UPDATED= "school_updated";
-    public static final String FB_DATA_WOW_GIVEN= "wow_given";
-    public static final String FB_DATA_GOT_WOW= "got_wow";
-    public static final String FB_DATA_MILES_COMPLETED= "miles_completed";
-    public static final String FB_DATA_INTRO_TRAININGS_COMPLETED= "intro_trainings_completed";
-    public static final String FB_DATA_TRAININGS_COMPLETED= "training_completed";
-    public static final String FB_DATA_USER_JOINED_SCHOOL= "user_joined_school";
-    public static final String FB_DATA_SECTION_ASSIGNED= "section_assigned";
-    public static final String FB_DATA_BIRTHDAY= "birthday";
-    public static final String FB_DATA_ANNIVERSARY= "anniversary";
-    public static final String FB_NOTIFICATION_BROADCAST= "broadcast";
+    public static final String FB_DATA_BULLETIN_BOARD = "bulletin_board";
+    public static final String FB_DATA_SCHOOL_UPDATED = "school_updated";
+    public static final String FB_DATA_WOW_GIVEN = "wow_given";
+    public static final String FB_DATA_GOT_WOW = "got_wow";
+    public static final String FB_DATA_MILES_COMPLETED = "miles_completed";
+    public static final String FB_DATA_INTRO_TRAININGS_COMPLETED = "intro_trainings_completed";
+    public static final String FB_DATA_TRAININGS_COMPLETED = "training_completed";
+    public static final String FB_DATA_USER_JOINED_SCHOOL = "user_joined_school";
+    public static final String FB_DATA_SECTION_ASSIGNED = "section_assigned";
+    public static final String FB_DATA_BIRTHDAY = "birthday";
+    public static final String FB_DATA_ANNIVERSARY = "anniversary";
+    public static final String FB_NOTIFICATION_BROADCAST = "broadcast";
 
 }
