@@ -53,6 +53,9 @@ public class Utils {
     public int getPixelAsDp(Context context, int pixel) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixel, context.getResources().getDisplayMetrics());
     }
+    public int getDimensionsAsDp(Context context,int dimensionId) {
+        return (int) (context.getResources().getDimension(dimensionId) /context.getResources().getDisplayMetrics().density);
+    }
 
     public void showToast(String message) {
         Toast.makeText(S2MApplication.getAppContext(), message, Toast.LENGTH_SHORT).show();

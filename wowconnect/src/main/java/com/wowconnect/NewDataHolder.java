@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.wowconnect.domain.Constants.IS_LIKED;
@@ -183,6 +184,7 @@ public class NewDataHolder {
                         sclActList.add(sclActivity);
                 }
                 //user.setSclActs(sclActList);
+                Collections.reverse(sclActList);
 
                 setSclActList(sclActList);
             }

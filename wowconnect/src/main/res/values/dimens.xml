@@ -30,4 +30,9 @@
 
     <dimen name="design_navigation_icon_size" tools:override="true">32dp</dimen>
 
+    <dimen name="home_fragment_scl_acts_bottom_margin">16dp</dimen>
+    <dimen name="home_fragment_viewpager_margin">20dp</dimen>
+    <dimen name="home_fragment_viewpager_padding">50dp</dimen>
+
+
 </resources>

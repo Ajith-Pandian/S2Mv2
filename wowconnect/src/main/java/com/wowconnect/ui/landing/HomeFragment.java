@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,8 +137,13 @@ public class HomeFragment extends Fragment {
                 } else Utils.getInstance().showToast("No bulletin");
             }
         });
-
+        checkScreenDensity();
         return view;
+    }
+
+
+    void checkScreenDensity() {
+        Log.d(TAG, "checkScreenDensity: " + getResources().getDisplayMetrics().density);
     }
 
     Target bulletinTarget = new Target() {
@@ -204,7 +208,6 @@ public class HomeFragment extends Fragment {
         ArrayList<SclActs> schoolActivitiesList = NewDataHolder.getInstance(getContext()).getSclActList();
         ArrayList<SclActs> swipeList = new ArrayList<>();
         if (schoolActivitiesList != null && schoolActivitiesList.size() > 0) {
-            Collections.reverse(schoolActivitiesList);
             seeAllText.setText("see all");
             lastCardLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -218,8 +221,12 @@ public class HomeFragment extends Fragment {
                 swipeList.add(schoolActivitiesList.get(i));
             }
             cardsViewPager.setClipToPadding(false);
-            cardsViewPager.setPadding(50, 0, 50, 0);
-            cardsViewPager.setPageMargin(20);
+            Utils util = Utils.getInstance();
+            cardsViewPager.setPadding(util.getDimensionsAsDp(getActivity(), R.dimen.home_fragment_viewpager_padding),
+                    0,
+                    util.getDimensionsAsDp(getActivity(), R.dimen.home_fragment_viewpager_padding),
+                    0);
+            cardsViewPager.setPageMargin(util.getDimensionsAsDp(getActivity(), R.dimen.home_fragment_viewpager_margin));
             cardsViewPager.setAdapter(new
                     SchoolPagerAdapter(getContext(), swipeList));
         } else {
